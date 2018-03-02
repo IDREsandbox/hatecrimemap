@@ -7,13 +7,17 @@
   },
   "scripts": {
     "start": "node server",
-    "heroku-postbuild": "cd client/ && npm install && npm install --only=dev --no-shrinkwrap && npm run build"
+    "heroku-postbuild": "cd client/ && npm install && npm install --only=dev --no-shrinkwrap && npm run build",
+    "server": "nodemon server",
+    "client": "npm start --prefix client",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
   },
   "cacheDirectories": [
     "node_modules",
     "client/node_modules"
   ],
   "dependencies": {
+    "concurrently": "^3.5.1",
     "express": "^4.14.1"
   },
   "repository": {
@@ -27,5 +31,7 @@
     "react"
   ],
   "license": "MIT",
-  "devDependencies": {}
+  "devDependencies": {
+    "nodemon": "^1.17.1"
+  }
 }
