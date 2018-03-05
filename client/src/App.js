@@ -13,20 +13,20 @@ class App extends Component {
 
   componentDidMount() {
     fetch('/api')
-      .then(response => {
+      .then((response) => {
         if (!response.ok) {
           throw new Error(`status ${response.status}`);
         }
         return response.json();
       })
-      .then(json => {
+      .then((json) => {
         this.setState({
           message: json.message,
           fetching: false
         });
-      }).catch(e => {
+      }).catch((err) => {
         this.setState({
-          message: `API call failed: ${e}`,
+          message: `API call failed: ${err}`,
           fetching: false
         });
       })
