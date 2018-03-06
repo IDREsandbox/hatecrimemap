@@ -1,11 +1,16 @@
 /* Entry point for App, do not rename from index.js */
 
 import React from 'react';
-import ReactDOM from 'react-dom';
-import App from './App';
-import './index.css';
+import { render } from 'react-dom';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
 
-ReactDOM.render(
-  <App />,
+import App from './App';
+
+render(
+  <Router>
+    <div>
+      <Route exact path="/" component={App} />
+    </div>
+  </Router>,
   document.getElementById('root'),
 );
