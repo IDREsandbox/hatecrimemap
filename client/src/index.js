@@ -1,3 +1,5 @@
+/* Entry point for App, do not rename from index.js */
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
