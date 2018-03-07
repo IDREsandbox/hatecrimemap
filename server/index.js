@@ -3,6 +3,8 @@ const path = require('path');
 const cluster = require('cluster');
 const numCPUs = require('os').cpus().length;
 
+const { api, getmapdata } = require('./queries');
+
 const PORT = process.env.PORT || 5000;
 
 // Multi-process to utilize all CPU cores.
@@ -24,10 +26,8 @@ if (cluster.isMaster) {
   app.use(express.static(path.resolve(__dirname, '../client/build')));
 
   // Answer API requests.
-  app.get('/api', (req, res) => {
-    res.set('Content-Type', 'application/json');
-    res.send('{"message":"Hello from the custom server!"}');
-  });
+  app.get('/api', api);
+  app.get('/api/mapdata', getmapdata);
 
   // All remaining requests return the React app, so it can handle routing.
   app.get('*', (request, response) => {

@@ -10,7 +10,7 @@ class App extends Component {
   }
 
   componentDidMount() {
-    fetch('/api')
+    fetch('/api/mapdata')
       .then((response) => {
         if (!response.ok) {
           throw new Error(`status ${response.status}`);
