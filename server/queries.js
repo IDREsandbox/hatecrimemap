@@ -1,12 +1,12 @@
-const options = {
+// const options = {
   /* initialization options */
-};
+// };
 
-const pgp = require('pg-promise')(options);
+// const pgp = require('pg-promise')(options);
 
 // pgp.pg.defaults.ssl = true;
-const connectionString = process.env.DATABASE_URL;
-const db = pgp(connectionString);
+// const connectionString = process.env.DATABASE_URL;
+// const db = pgp(connectionString);
 
 function api(req, res) {
   res.set('Content-Type', 'application/json');
@@ -30,7 +30,7 @@ function getmapdata(req, res) {
 }
 
 module.exports = {
-  db,
+  // db,
   api,
   getmapdata,
 };

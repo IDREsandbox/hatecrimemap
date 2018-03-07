@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import axios from 'axios';
 
 class App extends Component {
   constructor(props) {
@@ -10,19 +11,14 @@ class App extends Component {
   }
 
   componentDidMount() {
-    fetch('/api/mapdata')
+    axios.get('/api')
       .then((response) => {
-        if (!response.ok) {
-          throw new Error(`status ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((json) => {
         this.setState({
-          message: json.message,
+          message: response.data.message,
           fetching: false,
         });
-      }).catch((err) => {
+      })
+      .catch((err) => {
         this.setState({
           message: `API call failed: ${err}`,
           fetching: false,
