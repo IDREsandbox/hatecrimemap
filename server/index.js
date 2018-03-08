@@ -9,7 +9,7 @@ const PORT = process.env.PORT || 5000;
 
 // Master process is started from the command line
 if (cluster.isMaster) {
-  console.log(`Node cluster master ${process.pid} is running`);
+  console.log('Server running');
 
   // Create worker for each CPU
   for (let i = 0; i < numCPUs; i++) {
@@ -34,7 +34,5 @@ if (cluster.isMaster) {
     response.sendFile(path.resolve(__dirname, '../client/build', 'index.html'));
   });
 
-  app.listen(PORT, () => {
-    console.log(`Node cluster worker ${process.pid} listening on port ${PORT}`);
-  });
+  app.listen(PORT);
 }
