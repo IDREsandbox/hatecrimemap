@@ -1,9 +1,5 @@
-const options = {
-  /* initialization options */
-};
-
 require('dotenv').config();
-const pgp = require('pg-promise')(options);
+const pgp = require('pg-promise')(/* options */);
 
 let connectionString;
 if (process.env.NODE_ENV !== 'development') {

@@ -12,9 +12,9 @@ class App extends Component {
 
   componentDidMount() {
     axios.get('/api/mapdata')
-      .then((response) => {
+      .then((res) => {
         this.setState({
-          message: response.data.message,
+          message: res.data.message,
           fetching: false,
         });
       })

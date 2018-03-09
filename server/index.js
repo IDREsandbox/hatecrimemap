@@ -29,8 +29,8 @@ if (cluster.isMaster) {
   app.get('/api/mapdata', getmapdata);
 
   // All remaining requests return the React app, so it can handle routing
-  app.get('*', (request, response) => {
-    response.sendFile(path.resolve(__dirname, '../client/build', 'index.html'));
+  app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, '../client/build', 'index.html'));
   });
 
   app.listen(PORT);
