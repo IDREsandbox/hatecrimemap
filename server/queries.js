@@ -20,13 +20,13 @@ function api(req, res) {
 }
 
 function getmapdata(req, res) {
-  db.one('SELECT $1 AS value', 123)
+  db.any('SELECT x FROM hcmdata')
     .then((data) => {
       res.status(200)
         .json({
           status: 'success',
           data,
-          message: data.value,
+          message: 'successfully queried db',
         });
     })
     .catch((error) => {
