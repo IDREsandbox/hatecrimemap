@@ -1,11 +1,17 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 
+import SimpleMap from './components/Map/Map';
+
+const divStyle = {
+  height: '180px',
+};
+
 export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      message: null,
+      message: '',
       fetching: true,
       mapdata: [],
     };
@@ -34,14 +40,9 @@ export default class App extends Component {
     return (
       <div className="App">
         <div className="App-header">
-          <h2>Welcome to React</h2>
+          <h2>Welcome to Hate Crime Map</h2>
         </div>
-        <p className="App-intro">
-          {'This is '}
-          <a href="https://github.com/mars/heroku-cra-node">
-            {'create-react-app with a custom Node/Express server'}
-          </a><br />
-        </p>
+        <SimpleMap style={divStyle} />
         <p className="App-intro">
           {fetching
             ? 'Fetching message from API'
