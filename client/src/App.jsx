@@ -29,6 +29,8 @@ export default class App extends Component {
   }
 
   render() {
+    const { message, fetching, mapdata } = this.state;
+    console.log(mapdata);
     return (
       <div className="App">
         <div className="App-header">
@@ -41,9 +43,9 @@ export default class App extends Component {
           </a><br />
         </p>
         <p className="App-intro">
-          {this.state.fetching
+          {fetching
             ? 'Fetching message from API'
-            : this.state.message}
+            : message}
         </p>
       </div>
     );
