@@ -31,7 +31,6 @@ function getmapdata(req, res) {
 }
 
 module.exports = {
-  // db,
   api,
   getmapdata,
 };
