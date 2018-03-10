@@ -16,7 +16,7 @@ function api(req, res) {
 }
 
 function getmapdata(req, res) {
-  db.any('SELECT x FROM hcmdata')
+  db.any('SELECT x, y FROM hcmdata')
     .then((data) => {
       res.status(200)
         .json({
