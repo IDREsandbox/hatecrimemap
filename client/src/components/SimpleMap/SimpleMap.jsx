@@ -5,30 +5,34 @@ import { Map, TileLayer, Marker, Popup } from 'react-leaflet';
 export default class SimpleMap extends Component {
   constructor(props) {
     super(props);
-    const { x, y } = this.props.mapdata[0];
     this.state = {
-      x: Number(y),
-      y: Number(x),
-      zoom: 8,
+      mapdata: this.props.mapdata,
+      zoom: 3,
     };
   }
 
   render() {
-    const { x, y, zoom } = this.state;
-    const position = [x, y];
+    const { mapdata, zoom } = this.state;
+    const center = [20.28, 15.85];
+    const markerItems = mapdata.map((pointObj, i) => {
+      const position = [Number(pointObj.y), Number(pointObj.x)];
+      return (
+        <Marker key={i} position={position}>
+          <Popup>
+            <span>
+              {`This is point #${i} from the database!`}
+            </span>
+          </Popup>
+        </Marker>
+      );
+    });
     return (
-      <Map id="mapContainer" center={position} zoom={zoom}>
+      <Map id="mapContainer" center={center} zoom={zoom}>
         <TileLayer
           attribution="&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        <Marker position={position}>
-          <Popup>
-            <span>
-              This is the first reported point from the database!
-            </span>
-          </Popup>
-        </Marker>
+        {markerItems}
       </Map>
     );
   }

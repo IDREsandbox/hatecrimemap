@@ -8,7 +8,7 @@ export default class App extends Component {
     super(props);
     this.state = {
       message: '',
-      fetching: true,
+      isFetching: true,
       mapdata: [],
     };
   }
@@ -18,31 +18,30 @@ export default class App extends Component {
       .then((res) => {
         this.setState({
           message: res.data.message,
-          fetching: false,
+          isFetching: false,
           mapdata: res.data.mapdata,
         });
       })
       .catch((err) => {
         this.setState({
           message: `API call failed: ${err}`,
-          fetching: false,
+          isFetching: false,
         });
       });
   }
 
   render() {
-    const { message, fetching, mapdata } = this.state;
+    const { message, isFetching, mapdata } = this.state;
     return (
       <div className="App">
         <div className="App-header">
           <h2>Welcome to Hate Crime Map</h2>
         </div>
-        {fetching
-          ? 'Fetching data'
-          : <SimpleMap mapdata={mapdata} />}
+        {!isFetching &&
+          <SimpleMap mapdata={mapdata} />}
         <p className="App-intro">
-          {fetching
-            ? 'Fetching message from API'
+          {isFetching
+            ? 'Fetching data'
             : message}
         </p>
       </div>

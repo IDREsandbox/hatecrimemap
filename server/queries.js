@@ -22,7 +22,7 @@ function getmapdata(req, res) {
         .json({
           status: 'success',
           mapdata,
-          message: 'successfully queried db',
+          message: 'Successfully queried db for all coordinates!',
         });
     })
     .catch((error) => {
