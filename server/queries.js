@@ -17,11 +17,11 @@ function api(req, res) {
 
 function getmapdata(req, res) {
   db.any('SELECT x, y FROM hcmdata')
-    .then((data) => {
+    .then((mapdata) => {
       res.status(200)
         .json({
           status: 'success',
-          data,
+          mapdata,
           message: 'successfully queried db',
         });
     })

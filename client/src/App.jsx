@@ -7,6 +7,7 @@ class App extends Component {
     this.state = {
       message: null,
       fetching: true,
+      mapdata: [],
     };
   }
 
@@ -16,6 +17,7 @@ class App extends Component {
         this.setState({
           message: res.data.message,
           fetching: false,
+          mapdata: res.data.mapdata,
         });
       })
       .catch((err) => {
