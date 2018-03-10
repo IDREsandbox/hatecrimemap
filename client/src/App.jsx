@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 
-import SimpleMap from './components/Map/Map';
+import SimpleMap from './components/SimpleMap/SimpleMap';
 
 export default class App extends Component {
   constructor(props) {
