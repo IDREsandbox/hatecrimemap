@@ -3,10 +3,6 @@ import axios from 'axios';
 
 import SimpleMap from './components/Map/Map';
 
-const divStyle = {
-  height: '180px',
-};
-
 export default class App extends Component {
   constructor(props) {
     super(props);
@@ -42,7 +38,7 @@ export default class App extends Component {
         <div className="App-header">
           <h2>Welcome to Hate Crime Map</h2>
         </div>
-        <SimpleMap style={divStyle} />
+        <SimpleMap />
         <p className="App-intro">
           {fetching
             ? 'Fetching message from API'

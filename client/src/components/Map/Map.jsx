@@ -5,16 +5,17 @@ export default class SimpleMap extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      lat: 51.505,
-      lng: -0.09,
+      x: 51.505,
+      y: -0.09,
       zoom: 13,
     };
   }
 
   render() {
-    const position = [this.state.lat, this.state.lng];
+    const { x, y, zoom } = this.state;
+    const position = [x, y];
     return (
-      <Map id="mapContainer" center={position} zoom={this.state.zoom}>
+      <Map id="mapContainer" center={position} zoom={zoom}>
         <TileLayer
           attribution="&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
