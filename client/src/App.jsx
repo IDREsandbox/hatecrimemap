@@ -32,13 +32,14 @@ export default class App extends Component {
 
   render() {
     const { message, fetching, mapdata } = this.state;
-    console.log(mapdata);
     return (
       <div className="App">
         <div className="App-header">
           <h2>Welcome to Hate Crime Map</h2>
         </div>
-        <SimpleMap />
+        {fetching
+          ? 'Fetching data'
+          : <SimpleMap mapdata={mapdata} />}
         <p className="App-intro">
           {fetching
             ? 'Fetching message from API'

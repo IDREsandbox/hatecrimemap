@@ -1,13 +1,15 @@
-import React, { Component } from 'react'
-import { Map, TileLayer, Marker, Popup } from 'react-leaflet'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { Map, TileLayer, Marker, Popup } from 'react-leaflet';
 
 export default class SimpleMap extends Component {
   constructor(props) {
     super(props);
+    const { x, y } = this.props.mapdata[0];
     this.state = {
-      x: 51.505,
-      y: -0.09,
-      zoom: 13,
+      x: Number(y),
+      y: Number(x),
+      zoom: 8,
     };
   }
 
@@ -23,7 +25,7 @@ export default class SimpleMap extends Component {
         <Marker position={position}>
           <Popup>
             <span>
-              A pretty CSS3 popup. <br /> Easily customizable.
+              This is the first reported point from the database!
             </span>
           </Popup>
         </Marker>
@@ -31,3 +33,7 @@ export default class SimpleMap extends Component {
     );
   }
 }
+
+SimpleMap.propTypes = {
+  mapdata: PropTypes.arrayOf(PropTypes.object).isRequired,
+};
