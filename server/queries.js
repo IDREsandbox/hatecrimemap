@@ -15,22 +15,7 @@ function api(req, res) {
   res.json({ message: 'Hello from the custom server!' });
 }
 
-function getmapdata(req, res) {
-  db.any('SELECT x, y FROM hcmdata')
-    .then((mapdata) => {
-      res.status(200)
-        .json({
-          status: 'success',
-          mapdata,
-          message: 'Successfully queried db for all coordinates!',
-        });
-    })
-    .catch((error) => {
-      console.log('ERROR:', error);
-    });
-}
-
 module.exports = {
   api,
-  getmapdata,
+  db,
 };

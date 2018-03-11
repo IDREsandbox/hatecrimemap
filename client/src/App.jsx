@@ -14,7 +14,7 @@ export default class App extends Component {
   }
 
   componentDidMount() {
-    axios.get('/api/mapdata')
+    axios.get('/maps/allpoints')
       .then((res) => {
         this.setState({
           message: res.data.message,

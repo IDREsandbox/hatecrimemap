@@ -3,7 +3,8 @@ const path = require('path');
 const cluster = require('cluster');
 const numCPUs = require('os').cpus().length;
 
-const { api, getmapdata } = require('./queries');
+const { api } = require('./queries');
+const maps = require('./controllers/maps');
 
 const PORT = process.env.PORT || 5000;
 
@@ -25,8 +26,8 @@ if (cluster.isMaster) {
   // Priority serve any static files
   app.use(express.static(path.resolve(__dirname, '../client/build')));
 
+  app.use('/maps', maps);
   app.get('/api', api);
-  app.get('/api/mapdata', getmapdata);
 
   // All remaining requests return the React app, so it can handle routing
   app.get('*', (req, res) => {
