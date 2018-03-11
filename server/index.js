@@ -16,7 +16,7 @@ if (cluster.isMaster) {
   // Priority serve any static files
   app.use(express.static(path.resolve(__dirname, '../client/build')));
 
-  app.use(routes);
+  app.use('/api', routes);
 
   // All remaining requests return the React app, so it can handle routing
   app.get('*', (req, res) => {
