@@ -10,12 +10,4 @@ if (process.env.NODE_ENV !== 'development') {
 }
 const db = pgp(connectionString);
 
-function api(req, res) {
-  res.set('Content-Type', 'application/json');
-  res.json({ message: 'Hello from the custom server!' });
-}
-
-module.exports = {
-  api,
-  db,
-};
+module.exports = db;

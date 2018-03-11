@@ -1,6 +1,6 @@
 const express = require('express');
 
-const { db } = require('../queries');
+const db = require('../models');
 
 const router = express.Router();
 
