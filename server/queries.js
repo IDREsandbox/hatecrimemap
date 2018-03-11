@@ -12,7 +12,7 @@ const db = pgp(connectionString);
 
 function api(req, res) {
   res.set('Content-Type', 'application/json');
-  res.send('{"message":"Hello from the custom server!"}');
+  res.json({ message: 'Hello from the custom server!' });
 }
 
 function getmapdata(req, res) {
