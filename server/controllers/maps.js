@@ -10,16 +10,16 @@ router.use((req, res, next) => {
 });
 
 router.get('/', (req, res) => {
-  res.send('Maps home page');
+  res.send('Maps home route');
 });
 
 router.get('/allpoints', (req, res) => {
   db.any('SELECT x, y FROM hcmdata')
-    .then((mapdata) => {
+    .then((data) => {
       res.status(200)
         .json({
           status: 'success',
-          mapdata,
+          data,
           message: 'Successfully queried db for all coordinates!',
         });
     })
