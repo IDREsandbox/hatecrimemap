@@ -15,7 +15,7 @@ export default class SimpleMap extends Component {
     const { mapdata, zoom } = this.state;
     const center = [20.28, 15.85];
     const markerItems = mapdata.map((pointObj, i) => {
-      const position = [Number(pointObj.y), Number(pointObj.x)];
+      const position = [Number(pointObj.lat), Number(pointObj.lon)];
       return (
         <Marker key={i} position={position}>
           <Popup>
