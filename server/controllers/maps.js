@@ -14,7 +14,7 @@ router.get('/', (req, res) => {
 });
 
 router.get('/allpoints', (req, res) => {
-  db.any('SELECT lon, lat FROM hcmdata')
+  db.any('SELECT lon, lat, report_type, group_harassed, location_name, verified FROM hcmdata')
     .then((data) => {
       res.status(200)
         .json({

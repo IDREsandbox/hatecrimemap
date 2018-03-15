@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Map, TileLayer, Marker, Popup } from 'react-leaflet';
+import { Map, TileLayer, CircleMarker, Popup } from 'react-leaflet';
 
 export default class SimpleMap extends Component {
   constructor(props) {
@@ -17,13 +17,18 @@ export default class SimpleMap extends Component {
     const markerItems = mapdata.map((pointObj, i) => {
       const position = [Number(pointObj.lat), Number(pointObj.lon)];
       return (
-        <Marker key={i} position={position}>
+        <CircleMarker key={i} center={position}>
           <Popup>
-            <span>
-              {`This is point #${i} from the database!`}
-            </span>
+            <div>
+              <h3>{pointObj.report_type}</h3>
+              <ul>
+                <li>{pointObj.group_harassed}</li>
+                <li>{pointObj.location_name}</li>
+                <li>{`Verified: ${pointObj.verified}`}</li>
+              </ul>
+            </div>
           </Popup>
-        </Marker>
+        </CircleMarker>
       );
     });
     return (
