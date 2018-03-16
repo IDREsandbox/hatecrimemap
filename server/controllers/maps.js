@@ -15,11 +15,11 @@ router.get('/', (req, res) => {
 
 router.get('/allpoints', (req, res) => {
   db.any('SELECT lon, lat, reporttype, groupharassed, locationname, verified, featureid FROM hcmdata')
-    .then((data) => {
+    .then((mapdata) => {
       res.status(200)
         .json({
           status: 'success',
-          data,
+          mapdata,
           message: 'Successfully queried db for all coordinates!',
         });
     })

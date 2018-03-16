@@ -9,7 +9,7 @@ export default class App extends Component {
     this.state = {
       message: '',
       isFetching: true,
-      data: [],
+      mapdata: [],
     };
   }
 
@@ -19,7 +19,7 @@ export default class App extends Component {
         this.setState({
           message: res.data.message,
           isFetching: false,
-          data: res.data.data,
+          mapdata: res.data.mapdata,
         });
       })
       .catch((err) => {
@@ -31,11 +31,11 @@ export default class App extends Component {
   }
 
   render() {
-    const { message, isFetching, data } = this.state;
+    const { message, isFetching, mapdata } = this.state;
     return (
       <div>
         {!isFetching &&
-          <MapContainer mapdata={data} zoom={3} />}
+          <MapContainer mapdata={mapdata} zoom={5} />}
         <p className="App-intro">
           {isFetching
             ? 'Fetching data'

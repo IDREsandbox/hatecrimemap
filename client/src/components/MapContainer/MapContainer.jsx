@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Map, TileLayer, CircleMarker, Popup } from 'react-leaflet';
 
 const MapContainer = ({ mapdata, zoom }) => {
-  const mapCenter = [20.28, 15.85];
+  const mapCenter = [38, -100];
   const markerItems = mapdata.map((markerItemData) => {
     const {
       lat,
@@ -30,6 +30,7 @@ const MapContainer = ({ mapdata, zoom }) => {
       </CircleMarker>
     );
   });
+
   return (
     <Map id="mapContainer" center={mapCenter} zoom={zoom}>
       <TileLayer
