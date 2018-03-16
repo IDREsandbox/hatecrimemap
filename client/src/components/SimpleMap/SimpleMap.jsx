@@ -13,18 +13,27 @@ export default class SimpleMap extends Component {
 
   render() {
     const { mapdata, zoom } = this.state;
-    const center = [20.28, 15.85];
-    const markerItems = mapdata.map((pointObj, i) => {
-      const position = [Number(pointObj.lat), Number(pointObj.lon)];
+    const mapCenter = [20.28, 15.85];
+    const markerItems = mapdata.map((markerItemData) => {
+      const {
+        lat,
+        lon,
+        featureid,
+        reporttype,
+        groupharassed,
+        locationname,
+        verified,
+      } = markerItemData;
+      const markerCenter = [Number(lat), Number(lon)];
       return (
-        <CircleMarker key={i} center={position}>
+        <CircleMarker key={featureid} center={markerCenter}>
           <Popup>
             <div>
-              <h3>{pointObj.report_type}</h3>
+              <h3>{reporttype}</h3>
               <ul>
-                <li>{pointObj.group_harassed}</li>
-                <li>{pointObj.location_name}</li>
-                <li>{`Verified: ${pointObj.verified}`}</li>
+                <li>{groupharassed}</li>
+                <li>{locationname}</li>
+                <li>{`Verified: ${verified}`}</li>
               </ul>
             </div>
           </Popup>
@@ -32,7 +41,7 @@ export default class SimpleMap extends Component {
       );
     });
     return (
-      <Map id="mapContainer" center={center} zoom={zoom}>
+      <Map id="mapContainer" center={mapCenter} zoom={zoom}>
         <TileLayer
           attribution="&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
