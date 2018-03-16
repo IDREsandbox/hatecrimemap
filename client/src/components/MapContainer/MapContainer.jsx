@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Map, TileLayer, CircleMarker, Popup } from 'react-leaflet';
 
-export default class SimpleMap extends Component {
+export default class MapContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -52,6 +52,6 @@ export default class SimpleMap extends Component {
   }
 }
 
-SimpleMap.propTypes = {
+MapContainer.propTypes = {
   mapdata: PropTypes.arrayOf(PropTypes.object).isRequired,
 };

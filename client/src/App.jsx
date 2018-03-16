@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 
-import SimpleMap from './components/SimpleMap/SimpleMap';
+import MapContainer from './components/MapContainer/MapContainer';
 
 export default class App extends Component {
   constructor(props) {
@@ -38,7 +38,7 @@ export default class App extends Component {
           <h2>Welcome to Hate Crime Map</h2>
         </div>
         {!isFetching &&
-          <SimpleMap mapdata={data} />}
+          <MapContainer mapdata={data} />}
         <p className="App-intro">
           {isFetching
             ? 'Fetching data'
