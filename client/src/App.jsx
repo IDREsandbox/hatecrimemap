@@ -38,7 +38,7 @@ export default class App extends Component {
           <h2>Welcome to Hate Crime Map</h2>
         </div>
         {!isFetching &&
-          <MapContainer mapdata={data} />}
+          <MapContainer mapdata={data} zoom={3} />}
         <p className="App-intro">
           {isFetching
             ? 'Fetching data'
