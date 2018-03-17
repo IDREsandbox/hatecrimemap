@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Map, TileLayer, CircleMarker, Popup } from 'react-leaflet';
 
+import './MapContainer.css';
+
 const MapContainer = ({ mapdata, zoom }) => {
   const mapCenter = [38, -100];
   const markerItems = mapdata.map((markerItemData) => {

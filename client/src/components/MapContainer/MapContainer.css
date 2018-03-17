@@ -1,0 +1,8 @@
+#mapContainer {
+  position: absolute;
+  top: 120px;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 800px;
+}
