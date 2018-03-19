@@ -37,7 +37,7 @@ const MapContainer = ({ mapdata, zoom }) => {
     <Map id="mapContainer" center={mapCenter} zoom={zoom}>
       <TileLayer
         attribution="&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        url="https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png"
       />
       {markerItems}
     </Map>

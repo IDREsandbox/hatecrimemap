@@ -36,7 +36,7 @@ export default class App extends Component {
       <div>
         {!isFetching &&
           <MapContainer mapdata={mapdata} zoom={5} />}
-        <p className="App-intro">
+        <p>
           {isFetching
             ? 'Fetching data'
             : message}
