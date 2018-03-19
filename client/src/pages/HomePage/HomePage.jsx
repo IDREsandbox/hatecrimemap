@@ -3,6 +3,7 @@ import axios from 'axios';
 
 import MapContainer from '../../components/MapContainer/MapContainer';
 import SideMenu from './components/SideMenu/SideMenu';
+import { getMapData, storeMapData } from './services';
 import './HomePage.css';
 
 export default class App extends Component {
@@ -12,15 +13,17 @@ export default class App extends Component {
       isFetching: true,
       mapdata: [],
     };
+    this.updateMapData = this.updateMapData.bind(this);
   }
 
   componentDidMount() {
     axios.get('/api/maps/allpoints')
-      .then((res) => {
+      .then(({ data: { mapdata } }) => {
         this.setState({
           isFetching: false,
-          mapdata: res.data.mapdata,
+          mapdata,
         });
+        storeMapData('allpoints', mapdata);
       })
       .catch((err) => {
         this.setState({
@@ -30,6 +33,13 @@ export default class App extends Component {
       });
   }
 
+  updateMapData({ target: { name } }) {
+    const filtered = getMapData(name);
+    this.setState({
+      mapdata: filtered,
+    });
+  }
+
   render() {
     const { isFetching, mapdata } = this.state;
     return (
@@ -37,7 +47,7 @@ export default class App extends Component {
         {!isFetching &&
           <React.Fragment>
             <MapContainer mapdata={mapdata} zoom={4} />
-            <SideMenu />
+            <SideMenu updateMapData={this.updateMapData} />
           </React.Fragment>}
       </div>
     );
