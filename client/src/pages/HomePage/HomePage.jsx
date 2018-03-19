@@ -34,13 +34,13 @@ export default class App extends Component {
     const { message, isFetching, mapdata } = this.state;
     return (
       <div>
-        {!isFetching &&
-          <MapContainer mapdata={mapdata} zoom={5} />}
         <p>
           {isFetching
             ? 'Fetching data'
             : message}
         </p>
+        {!isFetching &&
+          <MapContainer mapdata={mapdata} zoom={5} />}
       </div>
     );
   }
