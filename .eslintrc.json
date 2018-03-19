@@ -13,6 +13,7 @@
         ],
         "no-console": 0,
         "no-plusplus": 0,
-        "indent": 0
+        "indent": 0,
+        "no-alert": 0
     }
 }

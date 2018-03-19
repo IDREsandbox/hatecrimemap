@@ -1,0 +1,5 @@
+.sideMenu {
+  border: 1px solid black;
+  flex: 1 0 300px;
+  height: 100%;
+}

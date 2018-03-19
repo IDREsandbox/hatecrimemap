@@ -1,0 +1,6 @@
+.homePage {
+  display: flex;
+  flex-wrap: wrap;
+  height: calc( 100% - 80px);
+  width: 100%;
+}

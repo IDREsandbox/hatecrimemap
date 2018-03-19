@@ -20,7 +20,6 @@ router.get('/allpoints', (req, res) => {
         .json({
           status: 'success',
           mapdata,
-          message: 'Successfully queried db for all coordinates!',
         });
     })
     .catch((error) => {
