@@ -26,18 +26,13 @@ export default class App extends Component {
         storeMapData('allpoints', mapdata);
       })
       .catch((err) => {
-        this.setState({
-          isFetching: false,
-        });
+        this.setState({ isFetching: false });
         alert(`API call failed: ${err}`);
       });
   }
 
   updateMapData({ target: { name } }) {
-    const filtered = getMapData(name);
-    this.setState({
-      mapdata: filtered,
-    });
+    this.setState({ mapdata: getMapData(name) });
   }
 
   render() {
