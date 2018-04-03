@@ -26,6 +26,7 @@ function removeDuplicates(arr) {
   for (let i = 0; i < arr.length; i++) {
     const { featureid } = arr[i];
     if (!seen.has(featureid)) {
+      seen.add(featureid);
       uniqueArray.push(arr[i]);
     }
   }
