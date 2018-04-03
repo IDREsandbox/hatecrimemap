@@ -4,27 +4,27 @@ const storedLayers = {};
 const filteringOptions = {
   notVerified: {
     customFilter: ({ verified }) => Number(verified) < 1,
-    color: 'green',
+    color: 'red',
   },
   verified1: {
     customFilter: ({ verified }) => Number(verified) === 1,
-    color: 'red',
+    color: '#DFCFBE',
   },
   verified2: {
     customFilter: ({ verified }) => Number(verified) > 1,
-    color: 'purple',
+    color: '#55B4B0',
   },
   women: {
     customFilter: ({ groupharassed }) => groupharassed === 'Women',
-    color: 'black',
+    color: '#E15D44',
   },
   hispanic: {
     customFilter: ({ groupharassed }) => groupharassed === 'Hispanic' || groupharassed === 'Hispanic/Latino',
-    color: 'yellow',
+    color: '#7FCDCD',
   },
   africanAmerican: {
     customFilter: ({ groupharassed }) => groupharassed === 'African American',
-    color: 'gray',
+    color: '#BC243C',
   },
 };
 
