@@ -6,7 +6,7 @@ import './SideMenu.css';
 
 const SideMenu = ({ updateMapData }) => {
   const labels = filterMethods.map(({ name, label, key }) => (
-    <label htmlFor={name} key={key}>
+    <label key={key}>
       <input type="checkbox" name={name} onClick={updateMapData} />
       {label}
     </label>
