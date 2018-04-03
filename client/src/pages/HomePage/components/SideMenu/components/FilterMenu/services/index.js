@@ -19,6 +19,16 @@ const filterMethods = [
     name: 'women',
     key: 4,
   },
+  {
+    label: 'Hispanic',
+    name: 'hispanic',
+    key: 5,
+  },
+  {
+    label: 'African American',
+    name: 'africanAmerican',
+    key: 6,
+  },
 ];
 
 export default filterMethods;

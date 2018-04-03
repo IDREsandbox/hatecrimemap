@@ -19,7 +19,7 @@ const MapContainer = ({ mapdata, zoom }) => {
     const markerCenter = [Number(lat), Number(lon)];
     const color = markerItemData.color || 'blue';
     return (
-      <CircleMarker color={color} key={featureid} center={markerCenter}>
+      <CircleMarker color={color} key={featureid} center={markerCenter} radius={2}>
         <Popup>
           <div>
             <h3>{reporttype}</h3>

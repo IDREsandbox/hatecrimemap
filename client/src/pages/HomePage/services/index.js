@@ -18,6 +18,14 @@ const filteringOptions = {
     customFilter: ({ groupharassed }) => groupharassed === 'Women',
     color: 'black',
   },
+  hispanic: {
+    customFilter: ({ groupharassed }) => groupharassed === 'Hispanic' || groupharassed === 'Hispanic/Latino',
+    color: 'yellow',
+  },
+  africanAmerican: {
+    customFilter: ({ groupharassed }) => groupharassed === 'African American',
+    color: 'gray',
+  },
 };
 
 function removeDuplicates(arr) {

@@ -1,0 +1,23 @@
+.filterMenu {
+  grid-area: filtermenu;
+}
+
+.filterMenu__form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, .75fr));
+  grid-column-gap: 15px;
+  justify-content: center;
+}
+
+.filterMenu__form label {
+  display: block;
+  padding: 5px;
+}
+
+.filterMenu__form label input {
+  margin-right: 5px;
+}
+
+.filterMenu__header {
+  padding: 10px;
+}

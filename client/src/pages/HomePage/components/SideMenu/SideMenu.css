@@ -1,13 +1,17 @@
 .sideMenu {
-  border: 1px solid gray;
+  background: #efefef;
+  display: grid;
   grid-area: toc;
+  grid-template-areas:
+    ". smheader ."
+    ". filtermenu .";
+  grid-template-columns: 10px 1fr 10px;
+  grid-template-rows: 60px 1fr;
 }
 
-.sideMenu form label {
-  display: block;
-  padding: 5px;
-}
-
-.sideMenu form label input {
-  margin-right: 5px;
+.sideMenu__header {
+  font-weight: 800;
+  justify-self: center;
+  align-self: center;
+  grid-area: smheader;
 }
