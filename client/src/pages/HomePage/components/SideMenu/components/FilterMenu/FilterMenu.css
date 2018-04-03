@@ -4,7 +4,7 @@
 
 .filterMenu__form {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(130px, .75fr));
+  grid-template-columns: repeat(auto-fit, minmax(160px, .75fr));
   grid-column-gap: 15px;
   justify-content: center;
 }
