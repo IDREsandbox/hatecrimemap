@@ -13,8 +13,10 @@ const SideMenu = ({ updateMapData }) => {
   ));
   return (
     <div className="sideMenu">
-      <h2>Side Menu</h2>
-      {labels}
+      <h2>Filters</h2>
+      <form>
+        {labels}
+      </form>
     </div>
   );
 };

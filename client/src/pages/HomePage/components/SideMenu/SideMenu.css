@@ -2,3 +2,12 @@
   border: 1px solid gray;
   grid-area: toc;
 }
+
+.sideMenu form label {
+  display: block;
+  padding: 5px;
+}
+
+.sideMenu form label input {
+  margin-right: 5px;
+}
