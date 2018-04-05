@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import FilterMenu from './components/FilterMenu/FilterMenu';
+import FilterMenu from '../../../../components/FilterMenu/FilterMenu';
 import './SideMenu.css';
 
 const SideMenu = ({ updateMapData }) => (
