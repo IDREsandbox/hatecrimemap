@@ -1,105 +1,16 @@
-const filteringMethods = [
-  {
-    label: 'Verified',
-    name: 'verified',
-  },
-  {
-    label: 'African American',
-    name: 'africanAmerican',
-  },
-  {
-    label: 'Arab',
-    name: 'arab',
-  },
-  {
-    label: 'Asian American',
-    name: 'asianAmerican',
-  },
-  {
-    label: 'Disabled',
-    name: 'disabled',
-  },
-  {
-    label: 'Hispanic / Latino',
-    name: 'hispanicLatino',
-  },
-  {
-    label: 'Jewish',
-    name: 'jewish',
-  },
-  {
-    label: 'LGBT',
-    name: 'lgbt',
-  },
-  {
-    label: 'Muslim',
-    name: 'muslim',
-  },
-  {
-    label: 'Native American / American Indian / Alaska Native',
-    name: 'nativeAmerican',
-  },
-  {
-    label: 'Pacific Islander',
-    name: 'pacificIslander',
-  },
-  {
-    label: 'Sikh',
-    name: 'sikh',
-  },
-  {
-    label: 'Trump Supporter',
-    name: 'trumpSupporter',
-  },
-  {
-    label: 'White',
-    name: 'white',
-  },
-  {
-    label: 'Women',
-    name: 'women',
-  },
-  {
-    label: 'Girls',
-    name: 'girls',
-  },
-  {
-    label: 'Men',
-    name: 'men',
-  },
-  {
-    label: 'Boys',
-    name: 'boys',
-  },
-];
+import ghFilters from './ghFilters';
 
-// Keys required for React component
-let key = 0;
-filteringMethods.forEach(method => method.key = key++);
+function arrToObject(arr) {
+  const obj = arr.reduce((acc, elem) => {
+    acc[elem.name] = elem;
+    return acc;
+  }, {});
+  return obj;
+}
 
-export default filteringMethods;
-
+const filteringOptions = arrToObject(ghFilters);
 const currentLayers = new Set();
 const storedLayers = {};
-
-const filteringOptions = {
-  verified: {
-    customFilter: ({ verified }) => Number(verified) > 0,
-    color: 'red',
-  },
-  women: {
-    customFilter: ({ groupharassed }) => groupharassed === 'Women',
-    color: '#E15D44',
-  },
-  hispanic: {
-    customFilter: ({ groupharassed }) => groupharassed === 'Hispanic' || groupharassed === 'Hispanic/Latino',
-    color: '#7FCDCD',
-  },
-  africanAmerican: {
-    customFilter: ({ groupharassed }) => groupharassed === 'African American',
-    color: '#BC243C',
-  },
-};
 
 function removeDuplicates(arr) {
   const uniqueArray = [];

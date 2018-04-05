@@ -1,13 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import filteringMethods from '../../utils/filtering';
+import ghFilters from '../../utils/ghFilters';
 import './FilterMenu.css';
 
 const colors = ['red', '#DFCFBE', '#55B4B0', '#E15D44', '#7FCDCD', '#BC243C'];
 
 const FilterMenu = ({ updateMapData }) => {
-  const labels = filteringMethods.map(({ name, label, key }, i) => (
+  const labels = ghFilters.map(({ name, label, key }, i) => (
     <label key={key}>
       <input type="checkbox" name={name} onClick={updateMapData} />
       {label}
