@@ -15,6 +15,7 @@ const MapWrapper = ({ mapdata, zoom }) => {
       groupharassed,
       locationname,
       verified,
+      sourceurl,
     } = markerItemData;
     const markerCenter = [Number(lat), Number(lon)];
     const color = markerItemData.color || 'blue';
@@ -27,6 +28,7 @@ const MapWrapper = ({ mapdata, zoom }) => {
               <li>{groupharassed}</li>
               <li>{locationname}</li>
               <li>{`Verified: ${verified}`}</li>
+              <li><a href={sourceurl}>Source</a></li>
             </ul>
           </div>
         </Popup>
