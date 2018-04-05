@@ -129,13 +129,13 @@ export function getMapData(name) {
   if (currentLayers.size === 0) {
     return storedLayers.allpoints;
   }
-  const mapdata = [];
+  let mapdata = [];
   currentLayers.forEach((layer) => {
     const { customFilter, color } = filteringOptions[layer];
     const filteredData = storedLayers.allpoints
       .filter(point => customFilter(point))
       .map(point => Object.assign({ color }, point));
-    mapdata.push(...filteredData);
+    mapdata = filteredData;
   });
   return removeDuplicates(mapdata);
 }
