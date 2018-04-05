@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 
 import MapContainer from '../../components/MapContainer/MapContainer';
-import SideMenu from './components/SideMenu/SideMenu';
+import SideMenu from '../../components/SideMenu/SideMenu';
 import { getMapData, storeMapData } from './services';
 import './HomePage.css';
 
