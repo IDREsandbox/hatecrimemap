@@ -2,7 +2,7 @@ import ghFilters from './ghFilters';
 
 function arrToObject(arr) {
   const obj = arr.reduce((acc, elem) => {
-    acc[elem.name] = elem;
+    acc[elem.name] = Object.assign({}, elem);
     return acc;
   }, {});
   return obj;
