@@ -3,10 +3,10 @@
 }
 
 .filterMenu__form {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, .75fr));
-  grid-column-gap: 15px;
-  justify-content: center;
+  /* display: grid; */
+  /* grid-template-columns: repeat(auto-fit, minmax(160px, .75fr)); */
+  /* grid-column-gap: 15px; */
+  /* justify-content: center; */
 }
 
 .filterMenu__form label {

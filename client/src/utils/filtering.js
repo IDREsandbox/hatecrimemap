@@ -1,53 +1,91 @@
-const filterMethods = [
+const filteringMethods = [
   {
-    label: 'Not Verified',
-    name: 'notVerified',
-    key: 1,
-  },
-  {
-    label: 'Verified Once',
-    name: 'verified1',
-    key: 2,
-  },
-  {
-    label: 'Verified Twice',
-    name: 'verified2',
-    key: 3,
-  },
-  {
-    label: 'Women',
-    name: 'women',
-    key: 4,
-  },
-  {
-    label: 'Hispanic',
-    name: 'hispanic',
-    key: 5,
+    label: 'Verified',
+    name: 'verified',
   },
   {
     label: 'African American',
     name: 'africanAmerican',
-    key: 6,
+  },
+  {
+    label: 'Arab',
+    name: 'arab',
+  },
+  {
+    label: 'Asian American',
+    name: 'asianAmerican',
+  },
+  {
+    label: 'Disabled',
+    name: 'disabled',
+  },
+  {
+    label: 'Hispanic / Latino',
+    name: 'hispanicLatino',
+  },
+  {
+    label: 'Jewish',
+    name: 'jewish',
+  },
+  {
+    label: 'LGBT',
+    name: 'lgbt',
+  },
+  {
+    label: 'Muslim',
+    name: 'muslim',
+  },
+  {
+    label: 'Native American / American Indian / Alaska Native',
+    name: 'nativeAmerican',
+  },
+  {
+    label: 'Pacific Islander',
+    name: 'pacificIslander',
+  },
+  {
+    label: 'Sikh',
+    name: 'sikh',
+  },
+  {
+    label: 'Trump Supporter',
+    name: 'trumpSupporter',
+  },
+  {
+    label: 'White',
+    name: 'white',
+  },
+  {
+    label: 'Women',
+    name: 'women',
+  },
+  {
+    label: 'Girls',
+    name: 'girls',
+  },
+  {
+    label: 'Men',
+    name: 'men',
+  },
+  {
+    label: 'Boys',
+    name: 'boys',
   },
 ];
 
-export default filterMethods;
+// Keys required for React component
+let key = 0;
+filteringMethods.forEach(method => method.key = key++);
+
+export default filteringMethods;
 
 const currentLayers = new Set();
 const storedLayers = {};
 
 const filteringOptions = {
-  notVerified: {
-    customFilter: ({ verified }) => Number(verified) < 1,
+  verified: {
+    customFilter: ({ verified }) => Number(verified) > 0,
     color: 'red',
-  },
-  verified1: {
-    customFilter: ({ verified }) => Number(verified) === 1,
-    color: '#DFCFBE',
-  },
-  verified2: {
-    customFilter: ({ verified }) => Number(verified) > 1,
-    color: '#55B4B0',
   },
   women: {
     customFilter: ({ groupharassed }) => groupharassed === 'Women',

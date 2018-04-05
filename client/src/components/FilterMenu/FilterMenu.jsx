@@ -1,18 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import filterMethods from '../../utils/filtering';
+import filteringMethods from '../../utils/filtering';
 import './FilterMenu.css';
 
 const colors = ['red', '#DFCFBE', '#55B4B0', '#E15D44', '#7FCDCD', '#BC243C'];
 
 const FilterMenu = ({ updateMapData }) => {
-  const labels = filterMethods.map(({ name, label, key }, i) => (
+  const labels = filteringMethods.map(({ name, label, key }, i) => (
     <label key={key}>
       <input type="checkbox" name={name} onClick={updateMapData} />
       {label}
       <svg height="12" width="12">
-        <circle cx="6" cy="6" r="6" stroke="white" opacity="1" id="meeting" fill={colors[i]} />
+        <circle cx="6" cy="6" r="6" stroke="white" opacity="1" id="meeting" fill={colors[i % 6]} />
       </svg>
     </label>
   ));
