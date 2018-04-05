@@ -3,7 +3,7 @@ import axios from 'axios';
 
 import MapWrapper from '../../components/MapWrapper/MapWrapper';
 import SideMenu from '../../components/SideMenu/SideMenu';
-import { getMapData, storeMapData } from './services';
+import { getMapData, storeMapData } from '../../utils/filtering';
 import './HomePage.css';
 
 export default class App extends Component {

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import filterMethods from './services';
+import filterMethods from '../../utils/filtering';
 import './FilterMenu.css';
 
 const colors = ['red', '#DFCFBE', '#55B4B0', '#E15D44', '#7FCDCD', '#BC243C'];
