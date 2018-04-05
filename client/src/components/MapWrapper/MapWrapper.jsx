@@ -2,9 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Map, TileLayer, CircleMarker, Popup } from 'react-leaflet';
 
-import './MapContainer.css';
+import './MapWrapper.css';
 
-const MapContainer = ({ mapdata, zoom }) => {
+const MapWrapper = ({ mapdata, zoom }) => {
   const mapCenter = [38, -100];
   const markerItems = mapdata.map((markerItemData) => {
     const {
@@ -35,7 +35,7 @@ const MapContainer = ({ mapdata, zoom }) => {
   });
 
   return (
-    <Map id="mapContainer" center={mapCenter} zoom={zoom}>
+    <Map id="MapWrapper" center={mapCenter} zoom={zoom}>
       <TileLayer
         attribution="&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
         url="https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png"
@@ -45,9 +45,9 @@ const MapContainer = ({ mapdata, zoom }) => {
   );
 };
 
-MapContainer.propTypes = {
+MapWrapper.propTypes = {
   mapdata: PropTypes.arrayOf(PropTypes.object).isRequired,
   zoom: PropTypes.number.isRequired,
 };
 
-export default MapContainer;
+export default MapWrapper;

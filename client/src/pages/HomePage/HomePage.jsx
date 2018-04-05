@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 
-import MapContainer from '../../components/MapContainer/MapContainer';
+import MapWrapper from '../../components/MapWrapper/MapWrapper';
 import SideMenu from '../../components/SideMenu/SideMenu';
 import { getMapData, storeMapData } from './services';
 import './HomePage.css';
@@ -41,7 +41,7 @@ export default class App extends Component {
       <div className="homePage">
         {!isFetching &&
           <React.Fragment>
-            <MapContainer mapdata={mapdata} zoom={4} />
+            <MapWrapper mapdata={mapdata} zoom={4} />
             <SideMenu updateMapData={this.updateMapData} />
           </React.Fragment>}
       </div>
