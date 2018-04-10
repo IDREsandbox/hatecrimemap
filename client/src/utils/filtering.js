@@ -32,12 +32,13 @@ export function getMapData(layerName) {
   if (currentLayers.size === 0) {
     return storedLayers.allpoints;
   }
-  let mapdata = [];
+  let mapdata = storedLayers.allpoints;
   currentLayers.forEach((layer) => {
     const { customFilter, color } = filteringOptions[layer];
-    const filteredData = storedLayers.allpoints
-      .filter(point => customFilter(point))
-      .map(point => Object.assign({ color }, point));
+    let filteredData = mapdata.filter(point => customFilter(point));
+    filteredData = (currentLayers.size < 2)
+      ? filteredData.map(point => Object.assign({ color }, point))
+      : filteredData.map(point => Object.assign({ color: '#000000' }, point));
     mapdata = filteredData;
   });
   return mapdata;
