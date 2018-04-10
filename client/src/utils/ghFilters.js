@@ -1,3 +1,5 @@
+import { camelize } from './utilities';
+
 // Group Harassed Filters
 
 /*
@@ -88,7 +90,7 @@ const ghFilters = [
   {
     label: 'Native American / American Indian / Alaska Native',
     name: 'nativeAmerican',
-    color: '#3f0710',
+    color: '#dc640c',
   },
   {
     label: 'Pacific Islander',
@@ -123,7 +125,7 @@ const ghFilters = [
   {
     label: 'Men',
     name: 'men',
-    color: '#4b3360',
+    color: '#82ac9b',
   },
   {
     label: 'Boys',
@@ -136,6 +138,7 @@ let key = 0;
 ghFilters.forEach((filter) => {
   filter.key = key++;
   filter.customFilter = ({ groupharassedsplit }) => groupharassedsplit.includes(filter.label);
+  filter.name = camelize(filter.label);
   if (filter.label === 'Verified') {
     filter.customFilter = ({ verified }) => Number(verified) > 0;
   }

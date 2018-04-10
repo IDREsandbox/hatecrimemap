@@ -5,7 +5,7 @@ import ghFilters from '../../utils/ghFilters';
 import './FilterMenu.css';
 
 const FilterMenu = ({ updateMapData }) => {
-  const labels = ghFilters.map(({ 
+  const labels = ghFilters.map(({
     name,
     label,
     key,
