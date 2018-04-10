@@ -28,7 +28,7 @@ const MapWrapper = ({ mapdata, zoom }) => {
               <li>{groupharassedcleaned}</li>
               <li>{locationname}</li>
               <li>{`Verified: ${verified}`}</li>
-              <li><a href={sourceurl}>Source</a></li>
+              <li><a href={sourceurl} target="_blank">Source</a></li>
             </ul>
           </div>
         </Popup>
