@@ -44,92 +44,74 @@ Unique groups from hcmdata
 const ghFilters = [
   {
     label: 'Verified',
-    name: 'verified',
     color: '#f50a07',
   },
   {
     label: 'African American',
-    name: 'africanAmerican',
     color: '#00f46c',
   },
   {
     label: 'Arab',
-    name: 'arab',
     color: '#e06bc7',
   },
   {
     label: 'Asian American',
-    name: 'asianAmerican',
     color: '#2f57e1',
   },
   {
     label: 'Disabled',
-    name: 'disabled',
     color: '#0273e5',
   },
   {
     label: 'Latinx',
-    name: 'latinx',
     color: '#e54f6e',
   },
   {
     label: 'Jewish',
-    name: 'jewish',
     color: '#34af3e',
   },
   {
     label: 'LGBT',
-    name: 'lgbt',
     color: '#7b9ec8',
   },
   {
     label: 'Muslim',
-    name: 'muslim',
     color: '#137e6c',
   },
   {
     label: 'Native American / American Indian / Alaska Native',
-    name: 'nativeAmerican',
     color: '#dc640c',
   },
   {
     label: 'Pacific Islander',
-    name: 'pacificIslander',
     color: '#b8f4a7',
   },
   {
     label: 'Sikh',
-    name: 'sikh',
     color: '#3624c2',
   },
   {
     label: 'Trump Supporter',
-    name: 'trumpSupporter',
     color: '#f7c947',
   },
   {
     label: 'White',
-    name: 'white',
     color: '#b69dda',
   },
   {
     label: 'Women',
-    name: 'women',
     color: '#ea9615',
   },
   {
     label: 'Girls',
-    name: 'girls',
     color: '#779f38',
   },
   {
     label: 'Men',
-    name: 'men',
     color: '#82ac9b',
   },
   {
     label: 'Boys',
-    name: 'boys',
     color: '#673901',
   },
 ];
