@@ -22,7 +22,8 @@
     "dotenv": "^5.0.1",
     "express": "^4.14.1",
     "pg-promise": "^8.1.1",
-    "request": "^2.85.0"
+    "request": "^2.85.0",
+    "valid-url": "^1.0.9"
   },
   "repository": {
     "type": "git",

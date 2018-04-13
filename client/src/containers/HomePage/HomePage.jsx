@@ -6,6 +6,15 @@ import SideMenu from '../../components/SideMenu/SideMenu';
 import { getMapData, storeMapData, splitGroupsHarassed } from '../../utils/filtering';
 import './HomePage.css';
 
+function printUnique(mapdata) {
+  const gh = mapdata.map(group => group.groupharassedcleaned);
+  const ghDelimited = gh
+    .map(group => group.split(','))
+    .reduce((acc, val) => acc.concat(val), []);
+  const noDupes = Array.from(new Set(ghDelimited));
+  console.log(noDupes);
+}
+
 export default class App extends Component {
   constructor(props) {
     super(props);
@@ -25,6 +34,7 @@ export default class App extends Component {
           mapdata,
         });
         storeMapData('allpoints', mapdata);
+        printUnique(mapdata);
       })
       .catch((err) => {
         this.setState({ isFetching: false });

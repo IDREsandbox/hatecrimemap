@@ -16,9 +16,11 @@ const MapWrapper = ({ mapdata, zoom }) => {
       locationname,
       verified,
       sourceurl,
+      validsourceurl,
     } = markerItemData;
     const markerCenter = [Number(lat), Number(lon)];
     const color = markerItemData.color || 'blue';
+    const isValidSourceUrl = validsourceurl === 'true';
     return (
       <CircleMarker color={color} key={featureid} center={markerCenter} radius={2}>
         <Popup>
@@ -29,6 +31,7 @@ const MapWrapper = ({ mapdata, zoom }) => {
               <li>{locationname}</li>
               <li>{`Verified: ${verified}`}</li>
               <li><a href={sourceurl} target="_blank">Source</a></li>
+              <li>{validsourceurl}</li>
             </ul>
           </div>
         </Popup>

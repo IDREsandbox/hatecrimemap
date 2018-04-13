@@ -3,23 +3,17 @@ const path = require('path');
 
 const routes = require('./controllers');
 
-// Master process is started from the command line
-// if (cluster.isMaster) {
-//   numCPUs.forEach(() => cluster.fork());
-//   console.log('Server running...');
-// } else {
-  const app = express();
-  const PORT = process.env.PORT || 5000;
+const app = express();
+const PORT = process.env.PORT || 5000;
 
-  // Priority serve any static files
-  app.use(express.static(path.resolve(__dirname, '../client/build')));
+// Priority serve any static files
+app.use(express.static(path.resolve(__dirname, '../client/build')));
 
-  app.use('/api', routes);
+app.use('/api', routes);
 
-  // All remaining requests return the React app, so it can handle routing
-  app.get('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, '../client/build', 'index.html'));
-  });
+// All remaining requests return the React app, so it can handle routing
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve(__dirname, '../client/build', 'index.html'));
+});
 
-  app.listen(PORT);
-// }
+app.listen(PORT);

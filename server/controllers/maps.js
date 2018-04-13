@@ -3,7 +3,7 @@ const express = require('express');
 const db = require('../models');
 
 const router = express.Router();
-const allpointsQuery = 'SELECT lon, lat, reporttype, locationname, verified, featureid, sourceurl, groupharassedcleaned FROM hcmdata';
+const allpointsQuery = 'SELECT lon, lat, reporttype, locationname, verified, featureid, sourceurl, groupharassedcleaned, validsourceurl FROM hcmdata';
 
 router.use((req, res, next) => {
   /* queries to /maps api go through here first */
@@ -23,9 +23,7 @@ router.get('/allpoints', (req, res) => {
           mapdata,
         });
     })
-    .catch((err) => {
-      console.log('ERROR:', err);
-    });
+    .catch(err => console.log('ERROR:', err));
 });
 
 module.exports = router;
