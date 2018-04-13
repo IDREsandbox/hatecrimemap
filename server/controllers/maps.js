@@ -3,7 +3,7 @@ const express = require('express');
 const db = require('../models');
 
 const router = express.Router();
-const allQuery = 'SELECT lon, lat, reporttype, locationname, verified, featureid, sourceurl, groupharassedcleaned FROM hcmdata';
+const allpointsQuery = 'SELECT lon, lat, reporttype, locationname, verified, featureid, sourceurl, groupharassedcleaned FROM hcmdata';
 
 router.use((req, res, next) => {
   /* queries to /maps api go through here first */
@@ -15,7 +15,7 @@ router.get('/', (req, res) => {
 });
 
 router.get('/allpoints', (req, res) => {
-  db.any(allQuery)
+  db.any(allpointsQuery)
     .then((mapdata) => {
       res.status(200)
         .json({
