@@ -5,14 +5,6 @@ const filteringOptions = arrToObject(ghFilters);
 const currentLayers = new Set();
 const storedLayers = {};
 
-// function printUnique(mapdata) {
-//   const gh = mapdata.map(group => group.groupharassedcleaned);
-//   const ghDelimited = gh
-//     .map(group => group.split(','))
-//     .reduce((acc, val) => acc.concat(val), []);
-//   const noDupes = Array.from(new Set(ghDelimited));
-// }
-
 export function storeMapData(name, mapdata) {
   if (!storedLayers[name]) {
     storedLayers[name] = mapdata;
