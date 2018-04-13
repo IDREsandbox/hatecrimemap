@@ -1,15 +1,13 @@
 const express = require('express');
 const path = require('path');
-const cluster = require('cluster');
-const numCPUs = require('os').cpus();
 
 const routes = require('./controllers');
 
 // Master process is started from the command line
-if (cluster.isMaster) {
-  numCPUs.forEach(() => cluster.fork());
-  console.log('Server running...');
-} else {
+// if (cluster.isMaster) {
+//   numCPUs.forEach(() => cluster.fork());
+//   console.log('Server running...');
+// } else {
   const app = express();
   const PORT = process.env.PORT || 5000;
 
@@ -24,4 +22,4 @@ if (cluster.isMaster) {
   });
 
   app.listen(PORT);
-}
+// }

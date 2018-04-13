@@ -23,8 +23,8 @@ router.get('/allpoints', (req, res) => {
           mapdata,
         });
     })
-    .catch((error) => {
-      console.log('ERROR:', error);
+    .catch((err) => {
+      console.log('ERROR:', err);
     });
 });
 
