@@ -20,7 +20,7 @@ const MapWrapper = ({ mapdata, zoom }) => {
     } = markerItemData;
     const markerCenter = [Number(lat), Number(lon)];
     const color = markerItemData.color || 'blue';
-    const isValidSourceUrl = validsourceurl === 'true';
+    // const isValidSourceUrl = validsourceurl === 'true';
     return (
       <CircleMarker color={color} key={featureid} center={markerCenter} radius={2}>
         <Popup>

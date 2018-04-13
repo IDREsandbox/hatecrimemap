@@ -1,4 +1,4 @@
-const { CronJob } = require('cron');
+// const { CronJob } = require('cron');
 const request = require('request');
 const { isUri } = require('valid-url');
 
@@ -34,11 +34,11 @@ function getAllUrls(featureid) {
     .catch(err => console.log('ERROR:', err));
 }
 
-const validateUrlsJob = new CronJob({
-  cronTime: '*/3 * * * * *',
-  onTick: () => console.log('job1 ticked'),
-  start: false,
-  timeZone: 'America/Los_Angeles',
-});
+// const validateUrlsJob = new CronJob({
+//   cronTime: '*/3 * * * * *',
+//   onTick: () => console.log('job1 ticked'),
+//   start: false,
+//   timeZone: 'America/Los_Angeles',
+// });
 
 module.exports = getAllUrls;
