@@ -36,7 +36,7 @@ export function getMapData(layerName) {
   return mapdata;
 }
 
-export function splitGroupsHarassed(mapdata) {
+export function addGroupHarassedSplit(mapdata) {
   const mapdataWithGroupsSplit = mapdata.map((point) => {
     const groupharassedsplit = point.groupharassedcleaned.split(',');
     return Object.assign({ groupharassedsplit }, point);

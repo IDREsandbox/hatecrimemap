@@ -3,7 +3,7 @@ import axios from 'axios';
 
 import MapWrapper from '../../components/MapWrapper/MapWrapper';
 import SideMenu from '../../components/SideMenu/SideMenu';
-import { getMapData, storeMapData, splitGroupsHarassed } from '../../utils/filtering';
+import { getMapData, storeMapData, addGroupHarassedSplit } from '../../utils/filtering';
 import './HomePage.css';
 
 // remove after meeting 4/19
@@ -29,7 +29,7 @@ export default class App extends Component {
   componentDidMount() {
     axios.get('/api/maps/allpoints')
       .then(({ data: { mapdata } }) => {
-        mapdata = splitGroupsHarassed(mapdata);
+        mapdata = addGroupHarassedSplit(mapdata);
         this.setState({
           isFetching: false,
           mapdata,
