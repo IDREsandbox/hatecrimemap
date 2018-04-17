@@ -19,6 +19,18 @@ function updateCurrentLayers(layerName) {
   }
 }
 
+function addColor(mapdata) {
+  let mapdataWithColor;
+  if (currentLayers.size >= 2) {
+    mapdataWithColor = mapdata.map(point => Object.assign({ color: '#000000' }, point));
+  } else {
+    const currentLayer = currentLayers.values().next().value;
+    const { color } = filteringOptions[currentLayer];
+    mapdataWithColor = mapdata.map(point => Object.assign({ color }, point));
+  }
+  return mapdataWithColor;
+}
+
 export function getMapData(layerName) {
   updateCurrentLayers(layerName);
   if (currentLayers.size === 0) {
@@ -26,14 +38,12 @@ export function getMapData(layerName) {
   }
   let mapdata = storedLayers.allpoints;
   currentLayers.forEach((layer) => {
-    const { customFilter, color } = filteringOptions[layer];
-    let filteredData = mapdata.filter(point => customFilter(point));
-    filteredData = (currentLayers.size < 2)
-      ? filteredData.map(point => Object.assign({ color }, point))
-      : filteredData.map(point => Object.assign({ color: '#000000' }, point));
+    const { customFilter } = filteringOptions[layer];
+    const filteredData = mapdata.filter(point => customFilter(point));
     mapdata = filteredData;
   });
-  return mapdata;
+  const mapdataWithColor = addColor(mapdata);
+  return mapdataWithColor;
 }
 
 export function addGroupHarassedSplit(mapdata) {
