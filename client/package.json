@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "devDependencies": {
+    "enzyme-to-json": "^3.3.3",
     "jest": "^22.4.3",
     "react-scripts": "^1.1.0"
   },
