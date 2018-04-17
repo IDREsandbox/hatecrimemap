@@ -6,6 +6,7 @@ import SideMenu from '../../components/SideMenu/SideMenu';
 import { getMapData, storeMapData, splitGroupsHarassed } from '../../utils/filtering';
 import './HomePage.css';
 
+// remove after meeting 4/19
 function printUnique(mapdata) {
   const gh = mapdata.map(group => group.groupharassedcleaned);
   const ghDelimited = gh
@@ -28,7 +29,7 @@ export default class App extends Component {
   componentDidMount() {
     axios.get('/api/maps/allpoints')
       .then(({ data: { mapdata } }) => {
-        splitGroupsHarassed(mapdata);
+        mapdata = splitGroupsHarassed(mapdata);
         this.setState({
           isFetching: false,
           mapdata,

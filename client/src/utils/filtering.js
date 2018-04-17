@@ -37,5 +37,9 @@ export function getMapData(layerName) {
 }
 
 export function splitGroupsHarassed(mapdata) {
-  mapdata.forEach(point => point.groupharassedsplit = point.groupharassedcleaned.split(','));
+  const mapdataWithGroupsSplit = mapdata.map((point) => {
+    const groupharassedsplit = point.groupharassedcleaned.split(',');
+    return Object.assign({ groupharassedsplit }, point);
+  });
+  return mapdataWithGroupsSplit;
 }
