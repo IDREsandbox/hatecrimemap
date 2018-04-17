@@ -1,4 +1,4 @@
-import ghFilters from './ghFilters';
+import ghFilters from '../globals/ghFilters';
 import { arrToObject } from './utilities';
 
 const filteringOptions = arrToObject(ghFilters);

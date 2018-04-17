@@ -1,4 +1,4 @@
-import { camelize } from './utilities';
+import { camelize } from '../utils/utilities';
 
 // Group Harassed Filters
 

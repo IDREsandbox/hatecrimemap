@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import ghFilters from '../../utils/ghFilters';
+import ghFilters from '../../globals/ghFilters';
 import './FilterMenu.css';
 
 const FilterMenu = ({ updateMapData }) => {
