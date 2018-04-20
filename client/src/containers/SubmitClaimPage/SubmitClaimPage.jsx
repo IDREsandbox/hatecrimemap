@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-
 import './SubmitClaimPage.css';
 
-class SubmitClaimPage extends Component {
+export default class SubmitClaimPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -14,14 +12,8 @@ class SubmitClaimPage extends Component {
   render() {
     return (
       <div>
-
+        <h1>welcome!</h1>
       </div>
     );
   }
 }
-
-SubmitClaimPage.propTypes = {
-
-};
-
-export default SubmitClaimPage;
