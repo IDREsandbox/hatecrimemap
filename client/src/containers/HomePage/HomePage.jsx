@@ -6,7 +6,7 @@ import SideMenu from '../../components/SideMenu/SideMenu';
 import { getMapData, storeMapData, addGroupHarassedSplit } from '../../utils/filtering';
 import './HomePage.css';
 
-// remove after meeting 4/19
+// remove after May meeting
 function printUnique(mapdata) {
   const gh = mapdata.map(group => group.groupharassedcleaned);
   const ghDelimited = gh
