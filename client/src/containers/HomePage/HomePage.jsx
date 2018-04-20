@@ -48,13 +48,14 @@ export default class App extends Component {
   }
 
   render() {
+    const { updateMapData } = this;
     const { isFetching, mapdata } = this.state;
     return (
       <div className="homePage">
         {!isFetching &&
           <React.Fragment>
             <MapWrapper mapdata={mapdata} zoom={4} />
-            <SideMenu updateMapData={this.updateMapData} />
+            <SideMenu updateMapData={updateMapData} />
           </React.Fragment>}
       </div>
     );
