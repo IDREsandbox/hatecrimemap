@@ -2,9 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import ghFilters from '../../globals/ghFilters';
-import './FilterMenu.css';
+import './GHCheckboxList.css';
 
-const FilterMenu = ({ updateMapData }) => {
+const GHCheckboxList = ({ onClick }) => {
   const labels = ghFilters.map(({
     name,
     label,
@@ -12,7 +12,7 @@ const FilterMenu = ({ updateMapData }) => {
     color,
   }) => (
     <label key={key}>
-      <input type="checkbox" name={name} onClick={updateMapData} />
+      <input type="checkbox" name={name} onClick={onClick} />
       {label}
       <svg height="12" width="12">
         <circle cx="6" cy="6" r="6" stroke="white" opacity="1" id="meeting" fill={color} />
@@ -20,17 +20,17 @@ const FilterMenu = ({ updateMapData }) => {
     </label>
   ));
   return (
-    <div className="filterMenu">
-      <h4 className="filterMenu__header">Filter By Type</h4>
-      <form className="filterMenu__form">
+    <div className="ghCheckboxList">
+      <h4 className="ghCheckboxList__header">Filter By Type</h4>
+      <form className="ghCheckboxList__form">
         {labels}
       </form>
     </div>
   );
 };
 
-FilterMenu.propTypes = {
-  updateMapData: PropTypes.func.isRequired,
+GHCheckboxList.propTypes = {
+  onClick: PropTypes.func.isRequired,
 };
 
-export default FilterMenu;
+export default GHCheckboxList;
