@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import axios from 'axios';
 
 import GHCheckboxList from '../../components/GHCheckboxList/GHCheckboxList';
 import './SubmitClaimPage.css';
@@ -49,7 +50,13 @@ export default class SubmitClaimPage extends Component {
       alert('Fill out all areas of the form before submitting');
       return;
     }
-    console.log(this.state);
+    axios.post('/api/maps/submitclaim', {
+      groupsHarassed: Array.from(groupsHarassed),
+      location,
+      sourceurl,
+    })
+    .then(res => console.log(res))
+    .catch(err => console.log(err));
   }
 
   render() {

@@ -3,7 +3,7 @@ import { arrToObject } from './utilities';
 
 const filteringOptions = arrToObject(ghFilters);
 const currentLayers = new Set();
-const storedLayers = {};
+export const storedLayers = {};
 
 export function storeMapData(name, mapdata) {
   if (!storedLayers[name]) {

@@ -3,7 +3,7 @@ import axios from 'axios';
 
 import MapWrapper from '../../components/MapWrapper/MapWrapper';
 import SideMenu from '../../components/SideMenu/SideMenu';
-import { getMapData, storeMapData, addGroupHarassedSplit } from '../../utils/filtering';
+import { getMapData, storeMapData, addGroupHarassedSplit, storedLayers } from '../../utils/filtering';
 import './HomePage.css';
 
 // remove after May meeting
@@ -31,6 +31,13 @@ export default class App extends Component {
   }
 
   componentDidMount() {
+    if (storedLayers.allpoints) {
+      this.setState({
+        isFetching: false,
+        mapdata: storedLayers.allpoints,
+      });
+      return;
+    }
     axios.get('/api/maps/allpoints')
       .then(({ data: { mapdata } }) => {
         mapdata = addGroupHarassedSplit(mapdata);

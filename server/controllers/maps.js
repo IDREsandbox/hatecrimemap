@@ -26,4 +26,9 @@ router.get('/allpoints', (req, res) => {
     .catch(err => console.log('ERROR:', err));
 });
 
+router.post('/submitclaim', (req, res) => {
+  console.log(req.body);
+  res.end('server received data');
+});
+
 module.exports = router;
