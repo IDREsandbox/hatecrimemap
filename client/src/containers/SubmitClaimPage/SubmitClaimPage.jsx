@@ -27,7 +27,9 @@ export default class SubmitClaimPage extends Component {
     return (
       <div className="submitClaimPage">
         <h1>Submit a claim</h1>
-        <GHCheckboxList onClick={updateGroupsHarassed} />
+        <form>
+          <GHCheckboxList onClick={updateGroupsHarassed} />
+        </form>
       </div>
     );
   }

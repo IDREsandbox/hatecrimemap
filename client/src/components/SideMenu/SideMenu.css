@@ -4,14 +4,18 @@
   grid-area: toc;
   grid-template-areas:
     ". smheader ."
-    ". ghCheckboxList .";
+    ". smform .";
   grid-template-columns: 10px 1fr 10px;
   grid-template-rows: 60px 1fr;
 }
 
 .sideMenu__header {
-  font-weight: 800;
-  justify-self: center;
   align-self: center;
+  font-weight: 800;
   grid-area: smheader;
+  justify-self: center;
+}
+
+.sideMenu__form {
+  grid-area: smform;
 }

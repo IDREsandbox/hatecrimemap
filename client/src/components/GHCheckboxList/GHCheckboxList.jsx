@@ -14,7 +14,7 @@ const GHCheckboxList = ({ onClick, showSVGs }) => {
     <label key={key}>
       <input type="checkbox" name={name} onClick={onClick} />
       {label}
-      { showSVGs &&
+      {showSVGs &&
         <svg height="12" width="12">
           <circle cx="6" cy="6" r="6" stroke="white" opacity="1" id="meeting" fill={color} />
         </svg>}
@@ -22,10 +22,7 @@ const GHCheckboxList = ({ onClick, showSVGs }) => {
   ));
   return (
     <div className="ghCheckboxList">
-      <h4 className="ghCheckboxList__header">Filter By Type</h4>
-      <form className="ghCheckboxList__form">
-        {labels}
-      </form>
+      {labels}
     </div>
   );
 };

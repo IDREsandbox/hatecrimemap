@@ -7,7 +7,9 @@ import './SideMenu.css';
 const SideMenu = ({ updateMapData }) => (
   <div className="sideMenu">
     <h2 className="sideMenu__header">Search</h2>
-    <GHCheckboxList onClick={updateMapData} showSVGs />
+    <form className="sideMenu__form">
+      <GHCheckboxList onClick={updateMapData} showSVGs />
+    </form>
   </div>
 );
 

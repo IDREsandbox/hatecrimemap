@@ -2,22 +2,18 @@
   grid-area: ghCheckboxList;
 }
 
-.ghCheckboxList__form {
+.ghCheckboxList {
   /* display: grid; */
   /* grid-template-columns: repeat(auto-fit, minmax(160px, .75fr)); */
   /* grid-column-gap: 15px; */
   /* justify-content: center; */
 }
 
-.ghCheckboxList__form label {
+.ghCheckboxList label {
   display: block;
   padding: 5px;
 }
 
-.ghCheckboxList__form label input {
+.ghCheckboxList label input {
   margin-right: 5px;
-}
-
-.ghCheckboxList__header {
-  padding: 10px;
 }
