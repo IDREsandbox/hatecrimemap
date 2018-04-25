@@ -13,7 +13,11 @@ function printUnique(mapdata) {
     .map(group => group.split(','))
     .reduce((acc, val) => acc.concat(val), []);
   const noDupes = Array.from(new Set(ghDelimited));
-  console.log(noDupes);
+  console.log(noDupes.sort((a, b) => {
+    if (a < b) return -1;
+    if (a > b) return 1;
+    return 0;
+  }));
 }
 
 export default class App extends Component {
