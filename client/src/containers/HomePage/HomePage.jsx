@@ -3,7 +3,7 @@ import axios from 'axios';
 
 import MapWrapper from '../../components/MapWrapper/MapWrapper';
 import SideMenu from '../../components/SideMenu/SideMenu';
-import { getMapData, storeMapData, addGroupHarassedSplit, storedLayers } from '../../utils/filtering';
+import { getMapData, storeMapData, addGroupHarassedSplit, allpoints } from '../../utils/filtering';
 import './HomePage.css';
 
 // remove after May meeting
@@ -31,10 +31,10 @@ export default class App extends Component {
   }
 
   componentDidMount() {
-    if (storedLayers.allpoints) {
+    if (allpoints.length !== 0) {
       this.setState({
         isFetching: false,
-        mapdata: storedLayers.allpoints,
+        mapdata: allpoints,
       });
       return;
     }
@@ -45,7 +45,7 @@ export default class App extends Component {
           isFetching: false,
           mapdata,
         });
-        storeMapData('allpoints', mapdata);
+        storeMapData(mapdata);
         printUnique(mapdata);
       })
       .catch((err) => {

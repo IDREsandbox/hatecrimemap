@@ -3,12 +3,10 @@ import { arrToObject } from './utilities';
 
 const filteringOptions = arrToObject(ghFilters);
 const currentLayers = new Set();
-export const storedLayers = {};
+export const allpoints = [];
 
-export function storeMapData(name, mapdata) {
-  if (!storedLayers[name]) {
-    storedLayers[name] = mapdata;
-  }
+export function storeMapData(mapdata) {
+  mapdata.forEach(point => allpoints.push(point));
 }
 
 function updateCurrentLayers(layerName) {
@@ -34,9 +32,9 @@ function addColor(mapdata) {
 export function getMapData(layerName) {
   updateCurrentLayers(layerName);
   if (currentLayers.size === 0) {
-    return storedLayers.allpoints;
+    return allpoints;
   }
-  let mapdata = storedLayers.allpoints;
+  let mapdata = allpoints.slice();
   currentLayers.forEach((layer) => {
     const { customFilter } = filteringOptions[layer];
     const filteredData = mapdata.filter(point => customFilter(point));
