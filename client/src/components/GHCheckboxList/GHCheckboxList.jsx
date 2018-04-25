@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import ghFilters from '../../globals/ghFilters';
 import './GHCheckboxList.css';
 
-const GHCheckboxList = ({ onClick }) => {
+const GHCheckboxList = ({ onClick, showSVGs }) => {
   const labels = ghFilters.map(({
     name,
     label,
@@ -14,9 +14,10 @@ const GHCheckboxList = ({ onClick }) => {
     <label key={key}>
       <input type="checkbox" name={name} onClick={onClick} />
       {label}
-      <svg height="12" width="12">
-        <circle cx="6" cy="6" r="6" stroke="white" opacity="1" id="meeting" fill={color} />
-      </svg>
+      { showSVGs &&
+        <svg height="12" width="12">
+          <circle cx="6" cy="6" r="6" stroke="white" opacity="1" id="meeting" fill={color} />
+        </svg>}
     </label>
   ));
   return (
@@ -29,8 +30,13 @@ const GHCheckboxList = ({ onClick }) => {
   );
 };
 
+GHCheckboxList.defaultProps = {
+  showSVGs: false,
+};
+
 GHCheckboxList.propTypes = {
   onClick: PropTypes.func.isRequired,
+  showSVGs: PropTypes.bool,
 };
 
 export default GHCheckboxList;
