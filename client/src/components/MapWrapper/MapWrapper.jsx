@@ -18,7 +18,7 @@ const MapWrapper = ({ mapdata, zoom }) => {
       sourceurl,
       validsourceurl,
     } = markerItemData;
-    const markerCenter = [Number(lat), Number(lon)];
+    const markerCenter = [lon, lat];
     const color = markerItemData.color || 'blue';
     const isValidSourceUrl = validsourceurl === 'true'
       ? 'Source is valid'
