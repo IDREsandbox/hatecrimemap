@@ -1,11 +1,3 @@
-.headerContainer {
-  align-items: center;
-  display: grid;
-  flex: 0 1 auto;
-  grid-template-columns: 20px 1fr;
-  height: 80px;
-}
-
-.header {
-  grid-column: 2;
+.header__submitClaim {
+  width: 150px;
 }

@@ -1,15 +1,25 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import RaisedButton from 'material-ui/RaisedButton';
+import IconButton from 'material-ui/IconButton';
+import ActionHome from 'material-ui/svg-icons/action/home';
+import AppBar from 'material-ui/AppBar';
 
 import './Header.css';
 
 const Header = () => (
-  <div className="headerContainer">
-    <h1 className="header"><Link to="/">Mapping Harassment in the US</Link></h1>
-    <Link to="/submitclaim">
-      <button className="header__submitClaim">Submit Claim</button>
-    </Link>
-  </div>
+  <AppBar
+    className="headerContainer"
+    title="Mapping Harassment in the US"
+    iconElementLeft={<Link to="/"><IconButton><ActionHome /></IconButton></Link>}
+    iconElementRight={
+      <Link to="/submitclaim">
+        <RaisedButton
+          className="header__submitClaim"
+          label="Submit Claim"
+        />
+      </Link>}
+  />
 );
 
 export default Header;
