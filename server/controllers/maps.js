@@ -3,7 +3,7 @@ const express = require('express');
 const db = require('../models');
 
 const router = express.Router();
-const allpointsQuery = 'SELECT lon, lat, reporttype, locationname, verified, featureid, sourceurl, groupharassedcleaned, validsourceurl FROM hcmdata';
+const pointsInUSQuery = 'SELECT lon, lat, reporttype, locationname, verified, featureid, sourceurl, groupharassedcleaned, validsourceurl FROM hcmdata WHERE (lon < -66.796875 AND lon > -124.5849609375) AND (lat < 49.00905080938215 AND lat > 25.125392611512158)';
 
 router.use((req, res, next) => {
   /* queries to /maps api go through here first */
@@ -14,8 +14,8 @@ router.get('/', (req, res) => {
   res.send('Maps home route');
 });
 
-router.get('/allpoints', (req, res) => {
-  db.any(allpointsQuery)
+router.get('/usapoints', (req, res) => {
+  db.any(pointsInUSQuery)
     .then((mapdata) => {
       res.status(200)
         .json({

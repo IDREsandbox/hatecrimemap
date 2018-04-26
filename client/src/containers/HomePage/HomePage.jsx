@@ -38,7 +38,7 @@ export default class App extends Component {
       });
       return;
     }
-    axios.get('/api/maps/allpoints')
+    axios.get('/api/maps/usapoints')
       .then(({ data: { mapdata } }) => {
         mapdata = addGroupHarassedSplit(mapdata);
         this.setState({
