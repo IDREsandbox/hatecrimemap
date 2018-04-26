@@ -5,7 +5,7 @@ import { Map, TileLayer, CircleMarker, Popup } from 'react-leaflet';
 import './MapWrapper.css';
 
 const MapWrapper = ({ mapdata, zoom }) => {
-  const mapCenter = [38, -100];
+  const mapCenter = [38, -95];
   const markerItems = mapdata.map((markerItemData) => {
     const {
       lat,
@@ -18,7 +18,7 @@ const MapWrapper = ({ mapdata, zoom }) => {
       sourceurl,
       validsourceurl,
     } = markerItemData;
-    const markerCenter = [lat, lon];
+    const markerCenter = [Number(lat), Number(lon)];
     const color = markerItemData.color || 'blue';
     const isValidSourceUrl = validsourceurl === 'true'
       ? 'Source is valid'
