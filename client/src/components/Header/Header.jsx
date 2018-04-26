@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import RaisedButton from 'material-ui/RaisedButton';
+import FlatButton from 'material-ui/FlatButton';
 import IconButton from 'material-ui/IconButton';
 import ActionHome from 'material-ui/svg-icons/action/home';
 import AppBar from 'material-ui/AppBar';
@@ -14,9 +14,10 @@ const Header = () => (
     iconElementLeft={<Link to="/"><IconButton><ActionHome /></IconButton></Link>}
     iconElementRight={
       <Link to="/submitclaim">
-        <RaisedButton
+        <FlatButton
           className="header__submitClaim"
           label="Submit Claim"
+          style={{ color: 'white' }}
         />
       </Link>}
   />

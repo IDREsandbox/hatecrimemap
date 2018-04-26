@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import DatePicker from 'material-ui/DatePicker';
 
 import GHCheckboxList from '../../components/GHCheckboxList/GHCheckboxList';
 import './SubmitClaimPage.css';
@@ -76,6 +77,7 @@ export default class SubmitClaimPage extends Component {
             Please add the full link/URL to the article, post, report, etc where this event was reported
             <input type="text" name="sourceurl" value={sourceurl} onChange={handleChange} />
           </label>
+          <DatePicker hintText="Select a date" mode="landscape" />
           <button type="button" onClick={submitClaim}>Submit</button>
         </form>
       </div>
