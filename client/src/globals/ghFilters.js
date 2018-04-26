@@ -43,10 +43,6 @@ Unique groups from hcmdata
 
 const ghFilters = [
   {
-    label: 'Verified',
-    color: '#f50a07',
-  },
-  {
     label: 'African American',
     color: '#00f46c',
   },
@@ -121,9 +117,6 @@ ghFilters.forEach((filter) => {
   filter.key = key++;
   filter.customFilter = ({ groupharassedsplit }) => groupharassedsplit.includes(filter.label);
   filter.name = camelize(filter.label);
-  if (filter.label === 'Verified') {
-    filter.customFilter = ({ verified }) => Number(verified) > 0;
-  }
 });
 
 export default ghFilters;

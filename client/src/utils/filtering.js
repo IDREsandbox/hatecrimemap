@@ -2,6 +2,10 @@ import ghFilters from '../globals/ghFilters';
 import { arrToObject } from './utilities';
 
 const filteringOptions = arrToObject(ghFilters);
+filteringOptions.verified = {
+  color: 'red',
+  customFilter: ({ verified }) => Number(verified) > 0,
+};
 const currentLayers = new Set();
 export const allpoints = [];
 
@@ -19,6 +23,8 @@ function updateCurrentLayers(layerName) {
 
 function addColor(mapdata) {
   let mapdataWithColor;
+  // const { size } = currentLayers;
+  // const sizeWithoutVerified = (currentLayers.has('verified')) ? size - 1 : size;
   if (currentLayers.size >= 2) {
     mapdataWithColor = mapdata.map(point => Object.assign({ color: '#000000' }, point));
   } else {
