@@ -1,14 +1,11 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import DatePicker from 'material-ui/DatePicker';
-import {
-  Step,
-  Stepper,
-  StepLabel,
-} from 'material-ui/Stepper';
+// import DatePicker from 'material-ui/DatePicker';
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
+import Paper from 'material-ui/Paper';
 
+import SubmitClaimStepper from '../../components/SubmitClaimStepper/SubmitClaimStepper';
 import GHCheckboxList from '../../components/GHCheckboxList/GHCheckboxList';
 import './SubmitClaimPage.css';
 
@@ -19,7 +16,7 @@ function getStepContent(stepIndex) {
     case 1:
       return 'date';
     case 2:
-      return 'groups';
+      return (<GHCheckboxList />);
     case 3:
       return 'url';
     default:
@@ -89,25 +86,12 @@ export default class SubmitClaimPage extends Component {
   }
 
   render() {
-    const { updateGroupsHarassed, handleChange, submitClaim } = this;
-    const { location, sourceurl, stepIndex, finished } = this.state;
+    const { stepIndex, finished } = this.state;
+    const nextStepContent = getStepContent(stepIndex);
 
     return (
-      <div className="submitClaimPage">
-        <Stepper activeStep={stepIndex}>
-          <Step>
-            <StepLabel>Harassment Location</StepLabel>
-          </Step>
-          <Step>
-            <StepLabel>Date of Harassment</StepLabel>
-          </Step>
-          <Step>
-            <StepLabel>Groups Harassed</StepLabel>
-          </Step>
-          <Step>
-            <StepLabel>Verification URL</StepLabel>
-          </Step>
-        </Stepper>
+      <Paper className="submitClaimPage" zDepth={2}>
+        <SubmitClaimStepper stepIndex={stepIndex} />
         <div>
           {finished ? (
             <p>
@@ -123,8 +107,8 @@ export default class SubmitClaimPage extends Component {
             </p>
           ) : (
             <div>
-              <p>{getStepContent(stepIndex)}</p>
-              <div style={{ marginTop: 12 }}>
+              <p>{nextStepContent}</p>
+              <div>
                 <FlatButton
                   label="Back"
                   disabled={stepIndex === 0}
@@ -156,7 +140,7 @@ export default class SubmitClaimPage extends Component {
           <DatePicker hintText="Select a date" mode="landscape" />
           <button type="button" onClick={submitClaim}>Submit</button>
         </form> */}
-      </div>
+      </Paper>
     );
   }
 }
