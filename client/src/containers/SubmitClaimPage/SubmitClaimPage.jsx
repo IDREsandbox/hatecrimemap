@@ -34,14 +34,9 @@ export default class SubmitClaimPage extends Component {
       stepIndex: 0,
       finished: false,
     };
-    this.updateGroupsHarassed = this.updateGroupsHarassed.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-    this.handleNext = this.handleNext.bind(this);
-    this.handlePrev = this.handlePrev.bind(this);
-    this.submitClaim = this.submitClaim.bind(this);
   }
 
-  updateGroupsHarassed({ target: { name } }) {
+  updateGroupsHarassed = ({ target: { name } }) => {
     const { groupsHarassed } = this.state;
     if (groupsHarassed.has(name)) {
       groupsHarassed.delete(name);
@@ -51,11 +46,11 @@ export default class SubmitClaimPage extends Component {
     this.setState({ groupsHarassed });
   }
 
-  handleChange({ target: { name, value } }) {
+  handleChange = ({ target: { name, value } }) => {
     this.setState({ [name]: value });
   }
 
-  handleNext() {
+  handleNext = () => {
     const { stepIndex } = this.state;
     this.setState({
       stepIndex: stepIndex + 1,
@@ -63,14 +58,14 @@ export default class SubmitClaimPage extends Component {
     });
   }
 
-  handlePrev() {
+  handlePrev = () => {
     const { stepIndex } = this.state;
     if (stepIndex > 0) {
       this.setState({ stepIndex: stepIndex - 1 });
     }
   }
 
-  submitClaim() {
+  submitClaim = () => {
     const { groupsHarassed, location, sourceurl } = this.state;
     if (groupsHarassed.size === 0 || location === '' || sourceurl === '') {
       alert('Fill out all areas of the form before submitting');

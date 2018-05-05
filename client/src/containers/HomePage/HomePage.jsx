@@ -27,7 +27,6 @@ export default class App extends Component {
       isFetching: true,
       mapdata: [],
     };
-    this.updateMapData = this.updateMapData.bind(this);
   }
 
   componentDidMount() {
@@ -54,12 +53,11 @@ export default class App extends Component {
       });
   }
 
-  updateMapData({ target: { name } }) {
+  updateMapData = ({ target: { name } }) => {
     this.setState({ mapdata: getMapData(name) });
   }
 
   render() {
-    const { updateMapData } = this;
     const { isFetching, mapdata } = this.state;
 
     return (
@@ -67,7 +65,7 @@ export default class App extends Component {
         {!isFetching &&
           <React.Fragment>
             <MapWrapper mapdata={mapdata} zoom={4} />
-            <SideMenu updateMapData={updateMapData} />
+            <SideMenu updateMapData={this.updateMapData} />
           </React.Fragment>}
       </div>
     );
