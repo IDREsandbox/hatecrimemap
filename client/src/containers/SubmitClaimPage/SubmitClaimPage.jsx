@@ -6,7 +6,6 @@ import GHCheckboxList from '../../components/GHCheckboxList/GHCheckboxList';
 import './SubmitClaimPage.css';
 
 function showPosition(position) {
-  console.log('runnin');
   console.log(position.coords);
 }
 
