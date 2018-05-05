@@ -6,7 +6,7 @@
     "node": "8.9.x"
   },
   "scripts": {
-    "start": "node server",
+    "start": "node ./bin/www",
     "heroku-postbuild": "cd client/ && npm install && npm install --only=dev --no-shrinkwrap && npm run build",
     "server": "nodemon server",
     "client": "npm start --prefix client",
