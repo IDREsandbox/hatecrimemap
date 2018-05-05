@@ -1,19 +1,29 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import DatePicker from 'material-ui/DatePicker';
+import {
+  Step,
+  Stepper,
+  StepLabel,
+} from 'material-ui/Stepper';
+import RaisedButton from 'material-ui/RaisedButton';
+import FlatButton from 'material-ui/FlatButton';
 
 import GHCheckboxList from '../../components/GHCheckboxList/GHCheckboxList';
 import './SubmitClaimPage.css';
 
-function showPosition(position) {
-  console.log(position.coords);
-}
-
-function getLocation() {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(showPosition);
-  } else {
-    alert('Geolocation is not supported by this browser.');
+function getStepContent(stepIndex) {
+  switch (stepIndex) {
+    case 0:
+      return (<p>Location</p>);
+    case 1:
+      return 'date';
+    case 2:
+      return 'groups';
+    case 3:
+      return 'url';
+    default:
+      return 'default';
   }
 }
 
@@ -24,9 +34,13 @@ export default class SubmitClaimPage extends Component {
       groupsHarassed: new Set(),
       location: '',
       sourceurl: '',
+      stepIndex: 0,
+      finished: false,
     };
     this.updateGroupsHarassed = this.updateGroupsHarassed.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.handleNext = this.handleNext.bind(this);
+    this.handlePrev = this.handlePrev.bind(this);
     this.submitClaim = this.submitClaim.bind(this);
   }
 
@@ -42,6 +56,21 @@ export default class SubmitClaimPage extends Component {
 
   handleChange({ target: { name, value } }) {
     this.setState({ [name]: value });
+  }
+
+  handleNext() {
+    const { stepIndex } = this.state;
+    this.setState({
+      stepIndex: stepIndex + 1,
+      finished: stepIndex >= 3,
+    });
+  }
+
+  handlePrev() {
+    const { stepIndex } = this.state;
+    if (stepIndex > 0) {
+      this.setState({ stepIndex: stepIndex - 1 });
+    }
   }
 
   submitClaim() {
@@ -61,10 +90,58 @@ export default class SubmitClaimPage extends Component {
 
   render() {
     const { updateGroupsHarassed, handleChange, submitClaim } = this;
-    const { location, sourceurl } = this.state;
+    const { location, sourceurl, stepIndex, finished } = this.state;
+
     return (
       <div className="submitClaimPage">
-        <h1>Submit a claim</h1>
+        <Stepper activeStep={stepIndex}>
+          <Step>
+            <StepLabel>Harassment Location</StepLabel>
+          </Step>
+          <Step>
+            <StepLabel>Date of Harassment</StepLabel>
+          </Step>
+          <Step>
+            <StepLabel>Groups Harassed</StepLabel>
+          </Step>
+          <Step>
+            <StepLabel>Verification URL</StepLabel>
+          </Step>
+        </Stepper>
+        <div>
+          {finished ? (
+            <p>
+              <a
+                href="#"
+                onClick={(event) => {
+                  event.preventDefault();
+                  this.setState({ stepIndex: 0, finished: false });
+                }}
+              >
+                Click here
+              </a> to reset the example.
+            </p>
+          ) : (
+            <div>
+              <p>{getStepContent(stepIndex)}</p>
+              <div style={{ marginTop: 12 }}>
+                <FlatButton
+                  label="Back"
+                  disabled={stepIndex === 0}
+                  onClick={this.handlePrev}
+                  style={{ marginRight: 12 }}
+                />
+                <RaisedButton
+                  label={stepIndex === 3 ? 'Finish' : 'Next'}
+                  primary
+                  onClick={this.handleNext}
+                />
+              </div>
+            </div>
+          )}
+
+        </div>
+        {/* <h1>Submit a claim</h1>
         <form className="submitClaimPage__form">
           <label>
             Location
@@ -78,7 +155,7 @@ export default class SubmitClaimPage extends Component {
           </label>
           <DatePicker hintText="Select a date" mode="landscape" />
           <button type="button" onClick={submitClaim}>Submit</button>
-        </form>
+        </form> */}
       </div>
     );
   }

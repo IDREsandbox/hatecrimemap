@@ -61,6 +61,7 @@ export default class App extends Component {
   render() {
     const { updateMapData } = this;
     const { isFetching, mapdata } = this.state;
+
     return (
       <div className="homePage">
         {!isFetching &&
