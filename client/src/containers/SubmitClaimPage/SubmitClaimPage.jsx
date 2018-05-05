@@ -1,28 +1,14 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-// import DatePicker from 'material-ui/DatePicker';
+import DatePicker from 'material-ui/DatePicker';
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 import Paper from 'material-ui/Paper';
+import TextField from 'material-ui/TextField';
 
 import SubmitClaimStepper from '../../components/SubmitClaimStepper/SubmitClaimStepper';
 import GHCheckboxList from '../../components/GHCheckboxList/GHCheckboxList';
 import './SubmitClaimPage.css';
-
-function getStepContent(stepIndex) {
-  switch (stepIndex) {
-    case 0:
-      return (<p>Location</p>);
-    case 1:
-      return 'date';
-    case 2:
-      return (<GHCheckboxList />);
-    case 3:
-      return 'url';
-    default:
-      return 'default';
-  }
-}
 
 export default class SubmitClaimPage extends Component {
   constructor(props) {
@@ -31,9 +17,50 @@ export default class SubmitClaimPage extends Component {
       groupsHarassed: new Set(),
       location: '',
       sourceurl: '',
+      date: '',
       stepIndex: 0,
       finished: false,
     };
+  }
+
+  getStepContent = () => {
+    const { location, sourceurl, stepIndex } = this.state;
+
+    switch (stepIndex) {
+      case 0:
+        return (<TextField name="location" onChange={this.handleChange} hintText="Location" defaultValue={location} />);
+      case 1:
+        return <DatePicker hintText="Select a date" mode="landscape" />;
+      case 2:
+        return (<GHCheckboxList onClick={this.updateGroupsHarassed} />);
+      case 3:
+        return (<TextField name="sourceurl" onChange={this.handleChange} hintText="URL" defaultValue={sourceurl} />);
+      default:
+        return 'error';
+    }
+  }
+
+  formFilledOut = () => {
+    const {
+      stepIndex,
+      location,
+      date,
+      groupsHarassed,
+      sourceurl,
+    } = this.state;
+
+    switch (stepIndex) {
+      case 0:
+        return location !== '';
+      case 1:
+        return date !== '';
+      case 2:
+        return groupsHarassed !== 0;
+      case 3:
+        return sourceurl !== '';
+      default:
+        return true;
+    }
   }
 
   updateGroupsHarassed = ({ target: { name } }) => {
@@ -52,6 +79,10 @@ export default class SubmitClaimPage extends Component {
 
   handleNext = () => {
     const { stepIndex } = this.state;
+    if (!this.formFilledOut()) {
+      alert('Complete field before continuing');
+      return;
+    }
     this.setState({
       stepIndex: stepIndex + 1,
       finished: stepIndex >= 3,
@@ -67,6 +98,7 @@ export default class SubmitClaimPage extends Component {
 
   submitClaim = () => {
     const { groupsHarassed, location, sourceurl } = this.state;
+
     if (groupsHarassed.size === 0 || location === '' || sourceurl === '') {
       alert('Fill out all areas of the form before submitting');
       return;
@@ -82,7 +114,7 @@ export default class SubmitClaimPage extends Component {
 
   render() {
     const { stepIndex, finished } = this.state;
-    const nextStepContent = getStepContent(stepIndex);
+    const nextStepContent = this.getStepContent();
 
     return (
       <Paper className="submitClaimPage" zDepth={2}>
@@ -98,43 +130,27 @@ export default class SubmitClaimPage extends Component {
                 }}
               >
                 Click here
-              </a> to reset the example.
+              </a> to reset the form.
             </p>
           ) : (
             <div>
-              <p>{nextStepContent}</p>
+              <div>{nextStepContent}</div>
               <div>
                 <FlatButton
                   label="Back"
                   disabled={stepIndex === 0}
                   onClick={this.handlePrev}
-                  style={{ marginRight: 12 }}
                 />
                 <RaisedButton
                   label={stepIndex === 3 ? 'Finish' : 'Next'}
                   primary
-                  onClick={this.handleNext}
+                  onClick={stepIndex === 3 ? this.submitClaim : this.handleNext}
                 />
               </div>
             </div>
           )}
 
         </div>
-        {/* <h1>Submit a claim</h1>
-        <form className="submitClaimPage__form">
-          <label>
-            Location
-            <input type="text" name="location" value={location} onChange={handleChange} />
-          </label>
-          <button type="button" onClick={getLocation}>Locate me</button>
-          <GHCheckboxList onClick={updateGroupsHarassed} />
-          <label>
-            Please add the full link/URL to the article, post, report, etc where this event was reported
-            <input type="text" name="sourceurl" value={sourceurl} onChange={handleChange} />
-          </label>
-          <DatePicker hintText="Select a date" mode="landscape" />
-          <button type="button" onClick={submitClaim}>Submit</button>
-        </form> */}
       </Paper>
     );
   }
