@@ -30,7 +30,7 @@ export default class SubmitClaimPage extends Component {
       case 0:
         return (<TextField name="location" onChange={this.handleChange} hintText="Location" defaultValue={location} />);
       case 1:
-        return <DatePicker hintText="Select a date" mode="landscape" />;
+        return <DatePicker name="date" onChange={(e, dateObj) => this.updateDate(dateObj)} hintText="Select a date" mode="landscape" openToYearSelection />;
       case 2:
         return (<GHCheckboxList onClick={this.updateGroupsHarassed} />);
       case 3:
@@ -55,7 +55,7 @@ export default class SubmitClaimPage extends Component {
       case 1:
         return date !== '';
       case 2:
-        return groupsHarassed !== 0;
+        return groupsHarassed.size !== 0;
       case 3:
         return sourceurl !== '';
       default:
@@ -71,6 +71,11 @@ export default class SubmitClaimPage extends Component {
       groupsHarassed.add(name);
     }
     this.setState({ groupsHarassed });
+  }
+
+  updateDate = (dateObj) => {
+    const date = dateObj.toDateString();
+    this.setState({ date });
   }
 
   handleChange = ({ target: { name, value } }) => {
