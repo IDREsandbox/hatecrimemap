@@ -102,16 +102,21 @@ export default class SubmitClaimPage extends Component {
   }
 
   submitClaim = () => {
-    const { groupsHarassed, location, sourceurl } = this.state;
-
-    if (groupsHarassed.size === 0 || location === '' || sourceurl === '') {
-      alert('Fill out all areas of the form before submitting');
-      return;
-    }
+    const {
+      groupsHarassed,
+      location,
+      sourceurl,
+      date,
+    } = this.state;
+    console.log('Location:', location);
+    console.log('Date:', date);
+    console.log('Groups harassed:', groupsHarassed);
+    console.log('Source URL:', sourceurl);
     axios.post('/api/maps/submitclaim', {
       groupsHarassed: Array.from(groupsHarassed),
       location,
       sourceurl,
+      date,
     })
     .then(res => console.log(res))
     .catch(err => console.log(err));
@@ -130,12 +135,13 @@ export default class SubmitClaimPage extends Component {
               <a
                 href="#"
                 onClick={(event) => {
+                  this.submitClaim();
                   event.preventDefault();
                   this.setState({ stepIndex: 0, finished: false });
                 }}
               >
                 Click here
-              </a> to reset the form.
+              </a> to console log data and reset form.
             </p>
           ) : (
             <div>
@@ -149,7 +155,7 @@ export default class SubmitClaimPage extends Component {
                 <RaisedButton
                   label={stepIndex === 3 ? 'Finish' : 'Next'}
                   primary
-                  onClick={stepIndex === 3 ? this.submitClaim : this.handleNext}
+                  onClick={this.handleNext}
                 />
               </div>
             </div>
