@@ -1,21 +1,14 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import DatePicker from 'material-ui/DatePicker';
+import RaisedButton from 'material-ui/RaisedButton';
+import FlatButton from 'material-ui/FlatButton';
+import Paper from 'material-ui/Paper';
+import TextField from 'material-ui/TextField';
 
+import SubmitClaimStepper from '../../components/SubmitClaimStepper/SubmitClaimStepper';
 import GHCheckboxList from '../../components/GHCheckboxList/GHCheckboxList';
 import './SubmitClaimPage.css';
-
-function showPosition(position) {
-  console.log(position.coords);
-}
-
-function getLocation() {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(showPosition);
-  } else {
-    alert('Geolocation is not supported by this browser.');
-  }
-}
 
 export default class SubmitClaimPage extends Component {
   constructor(props) {
@@ -24,13 +17,53 @@ export default class SubmitClaimPage extends Component {
       groupsHarassed: new Set(),
       location: '',
       sourceurl: '',
+      date: '',
+      stepIndex: 0,
+      finished: false,
     };
-    this.updateGroupsHarassed = this.updateGroupsHarassed.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-    this.submitClaim = this.submitClaim.bind(this);
   }
 
-  updateGroupsHarassed({ target: { name } }) {
+  getStepContent = () => {
+    const { location, sourceurl, stepIndex } = this.state;
+
+    switch (stepIndex) {
+      case 0:
+        return (<TextField name="location" onChange={this.handleChange} hintText="Location" defaultValue={location} />);
+      case 1:
+        return <DatePicker name="date" onChange={(e, dateObj) => this.updateDate(dateObj)} hintText="Select a date" mode="landscape" openToYearSelection />;
+      case 2:
+        return (<GHCheckboxList onClick={this.updateGroupsHarassed} />);
+      case 3:
+        return (<TextField name="sourceurl" onChange={this.handleChange} hintText="URL" defaultValue={sourceurl} />);
+      default:
+        return 'error';
+    }
+  }
+
+  formFilledOut = () => {
+    const {
+      stepIndex,
+      location,
+      date,
+      groupsHarassed,
+      sourceurl,
+    } = this.state;
+
+    switch (stepIndex) {
+      case 0:
+        return location !== '';
+      case 1:
+        return date !== '';
+      case 2:
+        return groupsHarassed.size !== 0;
+      case 3:
+        return sourceurl !== '';
+      default:
+        return true;
+    }
+  }
+
+  updateGroupsHarassed = ({ target: { name } }) => {
     const { groupsHarassed } = this.state;
     if (groupsHarassed.has(name)) {
       groupsHarassed.delete(name);
@@ -40,46 +73,96 @@ export default class SubmitClaimPage extends Component {
     this.setState({ groupsHarassed });
   }
 
-  handleChange({ target: { name, value } }) {
+  updateDate = (dateObj) => {
+    const date = dateObj.toDateString();
+    this.setState({ date });
+  }
+
+  handleChange = ({ target: { name, value } }) => {
     this.setState({ [name]: value });
   }
 
-  submitClaim() {
-    const { groupsHarassed, location, sourceurl } = this.state;
-    if (groupsHarassed.size === 0 || location === '' || sourceurl === '') {
-      alert('Fill out all areas of the form before submitting');
+  handleNext = () => {
+    const { stepIndex } = this.state;
+    if (!this.formFilledOut()) {
+      alert('Complete field before continuing');
       return;
     }
+    this.setState({
+      stepIndex: stepIndex + 1,
+      finished: stepIndex >= 3,
+    });
+  }
+
+  handlePrev = () => {
+    const { stepIndex } = this.state;
+    if (stepIndex > 0) {
+      this.setState({ stepIndex: stepIndex - 1 });
+    }
+  }
+
+  submitClaim = () => {
+    const {
+      groupsHarassed,
+      location,
+      sourceurl,
+      date,
+    } = this.state;
+    console.log('Location:', location);
+    console.log('Date:', date);
+    console.log('Groups harassed:', groupsHarassed);
+    console.log('Source URL:', sourceurl);
     axios.post('/api/maps/submitclaim', {
       groupsHarassed: Array.from(groupsHarassed),
       location,
       sourceurl,
+      date,
     })
     .then(res => console.log(res))
     .catch(err => console.log(err));
   }
 
   render() {
-    const { updateGroupsHarassed, handleChange, submitClaim } = this;
-    const { location, sourceurl } = this.state;
+    const { stepIndex, finished } = this.state;
+    const nextStepContent = this.getStepContent();
+
     return (
-      <div className="submitClaimPage">
-        <h1>Submit a claim</h1>
-        <form className="submitClaimPage__form">
-          <label>
-            Location
-            <input type="text" name="location" value={location} onChange={handleChange} />
-          </label>
-          <button type="button" onClick={getLocation}>Locate me</button>
-          <GHCheckboxList onClick={updateGroupsHarassed} />
-          <label>
-            Please add the full link/URL to the article, post, report, etc where this event was reported
-            <input type="text" name="sourceurl" value={sourceurl} onChange={handleChange} />
-          </label>
-          <DatePicker hintText="Select a date" mode="landscape" />
-          <button type="button" onClick={submitClaim}>Submit</button>
-        </form>
-      </div>
+      <Paper className="submitClaimPage" zDepth={2}>
+        <SubmitClaimStepper stepIndex={stepIndex} />
+        <div>
+          {finished ? (
+            <p>
+              <a
+                href="#"
+                onClick={(event) => {
+                  this.submitClaim();
+                  event.preventDefault();
+                  this.setState({ stepIndex: 0, finished: false });
+                }}
+              >
+                Click here
+              </a> to console log data and reset form.
+            </p>
+          ) : (
+            <div>
+              <div>{nextStepContent}</div>
+              <div>
+                <FlatButton
+                  label="Back"
+                  disabled={stepIndex === 0}
+                  onClick={this.handlePrev}
+                />
+                <RaisedButton
+                  label={stepIndex === 3 ? 'Finish' : 'Next'}
+                  primary
+                  onClick={this.handleNext}
+                />
+              </div>
+            </div>
+          )}
+
+        </div>
+      </Paper>
     );
   }
 }
