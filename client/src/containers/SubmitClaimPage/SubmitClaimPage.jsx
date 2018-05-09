@@ -112,6 +112,14 @@ export default class SubmitClaimPage extends Component {
     console.log('Date:', date);
     console.log('Groups harassed:', groupsHarassed);
     console.log('Source URL:', sourceurl);
+    this.setState({
+      groupsHarassed: new Set(),
+      location: '',
+      sourceurl: '',
+      date: '',
+      stepIndex: 0,
+      finished: false,
+    });
     axios.post('/api/maps/submitclaim', {
       groupsHarassed: Array.from(groupsHarassed),
       location,
