@@ -22,6 +22,7 @@ export default class SubmitClaimPage extends Component {
       date: '',
       stepIndex: 0,
       finished: false,
+      latLng: {},
     };
   }
 
@@ -82,7 +83,10 @@ export default class SubmitClaimPage extends Component {
   selectLocation = (location) => {
     geocodeByAddress(location)
       .then(results => getLatLng(results[0]))
-      .then(latLng => console.log('Success', latLng))
+      .then((latLng) => {
+        console.log('Success', latLng);
+        this.setState({ latLng });
+      })
       .catch(error => console.error('Error', error));
   }
 
@@ -120,8 +124,10 @@ export default class SubmitClaimPage extends Component {
       location,
       sourceurl,
       date,
+      latLng,
     } = this.state;
     console.log('Location:', location);
+    console.log('Lat Lon:', latLng);
     console.log('Date:', date);
     console.log('Groups harassed:', groupsHarassed);
     console.log('Source URL:', sourceurl);
