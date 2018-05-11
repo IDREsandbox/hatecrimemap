@@ -5,13 +5,12 @@ import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 import Paper from 'material-ui/Paper';
 import TextField from 'material-ui/TextField';
+import { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
 
+import LocationSearchInput from '../../components/LocationSearchInput/LocationSearchInput';
 import SubmitClaimStepper from '../../components/SubmitClaimStepper/SubmitClaimStepper';
 import GHCheckboxList from '../../components/GHCheckboxList/GHCheckboxList';
 import './SubmitClaimPage.css';
-
-const autocomplete = new window.google.maps.places.Autocomplete();
-console.log(autocomplete);
 
 export default class SubmitClaimPage extends Component {
   constructor(props) {
@@ -31,7 +30,7 @@ export default class SubmitClaimPage extends Component {
 
     switch (stepIndex) {
       case 0:
-        return (<TextField name="location" onChange={this.handleChange} hintText="Location" defaultValue={location} />);
+        return (<LocationSearchInput name="location" onChange={this.updateLocation} onSelect={this.selectLocation} value={location} />);
       case 1:
         return <DatePicker name="date" onChange={(e, dateObj) => this.updateDate(dateObj)} hintText="Select a date" mode="landscape" openToYearSelection />;
       case 2:
@@ -74,6 +73,17 @@ export default class SubmitClaimPage extends Component {
       groupsHarassed.add(name);
     }
     this.setState({ groupsHarassed });
+  }
+
+  updateLocation = (location) => {
+    this.setState({ location });
+  }
+
+  selectLocation = (location) => {
+    geocodeByAddress(location)
+      .then(results => getLatLng(results[0]))
+      .then(latLng => console.log('Success', latLng))
+      .catch(error => console.error('Error', error));
   }
 
   updateDate = (dateObj) => {
