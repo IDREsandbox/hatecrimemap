@@ -13,6 +13,10 @@ export function storeMapData(mapdata) {
   mapdata.forEach(point => allpoints.push(point));
 }
 
+export function resetCurrentLayers() {
+  currentLayers.clear();
+}
+
 function updateCurrentLayers(layerName) {
   if (currentLayers.has(layerName)) {
     currentLayers.delete(layerName);
