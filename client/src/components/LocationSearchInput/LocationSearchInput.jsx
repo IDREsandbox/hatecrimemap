@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import PlacesAutocomplete from 'react-places-autocomplete';
 import TextField from 'material-ui/TextField';
 
+import './LocationSearchInput.css';
+
 const LocationSearchInput = props => (
   <PlacesAutocomplete
     value={props.value}
@@ -17,13 +19,13 @@ const LocationSearchInput = props => (
             placeholder: 'Search Places ...',
           })}
         />
-        <div>
+        <div className="locationSearchInput__menu">
           {suggestions.map((suggestion) => {
             const style = suggestion.active
               ? { backgroundColor: '#fafafa', cursor: 'pointer' }
               : { backgroundColor: '#ffffff', cursor: 'pointer' };
             return (
-              <div {...getSuggestionItemProps(suggestion, { style })}>
+              <div className="locationSearchInput__menu__item" {...getSuggestionItemProps(suggestion, { style })}>
                 <span>{suggestion.description}</span>
               </div>
             );
