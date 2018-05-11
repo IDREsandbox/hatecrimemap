@@ -10,6 +10,9 @@ import SubmitClaimStepper from '../../components/SubmitClaimStepper/SubmitClaimS
 import GHCheckboxList from '../../components/GHCheckboxList/GHCheckboxList';
 import './SubmitClaimPage.css';
 
+const autocomplete = new window.google.maps.places.Autocomplete();
+console.log(autocomplete);
+
 export default class SubmitClaimPage extends Component {
   constructor(props) {
     super(props);
