@@ -5,7 +5,7 @@ import Checkbox from 'material-ui/Checkbox';
 import ghFilters from '../../globals/ghFilters';
 import './GHCheckboxList.css';
 
-const GHCheckboxList = ({ onClick, showSVGs }) => {
+const GHCheckboxList = ({ onClick, groupsChecked, showSVGs }) => {
   const labels = ghFilters.map(({
     name,
     label,
@@ -21,8 +21,10 @@ const GHCheckboxList = ({ onClick, showSVGs }) => {
           </svg>}
       </div>
     );
+    const checked = groupsChecked.has(name);
     return (
       <Checkbox
+        checked={checked}
         key={key}
         label={labelSVG}
         name={name}
@@ -43,6 +45,7 @@ GHCheckboxList.defaultProps = {
 
 GHCheckboxList.propTypes = {
   onClick: PropTypes.func.isRequired,
+  groupsChecked: PropTypes.instanceOf(Set).isRequired,
   showSVGs: PropTypes.bool,
 };
 

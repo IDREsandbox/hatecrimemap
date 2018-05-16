@@ -34,7 +34,7 @@ export default class App extends Component {
     if (allpoints.length !== 0) {
       this.setState({
         isFetching: false,
-        mapdata: allpoints,
+        mapdata: allpoints.slice(),
       });
       return;
     }
@@ -56,20 +56,27 @@ export default class App extends Component {
   updateMapData = ({ target: { name } }) => {
     const currentLayers = updateCurrentLayers(name, this.state.currentLayers);
     this.setState({
-      mapdata: getMapData(name, currentLayers),
+      mapdata: getMapData(name, currentLayers).slice(),
       currentLayers,
     });
   }
 
+  resetMapData = () => {
+    this.setState({
+      mapdata: allpoints.slice(),
+      currentLayers: new Set(),
+     });
+  }
+
   render() {
-    const { isFetching, mapdata } = this.state;
+    const { isFetching, mapdata, currentLayers } = this.state;
 
     return (
       <div className="homePage">
         {!isFetching &&
           <React.Fragment>
             <MapWrapper mapdata={mapdata} zoom={4} />
-            <SideMenu updateMapData={this.updateMapData} />
+            <SideMenu updateMapData={this.updateMapData} resetMapData={this.resetMapData} currentLayers={currentLayers} />
           </React.Fragment>}
       </div>
     );

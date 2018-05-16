@@ -27,17 +27,25 @@ export default class SubmitClaimPage extends Component {
   }
 
   getStepContent = () => {
-    const { location, sourceurl, stepIndex } = this.state;
+    const { location, sourceurl, stepIndex, groupsHarassed } = this.state;
 
     switch (stepIndex) {
       case 0:
-        return (<LocationSearchInput name="location" onChange={this.updateLocation} onSelect={this.selectLocation} value={location} />);
+        return (
+          <LocationSearchInput name="location" onChange={this.updateLocation} onSelect={this.selectLocation} value={location} />
+        );
       case 1:
-        return <DatePicker name="date" onChange={(e, dateObj) => this.updateDate(dateObj)} hintText="Select a date" mode="landscape" openToYearSelection />;
+        return (
+          <DatePicker name="date" onChange={(e, dateObj) => this.updateDate(dateObj)} hintText="Select a date" mode="landscape" openToYearSelection />
+        );
       case 2:
-        return (<GHCheckboxList onClick={this.updateGroupsHarassed} />);
+        return (
+          <GHCheckboxList onClick={this.updateGroupsHarassed} showSVGs={false} groupsChecked={groupsHarassed} />
+        );
       case 3:
-        return (<TextField name="sourceurl" onChange={this.handleChange} hintText="URL" defaultValue={sourceurl} />);
+        return (
+          <TextField name="sourceurl" onChange={this.handleChange} hintText="URL" defaultValue={sourceurl} />
+        );
       default:
         return 'error';
     }

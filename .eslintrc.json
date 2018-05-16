@@ -21,6 +21,7 @@
         "no-param-reassign": 0,
         "jsx-a11y/anchor-is-valid": 0,
         "max-len": 0,
-        "react/no-did-mount-set-state": 0
+        "react/no-did-mount-set-state": 0,
+        "object-curly-newline": 0
     }
 }
