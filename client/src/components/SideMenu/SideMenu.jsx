@@ -7,14 +7,14 @@ import GHCheckboxList from '../GHCheckboxList/GHCheckboxList';
 import './SideMenu.css';
 
 const SideMenu = ({ updateMapData, resetMapData, currentLayers }) => {
-  const defaultToggled = currentLayers.has('verified');
+  const toggled = currentLayers.has('verified');
 
   return (
     <div className="sideMenu">
       <h2 className="sideMenu__header">Filters</h2>
       <form className="sideMenu__form">
         <Toggle
-          defaultToggled={defaultToggled}
+          toggled={toggled}
           label="Toggle Verified"
           name="verified"
           labelPosition="right"
