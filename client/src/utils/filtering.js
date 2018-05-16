@@ -6,26 +6,33 @@ filteringOptions.verified = {
   color: 'red',
   customFilter: ({ verified }) => Number(verified) > 0,
 };
-const currentLayers = new Set();
 export const allpoints = [];
 
+export function addGroupsHarassedSplit(mapdata) {
+  const mapdataWithGroupsSplit = mapdata.map((point) => {
+    const groupharassedsplit = point.groupharassedcleaned.split(',');
+    return Object.assign({ groupharassedsplit }, point);
+  });
+  return mapdataWithGroupsSplit;
+}
+
 export function storeMapData(mapdata) {
-  mapdata.forEach(point => allpoints.push(point));
+  const mapadataWithGroupsSplit = addGroupsHarassedSplit(mapdata);
+  mapadataWithGroupsSplit.forEach(point => allpoints.push(point));
 }
 
-export function resetCurrentLayers() {
-  currentLayers.clear();
-}
+export function updateCurrentLayers(layerName, prevLayers) {
+  const currentLayers = new Set(prevLayers);
 
-function updateCurrentLayers(layerName) {
   if (currentLayers.has(layerName)) {
     currentLayers.delete(layerName);
   } else {
     currentLayers.add(layerName);
   }
+  return currentLayers;
 }
 
-function addColor(mapdata) {
+function addColor(mapdata, currentLayers) {
   let mapdataWithColor;
   // const { size } = currentLayers;
   // const sizeWithoutVerified = (currentLayers.has('verified')) ? size - 1 : size;
@@ -39,8 +46,8 @@ function addColor(mapdata) {
   return mapdataWithColor;
 }
 
-export function getMapData(layerName) {
-  updateCurrentLayers(layerName);
+export function getMapData(layerName, prevLayers) {
+  const currentLayers = new Set(prevLayers);
   if (currentLayers.size === 0) {
     return allpoints;
   }
@@ -50,14 +57,7 @@ export function getMapData(layerName) {
     const filteredData = mapdata.filter(point => customFilter(point));
     mapdata = filteredData;
   });
-  const mapdataWithColor = addColor(mapdata);
+  const mapdataWithColor = addColor(mapdata, currentLayers);
   return mapdataWithColor;
 }
 
-export function addGroupHarassedSplit(mapdata) {
-  const mapdataWithGroupsSplit = mapdata.map((point) => {
-    const groupharassedsplit = point.groupharassedcleaned.split(',');
-    return Object.assign({ groupharassedsplit }, point);
-  });
-  return mapdataWithGroupsSplit;
-}

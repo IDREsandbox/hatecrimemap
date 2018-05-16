@@ -3,7 +3,7 @@ import axios from 'axios';
 
 import MapWrapper from '../../components/MapWrapper/MapWrapper';
 import SideMenu from '../../components/SideMenu/SideMenu';
-import { getMapData, storeMapData, addGroupHarassedSplit, allpoints, resetCurrentLayers } from '../../utils/filtering';
+import { updateCurrentLayers, getMapData, storeMapData, allpoints } from '../../utils/filtering';
 import './HomePage.css';
 
 // remove after May meeting
@@ -26,11 +26,11 @@ export default class App extends Component {
     this.state = {
       isFetching: true,
       mapdata: [],
+      currentLayers: new Set(),
     };
   }
 
   componentDidMount() {
-    resetCurrentLayers();
     if (allpoints.length !== 0) {
       this.setState({
         isFetching: false,
@@ -40,12 +40,11 @@ export default class App extends Component {
     }
     axios.get('/api/maps/usapoints')
       .then(({ data: { mapdata } }) => {
-        mapdata = addGroupHarassedSplit(mapdata);
+        storeMapData(mapdata);
         this.setState({
           isFetching: false,
           mapdata,
         });
-        storeMapData(mapdata);
         printUnique(mapdata);
       })
       .catch((err) => {
@@ -55,7 +54,11 @@ export default class App extends Component {
   }
 
   updateMapData = ({ target: { name } }) => {
-    this.setState({ mapdata: getMapData(name) });
+    const currentLayers = updateCurrentLayers(name, this.state.currentLayers);
+    this.setState({
+      mapdata: getMapData(name, currentLayers),
+      currentLayers,
+    });
   }
 
   render() {
