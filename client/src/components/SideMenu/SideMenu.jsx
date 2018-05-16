@@ -6,21 +6,26 @@ import RaisedButton from 'material-ui/RaisedButton';
 import GHCheckboxList from '../GHCheckboxList/GHCheckboxList';
 import './SideMenu.css';
 
-const SideMenu = ({ updateMapData, resetMapData, currentLayers }) => (
-  <div className="sideMenu">
-    <h2 className="sideMenu__header">Filters</h2>
-    <form className="sideMenu__form">
-      <Toggle
-        label="Toggle Verified"
-        name="verified"
-        labelPosition="right"
-        onClick={updateMapData}
-      />
-      <GHCheckboxList onClick={updateMapData} showSVGs groupsChecked={currentLayers} />
-      <RaisedButton label="Reset Filters" primary onClick={resetMapData} />
-    </form>
-  </div>
-);
+const SideMenu = ({ updateMapData, resetMapData, currentLayers }) => {
+  const defaultToggled = currentLayers.has('verified');
+
+  return (
+    <div className="sideMenu">
+      <h2 className="sideMenu__header">Filters</h2>
+      <form className="sideMenu__form">
+        <Toggle
+          defaultToggled={defaultToggled}
+          label="Toggle Verified"
+          name="verified"
+          labelPosition="right"
+          onClick={updateMapData}
+        />
+        <GHCheckboxList onClick={updateMapData} showSVGs groupsChecked={currentLayers} />
+        <RaisedButton label="Reset Filters" primary onClick={resetMapData} />
+      </form>
+    </div>
+  );
+};
 
 SideMenu.propTypes = {
   updateMapData: PropTypes.func.isRequired,
