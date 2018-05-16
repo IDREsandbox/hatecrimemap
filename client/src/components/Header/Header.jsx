@@ -16,7 +16,7 @@ const Header = () => (
       <Link to="/submitclaim">
         <FlatButton
           className="header__submitClaim"
-          label="Submit Claim"
+          label="Report Incident"
           style={{ color: 'white' }}
         />
       </Link>}

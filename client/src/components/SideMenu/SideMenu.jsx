@@ -7,7 +7,7 @@ import './SideMenu.css';
 
 const SideMenu = ({ updateMapData }) => (
   <div className="sideMenu">
-    <h2 className="sideMenu__header">Search</h2>
+    <h2 className="sideMenu__header">Filters</h2>
     <form className="sideMenu__form">
       <Toggle
         label="Toggle Verified"
