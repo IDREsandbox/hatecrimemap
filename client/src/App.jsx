@@ -15,7 +15,7 @@ const App = () => (
         <Header />
         <Route exact path="/" component={HomePage} />
         <Route exact path="/reportincident" component={ReportIncidentPage} />
-        <Route exact path="verifyincidents" component={VerifyIncidentsPage} />
+        <Route exact path="/verifyincidents" component={VerifyIncidentsPage} />
       </div>
     </Router>
   </MuiThemeProvider>
