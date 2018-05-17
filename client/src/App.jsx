@@ -4,7 +4,7 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 import HomePage from './containers/HomePage/HomePage';
 import Header from './components/Header/Header';
-import SubmitClaimPage from './containers/SubmitClaimPage/SubmitClaimPage';
+import ReportIncidentPage from './containers/ReportIncidentPage/ReportIncidentPage';
 import './App.css';
 
 const App = () => (
@@ -13,7 +13,7 @@ const App = () => (
       <div className="app">
         <Header />
         <Route exact path="/" component={HomePage} />
-        <Route exact path="/submitclaim" component={SubmitClaimPage} />
+        <Route exact path="/submitclaim" component={ReportIncidentPage} />
       </div>
     </Router>
   </MuiThemeProvider>

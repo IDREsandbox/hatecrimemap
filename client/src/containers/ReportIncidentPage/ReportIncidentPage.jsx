@@ -11,11 +11,11 @@ import { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
 import LocationSearchInput from '../../components/LocationSearchInput/LocationSearchInput';
 import SubmitClaimStepper from '../../components/SubmitClaimStepper/SubmitClaimStepper';
 import GHCheckboxList from '../../components/GHCheckboxList/GHCheckboxList';
-import './SubmitClaimPage.css';
+import './ReportIncidentPage.css';
 
 const dateRegex = /^\w{3}\s\w{3}\s\d{2}\s\d{4}$/;
 
-export default class SubmitClaimPage extends Component {
+export default class ReportIncidentPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -193,7 +193,7 @@ export default class SubmitClaimPage extends Component {
     const nextStepContent = this.getStepContent();
 
     return (
-      <Paper className="submitClaimPage" zDepth={2}>
+      <Paper className="ReportIncidentPage" zDepth={2}>
         <SubmitClaimStepper stepIndex={stepIndex} />
         <div>
           {finished ? (
