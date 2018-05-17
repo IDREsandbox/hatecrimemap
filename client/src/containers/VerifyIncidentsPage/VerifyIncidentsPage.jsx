@@ -23,7 +23,6 @@ export default class App extends Component {
     }
     axios.get('/api/maps/usapoints')
       .then(({ data: { mapdata } }) => {
-        mapdata = storeMapData(mapdata);
         this.setState({
           isFetching: false,
           incidents: storeMapData(mapdata),
