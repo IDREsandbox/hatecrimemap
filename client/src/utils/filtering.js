@@ -6,19 +6,25 @@ filteringOptions.verified = {
   color: 'red',
   customFilter: ({ verified }) => Number(verified) > 0,
 };
-export const allpoints = [];
+let allpoints = [];
+
+export function getAllPoints() {
+  return allpoints.slice();
+}
 
 export function addGroupsHarassedSplit(mapdata) {
   const mapdataWithGroupsSplit = mapdata.map((point) => {
     const groupharassedsplit = point.groupharassedcleaned.split(',');
     return Object.assign({ groupharassedsplit }, point);
   });
-  return mapdataWithGroupsSplit;
+  return mapdataWithGroupsSplit.slice();
 }
 
 export function storeMapData(mapdata) {
-  const mapadataWithGroupsSplit = addGroupsHarassedSplit(mapdata);
-  mapadataWithGroupsSplit.forEach(point => allpoints.push(point));
+  const mapdataWithGroupsSplit = addGroupsHarassedSplit(mapdata);
+  allpoints = mapdataWithGroupsSplit.slice();
+  // mapdataWithGroupsSplit.forEach(point => allpoints.push(point));
+  return mapdataWithGroupsSplit.slice();
 }
 
 export function updateCurrentLayers(layerName, prevLayers) {
@@ -58,6 +64,6 @@ export function getMapData(layerName, prevLayers) {
     mapdata = filteredData;
   });
   const mapdataWithColor = addColor(mapdata, currentLayers);
-  return mapdataWithColor;
+  return mapdataWithColor.slice();
 }
 

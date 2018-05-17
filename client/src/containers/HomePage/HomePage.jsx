@@ -3,7 +3,7 @@ import axios from 'axios';
 
 import MapWrapper from '../../components/MapWrapper/MapWrapper';
 import SideMenu from '../../components/SideMenu/SideMenu';
-import { updateCurrentLayers, getMapData, storeMapData, allpoints } from '../../utils/filtering';
+import { updateCurrentLayers, getMapData, storeMapData, getAllPoints } from '../../utils/filtering';
 import './HomePage.css';
 
 export default class App extends Component {
@@ -17,16 +17,17 @@ export default class App extends Component {
   }
 
   componentDidMount() {
+    const allpoints = getAllPoints();
     if (allpoints.length !== 0) {
       this.setState({
         isFetching: false,
-        mapdata: allpoints.slice(),
+        mapdata: allpoints,
       });
       return;
     }
     axios.get('/api/maps/usapoints')
       .then(({ data: { mapdata } }) => {
-        storeMapData(mapdata);
+        mapdata = storeMapData(mapdata);
         this.setState({
           isFetching: false,
           mapdata,
@@ -41,14 +42,14 @@ export default class App extends Component {
   updateMapData = ({ target: { name } }) => {
     const currentLayers = updateCurrentLayers(name, this.state.currentLayers);
     this.setState({
-      mapdata: getMapData(name, currentLayers).slice(),
+      mapdata: getMapData(name, currentLayers),
       currentLayers,
     });
   }
 
   resetMapData = () => {
     this.setState({
-      mapdata: allpoints.slice(),
+      mapdata: getAllPoints(),
       currentLayers: new Set(),
      });
   }
