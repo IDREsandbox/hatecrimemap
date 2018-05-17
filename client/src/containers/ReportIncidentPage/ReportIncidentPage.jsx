@@ -182,7 +182,7 @@ export default class ReportIncidentPage extends Component {
       date,
       latLng,
     })
-    .then(res => console.log(res))
+    .then(res => console.log(res.data))
     .catch(err => console.log(err));
   }
 
@@ -196,8 +196,7 @@ export default class ReportIncidentPage extends Component {
         <div>
           {finished ? (
             <p>
-              <a
-                href="#"
+              <button
                 onClick={(event) => {
                   this.submitClaim();
                   event.preventDefault();
@@ -205,7 +204,7 @@ export default class ReportIncidentPage extends Component {
                 }}
               >
                 Click here
-              </a> to console log data and reset form.
+              </button> to console log data and reset form.
             </p>
           ) : (
             <div>
