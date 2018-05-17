@@ -11,7 +11,8 @@ import {
 } from 'material-ui/Table';
 import Pagination from 'material-ui-pagination';
 
-import { storeMapData, getAllPoints } from '../../utils/filtering';
+import EditIncidentDialog from '../EditIncidentDialog/EditIncidentDialog';
+import { storeMapData } from '../../utils/filtering';
 
 function createMockData(mapdata) {
   const mockData = mapdata.map((point) => {
@@ -32,19 +33,11 @@ export default class App extends Component {
       incidentReports: [],
       currentPage: 1,
       totalPages: 0,
+      openDialog: false,
     };
   }
 
   componentDidMount() {
-    const allpoints = getAllPoints();
-    if (allpoints.length !== 0) {
-      this.setState({
-        isFetching: false,
-        incidentReports: allpoints,
-        totalPages: Math.ceil(allpoints.length / 50),
-      });
-      return;
-    }
     axios.get('/api/maps/usapoints')
       .then(({ data: { mapdata } }) => {
         // remove before pushing to production
@@ -66,6 +59,14 @@ export default class App extends Component {
       });
   }
 
+  handleOpenDialog = () => {
+    this.setState({ openDialog: true });
+  }
+
+  handleCloseDialog = () => {
+    this.setState({ openDialog: false });
+  }
+
   updatePage = (page) => {
     this.setState({
       currentPage: page,
@@ -81,6 +82,7 @@ export default class App extends Component {
 
     return (
       <div className="verifyIncidentsPage">
+        <EditIncidentDialog open={this.state.openDialog} />
         {!isFetching &&
           <Table height="calc(100vh - 250px)" fixedHeader>
             <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
@@ -104,14 +106,14 @@ export default class App extends Component {
                   ? <button><a href={row.sourceurl} target="_blank">Source Link</a></button>
                   : 'No link';
                 return (
-                  <TableRow key={row.featureid}>
+                  <TableRow key={row.featureid} selectable={false}>
                     <TableRowColumn>{rowNum++}</TableRowColumn>
                     <TableRowColumn>{row.locationname}</TableRowColumn>
                     <TableRowColumn>05/12/2018</TableRowColumn>
                     <TableRowColumn>{row.groupharassedcleaned}</TableRowColumn>
                     <TableRowColumn tooltip="test">{link}</TableRowColumn>
                     <TableRowColumn>
-                      <button>Edit</button>
+                      <button onClick={this.handleOpenDialog}>Edit</button>
                       <button>Save</button>
                       <button>Delete</button>
                     </TableRowColumn>
