@@ -75,7 +75,7 @@ export default class ReportIncidentPage extends Component {
     }
   }
 
-  formFilledOut = () => {
+  isFormFilledOut = () => {
     const {
       stepIndex,
       location,
@@ -137,7 +137,7 @@ export default class ReportIncidentPage extends Component {
 
   handleNext = () => {
     const { stepIndex } = this.state;
-    if (!this.formFilledOut()) {
+    if (!this.isFormFilledOut()) {
       const alertMessage = stepIndex === 3
         ? 'A correctly formatted url is required before continuing.'
         : 'This field is required before continuing.';
