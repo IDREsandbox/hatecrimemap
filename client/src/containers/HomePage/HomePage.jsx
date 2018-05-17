@@ -6,20 +6,6 @@ import SideMenu from '../../components/SideMenu/SideMenu';
 import { updateCurrentLayers, getMapData, storeMapData, allpoints } from '../../utils/filtering';
 import './HomePage.css';
 
-// remove after May meeting
-function printUnique(mapdata) {
-  const gh = mapdata.map(group => group.groupharassedcleaned);
-  const ghDelimited = gh
-    .map(group => group.split(','))
-    .reduce((acc, val) => acc.concat(val), []);
-  const noDupes = Array.from(new Set(ghDelimited));
-  console.log(noDupes.sort((a, b) => {
-    if (a < b) return -1;
-    if (a > b) return 1;
-    return 0;
-  }));
-}
-
 export default class App extends Component {
   constructor(props) {
     super(props);
@@ -45,7 +31,6 @@ export default class App extends Component {
           isFetching: false,
           mapdata,
         });
-        printUnique(mapdata);
       })
       .catch((err) => {
         this.setState({ isFetching: false });

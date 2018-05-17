@@ -9,7 +9,7 @@ import TextField from 'material-ui/TextField';
 import { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
 
 import LocationSearchInput from '../../components/LocationSearchInput/LocationSearchInput';
-import SubmitClaimStepper from '../../components/SubmitClaimStepper/SubmitClaimStepper';
+import ReportIncidentStepper from '../../components/ReportIncidentStepper/ReportIncidentStepper';
 import GHCheckboxList from '../../components/GHCheckboxList/GHCheckboxList';
 import './ReportIncidentPage.css';
 
@@ -192,7 +192,7 @@ export default class ReportIncidentPage extends Component {
 
     return (
       <Paper className="ReportIncidentPage" zDepth={2}>
-        <SubmitClaimStepper stepIndex={stepIndex} />
+        <ReportIncidentStepper stepIndex={stepIndex} />
         <div>
           {finished ? (
             <p>

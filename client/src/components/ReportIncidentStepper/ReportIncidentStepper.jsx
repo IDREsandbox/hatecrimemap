@@ -6,7 +6,7 @@ import {
   StepLabel,
 } from 'material-ui/Stepper';
 
-const SubmitClaimStepper = ({ stepIndex }) => (
+const ReportIncidentStepper = ({ stepIndex }) => (
   <Stepper activeStep={stepIndex}>
     <Step>
       <StepLabel>Harassment Location</StepLabel>
@@ -23,8 +23,8 @@ const SubmitClaimStepper = ({ stepIndex }) => (
   </Stepper>
 );
 
-SubmitClaimStepper.propTypes = {
+ReportIncidentStepper.propTypes = {
   stepIndex: PropTypes.number.isRequired,
 };
 
-export default SubmitClaimStepper;
+export default ReportIncidentStepper;
