@@ -32,19 +32,39 @@ export default class SubmitClaimPage extends Component {
     switch (stepIndex) {
       case 0:
         return (
-          <LocationSearchInput name="location" onChange={this.updateLocation} onSelect={this.selectLocation} value={location} />
+          <LocationSearchInput
+            name="location"
+            onChange={this.updateLocation}
+            onSelect={this.selectLocation}
+            value={location}
+          />
         );
       case 1:
         return (
-          <DatePicker name="date" onChange={(e, dateObj) => this.updateDate(dateObj)} hintText="Select a date" mode="landscape" openToYearSelection />
+          <DatePicker
+            name="date"
+            onChange={(e, dateObj) => this.updateDate(dateObj)}
+            hintText="Select a date"
+            mode="landscape"
+            openToYearSelection
+          />
         );
       case 2:
         return (
-          <GHCheckboxList onClick={this.updateGroupsHarassed} showSVGs={false} groupsChecked={groupsHarassed} />
+          <GHCheckboxList
+            onClick={this.updateGroupsHarassed}
+            showSVGs={false}
+            groupsChecked={groupsHarassed}
+          />
         );
       case 3:
         return (
-          <TextField name="sourceurl" onChange={this.handleChange} hintText="Paste or type a link to a website" defaultValue={sourceurl} />
+          <TextField
+            name="sourceurl"
+            onChange={this.handleChange}
+            hintText="Paste or type a link to a website"
+            defaultValue={sourceurl}
+          />
         );
       default:
         return 'error';
