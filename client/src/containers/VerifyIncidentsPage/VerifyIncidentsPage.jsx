@@ -13,13 +13,24 @@ import Pagination from 'material-ui-pagination';
 
 import { storeMapData, getAllPoints } from '../../utils/filtering';
 
+function createMockData(mapdata) {
+  const mockData = mapdata.map((point) => {
+    const num = Math.floor(Math.random() * Math.floor(5));
+    if (num === 0) {
+      return Object.assign({}, point, { verified: '-1' });
+    }
+    return Object.assign({}, point);
+  });
+  return mockData.slice();
+}
+
 export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
       isFetching: true,
       incidentReports: [],
-      currentPage: 0,
+      currentPage: 1,
       totalPages: 0,
     };
   }
@@ -30,17 +41,24 @@ export default class App extends Component {
       this.setState({
         isFetching: false,
         incidentReports: allpoints,
+        totalPages: Math.ceil(allpoints.length / 50),
       });
       return;
     }
     axios.get('/api/maps/usapoints')
       .then(({ data: { mapdata } }) => {
+        // remove before pushing to production
+        const test = storeMapData(mapdata);
+        const mockData = createMockData(test);
+        // end
+        const incidentReports = mockData.filter(point => point.verified === '-1');
         this.setState({
           isFetching: false,
-          incidentReports: storeMapData(mapdata),
-          totalPages: Math.ceil(mapdata.length / 50),
+          incidentReports,
+          totalPages: Math.ceil(incidentReports.length / 50),
         });
-        console.log(this.state.incidentReports);
+        console.log(incidentReports[0]);
+        console.log(incidentReports);
       })
       .catch((err) => {
         this.setState({ isFetching: false });
@@ -50,60 +68,61 @@ export default class App extends Component {
 
   updatePage = (page) => {
     this.setState({
-      currentPage: page - 1,
+      currentPage: page,
     });
   }
 
   render() {
     const { isFetching, incidentReports, currentPage, totalPages } = this.state;
-    const displayPage = currentPage + 1;
-    const lowerBound = currentPage * 50;
+    const lowerBound = (currentPage - 1) * 50;
     const upperBound = lowerBound + 50;
     const displayReports = incidentReports.slice(lowerBound, upperBound);
     let rowNum = lowerBound + 1;
-    console.log(incidentReports.length);
-    console.log(totalPages);
 
     return (
       <div className="verifyIncidentsPage">
         {!isFetching &&
-          <Table
-            height="600px"
-            fixedHeader
-            selectable
-            multiSelectable
-          >
-            <TableHeader displaySelectAll={false}>
+          <Table height="calc(100vh - 250px)" fixedHeader>
+            <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
               <TableRow>
-                <TableHeaderColumn colSpan="5" style={{ textAlign: 'center' }}>
+                <TableHeaderColumn colSpan="6" style={{ textAlign: 'center' }}>
                   Verify Incident Reports
                 </TableHeaderColumn>
               </TableRow>
               <TableRow>
                 <TableHeaderColumn>Row #</TableHeaderColumn>
-                <TableHeaderColumn>ID</TableHeaderColumn>
                 <TableHeaderColumn>Harassment Location</TableHeaderColumn>
                 <TableHeaderColumn>Date of Harassment</TableHeaderColumn>
                 <TableHeaderColumn>Groups Harassed</TableHeaderColumn>
                 <TableHeaderColumn>Verification Link</TableHeaderColumn>
+                <TableHeaderColumn>Edit/Save/Delete</TableHeaderColumn>
               </TableRow>
             </TableHeader>
-            <TableBody stripedRows>
-              {displayReports.map(row => (
-                <TableRow key={row.featureid}>
-                  <TableRowColumn>{rowNum++}</TableRowColumn>
-                  <TableRowColumn>{row.featureid}</TableRowColumn>
-                  <TableRowColumn>{row.locationname}</TableRowColumn>
-                  <TableRowColumn>date of harassment</TableRowColumn>
-                  <TableRowColumn>{row.groupharassedcleaned}</TableRowColumn>
-                  <TableRowColumn>{row.sourceurl}</TableRowColumn>
-                </TableRow>
-              ))}
+            <TableBody className="testTable" stripedRows displayRowCheckbox={false}>
+              {displayReports.map((row) => {
+                const link = row.validsourceurl === 'true'
+                  ? <button><a href={row.sourceurl} target="_blank">Source Link</a></button>
+                  : 'No link';
+                return (
+                  <TableRow key={row.featureid}>
+                    <TableRowColumn>{rowNum++}</TableRowColumn>
+                    <TableRowColumn>{row.locationname}</TableRowColumn>
+                    <TableRowColumn>05/12/2018</TableRowColumn>
+                    <TableRowColumn>{row.groupharassedcleaned}</TableRowColumn>
+                    <TableRowColumn tooltip="test">{link}</TableRowColumn>
+                    <TableRowColumn>
+                      <button>Edit</button>
+                      <button>Save</button>
+                      <button>Delete</button>
+                    </TableRowColumn>
+                  </TableRow>
+                );
+              })}
             </TableBody>
             <TableFooter>
               <TableRow>
                 <TableRowColumn style={{ textAlign: 'center' }}>
-                  <Pagination total={totalPages} display={7} current={displayPage} onChange={page => this.updatePage(page)} />
+                  <Pagination total={totalPages} display={7} current={currentPage} onChange={page => this.updatePage(page)} />
                 </TableRowColumn>
               </TableRow>
             </TableFooter>
