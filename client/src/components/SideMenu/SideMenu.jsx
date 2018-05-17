@@ -20,8 +20,8 @@ const SideMenu = ({ updateMapData, resetMapData, currentLayers }) => {
           labelPosition="right"
           onClick={updateMapData}
         />
-        <GHCheckboxList onClick={updateMapData} showSVGs groupsChecked={currentLayers} />
-        <RaisedButton label="Reset Filters" primary onClick={resetMapData} />
+        <GHCheckboxList onClick={updateMapData} groupsChecked={currentLayers} showSVGs />
+        <RaisedButton label="Reset Filters" onClick={resetMapData} primary />
       </form>
     </div>
   );
