@@ -44,7 +44,7 @@ export default class SubmitClaimPage extends Component {
         );
       case 3:
         return (
-          <TextField name="sourceurl" onChange={this.handleChange} hintText="URL" defaultValue={sourceurl} />
+          <TextField name="sourceurl" onChange={this.handleChange} hintText="Paste or type a link to a website" defaultValue={sourceurl} />
         );
       default:
         return 'error';

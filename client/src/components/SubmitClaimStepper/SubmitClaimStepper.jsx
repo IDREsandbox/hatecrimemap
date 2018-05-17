@@ -18,7 +18,7 @@ const SubmitClaimStepper = ({ stepIndex }) => (
       <StepLabel>Groups Harassed</StepLabel>
     </Step>
     <Step>
-      <StepLabel>Verification URL</StepLabel>
+      <StepLabel>Verification Link</StepLabel>
     </Step>
   </Stepper>
 );
