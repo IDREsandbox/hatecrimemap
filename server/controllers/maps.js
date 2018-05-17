@@ -26,7 +26,7 @@ router.get('/usapoints', (req, res) => {
     .catch(err => console.log('ERROR:', err));
 });
 
-router.post('/submitclaim', (req, res) => {
+router.post('/reportincident', (req, res) => {
   console.log(req.body);
   res.end('server received data');
 });

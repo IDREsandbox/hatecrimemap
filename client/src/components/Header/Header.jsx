@@ -13,9 +13,9 @@ const Header = () => (
     title="Mapping Harassment in the US"
     iconElementLeft={<Link to="/"><IconButton><ActionHome /></IconButton></Link>}
     iconElementRight={
-      <Link to="/submitclaim">
+      <Link to="/reportincident">
         <FlatButton
-          className="header__submitClaim"
+          className="header__reportIncident"
           label="Report Incident"
           style={{ color: 'white' }}
         />

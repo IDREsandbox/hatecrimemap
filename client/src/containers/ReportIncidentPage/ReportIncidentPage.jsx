@@ -157,7 +157,7 @@ export default class ReportIncidentPage extends Component {
     }
   }
 
-  submitClaim = () => {
+  reportIncident = () => {
     const {
       groupsHarassed,
       location,
@@ -175,7 +175,7 @@ export default class ReportIncidentPage extends Component {
       finished: false,
       latLng: {},
     });
-    axios.post('/api/maps/submitclaim', {
+    axios.post('/api/maps/reportincident', {
       groupsHarassed: Array.from(groupsHarassed),
       location,
       sourceurl,
@@ -198,7 +198,7 @@ export default class ReportIncidentPage extends Component {
             <p>
               <button
                 onClick={(event) => {
-                  this.submitClaim();
+                  this.reportIncident();
                   event.preventDefault();
                   this.setState({ stepIndex: 0, finished: false });
                 }}
