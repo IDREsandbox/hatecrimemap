@@ -13,6 +13,8 @@ import SubmitClaimStepper from '../../components/SubmitClaimStepper/SubmitClaimS
 import GHCheckboxList from '../../components/GHCheckboxList/GHCheckboxList';
 import './SubmitClaimPage.css';
 
+const dateRegex = /^\w{3}\s\w{3}\s\d{2}\s\d{4}$/;
+
 export default class SubmitClaimPage extends Component {
   constructor(props) {
     super(props);
@@ -63,7 +65,8 @@ export default class SubmitClaimPage extends Component {
           <TextField
             name="sourceurl"
             onChange={this.handleChange}
-            hintText="Paste or type a link to a website"
+            hintText="http://www.example.com/"
+            floatingLabelText="Paste or type a link to a website"
             defaultValue={sourceurl}
           />
         );
@@ -86,7 +89,7 @@ export default class SubmitClaimPage extends Component {
       case 0:
         return location !== '' && latLng.lat;
       case 1:
-        return date !== '';
+        return dateRegex.test(date);
       case 2:
         return groupsHarassed.size !== 0;
       case 3:
