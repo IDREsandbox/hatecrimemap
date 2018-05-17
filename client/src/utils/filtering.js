@@ -23,7 +23,6 @@ export function addGroupsHarassedSplit(mapdata) {
 export function storeMapData(mapdata) {
   const mapdataWithGroupsSplit = addGroupsHarassedSplit(mapdata);
   allpoints = mapdataWithGroupsSplit.slice();
-  // mapdataWithGroupsSplit.forEach(point => allpoints.push(point));
   return mapdataWithGroupsSplit.slice();
 }
 

@@ -37,9 +37,12 @@ export default class App extends Component {
   }
 
   render() {
+    const { isFetching } = this.state;
+
     return (
       <div className="verifyIncidentsPage">
-        Welcome to da page
+        {!isFetching &&
+          <p>Schwoop</p>}
       </div>
     );
   }
