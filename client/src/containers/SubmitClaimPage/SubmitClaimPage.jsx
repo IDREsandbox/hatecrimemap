@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import isUrl from 'is-url';
 import DatePicker from 'material-ui/DatePicker';
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
@@ -78,17 +79,18 @@ export default class SubmitClaimPage extends Component {
       date,
       groupsHarassed,
       sourceurl,
+      latLng,
     } = this.state;
 
     switch (stepIndex) {
       case 0:
-        return location !== '';
+        return location !== '' && latLng.lat;
       case 1:
         return date !== '';
       case 2:
         return groupsHarassed.size !== 0;
       case 3:
-        return sourceurl !== '';
+        return isUrl(sourceurl);
       default:
         return true;
     }
@@ -105,7 +107,10 @@ export default class SubmitClaimPage extends Component {
   }
 
   updateLocation = (location) => {
-    this.setState({ location });
+    this.setState({
+      location,
+      latLng: {},
+     });
   }
 
   selectLocation = (location) => {
@@ -130,7 +135,10 @@ export default class SubmitClaimPage extends Component {
   handleNext = () => {
     const { stepIndex } = this.state;
     if (!this.formFilledOut()) {
-      alert('Complete field before continuing');
+      const alertMessage = stepIndex === 3
+        ? 'A correctly formatted url is required before continuing.'
+        : 'This field is required before continuing.';
+      alert(alertMessage);
       return;
     }
     this.setState({
