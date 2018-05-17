@@ -165,11 +165,7 @@ export default class ReportIncidentPage extends Component {
       date,
       latLng,
     } = this.state;
-    console.log('Location:', location);
-    console.log('Lat Lon:', latLng);
-    console.log('Date:', date);
-    console.log('Groups harassed:', groupsHarassed);
-    console.log('Source URL:', sourceurl);
+    console.log(this.state);
     this.setState({
       groupsHarassed: new Set(),
       location: '',
@@ -177,12 +173,14 @@ export default class ReportIncidentPage extends Component {
       date: '',
       stepIndex: 0,
       finished: false,
+      latLng: {},
     });
     axios.post('/api/maps/submitclaim', {
       groupsHarassed: Array.from(groupsHarassed),
       location,
       sourceurl,
       date,
+      latLng,
     })
     .then(res => console.log(res))
     .catch(err => console.log(err));
