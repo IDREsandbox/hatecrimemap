@@ -32,7 +32,6 @@ export default class App extends Component {
       isFetching: true,
       incidentReports: [],
       currentPage: 1,
-      totalPages: 0,
       openDialog: false,
     };
   }
@@ -48,7 +47,6 @@ export default class App extends Component {
         this.setState({
           isFetching: false,
           incidentReports,
-          totalPages: Math.ceil(incidentReports.length / 50),
         });
         console.log(incidentReports[0]);
         console.log(incidentReports);
@@ -74,7 +72,8 @@ export default class App extends Component {
   }
 
   render() {
-    const { isFetching, incidentReports, currentPage, totalPages, openDialog } = this.state;
+    const { isFetching, incidentReports, currentPage, openDialog } = this.state;
+    const totalPages = Math.ceil(incidentReports.length / 50);
     const lowerBound = (currentPage - 1) * 50;
     const upperBound = lowerBound + 50;
     const displayReports = incidentReports.slice(lowerBound, upperBound);
@@ -100,7 +99,7 @@ export default class App extends Component {
                 <TableHeaderColumn>Edit/Save/Delete</TableHeaderColumn>
               </TableRow>
             </TableHeader>
-            <TableBody className="testTable" stripedRows displayRowCheckbox={false}>
+            <TableBody stripedRows displayRowCheckbox={false}>
               {displayReports.map((row) => {
                 const link = row.validsourceurl === 'true'
                   ? <button><a href={row.sourceurl} target="_blank">Source Link</a></button>
