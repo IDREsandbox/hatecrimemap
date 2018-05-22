@@ -74,7 +74,7 @@ export default class App extends Component {
   }
 
   render() {
-    const { isFetching, incidentReports, currentPage, totalPages } = this.state;
+    const { isFetching, incidentReports, currentPage, totalPages, openDialog } = this.state;
     const lowerBound = (currentPage - 1) * 50;
     const upperBound = lowerBound + 50;
     const displayReports = incidentReports.slice(lowerBound, upperBound);
@@ -82,7 +82,7 @@ export default class App extends Component {
 
     return (
       <div className="verifyIncidentsPage">
-        <EditIncidentDialog open={this.state.openDialog} />
+        <EditIncidentDialog open={openDialog} handleCloseDialog={this.handleCloseDialog} />
         {!isFetching &&
           <Table height="calc(100vh - 250px)" fixedHeader>
             <TableHeader displaySelectAll={false} adjustForCheckbox={false}>

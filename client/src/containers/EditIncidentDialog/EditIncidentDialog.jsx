@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import Dialog from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton';
 
-export default class App extends Component {
+export default class EditIncidentDialog extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -9,17 +11,36 @@ export default class App extends Component {
   }
 
   render() {
+    const { handleCloseDialog, open } = this.props;
+    const actions = [
+      <FlatButton
+        label="Cancel"
+        primary
+        onClick={handleCloseDialog}
+      />,
+      <FlatButton
+        label="Submit"
+        primary
+        disabled
+        onClick={handleCloseDialog}
+      />,
+    ];
+
     return (
       <Dialog
-        title="Scrollable Dialog"
-        // actions={actions}
+        title="Edit Entry"
+        actions={actions}
         modal={false}
-        open={this.props.open}
-        // onRequestClose={this.handleClose}
+        open={open}
         autoScrollBodyContent
       >
-        Schwoooooop
+        Edit here
       </Dialog>
     );
   }
 }
+
+EditIncidentDialog.propTypes = {
+  open: PropTypes.bool.isRequired,
+  handleCloseDialog: PropTypes.func.isRequired,
+};
