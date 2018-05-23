@@ -59,6 +59,10 @@ const ghFilters = [
     color: '#0273e5',
   },
   {
+    label: 'Chinese',
+    color: '#07e1bd',
+  },
+  {
     label: 'Latinx',
     color: '#e54f6e',
   },
