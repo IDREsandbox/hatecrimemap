@@ -75,9 +75,7 @@ export default class App extends Component {
     if (type === 'checkbox') {
       camelized = updateCurrentLayers(name, camelized);
       const incidentWithUpdatedCamelized = Object.assign({}, incidentToEdit, { camelized });
-      this.setState({
-        incidentToEdit: incidentWithUpdatedCamelized,
-      });
+      this.setState({ incidentToEdit: incidentWithUpdatedCamelized });
     }
   }
 
@@ -88,13 +86,9 @@ export default class App extends Component {
      });
   }
 
-  handleCloseDialog = () => {
-    this.setState({ openDialog: false });
-  }
+  handleCloseDialog = () => this.setState({ openDialog: false });
 
-  updatePage = (page) => {
-    this.setState({ currentPage: page });
-  }
+  updatePage = page => this.setState({ currentPage: page });
 
   render() {
     const { isFetching, incidentReports, currentPage, openDialog, incidentToEdit } = this.state;
