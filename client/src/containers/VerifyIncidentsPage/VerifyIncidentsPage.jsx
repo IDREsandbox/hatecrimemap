@@ -12,7 +12,7 @@ import {
 import Pagination from 'material-ui-pagination';
 
 import EditIncidentDialog from '../../components/EditIncidentDialog/EditIncidentDialog';
-import { storeMapData } from '../../utils/filtering';
+import { storeMapData, updateCurrentLayers } from '../../utils/filtering';
 import { camelize } from '../../utils/utilities';
 
 function createMockData(mapdata) {
@@ -70,14 +70,10 @@ export default class App extends Component {
 
   updateIncidentToEdit = ({ target: { type, name } }) => {
     const { incidentToEdit } = this.state;
-    const { camelized } = incidentToEdit;
+    let { camelized } = incidentToEdit;
 
     if (type === 'checkbox') {
-      if (camelized.has(name)) {
-        camelized.delete(name);
-      } else {
-        camelized.add(name);
-      }
+      camelized = updateCurrentLayers(name, camelized);
       const incidentWithUpdatedCamelized = Object.assign({}, incidentToEdit, { camelized });
       this.setState({
         incidentToEdit: incidentWithUpdatedCamelized,
