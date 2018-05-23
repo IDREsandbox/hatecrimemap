@@ -11,8 +11,9 @@ import {
 } from 'material-ui/Table';
 import Pagination from 'material-ui-pagination';
 
-import EditIncidentDialog from '../EditIncidentDialog/EditIncidentDialog';
+import EditIncidentDialog from '../../components/EditIncidentDialog/EditIncidentDialog';
 import { storeMapData } from '../../utils/filtering';
+import { camelize } from '../../utils/utilities';
 
 function createMockData(mapdata) {
   const mockData = mapdata.map((point) => {
@@ -26,7 +27,11 @@ function createMockData(mapdata) {
 }
 
 function addIdProperty(mockData) {
-  mockData.forEach((point, i) => point.id = i);
+  mockData.forEach((point, i) => {
+    point.id = i;
+    const camelized = point.groupharassedsplit.map(group => camelize(group));
+    point.camelized = new Set(camelized);
+  });
 }
 
 export default class App extends Component {
@@ -63,9 +68,22 @@ export default class App extends Component {
       });
   }
 
-  // updateIncidentReports(id, data) {
+  updateIncidentToEdit = ({ target: { type, name } }) => {
+    const { incidentToEdit } = this.state;
+    const { camelized } = incidentToEdit;
 
-  // }
+    if (type === 'checkbox') {
+      if (camelized.has(name)) {
+        camelized.delete(name);
+      } else {
+        camelized.add(name);
+      }
+      const incidentWithUpdatedCamelized = Object.assign({}, incidentToEdit, { camelized });
+      this.setState({
+        incidentToEdit: incidentWithUpdatedCamelized,
+      });
+    }
+  }
 
   handleOpenDialog = (rowId) => {
     this.setState({
@@ -79,9 +97,7 @@ export default class App extends Component {
   }
 
   updatePage = (page) => {
-    this.setState({
-      currentPage: page,
-    });
+    this.setState({ currentPage: page });
   }
 
   render() {
@@ -93,7 +109,13 @@ export default class App extends Component {
 
     return (
       <div className="verifyIncidentsPage">
-        <EditIncidentDialog open={openDialog} handleCloseDialog={this.handleCloseDialog} incidentToEdit={incidentToEdit} />
+        {openDialog &&
+          <EditIncidentDialog
+            open={openDialog}
+            handleCloseDialog={this.handleCloseDialog}
+            incidentToEdit={incidentToEdit}
+            updateIncidentToEdit={this.updateIncidentToEdit}
+          />}
         {!isFetching &&
           <Table height="calc(100vh - 250px)" fixedHeader>
             <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
