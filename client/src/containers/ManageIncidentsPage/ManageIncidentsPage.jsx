@@ -98,7 +98,7 @@ export default class App extends Component {
     const displayReports = incidentReports.slice(lowerBound, upperBound);
 
     return (
-      <div className="verifyIncidentsPage">
+      <div className="manageIncidentsPage">
         {openDialog &&
           <EditIncidentDialog
             open={openDialog}
