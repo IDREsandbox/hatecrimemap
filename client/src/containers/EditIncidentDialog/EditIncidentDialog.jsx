@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 
-const EditIncidentDialog = ({ handleCloseDialog, open }) => {
+const EditIncidentDialog = ({ handleCloseDialog, open, incidentToEdit }) => {
   const actions = [
     <FlatButton
       label="Cancel"
@@ -22,11 +22,10 @@ const EditIncidentDialog = ({ handleCloseDialog, open }) => {
     <Dialog
       title="Edit Entry"
       actions={actions}
-      modal={false}
       open={open}
       autoScrollBodyContent
     >
-      Edit here
+      {incidentToEdit.id}
     </Dialog>
   );
 };
@@ -34,6 +33,7 @@ const EditIncidentDialog = ({ handleCloseDialog, open }) => {
 EditIncidentDialog.propTypes = {
   open: PropTypes.bool.isRequired,
   handleCloseDialog: PropTypes.func.isRequired,
+  incidentToEdit: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
 };
 
 export default EditIncidentDialog;

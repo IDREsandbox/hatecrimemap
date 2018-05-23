@@ -25,6 +25,10 @@ function createMockData(mapdata) {
   return mockData.slice();
 }
 
+function addIdProperty(mockData) {
+  mockData.forEach((point, i) => point.id = i);
+}
+
 export default class App extends Component {
   constructor(props) {
     super(props);
@@ -33,6 +37,7 @@ export default class App extends Component {
       incidentReports: [],
       currentPage: 1,
       openDialog: false,
+      incidentToEdit: {},
     };
   }
 
@@ -44,6 +49,7 @@ export default class App extends Component {
         const mockData = createMockData(test);
         // end
         const incidentReports = mockData.filter(point => point.verified === '-1');
+        addIdProperty(incidentReports);
         this.setState({
           isFetching: false,
           incidentReports,
@@ -57,8 +63,15 @@ export default class App extends Component {
       });
   }
 
-  handleOpenDialog = () => {
-    this.setState({ openDialog: true });
+  // updateIncidentReports(id, data) {
+
+  // }
+
+  handleOpenDialog = (rowId) => {
+    this.setState({
+      openDialog: true,
+      incidentToEdit: Object.assign({}, this.state.incidentReports[rowId]),
+     });
   }
 
   handleCloseDialog = () => {
@@ -72,16 +85,15 @@ export default class App extends Component {
   }
 
   render() {
-    const { isFetching, incidentReports, currentPage, openDialog } = this.state;
+    const { isFetching, incidentReports, currentPage, openDialog, incidentToEdit } = this.state;
     const totalPages = Math.ceil(incidentReports.length / 50);
     const lowerBound = (currentPage - 1) * 50;
     const upperBound = lowerBound + 50;
     const displayReports = incidentReports.slice(lowerBound, upperBound);
-    let rowNum = lowerBound + 1;
 
     return (
       <div className="verifyIncidentsPage">
-        <EditIncidentDialog open={openDialog} handleCloseDialog={this.handleCloseDialog} />
+        <EditIncidentDialog open={openDialog} handleCloseDialog={this.handleCloseDialog} incidentToEdit={incidentToEdit} />
         {!isFetching &&
           <Table height="calc(100vh - 250px)" fixedHeader>
             <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
@@ -106,13 +118,13 @@ export default class App extends Component {
                   : 'No link';
                 return (
                   <TableRow key={row.featureid} selectable={false}>
-                    <TableRowColumn>{rowNum++}</TableRowColumn>
+                    <TableRowColumn>{row.id + 1}</TableRowColumn>
                     <TableRowColumn>{row.locationname}</TableRowColumn>
                     <TableRowColumn>05/12/2018</TableRowColumn>
                     <TableRowColumn>{row.groupharassedcleaned}</TableRowColumn>
                     <TableRowColumn tooltip="test">{link}</TableRowColumn>
                     <TableRowColumn>
-                      <button onClick={this.handleOpenDialog}>Edit</button>
+                      <button onClick={() => this.handleOpenDialog(row.id)}>Edit</button>
                       <button>Save</button>
                       <button>Delete</button>
                     </TableRowColumn>
