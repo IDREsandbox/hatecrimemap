@@ -1,5 +1,5 @@
 import ghFilters from '../globals/ghFilters';
-import { arrToObject } from './utilities';
+import { arrToObject, camelize } from './utilities';
 
 const filteringOptions = arrToObject(ghFilters);
 filteringOptions.verified = {
@@ -37,6 +37,14 @@ export function updateCurrentLayers(layerName, prevLayers) {
   return currentLayers;
 }
 
+function arrayIncludesAllItems(arr, items) {
+  let includesAll = true;
+  items.forEach((item) => {
+    if (!arr.includes(item)) includesAll = false;
+  });
+  return includesAll;
+}
+
 function addColor(mapdata, currentLayers) {
   let mapdataWithColor;
   // const { size } = currentLayers;
@@ -56,13 +64,15 @@ export function getMapData(layerName, prevLayers) {
   if (currentLayers.size === 0) {
     return allpoints;
   }
-  let mapdata = allpoints.slice();
-  currentLayers.forEach((layer) => {
-    const { customFilter } = filteringOptions[layer];
-    const filteredData = mapdata.filter(point => customFilter(point));
-    mapdata = filteredData;
+  const mapdata = allpoints.slice();
+  const filteredData = mapdata.filter(({ groupharassedsplit, verified }) => {
+    const camelized = groupharassedsplit.map(groupName => camelize(groupName));
+    if (Number(verified) > 0) {
+      camelized.push('verified');
+    }
+    return arrayIncludesAllItems(camelized, Array.from(currentLayers));
   });
-  const mapdataWithColor = addColor(mapdata, currentLayers);
+  const mapdataWithColor = addColor(filteredData, currentLayers);
   return mapdataWithColor.slice();
 }
 
