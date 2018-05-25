@@ -17,6 +17,7 @@ const LocationSearchInput = props => (
           {...getInputProps({
             name: props.name,
             placeholder: 'Search Places ...',
+            underlineShow: props.underlineShow,
           })}
         />
         <div className="locationSearchInput__menu">
@@ -36,11 +37,16 @@ const LocationSearchInput = props => (
   </PlacesAutocomplete>
 );
 
+LocationSearchInput.defaultProps = {
+  underlineShow: true,
+};
+
 LocationSearchInput.propTypes = {
   onChange: PropTypes.func.isRequired,
   onSelect: PropTypes.func.isRequired,
   value: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
+  underlineShow: PropTypes.bool,
 };
 
 export default LocationSearchInput;
