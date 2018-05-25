@@ -34,7 +34,7 @@ function addIdProperty(mockData) {
   });
 }
 
-export default class App extends Component {
+export default class VerifyIncidentsPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -98,7 +98,7 @@ export default class App extends Component {
     const displayReports = incidentReports.slice(lowerBound, upperBound);
 
     return (
-      <div className="manageIncidentsPage">
+      <div className="verifyIncidentsPage">
         {openDialog &&
           <EditIncidentDialog
             open={openDialog}
