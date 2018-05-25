@@ -1,17 +1,9 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import {
-  Table,
-  TableBody,
-  TableFooter,
-  TableHeader,
-  TableHeaderColumn,
-  TableRow,
-  TableRowColumn,
-} from 'material-ui/Table';
 import Pagination from 'material-ui-pagination';
 
 import EditIncidentDialog from '../../components/EditIncidentDialog/EditIncidentDialog';
+import TableWrapper from '../../components/TableWrapper/TableWrapper';
 import { storeMapData, updateCurrentLayers } from '../../utils/filtering';
 import { camelize } from '../../utils/utilities';
 
@@ -59,8 +51,6 @@ export default class VerifyIncidentsPage extends Component {
           isFetching: false,
           incidentReports,
         });
-        console.log(incidentReports[0]);
-        console.log(incidentReports);
       })
       .catch((err) => {
         this.setState({ isFetching: false });
@@ -96,6 +86,8 @@ export default class VerifyIncidentsPage extends Component {
     const lowerBound = (currentPage - 1) * 50;
     const upperBound = lowerBound + 50;
     const displayReports = incidentReports.slice(lowerBound, upperBound);
+    const columnHeaders = ['Row #', 'Harassment Location', 'Date of Harassment', 'Groups Harassed', 'Verification Link', 'Edit/Save/Delete'];
+    const footer = <Pagination total={totalPages} display={7} current={currentPage} onChange={page => this.updatePage(page)} />;
 
     return (
       <div className="verifyIncidentsPage">
@@ -107,51 +99,12 @@ export default class VerifyIncidentsPage extends Component {
             updateIncidentToEdit={this.updateIncidentToEdit}
           />}
         {!isFetching &&
-          <Table height="calc(100vh - 250px)" fixedHeader>
-            <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
-              <TableRow>
-                <TableHeaderColumn colSpan="6" style={{ textAlign: 'center' }}>
-                  Verify Incident Reports
-                </TableHeaderColumn>
-              </TableRow>
-              <TableRow>
-                <TableHeaderColumn>Row #</TableHeaderColumn>
-                <TableHeaderColumn>Harassment Location</TableHeaderColumn>
-                <TableHeaderColumn>Date of Harassment</TableHeaderColumn>
-                <TableHeaderColumn>Groups Harassed</TableHeaderColumn>
-                <TableHeaderColumn>Verification Link</TableHeaderColumn>
-                <TableHeaderColumn>Edit/Save/Delete</TableHeaderColumn>
-              </TableRow>
-            </TableHeader>
-            <TableBody stripedRows displayRowCheckbox={false}>
-              {displayReports.map((row) => {
-                const link = row.validsourceurl === 'true'
-                  ? <button><a href={row.sourceurl} target="_blank">Source Link</a></button>
-                  : 'No link';
-                return (
-                  <TableRow key={row.featureid} selectable={false}>
-                    <TableRowColumn>{row.id + 1}</TableRowColumn>
-                    <TableRowColumn>{row.locationname}</TableRowColumn>
-                    <TableRowColumn>05/12/2018</TableRowColumn>
-                    <TableRowColumn>{row.groupharassedcleaned}</TableRowColumn>
-                    <TableRowColumn tooltip="test">{link}</TableRowColumn>
-                    <TableRowColumn>
-                      <button onClick={() => this.handleOpenDialog(row.id)}>Edit</button>
-                      <button>Save</button>
-                      <button>Delete</button>
-                    </TableRowColumn>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-            <TableFooter>
-              <TableRow>
-                <TableRowColumn style={{ textAlign: 'center' }}>
-                  <Pagination total={totalPages} display={7} current={currentPage} onChange={page => this.updatePage(page)} />
-                </TableRowColumn>
-              </TableRow>
-            </TableFooter>
-          </Table>
+          <TableWrapper
+            tableHeader="Verify Incident Reports"
+            columnHeaders={columnHeaders}
+            bodyData={displayReports}
+            footer={footer}
+          />
         }
       </div>
     );
