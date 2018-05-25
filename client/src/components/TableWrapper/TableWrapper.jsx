@@ -10,7 +10,7 @@ import {
   TableRowColumn,
 } from 'material-ui/Table';
 
-const TableWrapper = ({ tableHeader, columnHeaders, bodyData, footer }) => {
+const TableWrapper = ({ tableHeader, columnHeaders, bodyData, footer, onClick }) => {
   console.log(bodyData[0]);
   const tableRows = bodyData.map((row) => {
     const link = row.validsourceurl === 'true'
@@ -23,7 +23,7 @@ const TableWrapper = ({ tableHeader, columnHeaders, bodyData, footer }) => {
         <TableRowColumn>05/12/2018</TableRowColumn>
         <TableRowColumn>{row.groupharassedcleaned}</TableRowColumn>
         <TableRowColumn tooltip="test">{link}</TableRowColumn>
-        <TableRowColumn>woop</TableRowColumn>
+        <TableRowColumn><button onClick={() => onClick(row.id)}>Edit</button></TableRowColumn>
       </TableRow>
     );
   });
@@ -54,11 +54,16 @@ const TableWrapper = ({ tableHeader, columnHeaders, bodyData, footer }) => {
   );
 };
 
+TableWrapper.defaultProps = {
+  onClick: null,
+};
+
 TableWrapper.propTypes = {
   tableHeader: PropTypes.string.isRequired,
   columnHeaders: PropTypes.arrayOf(PropTypes.string).isRequired,
   bodyData: PropTypes.arrayOf(PropTypes.object).isRequired,
   footer: PropTypes.node.isRequired,
+  onClick: PropTypes.func,
 };
 
 export default TableWrapper;

@@ -104,8 +104,8 @@ export default class VerifyIncidentsPage extends Component {
             columnHeaders={columnHeaders}
             bodyData={displayReports}
             footer={footer}
-          />
-        }
+            onClick={this.handleOpenDialog}
+          />}
       </div>
     );
   }
