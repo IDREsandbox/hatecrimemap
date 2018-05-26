@@ -14,8 +14,6 @@ import ReportIncidentStepper from '../../components/ReportIncidentStepper/Report
 import GHCheckboxList from '../../components/GHCheckboxList/GHCheckboxList';
 import './ReportIncidentPage.css';
 
-const dateRegex = /^\w{3}\s\w{3}\s\d{2}\s\d{4}$/;
-
 export default class ReportIncidentPage extends Component {
   constructor(props) {
     super(props);
@@ -23,7 +21,7 @@ export default class ReportIncidentPage extends Component {
       groupsHarassed: new Set(),
       location: '',
       sourceurl: '',
-      date: '',
+      date: {},
       stepIndex: 0,
       finished: false,
       latLng: {},
@@ -32,7 +30,7 @@ export default class ReportIncidentPage extends Component {
   }
 
   getStepContent = () => {
-    const { location, sourceurl, stepIndex, groupsHarassed, associatedLink } = this.state;
+    const { location, sourceurl, stepIndex, groupsHarassed, date, associatedLink } = this.state;
     const errorText = !this.isFormFilledOut() ? 'Field Required' : '';
 
     switch (stepIndex) {
@@ -55,6 +53,7 @@ export default class ReportIncidentPage extends Component {
             mode="landscape"
             openToYearSelection
             errorText={errorText}
+            value={date}
           />
         );
       case 2:
@@ -88,8 +87,6 @@ export default class ReportIncidentPage extends Component {
     }
   }
 
-  updateAssociatedLink = () => this.setState(oldState => ({ associatedLink: !oldState.associatedLink }));
-
   isFormFilledOut = () => {
     const {
       stepIndex,
@@ -105,7 +102,7 @@ export default class ReportIncidentPage extends Component {
       case 0:
         return location !== '' && latLng.lat;
       case 1:
-        return dateRegex.test(date);
+        return !(Object.keys(date).length === 0 && date.constructor === Object);
       case 2:
         return groupsHarassed.size !== 0;
       case 3:
@@ -125,8 +122,6 @@ export default class ReportIncidentPage extends Component {
     this.setState({ groupsHarassed });
   }
 
-  updateLocation = location => this.setState({ location, latLng: {} });
-
   selectLocation = (location) => {
     geocodeByAddress(location)
       .then(results => getLatLng(results[0]))
@@ -134,12 +129,13 @@ export default class ReportIncidentPage extends Component {
       .catch(error => console.error('Error', error));
   }
 
-  updateDate = (dateObj) => {
-    const date = dateObj.toDateString();
-    this.setState({ date });
-  }
+  updateLocation = location => this.setState({ location, latLng: {} });
+
+  updateDate = date => this.setState({ date });
 
   handleChange = ({ target: { name, value } }) => this.setState({ [name]: value });
+
+  updateAssociatedLink = () => this.setState(oldState => ({ associatedLink: !oldState.associatedLink }));
 
   handleNext = () => {
     const { stepIndex } = this.state;
