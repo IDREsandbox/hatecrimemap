@@ -33,6 +33,7 @@ export default class ReportIncidentPage extends Component {
 
   getStepContent = () => {
     const { location, sourceurl, stepIndex, groupsHarassed, associatedLink } = this.state;
+    const errorText = !this.isFormFilledOut() ? 'Field Required' : '';
 
     switch (stepIndex) {
       case 0:
@@ -42,6 +43,7 @@ export default class ReportIncidentPage extends Component {
             onChange={this.updateLocation}
             onSelect={this.selectLocation}
             value={location}
+            errorText={errorText}
           />
         );
       case 1:
@@ -52,6 +54,7 @@ export default class ReportIncidentPage extends Component {
             hintText="Select a date"
             mode="landscape"
             openToYearSelection
+            errorText={errorText}
           />
         );
       case 2:
@@ -68,6 +71,7 @@ export default class ReportIncidentPage extends Component {
             <TextField
               name="sourceurl"
               onChange={this.handleChange}
+              errorText={errorText}
               hintText="http://www.example.com/"
               floatingLabelText="Paste or type a link to a website"
               defaultValue={sourceurl}
@@ -121,20 +125,12 @@ export default class ReportIncidentPage extends Component {
     this.setState({ groupsHarassed });
   }
 
-  updateLocation = (location) => {
-    this.setState({
-      location,
-      latLng: {},
-     });
-  }
+  updateLocation = location => this.setState({ location, latLng: {} });
 
   selectLocation = (location) => {
     geocodeByAddress(location)
       .then(results => getLatLng(results[0]))
-      .then((latLng) => {
-        console.log('Success', latLng);
-        this.setState({ latLng });
-      })
+      .then(latLng => this.setState({ latLng }))
       .catch(error => console.error('Error', error));
   }
 
@@ -143,9 +139,7 @@ export default class ReportIncidentPage extends Component {
     this.setState({ date });
   }
 
-  handleChange = ({ target: { name, value } }) => {
-    this.setState({ [name]: value });
-  }
+  handleChange = ({ target: { name, value } }) => this.setState({ [name]: value });
 
   handleNext = () => {
     const { stepIndex } = this.state;
@@ -201,9 +195,10 @@ export default class ReportIncidentPage extends Component {
   render() {
     const { stepIndex, finished } = this.state;
     const nextStepContent = this.getStepContent();
+    const nextDisabled = !this.isFormFilledOut();
 
     return (
-      <Paper className="ReportIncidentPage" zDepth={2}>
+      <Paper className="reportIncidentPage" zDepth={2}>
         <ReportIncidentStepper stepIndex={stepIndex} />
         <div>
           {finished ? (
@@ -231,6 +226,7 @@ export default class ReportIncidentPage extends Component {
                   label={stepIndex === 3 ? 'Finish' : 'Next'}
                   primary
                   onClick={this.handleNext}
+                  disabled={nextDisabled}
                 />
               </div>
             </div>

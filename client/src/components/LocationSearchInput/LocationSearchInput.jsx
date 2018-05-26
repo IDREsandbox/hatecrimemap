@@ -18,6 +18,7 @@ const LocationSearchInput = props => (
             name: props.name,
             placeholder: 'Enter location',
             underlineShow: props.underlineShow,
+            errorText: props.errorText,
           })}
         />
         <div className="locationSearchInput__menu">
@@ -39,6 +40,7 @@ const LocationSearchInput = props => (
 
 LocationSearchInput.defaultProps = {
   underlineShow: true,
+  errorText: '',
 };
 
 LocationSearchInput.propTypes = {
@@ -47,6 +49,7 @@ LocationSearchInput.propTypes = {
   value: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   underlineShow: PropTypes.bool,
+  errorText: PropTypes.string,
 };
 
 export default LocationSearchInput;
