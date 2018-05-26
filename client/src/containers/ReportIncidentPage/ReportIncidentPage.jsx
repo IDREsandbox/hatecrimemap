@@ -24,7 +24,7 @@ export default class ReportIncidentPage extends Component {
       location: '',
       sourceurl: '',
       date: '',
-      stepIndex: 3,
+      stepIndex: 0,
       finished: false,
       latLng: {},
       associatedLink: true,
