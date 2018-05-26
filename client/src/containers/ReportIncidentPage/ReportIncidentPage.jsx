@@ -172,10 +172,11 @@ export default class ReportIncidentPage extends Component {
       groupsHarassed: new Set(),
       location: '',
       sourceurl: '',
-      date: '',
+      date: {},
       stepIndex: 0,
       finished: false,
       latLng: {},
+      associatedLink: true,
     });
     axios.post('/api/maps/reportincident', {
       groupsHarassed: Array.from(groupsHarassed),
@@ -227,7 +228,6 @@ export default class ReportIncidentPage extends Component {
               </div>
             </div>
           )}
-
         </div>
       </Paper>
     );
