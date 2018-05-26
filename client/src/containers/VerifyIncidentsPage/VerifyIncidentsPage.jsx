@@ -2,10 +2,13 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import Pagination from 'material-ui-pagination';
 import Divider from 'material-ui/Divider';
+import DropDownMenu from 'material-ui/DropDownMenu';
+import MenuItem from 'material-ui/MenuItem';
+import FlatButton from 'material-ui/FlatButton/FlatButton';
 
 import DialogWrapper from '../../components/DialogWrapper/DialogWrapper';
 import TableWrapper from '../../components/TableWrapper/TableWrapper';
-import { storeMapData, updateCurrentLayers } from '../../utils/filtering';
+import { storeMapData } from '../../utils/filtering';
 import { camelize } from '../../utils/utilities';
 
 function createMockData(mapdata) {
@@ -36,6 +39,7 @@ export default class VerifyIncidentsPage extends Component {
       currentPage: 1,
       openDialog: false,
       incidentToVerify: {},
+      value: 1,
     };
   }
 
@@ -45,8 +49,8 @@ export default class VerifyIncidentsPage extends Component {
         // remove before pushing to production
         const test = storeMapData(mapdata);
         const mockData = createMockData(test);
-        // end
         const incidentReports = mockData.filter(point => point.verified === '-1');
+        // end
         addIdProperty(incidentReports);
         this.setState({
           isFetching: false,
@@ -59,17 +63,6 @@ export default class VerifyIncidentsPage extends Component {
       });
   }
 
-  updateincidentToVerify = ({ target: { type, name } }) => {
-    const { incidentToVerify } = this.state;
-    let { camelized } = incidentToVerify;
-
-    if (type === 'checkbox') {
-      camelized = updateCurrentLayers(name, camelized);
-      const incidentWithUpdatedCamelized = Object.assign({}, incidentToVerify, { camelized });
-      this.setState({ incidentToVerify: incidentWithUpdatedCamelized });
-    }
-  }
-
   handleOpenDialog = (rowId) => {
     this.setState({
       openDialog: true,
@@ -77,13 +70,18 @@ export default class VerifyIncidentsPage extends Component {
      });
   }
 
-  handleCloseDialog = () => this.setState({ openDialog: false });
+  handleCloseDialog = () => this.setState({
+    openDialog: false,
+    value: 1,
+   });
 
   updatePage = page => this.setState({ currentPage: page });
 
+  handleChange = (e, i, value) => this.setState({ value });
+
   render() {
-    const { isFetching, incidentReports, currentPage, openDialog, incidentToVerify } = this.state;
-    const { locationname, groupharassedcleaned, sourceurl } = incidentToVerify;
+    const { isFetching, incidentReports, currentPage, openDialog, incidentToVerify, value } = this.state;
+    const { locationname, groupharassedcleaned, validsourceurl, sourceurl } = incidentToVerify;
     const totalPages = Math.ceil(incidentReports.length / 50);
     const lowerBound = (currentPage - 1) * 50;
     const upperBound = lowerBound + 50;
@@ -97,6 +95,29 @@ export default class VerifyIncidentsPage extends Component {
         onChange={page => this.updatePage(page)}
       />
     );
+    const link = validsourceurl === 'true'
+      ? <button><a href={sourceurl} target="_blank">Source Link</a></button>
+      : 'No link';
+    const actions = [
+      <DropDownMenu
+        value={value}
+        onChange={this.handleChange}
+      >
+        <MenuItem value={1} primaryText="Add as Verified" />
+        <MenuItem value={2} primaryText="Add as Unverified" />
+        <MenuItem value={3} primaryText="Remove Report" />
+      </DropDownMenu>,
+      <FlatButton
+        label="Cancel"
+        primary
+        onClick={this.handleCloseDialog}
+      />,
+      <FlatButton
+        label="Confirm"
+        primary
+        onClick={this.handleCloseDialog}
+      />,
+    ];
 
     return (
       <div className="verifyIncidentsPage">
@@ -105,12 +126,13 @@ export default class VerifyIncidentsPage extends Component {
             title="Verify Incident Report"
             open={openDialog}
             close={this.handleCloseDialog}
+            actions={actions}
           >
-            <p>{locationname}</p>
+            <div>{locationname}</div>
             <Divider />
-            <p>{groupharassedcleaned}</p>
+            <div>{groupharassedcleaned}</div>
             <Divider />
-            <p>{sourceurl}</p>
+            <div>{link}</div>
           </DialogWrapper>
         }
         {!isFetching &&
