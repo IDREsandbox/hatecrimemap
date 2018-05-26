@@ -6,6 +6,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 import Paper from 'material-ui/Paper';
 import TextField from 'material-ui/TextField';
+import Checkbox from 'material-ui/Checkbox';
 import { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
 
 import LocationSearchInput from '../../components/LocationSearchInput/LocationSearchInput';
@@ -23,14 +24,15 @@ export default class ReportIncidentPage extends Component {
       location: '',
       sourceurl: '',
       date: '',
-      stepIndex: 0,
+      stepIndex: 3,
       finished: false,
       latLng: {},
+      associatedLink: true,
     };
   }
 
   getStepContent = () => {
-    const { location, sourceurl, stepIndex, groupsHarassed } = this.state;
+    const { location, sourceurl, stepIndex, groupsHarassed, associatedLink } = this.state;
 
     switch (stepIndex) {
       case 0:
@@ -62,18 +64,27 @@ export default class ReportIncidentPage extends Component {
         );
       case 3:
         return (
-          <TextField
-            name="sourceurl"
-            onChange={this.handleChange}
-            hintText="http://www.example.com/"
-            floatingLabelText="Paste or type a link to a website"
-            defaultValue={sourceurl}
-          />
+          <div>
+            <TextField
+              name="sourceurl"
+              onChange={this.handleChange}
+              hintText="http://www.example.com/"
+              floatingLabelText="Paste or type a link to a website"
+              defaultValue={sourceurl}
+            />
+            <Checkbox
+              label="No assoicated link"
+              checked={!associatedLink}
+              onCheck={this.updateAssociatedLink}
+            />
+          </div>
         );
       default:
         return 'error';
     }
   }
+
+  updateAssociatedLink = () => this.setState(oldState => ({ associatedLink: !oldState.associatedLink }));
 
   isFormFilledOut = () => {
     const {
@@ -83,6 +94,7 @@ export default class ReportIncidentPage extends Component {
       groupsHarassed,
       sourceurl,
       latLng,
+      associatedLink,
     } = this.state;
 
     switch (stepIndex) {
@@ -93,7 +105,7 @@ export default class ReportIncidentPage extends Component {
       case 2:
         return groupsHarassed.size !== 0;
       case 3:
-        return isUrl(sourceurl);
+        return (isUrl(sourceurl) && associatedLink) || (sourceurl === '' && !associatedLink);
       default:
         return true;
     }

@@ -16,7 +16,7 @@ const LocationSearchInput = props => (
         <TextField
           {...getInputProps({
             name: props.name,
-            placeholder: 'Search Places ...',
+            placeholder: 'Enter location',
             underlineShow: props.underlineShow,
           })}
         />
