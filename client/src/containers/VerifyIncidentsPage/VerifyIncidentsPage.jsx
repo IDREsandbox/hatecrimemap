@@ -87,7 +87,7 @@ export default class VerifyIncidentsPage extends Component {
     const upperBound = lowerBound + 50;
     const displayReports = incidentReports.slice(lowerBound, upperBound);
     const columnHeaders = ['Row #', 'Harassment Location', 'Date of Harassment', 'Groups Harassed', 'Verification Link', 'Edit/Save/Delete'];
-    const footer = (
+    const tableFooter = (
       <Pagination
         total={totalPages}
         display={7}
@@ -140,7 +140,7 @@ export default class VerifyIncidentsPage extends Component {
             tableHeader="Verify Incident Reports"
             columnHeaders={columnHeaders}
             bodyData={displayReports}
-            footer={footer}
+            footer={tableFooter}
             onClick={this.handleOpenDialog}
           />
         }
