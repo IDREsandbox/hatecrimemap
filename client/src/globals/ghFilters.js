@@ -119,7 +119,6 @@ const ghFilters = [
 let key = 0;
 ghFilters.forEach((filter) => {
   filter.key = key++;
-  filter.customFilter = ({ groupharassedsplit }) => groupharassedsplit.includes(filter.label);
   filter.name = camelize(filter.label);
 });
 

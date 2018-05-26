@@ -4,7 +4,6 @@ import { arrToObject, camelize } from './utilities';
 const filteringOptions = arrToObject(ghFilters);
 filteringOptions.verified = {
   color: 'red',
-  customFilter: ({ verified }) => Number(verified) > 0,
 };
 let allpoints = [];
 
