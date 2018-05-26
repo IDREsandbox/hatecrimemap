@@ -15,7 +15,7 @@ const SideMenu = ({ updateMapData, resetMapData, currentLayers }) => {
       <form className="sideMenu__form">
         <Toggle
           toggled={toggled}
-          label="Toggle Verified"
+          label="Verified Reports"
           name="verified"
           labelPosition="right"
           onClick={updateMapData}
