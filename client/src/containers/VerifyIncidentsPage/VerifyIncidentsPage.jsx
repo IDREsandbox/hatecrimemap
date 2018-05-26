@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import Pagination from 'material-ui-pagination';
+import Divider from 'material-ui/Divider';
 
-import EditIncidentDialog from '../../components/EditIncidentDialog/EditIncidentDialog';
+import DialogWrapper from '../../components/DialogWrapper/DialogWrapper';
 import TableWrapper from '../../components/TableWrapper/TableWrapper';
 import { storeMapData, updateCurrentLayers } from '../../utils/filtering';
 import { camelize } from '../../utils/utilities';
@@ -34,7 +35,7 @@ export default class VerifyIncidentsPage extends Component {
       incidentReports: [],
       currentPage: 1,
       openDialog: false,
-      incidentToEdit: {},
+      incidentToVerify: {},
     };
   }
 
@@ -58,21 +59,21 @@ export default class VerifyIncidentsPage extends Component {
       });
   }
 
-  updateIncidentToEdit = ({ target: { type, name } }) => {
-    const { incidentToEdit } = this.state;
-    let { camelized } = incidentToEdit;
+  updateincidentToVerify = ({ target: { type, name } }) => {
+    const { incidentToVerify } = this.state;
+    let { camelized } = incidentToVerify;
 
     if (type === 'checkbox') {
       camelized = updateCurrentLayers(name, camelized);
-      const incidentWithUpdatedCamelized = Object.assign({}, incidentToEdit, { camelized });
-      this.setState({ incidentToEdit: incidentWithUpdatedCamelized });
+      const incidentWithUpdatedCamelized = Object.assign({}, incidentToVerify, { camelized });
+      this.setState({ incidentToVerify: incidentWithUpdatedCamelized });
     }
   }
 
   handleOpenDialog = (rowId) => {
     this.setState({
       openDialog: true,
-      incidentToEdit: Object.assign({}, this.state.incidentReports[rowId]),
+      incidentToVerify: Object.assign({}, this.state.incidentReports[rowId]),
      });
   }
 
@@ -81,23 +82,37 @@ export default class VerifyIncidentsPage extends Component {
   updatePage = page => this.setState({ currentPage: page });
 
   render() {
-    const { isFetching, incidentReports, currentPage, openDialog, incidentToEdit } = this.state;
+    const { isFetching, incidentReports, currentPage, openDialog, incidentToVerify } = this.state;
+    const { locationname, groupharassedcleaned, sourceurl } = incidentToVerify;
     const totalPages = Math.ceil(incidentReports.length / 50);
     const lowerBound = (currentPage - 1) * 50;
     const upperBound = lowerBound + 50;
     const displayReports = incidentReports.slice(lowerBound, upperBound);
     const columnHeaders = ['Row #', 'Harassment Location', 'Date of Harassment', 'Groups Harassed', 'Verification Link', 'Edit/Save/Delete'];
-    const footer = <Pagination total={totalPages} display={7} current={currentPage} onChange={page => this.updatePage(page)} />;
+    const footer = (
+      <Pagination
+        total={totalPages}
+        display={7}
+        current={currentPage}
+        onChange={page => this.updatePage(page)}
+      />
+    );
 
     return (
       <div className="verifyIncidentsPage">
         {openDialog &&
-          <EditIncidentDialog
+          <DialogWrapper
+            title="Verify Incident Report"
             open={openDialog}
-            handleCloseDialog={this.handleCloseDialog}
-            incidentToEdit={incidentToEdit}
-            updateIncidentToEdit={this.updateIncidentToEdit}
-          />}
+            close={this.handleCloseDialog}
+          >
+            <p>{locationname}</p>
+            <Divider />
+            <p>{groupharassedcleaned}</p>
+            <Divider />
+            <p>{sourceurl}</p>
+          </DialogWrapper>
+        }
         {!isFetching &&
           <TableWrapper
             tableHeader="Verify Incident Reports"
@@ -105,7 +120,8 @@ export default class VerifyIncidentsPage extends Component {
             bodyData={displayReports}
             footer={footer}
             onClick={this.handleOpenDialog}
-          />}
+          />
+        }
       </div>
     );
   }

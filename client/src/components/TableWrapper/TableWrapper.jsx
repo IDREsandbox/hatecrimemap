@@ -10,8 +10,13 @@ import {
   TableRowColumn,
 } from 'material-ui/Table';
 
-const TableWrapper = ({ tableHeader, columnHeaders, bodyData, footer, onClick }) => {
-  console.log(bodyData[0]);
+const TableWrapper = ({
+  tableHeader,
+  columnHeaders,
+  bodyData,
+  footer,
+  onClick,
+}) => {
   const tableRows = bodyData.map((row) => {
     const link = row.validsourceurl === 'true'
       ? <button><a href={row.sourceurl} target="_blank">Source Link</a></button>
@@ -23,7 +28,9 @@ const TableWrapper = ({ tableHeader, columnHeaders, bodyData, footer, onClick })
         <TableRowColumn>05/12/2018</TableRowColumn>
         <TableRowColumn>{row.groupharassedcleaned}</TableRowColumn>
         <TableRowColumn tooltip="test">{link}</TableRowColumn>
-        <TableRowColumn><button onClick={() => onClick(row.id)}>Edit</button></TableRowColumn>
+        <TableRowColumn>
+          <button onClick={() => onClick(row.id)}>Verify</button>
+        </TableRowColumn>
       </TableRow>
     );
   });
