@@ -1,24 +1,33 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
 import PlacesAutocomplete from 'react-places-autocomplete';
-import TextField from 'material-ui/TextField';
+import TextField from '@material-ui/core/TextField';
 
 import './LocationSearchInput.css';
 
-const LocationSearchInput = props => (
+const styles = theme => ({
+  textField: {
+    margin: theme.spacing.unit,
+    width: 200,
+  },
+});
+
+const LocationSearchInput = ({ value, onChange, onSelect, classes, name, errorText }) => (
   <PlacesAutocomplete
-    value={props.value}
-    onChange={props.onChange}
-    onSelect={props.onSelect}
+    value={value}
+    onChange={onChange}
+    onSelect={onSelect}
   >
     {({ getInputProps, suggestions, getSuggestionItemProps }) => (
       <div>
         <TextField
           {...getInputProps({
-            name: props.name,
+            className: classes.textField,
+            name,
             placeholder: 'Enter location',
-            underlineShow: props.underlineShow,
-            errorText: props.errorText,
+            error: errorText !== '',
+            label: errorText,
           })}
         />
         <div className="locationSearchInput__menu">
@@ -39,7 +48,6 @@ const LocationSearchInput = props => (
 );
 
 LocationSearchInput.defaultProps = {
-  underlineShow: true,
   errorText: '',
 };
 
@@ -48,8 +56,8 @@ LocationSearchInput.propTypes = {
   onSelect: PropTypes.func.isRequired,
   value: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
-  underlineShow: PropTypes.bool,
+  classes: PropTypes.object.isRequired,
   errorText: PropTypes.string,
 };
 
-export default LocationSearchInput;
+export default withStyles(styles)(LocationSearchInput);
