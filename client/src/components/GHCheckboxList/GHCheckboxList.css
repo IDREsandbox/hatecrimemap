@@ -10,10 +10,10 @@
 }
 
 .ghCheckboxList label {
-  display: block;
-  padding: 5px;
+  /* display: block;
+  padding: 5px; */
 }
 
 .ghCheckboxList label input {
-  margin-right: 5px;
+  /* margin-right: 5px; */
 }

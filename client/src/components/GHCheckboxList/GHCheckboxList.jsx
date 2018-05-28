@@ -1,11 +1,21 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Checkbox from 'material-ui/Checkbox';
+import { withStyles } from '@material-ui/core/styles';
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
 
 import ghFilters from '../../globals/ghFilters';
 import './GHCheckboxList.css';
 
-const GHCheckboxList = ({ onClick, groupsChecked, showSVGs }) => {
+const styles = {
+  size: {
+    width: 40,
+    height: 30,
+  },
+};
+
+const GHCheckboxList = ({ onClick, groupsChecked, classes, showSVGs }) => {
   const labels = ghFilters.map(({
     name,
     label,
@@ -23,19 +33,24 @@ const GHCheckboxList = ({ onClick, groupsChecked, showSVGs }) => {
     );
     const checked = groupsChecked.has(name);
     return (
-      <Checkbox
-        checked={checked}
-        key={key}
+      <FormControlLabel
+        control={
+          <Checkbox
+            checked={checked}
+            onClick={onClick}
+            name={name}
+            className={classes.size}
+          />
+        }
         label={labelSVG}
-        name={name}
-        onClick={onClick}
+        key={key}
       />
     );
   });
   return (
-    <div className="ghCheckboxList">
+    <FormGroup className="ghCheckboxList">
       {labels}
-    </div>
+    </FormGroup>
   );
 };
 
@@ -46,7 +61,8 @@ GHCheckboxList.defaultProps = {
 GHCheckboxList.propTypes = {
   onClick: PropTypes.func.isRequired,
   groupsChecked: PropTypes.instanceOf(Set).isRequired,
+  classes: PropTypes.object.isRequired,
   showSVGs: PropTypes.bool,
 };
 
-export default GHCheckboxList;
+export default withStyles(styles)(GHCheckboxList);
