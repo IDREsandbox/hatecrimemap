@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import isUrl from 'is-url';
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
 import DatePicker from 'material-ui/DatePicker';
-import RaisedButton from 'material-ui/RaisedButton';
-import FlatButton from 'material-ui/FlatButton';
-import Paper from 'material-ui/Paper';
-import TextField from 'material-ui/TextField';
-import Checkbox from 'material-ui/Checkbox';
+import Paper from '@material-ui/core/Paper';
 import { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
 
 import LocationSearchInput from '../../components/LocationSearchInput/LocationSearchInput';
@@ -22,7 +22,7 @@ export default class ReportIncidentPage extends Component {
       location: '',
       sourceurl: '',
       date: {},
-      stepIndex: 0,
+      stepIndex: 3,
       finished: false,
       latLng: {},
       associatedLink: true,
@@ -69,16 +69,21 @@ export default class ReportIncidentPage extends Component {
           <div>
             <TextField
               name="sourceurl"
+              error={errorText !== ''}
               onChange={this.handleChange}
-              errorText={errorText}
-              hintText="http://www.example.com/"
-              floatingLabelText="Paste or type a link to a website"
+              label={errorText}
+              helperText="http://www.example.com/"
               defaultValue={sourceurl}
             />
-            <Checkbox
-              label="No assoicated link"
-              checked={!associatedLink}
-              onCheck={this.updateAssociatedLink}
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={!associatedLink}
+                  onChange={this.updateAssociatedLink}
+                  value="associatedLink"
+                />
+              }
+              label="No associated link"
             />
           </div>
         );
@@ -182,7 +187,7 @@ export default class ReportIncidentPage extends Component {
     const nextDisabled = !this.isFormFilledOut();
 
     return (
-      <Paper className="reportIncidentPage" zDepth={2}>
+      <Paper className="reportIncidentPage" elevation={2}>
         <ReportIncidentStepper stepIndex={stepIndex} />
         <div>
           {finished ? (
@@ -201,17 +206,19 @@ export default class ReportIncidentPage extends Component {
             <div>
               <div>{nextStepContent}</div>
               <div>
-                <FlatButton
-                  label="Back"
+                <Button
                   disabled={stepIndex === 0}
                   onClick={this.handlePrev}
-                />
-                <RaisedButton
-                  label={stepIndex === 3 ? 'Finish' : 'Next'}
-                  primary
+                >
+                  Back
+                </Button>
+                <Button
+                  variant="raised"
                   onClick={this.handleNext}
                   disabled={nextDisabled}
-                />
+                >
+                  {stepIndex === 3 ? 'Finish' : 'Next'}
+                </Button>
               </div>
             </div>
           )}
