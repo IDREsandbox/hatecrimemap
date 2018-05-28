@@ -5,8 +5,8 @@ import Divider from 'material-ui/Divider';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
 import FlatButton from 'material-ui/FlatButton/FlatButton';
+import Dialog from 'material-ui/Dialog';
 
-import DialogWrapper from '../../components/DialogWrapper/DialogWrapper';
 import TableWrapper from '../../components/TableWrapper/TableWrapper';
 import { storeMapData } from '../../utils/filtering';
 import { camelize } from '../../utils/utilities';
@@ -122,7 +122,7 @@ export default class VerifyIncidentsPage extends Component {
     return (
       <div className="verifyIncidentsPage">
         {openDialog &&
-          <DialogWrapper
+          <Dialog
             title="Verify Incident Report"
             open={openDialog}
             close={this.handleCloseDialog}
@@ -133,7 +133,7 @@ export default class VerifyIncidentsPage extends Component {
             <div>{groupharassedcleaned}</div>
             <Divider />
             <div>{link}</div>
-          </DialogWrapper>
+          </Dialog>
         }
         {!isFetching &&
           <TableWrapper
