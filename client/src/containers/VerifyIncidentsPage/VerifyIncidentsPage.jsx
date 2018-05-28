@@ -11,6 +11,15 @@ import TableWrapper from '../../components/TableWrapper/TableWrapper';
 import { storeMapData } from '../../utils/filtering';
 import { camelize } from '../../utils/utilities';
 
+function createVerifiedIncident(incident, value) {
+  const verified = value === 1 ? '1' : '0';
+  const verifiedIncident = Object.assign({}, incident, {
+    verified,
+    verifiedbystudent: 'true',
+  });
+  return verifiedIncident;
+}
+
 function createMockData(mapdata) {
   const mockData = mapdata.map((point) => {
     const num = Math.floor(Math.random() * Math.floor(5));
@@ -29,6 +38,7 @@ function addIdProperty(mockData) {
     point.camelized = new Set(camelized);
   });
 }
+const primaryTexts = ['Add as Verified', 'Add as Unverified', 'Remove Report'];
 
 export default class VerifyIncidentsPage extends Component {
   constructor(props) {
@@ -79,6 +89,24 @@ export default class VerifyIncidentsPage extends Component {
 
   handleChange = (e, i, value) => this.setState({ value });
 
+  verifyIncidentReport = () => {
+    const { value, incidentToVerify } = this.state;
+    const confirmed = window.confirm(`Press OK to ${primaryTexts[value - 1].toLowerCase()}`);
+    if (confirmed) {
+      if (value === 3) {
+        axios.delete('/api/maps/removeincident', incidentToVerify.featureid)
+          .then(res => console.log(res.data))
+          .catch(err => console.log(err));
+      } else {
+        const verifiedIncident = createVerifiedIncident(incidentToVerify, value);
+        axios.post('/api/maps/verifyincident', verifiedIncident)
+          .then(res => console.log(res.data))
+          .catch(err => console.log(err));
+      }
+      this.handleCloseDialog();
+    }
+  };
+
   render() {
     const { isFetching, incidentReports, currentPage, openDialog, incidentToVerify, value } = this.state;
     const { locationname, groupharassedcleaned, validsourceurl, sourceurl } = incidentToVerify;
@@ -86,7 +114,7 @@ export default class VerifyIncidentsPage extends Component {
     const lowerBound = (currentPage - 1) * 50;
     const upperBound = lowerBound + 50;
     const displayReports = incidentReports.slice(lowerBound, upperBound);
-    const columnHeaders = ['Row #', 'Harassment Location', 'Date of Harassment', 'Groups Harassed', 'Verification Link', 'Edit/Save/Delete'];
+    const columnHeaders = ['Row #', 'Harassment Location', 'Date of Harassment', 'Groups Harassed', 'Verification Link', 'Verify'];
     const tableFooter = (
       <Pagination
         total={totalPages}
@@ -103,9 +131,9 @@ export default class VerifyIncidentsPage extends Component {
         value={value}
         onChange={this.handleChange}
       >
-        <MenuItem value={1} primaryText="Add as Verified" />
-        <MenuItem value={2} primaryText="Add as Unverified" />
-        <MenuItem value={3} primaryText="Remove Report" />
+        <MenuItem value={1} primaryText={primaryTexts[0]} />
+        <MenuItem value={2} primaryText={primaryTexts[1]} />
+        <MenuItem value={3} primaryText={primaryTexts[2]} />
       </DropDownMenu>,
       <FlatButton
         label="Cancel"
@@ -115,7 +143,7 @@ export default class VerifyIncidentsPage extends Component {
       <FlatButton
         label="Confirm"
         primary
-        onClick={this.handleCloseDialog}
+        onClick={this.verifyIncidentReport}
       />,
     ];
 

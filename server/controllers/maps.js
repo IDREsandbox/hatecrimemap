@@ -40,9 +40,19 @@ router.get('/unreviewedpoints', (req, res) => {
     .catch(err => console.log('ERROR:', err));
 });
 
+router.post('/verifyincident', (req, res) => {
+  console.log(req.body);
+  res.end('incident verified');
+});
+
 router.post('/reportincident', (req, res) => {
   console.log(req.body);
   res.end('server received data');
+});
+
+router.delete('/removeincident', (req, res) => {
+  console.log(req.body);
+  res.send('incident removed');
 });
 
 module.exports = router;

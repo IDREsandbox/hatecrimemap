@@ -160,13 +160,6 @@ export default class ReportIncidentPage extends Component {
   }
 
   reportIncident = () => {
-    const {
-      groupsHarassed,
-      location,
-      sourceurl,
-      date,
-      latLng,
-    } = this.state;
     console.log(this.state);
     this.setState({
       groupsHarassed: new Set(),
@@ -178,15 +171,9 @@ export default class ReportIncidentPage extends Component {
       latLng: {},
       associatedLink: true,
     });
-    axios.post('/api/maps/reportincident', {
-      groupsHarassed: Array.from(groupsHarassed),
-      location,
-      sourceurl,
-      date,
-      latLng,
-    })
-    .then(res => console.log(res.data))
-    .catch(err => console.log(err));
+    axios.post('/api/maps/reportincident', this.state)
+      .then(res => console.log(res.data))
+      .catch(err => console.log(err));
   }
 
   render() {
