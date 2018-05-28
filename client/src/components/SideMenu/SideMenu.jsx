@@ -1,28 +1,42 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Toggle from 'material-ui/Toggle';
-import RaisedButton from 'material-ui/RaisedButton';
+import { withStyles } from '@material-ui/core/styles';
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Switch from '@material-ui/core/Switch';
+import Button from '@material-ui/core/Button';
 
 import GHCheckboxList from '../GHCheckboxList/GHCheckboxList';
 import './SideMenu.css';
 
-const SideMenu = ({ updateMapData, resetMapData, currentLayers }) => {
+const styles = theme => ({
+  button: {
+    margin: theme.spacing.unit,
+  },
+});
+
+const SideMenu = ({ updateMapData, resetMapData, currentLayers, classes }) => {
   const toggled = currentLayers.has('verified');
 
   return (
     <div className="sideMenu">
       <h2 className="sideMenu__header">Filters</h2>
-      <form className="sideMenu__form">
-        <Toggle
-          toggled={toggled}
+      <FormGroup className="sideMenu__form">
+        <FormControlLabel
+          control={
+            <Switch
+              checked={toggled}
+              onClick={updateMapData}
+              name="verified"
+            />
+          }
           label="Verified Reports"
-          name="verified"
-          labelPosition="right"
-          onClick={updateMapData}
         />
         <GHCheckboxList onClick={updateMapData} groupsChecked={currentLayers} showSVGs />
-        <RaisedButton label="Reset Filters" onClick={resetMapData} primary />
-      </form>
+        <Button className={classes.button} variant="raised" onClick={resetMapData} color="primary">
+          Reset Filters
+        </Button>
+      </FormGroup>
     </div>
   );
 };
@@ -31,6 +45,7 @@ SideMenu.propTypes = {
   updateMapData: PropTypes.func.isRequired,
   resetMapData: PropTypes.func.isRequired,
   currentLayers: PropTypes.instanceOf(Set).isRequired,
+  classes: PropTypes.object.isRequired,
 };
 
-export default SideMenu;
+export default withStyles(styles)(SideMenu);
