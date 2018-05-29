@@ -4,8 +4,7 @@
   "private": true,
   "devDependencies": {
     "enzyme-to-json": "^3.3.3",
-    "jest": "^22.4.3",
-    "react-scripts": "^1.1.0"
+    "jest": "^22.4.3"
   },
   "dependencies": {
     "@material-ui/core": "^1.1.0",
@@ -18,13 +17,14 @@
     "material-ui": "^0.20.0",
     "material-ui-pagination": "^1.1.6",
     "prop-types": "^15.6.1",
-    "react": "^16.2.0",
-    "react-dom": "^16.2.0",
+    "react": "^16.4.0",
+    "react-dom": "^16.4.0",
     "react-leaflet": "^1.8.2",
     "react-places-autocomplete": "^7.1.1",
     "react-router-dom": "^4.2.2",
     "react-tap-event-plugin": "^3.0.2",
-    "react-test-renderer": "^16.3.2"
+    "react-test-renderer": "^16.3.2",
+    "react-scripts": "^1.1.4"
   },
   "scripts": {
     "start": "react-scripts start",
