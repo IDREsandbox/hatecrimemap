@@ -5,8 +5,10 @@ import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
-import DatePicker from 'material-ui/DatePicker';
 import Paper from '@material-ui/core/Paper';
+import DateFnsUtils from 'material-ui-pickers/utils/date-fns-utils';
+import MuiPickersUtilsProvider from 'material-ui-pickers/utils/MuiPickersUtilsProvider';
+import DatePicker from 'material-ui-pickers/DatePicker';
 import { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
 
 import LocationSearchInput from '../../components/LocationSearchInput/LocationSearchInput';
@@ -22,7 +24,7 @@ export default class ReportIncidentPage extends Component {
       location: '',
       sourceurl: '',
       date: {},
-      stepIndex: 1,
+      stepIndex: 0,
       finished: false,
       latLng: {},
       associatedLink: true,
@@ -46,15 +48,21 @@ export default class ReportIncidentPage extends Component {
         );
       case 1:
         return (
-          <DatePicker
-            name="date"
-            onChange={(e, dateObj) => this.updateDate(dateObj)}
-            hintText="Select a date"
-            mode="landscape"
-            openToYearSelection
-            errorText={errorText}
-            value={date}
-          />
+          <MuiPickersUtilsProvider utils={DateFnsUtils}>
+            <DatePicker
+              keyboard
+              label="Select a date"
+              format="MM/DD/YYYY"
+              placeholder="08/21/2018"
+              showTodayButton
+              mask={value => (value ? [/\d/, /\d/, '/', /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/] : [])}
+              value={date}
+              onChange={this.updateDate}
+              disableOpenOnEnter
+              maxDate={new Date()}
+              maxDateMessage="Date must be less than today"
+            />
+          </MuiPickersUtilsProvider>
         );
       case 2:
         return (
@@ -128,6 +136,7 @@ export default class ReportIncidentPage extends Component {
   }
 
   selectLocation = (location) => {
+    this.updateLocation(location);
     geocodeByAddress(location)
       .then(results => getLatLng(results[0]))
       .then(latLng => this.setState({ latLng }))
