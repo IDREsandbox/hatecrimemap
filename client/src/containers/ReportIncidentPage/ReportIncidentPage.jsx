@@ -1,22 +1,55 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import axios from 'axios';
 import isUrl from 'is-url';
-import Button from '@material-ui/core/Button';
+// import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
-import Paper from '@material-ui/core/Paper';
+// import Paper from '@material-ui/core/Paper';
 import DateFnsUtils from 'material-ui-pickers/utils/date-fns-utils';
 import MuiPickersUtilsProvider from 'material-ui-pickers/utils/MuiPickersUtilsProvider';
 import DatePicker from 'material-ui-pickers/DatePicker';
 import { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
 
-import LocationSearchInput from '../../components/LocationSearchInput/LocationSearchInput';
-import ReportIncidentStepper from '../../components/ReportIncidentStepper/ReportIncidentStepper';
-import GHCheckboxList from '../../components/GHCheckboxList/GHCheckboxList';
-import './ReportIncidentPage.css';
+import { withStyles } from '@material-ui/core/styles';
+import Stepper from '@material-ui/core/Stepper';
+import Step from '@material-ui/core/Step';
+import StepLabel from '@material-ui/core/StepLabel';
+import StepContent from '@material-ui/core/StepContent';
+import Button from '@material-ui/core/Button';
+import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
 
-export default class ReportIncidentPage extends Component {
+import LocationSearchInput from '../../components/LocationSearchInput/LocationSearchInput';
+// import ReportIncidentStepper from '../../components/ReportIncidentStepper/ReportIncidentStepper';
+import GHCheckboxList from '../../components/GHCheckboxList/GHCheckboxList';
+
+const styles = theme => ({
+  root: {
+    margin: '50px auto',
+    width: '50%',
+  },
+  button: {
+    marginTop: theme.spacing.unit,
+    marginRight: theme.spacing.unit,
+  },
+  actionsContainer: {
+    marginBottom: theme.spacing.unit * 2,
+  },
+  resetContainer: {
+    padding: theme.spacing.unit * 3,
+  },
+});
+
+const getSteps = () => [
+  'Harassment Location',
+  'Date of Harassment',
+  'Groups Harassed',
+  'Verification Link',
+];
+
+class ReportIncidentPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -24,18 +57,17 @@ export default class ReportIncidentPage extends Component {
       location: '',
       sourceurl: '',
       date: {},
-      stepIndex: 0,
-      finished: false,
+      activeStep: 0,
       latLng: {},
       associatedLink: true,
     };
   }
 
-  getStepContent = () => {
-    const { location, sourceurl, stepIndex, groupsHarassed, date, associatedLink } = this.state;
+  getStepContent = (index) => {
+    const { location, sourceurl, activeStep, groupsHarassed, date, associatedLink } = this.state;
     const errorText = !this.isFormFilledOut() ? 'Field Required' : '';
 
-    switch (stepIndex) {
+    switch (index || activeStep) {
       case 0:
         return (
           <LocationSearchInput
@@ -102,7 +134,7 @@ export default class ReportIncidentPage extends Component {
 
   isFormFilledOut = () => {
     const {
-      stepIndex,
+      activeStep,
       location,
       date,
       groupsHarassed,
@@ -111,7 +143,7 @@ export default class ReportIncidentPage extends Component {
       associatedLink,
     } = this.state;
 
-    switch (stepIndex) {
+    switch (activeStep) {
       case 0:
         return location !== '' && latLng.lat;
       case 1:
@@ -152,26 +184,22 @@ export default class ReportIncidentPage extends Component {
   updateAssociatedLink = () => this.setState(oldState => ({ associatedLink: !oldState.associatedLink }));
 
   handleNext = () => {
-    const { stepIndex } = this.state;
+    const { activeStep } = this.state;
     if (!this.isFormFilledOut()) {
-      const alertMessage = stepIndex === 3
+      const alertMessage = activeStep === 3
         ? 'A correctly formatted url is required before continuing.'
         : 'This field is required before continuing.';
       alert(alertMessage);
       return;
     }
     this.setState({
-      stepIndex: stepIndex + 1,
-      finished: stepIndex >= 3,
+      activeStep: activeStep + 1,
     });
   }
 
-  handlePrev = () => {
-    const { stepIndex } = this.state;
-    if (stepIndex > 0) {
-      this.setState({ stepIndex: stepIndex - 1 });
-    }
-  }
+  handleBack = () => this.setState({ activeStep: this.state.activeStep - 1 });
+
+  handleReset = () => this.setState({ activeStep: 0 });
 
   reportIncident = () => {
     console.log(this.state);
@@ -180,8 +208,7 @@ export default class ReportIncidentPage extends Component {
       location: '',
       sourceurl: '',
       date: {},
-      stepIndex: 0,
-      finished: false,
+      activeStep: 0,
       latLng: {},
       associatedLink: true,
     });
@@ -191,48 +218,98 @@ export default class ReportIncidentPage extends Component {
   }
 
   render() {
-    const { stepIndex, finished } = this.state;
+    const { activeStep } = this.state;
+    const { classes } = this.props;
+    const steps = getSteps();
     const nextStepContent = this.getStepContent();
     const nextDisabled = !this.isFormFilledOut();
 
     return (
-      <Paper className="reportIncidentPage" elevation={2}>
-        <ReportIncidentStepper stepIndex={stepIndex} />
-        <div>
-          {finished ? (
-            <p>
-              <button
-                onClick={(event) => {
-                  this.reportIncident();
-                  event.preventDefault();
-                  this.setState({ stepIndex: 0, finished: false });
-                }}
-              >
-                Click here
-              </button> to console log data and reset form.
-            </p>
-          ) : (
-            <div>
-              <div>{nextStepContent}</div>
-              <div>
-                <Button
-                  disabled={stepIndex === 0}
-                  onClick={this.handlePrev}
-                >
-                  Back
-                </Button>
-                <Button
-                  variant="raised"
-                  onClick={this.handleNext}
-                  disabled={nextDisabled}
-                >
-                  {stepIndex === 3 ? 'Finish' : 'Next'}
-                </Button>
-              </div>
-            </div>
-          )}
-        </div>
+      <Paper className={classes.root}>
+        <Stepper activeStep={activeStep} orientation="vertical">
+          {steps.map((label, index) => {
+            return (
+              <Step key={label}>
+                <StepLabel>{label}</StepLabel>
+                <StepContent>
+                  <Typography>{nextStepContent}</Typography>
+                  <div className={classes.actionsContainer}>
+                    <div>
+                      <Button
+                        disabled={activeStep === 0}
+                        onClick={this.handleBack}
+                        className={classes.button}
+                      >
+                        Back
+                      </Button>
+                      <Button
+                        variant="raised"
+                        color="primary"
+                        onClick={this.handleNext}
+                        className={classes.button}
+                        disabled={nextDisabled}
+                      >
+                        {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+                      </Button>
+                    </div>
+                  </div>
+                </StepContent>
+              </Step>
+            );
+          })}
+        </Stepper>
+        {activeStep === steps.length && (
+          <Paper square elevation={0} className={classes.resetContainer}>
+            <Typography>All steps completed - you&quot;re finished</Typography>
+            <Button onClick={this.handleReset} className={classes.button}>
+              Reset
+            </Button>
+          </Paper>
+        )}
       </Paper>
+      // <Paper className="reportIncidentPage" elevation={2}>
+      //   <ReportIncidentStepper stepIndex={stepIndex} />
+      //   <div>
+      //     {finished ? (
+      //       <p>
+      //         <button
+      //           onClick={(event) => {
+      //             this.reportIncident();
+      //             event.preventDefault();
+      //             this.setState({ stepIndex: 0, finished: false });
+      //           }}
+      //         >
+      //           Click here
+      //         </button> to console log data and reset form.
+      //       </p>
+      //     ) : (
+      //       <div>
+      //         <div>{nextStepContent}</div>
+      //         <div>
+      //           <Button
+      //             disabled={stepIndex === 0}
+      //             onClick={this.handlePrev}
+      //           >
+      //             Back
+      //           </Button>
+      //           <Button
+      //             variant="raised"
+      //             onClick={this.handleNext}
+      //             disabled={nextDisabled}
+      //           >
+      //             {stepIndex === 3 ? 'Finish' : 'Next'}
+      //           </Button>
+      //         </div>
+      //       </div>
+      //     )}
+      //   </div>
+      // </Paper>
     );
   }
 }
+
+ReportIncidentPage.propTypes = {
+  classes: PropTypes.object.isRequired,
+};
+
+export default withStyles(styles)(ReportIncidentPage);

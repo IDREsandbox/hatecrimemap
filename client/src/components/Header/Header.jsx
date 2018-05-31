@@ -11,7 +11,7 @@ import HomeIcon from '@material-ui/icons/Home';
 
 const styles = {
   root: {
-    flexGrow: 1,
+
   },
   flex: {
     flex: 1,
