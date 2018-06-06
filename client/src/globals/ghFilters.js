@@ -114,6 +114,10 @@ const ghFilters = [
     label: 'Boys',
     color: '#673901',
   },
+  {
+    label: 'Other',
+    color: '#000',
+  },
 ];
 
 let key = 0;
