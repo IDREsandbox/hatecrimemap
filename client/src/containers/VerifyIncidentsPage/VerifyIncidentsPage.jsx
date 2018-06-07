@@ -6,7 +6,7 @@ import MenuItem from 'material-ui/MenuItem';
 import FlatButton from 'material-ui/FlatButton/FlatButton';
 import Dialog from 'material-ui/Dialog';
 
-import SimpleTable from '../../components/SimpleTable';
+import SimpleTable from '../../components/SimpleTable/SimpleTable';
 import { storeMapData } from '../../utils/filtering';
 import { camelize } from '../../utils/utilities';
 
