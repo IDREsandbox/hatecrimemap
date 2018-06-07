@@ -2,27 +2,22 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 import isUrl from 'is-url';
-// import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
-// import Paper from '@material-ui/core/Paper';
 import DateFnsUtils from 'material-ui-pickers/utils/date-fns-utils';
 import MuiPickersUtilsProvider from 'material-ui-pickers/utils/MuiPickersUtilsProvider';
 import DatePicker from 'material-ui-pickers/DatePicker';
 import { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
-
 import { withStyles } from '@material-ui/core/styles';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
-import StepContent from '@material-ui/core/StepContent';
 import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 
 import LocationSearchInput from '../../components/LocationSearchInput/LocationSearchInput';
-// import ReportIncidentStepper from '../../components/ReportIncidentStepper/ReportIncidentStepper';
 import GHCheckboxList from '../../components/GHCheckboxList/GHCheckboxList';
 
 const styles = theme => ({
@@ -31,14 +26,11 @@ const styles = theme => ({
     width: '50%',
   },
   button: {
-    marginTop: theme.spacing.unit,
     marginRight: theme.spacing.unit,
   },
-  actionsContainer: {
-    marginBottom: theme.spacing.unit * 2,
-  },
-  resetContainer: {
-    padding: theme.spacing.unit * 3,
+  instructions: {
+    marginTop: theme.spacing.unit,
+    marginBottom: theme.spacing.unit,
   },
 });
 
@@ -222,88 +214,51 @@ class ReportIncidentPage extends Component {
     const { classes } = this.props;
     const steps = getSteps();
     const nextStepContent = this.getStepContent();
-    const nextDisabled = !this.isFormFilledOut();
 
     return (
       <Paper className={classes.root}>
-        <Stepper activeStep={activeStep} orientation="vertical">
-          {steps.map((label, index) => {
-            return (
-              <Step key={label}>
-                <StepLabel>{label}</StepLabel>
-                <StepContent>
-                  <Typography>{nextStepContent}</Typography>
-                  <div className={classes.actionsContainer}>
-                    <div>
-                      <Button
-                        disabled={activeStep === 0}
-                        onClick={this.handleBack}
-                        className={classes.button}
-                      >
-                        Back
-                      </Button>
-                      <Button
-                        variant="raised"
-                        color="primary"
-                        onClick={this.handleNext}
-                        className={classes.button}
-                        disabled={nextDisabled}
-                      >
-                        {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-                      </Button>
-                    </div>
-                  </div>
-                </StepContent>
-              </Step>
-            );
-          })}
+        <Stepper activeStep={activeStep}>
+          {steps.map(label => (
+            <Step key={label}>
+              <StepLabel>{label}</StepLabel>
+            </Step>
+          ))}
         </Stepper>
-        {activeStep === steps.length && (
-          <Paper square elevation={0} className={classes.resetContainer}>
-            <Typography>All steps completed - you&quot;re finished</Typography>
-            <Button onClick={this.handleReset} className={classes.button}>
-              Reset
-            </Button>
-          </Paper>
-        )}
+        <div>
+          {activeStep === steps.length ? (
+            <div>
+              <Typography className={classes.instructions}>
+                All steps completed - you&quot;re finished
+              </Typography>
+              <Button onClick={this.handleReset} className={classes.button}>
+                Reset
+              </Button>
+            </div>
+          ) : (
+            <div>
+              <Typography className={classes.instructions}>{nextStepContent}</Typography>
+              <div>
+                <Button
+                  disabled={activeStep === 0}
+                  onClick={this.handleBack}
+                  className={classes.button}
+                >
+                  Back
+                </Button>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={this.handleNext}
+                  className={classes.button}
+                  disabled={!this.isFormFilledOut()}
+                >
+                  {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+                </Button>
+              </div>
+            </div>
+          )}
+        </div>
       </Paper>
-      // <Paper className="reportIncidentPage" elevation={2}>
-      //   <ReportIncidentStepper stepIndex={stepIndex} />
-      //   <div>
-      //     {finished ? (
-      //       <p>
-      //         <button
-      //           onClick={(event) => {
-      //             this.reportIncident();
-      //             event.preventDefault();
-      //             this.setState({ stepIndex: 0, finished: false });
-      //           }}
-      //         >
-      //           Click here
-      //         </button> to console log data and reset form.
-      //       </p>
-      //     ) : (
-      //       <div>
-      //         <div>{nextStepContent}</div>
-      //         <div>
-      //           <Button
-      //             disabled={stepIndex === 0}
-      //             onClick={this.handlePrev}
-      //           >
-      //             Back
-      //           </Button>
-      //           <Button
-      //             variant="raised"
-      //             onClick={this.handleNext}
-      //             disabled={nextDisabled}
-      //           >
-      //             {stepIndex === 3 ? 'Finish' : 'Next'}
-      //           </Button>
-      //         </div>
-      //       </div>
-      //     )}
-      //   </div>
-      // </Paper>
     );
   }
 }
