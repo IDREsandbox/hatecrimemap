@@ -94,12 +94,10 @@ export default class VerifyIncidentsPage extends Component {
     return displayableData;
   }
 
-  handleOpenDialog = () => (rowId) => {
-    this.setState({
+  handleOpenDialog = rowId => () => this.setState({
       openDialog: true,
       incidentToVerify: Object.assign({}, this.state.incidentReports[rowId]),
-     });
-  }
+    });
 
   handleCloseDialog = () => this.setState({
     openDialog: false,
