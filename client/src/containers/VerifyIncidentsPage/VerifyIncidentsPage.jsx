@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import Pagination from 'material-ui-pagination';
 import Divider from 'material-ui/Divider';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
 import FlatButton from 'material-ui/FlatButton/FlatButton';
 import Dialog from 'material-ui/Dialog';
 
-import TableWrapper from '../../components/TableWrapper/TableWrapper';
+import SimpleTable from '../../components/SimpleTable';
 import { storeMapData } from '../../utils/filtering';
 import { camelize } from '../../utils/utilities';
 
@@ -31,6 +30,15 @@ function createMockData(mapdata) {
   return mockData.slice();
 }
 
+const columnHeaders = [
+  'Harassment Location',
+  'Date of Harassment',
+  'Date Submitted',
+  'Groups Harassed',
+  'Verification Link',
+  'Action',
+];
+
 function addIdProperty(mockData) {
   mockData.forEach((point, i) => {
     point.id = i;
@@ -46,7 +54,6 @@ export default class VerifyIncidentsPage extends Component {
     this.state = {
       isFetching: true,
       incidentReports: [],
-      currentPage: 1,
       openDialog: false,
       incidentToVerify: {},
       value: 1,
@@ -73,7 +80,21 @@ export default class VerifyIncidentsPage extends Component {
       });
   }
 
-  handleOpenDialog = (rowId) => {
+  convertReportsToDisplayableData = (reports) => {
+    const displayableData = reports.map((report, i) => (
+      [
+        report.locationname,
+        '1/21/1996',
+        '1/24/2016',
+        report.groupharassedcleaned,
+        <button>Link</button>,
+        <button onClick={this.handleOpenDialog(i)}>Action</button>,
+      ]
+    ));
+    return displayableData;
+  }
+
+  handleOpenDialog = () => (rowId) => {
     this.setState({
       openDialog: true,
       incidentToVerify: Object.assign({}, this.state.incidentReports[rowId]),
@@ -84,8 +105,6 @@ export default class VerifyIncidentsPage extends Component {
     openDialog: false,
     value: 1,
    });
-
-  updatePage = page => this.setState({ currentPage: page });
 
   handleChange = (e, i, value) => this.setState({ value });
 
@@ -108,21 +127,8 @@ export default class VerifyIncidentsPage extends Component {
   };
 
   render() {
-    const { isFetching, incidentReports, currentPage, openDialog, incidentToVerify, value } = this.state;
+    const { isFetching, incidentReports, openDialog, incidentToVerify, value } = this.state;
     const { locationname, groupharassedcleaned, validsourceurl, sourceurl } = incidentToVerify;
-    const totalPages = Math.ceil(incidentReports.length / 50);
-    const lowerBound = (currentPage - 1) * 50;
-    const upperBound = lowerBound + 50;
-    const displayReports = incidentReports.slice(lowerBound, upperBound);
-    const columnHeaders = ['Row #', 'Harassment Location', 'Date of Harassment', 'Groups Harassed', 'Verification Link', 'Verify'];
-    const tableFooter = (
-      <Pagination
-        total={totalPages}
-        display={7}
-        current={currentPage}
-        onChange={page => this.updatePage(page)}
-      />
-    );
     const link = validsourceurl === 'true'
       ? <button><a href={sourceurl} target="_blank">Source Link</a></button>
       : 'No link';
@@ -146,6 +152,7 @@ export default class VerifyIncidentsPage extends Component {
         onClick={this.verifyIncidentReport}
       />,
     ];
+    const displayData = this.convertReportsToDisplayableData(incidentReports);
 
     return (
       <div className="verifyIncidentsPage">
@@ -164,12 +171,9 @@ export default class VerifyIncidentsPage extends Component {
           </Dialog>
         }
         {!isFetching &&
-          <TableWrapper
-            tableHeader="Verify Incident Reports"
+          <SimpleTable
             columnHeaders={columnHeaders}
-            bodyData={displayReports}
-            footer={tableFooter}
-            onClick={this.handleOpenDialog}
+            tableData={displayData}
           />
         }
       </div>
