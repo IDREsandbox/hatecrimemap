@@ -1,9 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import FormGroup from '@material-ui/core/FormGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
+import { FormGroup, FormControlLabel, Checkbox } from '@material-ui/core';
 
 import ghFilters from '../../globals/ghFilters';
 import './GHCheckboxList.css';
