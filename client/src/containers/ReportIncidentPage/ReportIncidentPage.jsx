@@ -23,7 +23,7 @@ import GHCheckboxList from '../../components/GHCheckboxList/GHCheckboxList';
 const styles = theme => ({
   root: {
     margin: '50px auto',
-    width: '50%',
+    width: '80%',
   },
   button: {
     marginRight: theme.spacing.unit,
@@ -236,7 +236,7 @@ class ReportIncidentPage extends Component {
             </div>
           ) : (
             <div>
-              <Typography className={classes.instructions}>{nextStepContent}</Typography>
+              <div>{nextStepContent}</div>
               <div>
                 <Button
                   disabled={activeStep === 0}
@@ -246,7 +246,7 @@ class ReportIncidentPage extends Component {
                   Back
                 </Button>
                 <Button
-                  variant="contained"
+                  variant="flat"
                   color="primary"
                   onClick={this.handleNext}
                   className={classes.button}
