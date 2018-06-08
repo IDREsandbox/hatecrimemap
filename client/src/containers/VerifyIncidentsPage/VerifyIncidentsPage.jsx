@@ -78,15 +78,14 @@ class VerifyIncidentsPage extends Component {
       });
   }
 
-  removeReport = (i) => {
+  removeReport = ({ target: { name } }) => {
     const { incidentReports } = this.state;
-    const reportToRemove = incidentReports[i];
-    const newIncidentReports = incidentReports.filter(({ featureid }) => featureid !== reportToRemove.featureid);
+    const newIncidentReports = incidentReports.filter(({ featureid }) => featureid !== name);
     this.setState({ incidentReports: newIncidentReports });
   }
 
   convertReportsToTableData = (reports) => {
-    const displayableData = reports.map((report, i) => {
+    const displayableData = reports.map((report) => {
       const link = report.validsourceurl === 'true'
         ? <button><a href={report.sourceurl} target="_blank">Source link</a></button>
         : 'No link';
@@ -97,29 +96,11 @@ class VerifyIncidentsPage extends Component {
         '1/24/2016',
         report.groupharassedcleaned,
         link,
-        <button onClick={() => this.removeReport(i)}>Action</button>,
+        <button onClick={this.removeReport} name={report.featureid}>Action</button>,
       ];
     });
     return displayableData;
   }
-
-  // verifyIncidentReport = () => {
-  //   const { value, incidentToVerify } = this.state;
-  //   const confirmed = window.confirm(`Press OK to ${primaryTexts[value - 1].toLowerCase()}`);
-  //   if (confirmed) {
-  //     if (value === 3) {
-  //       axios.delete('/api/maps/removeincident', incidentToVerify.featureid)
-  //         .then(res => console.log(res.data))
-  //         .catch(err => console.log(err));
-  //     } else {
-  //       const verifiedIncident = createVerifiedIncident(incidentToVerify, value);
-  //       axios.post('/api/maps/verifyincident', verifiedIncident)
-  //         .then(res => console.log(res.data))
-  //         .catch(err => console.log(err));
-  //     }
-  //     this.handleCloseDialog();
-  //   }
-  // };
 
   render() {
     const { isFetching, incidentReports } = this.state;
