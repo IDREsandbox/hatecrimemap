@@ -2,20 +2,22 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 import isUrl from 'is-url';
-import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
 import DateFnsUtils from 'material-ui-pickers/utils/date-fns-utils';
 import MuiPickersUtilsProvider from 'material-ui-pickers/utils/MuiPickersUtilsProvider';
 import DatePicker from 'material-ui-pickers/DatePicker';
 import { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
 import { withStyles } from '@material-ui/core/styles';
-import Stepper from '@material-ui/core/Stepper';
-import Step from '@material-ui/core/Step';
-import StepLabel from '@material-ui/core/StepLabel';
-import Button from '@material-ui/core/Button';
-import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
+import {
+  TextField,
+  FormControlLabel,
+  Checkbox,
+  Stepper,
+  Step,
+  StepLabel,
+  Button,
+  Paper,
+  Typography,
+} from '@material-ui/core';
 
 import LocationSearchInput from '../../components/LocationSearchInput/LocationSearchInput';
 import GHCheckboxList from '../../components/GHCheckboxList/GHCheckboxList';
@@ -48,16 +50,16 @@ class ReportIncidentPage extends Component {
       groupsHarassed: new Set(),
       location: '',
       sourceurl: '',
-      date: {},
+      date: new Date(),
       activeStep: 0,
       latLng: {},
       associatedLink: true,
+      isDateSelected: false,
     };
   }
 
   getStepContent = (index) => {
     const { location, sourceurl, activeStep, groupsHarassed, date, associatedLink } = this.state;
-    const errorText = !this.isFormFilledOut() ? 'Field Required' : '';
 
     switch (index || activeStep) {
       case 0:
@@ -67,24 +69,18 @@ class ReportIncidentPage extends Component {
             onChange={this.updateLocation}
             onSelect={this.selectLocation}
             value={location}
-            errorText={errorText}
           />
         );
       case 1:
         return (
           <MuiPickersUtilsProvider utils={DateFnsUtils}>
             <DatePicker
-              keyboard
-              label="Select a date"
-              format="MM/DD/YYYY"
-              placeholder="08/21/2018"
-              showTodayButton
-              mask={value => (value ? [/\d/, /\d/, '/', /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/] : [])}
               value={date}
               onChange={this.updateDate}
-              disableOpenOnEnter
+              label="Select a date"
+              format="MM/DD/YYYY"
+              showTodayButton
               maxDate={new Date()}
-              maxDateMessage="Date must be less than today"
             />
           </MuiPickersUtilsProvider>
         );
@@ -101,9 +97,7 @@ class ReportIncidentPage extends Component {
           <div>
             <TextField
               name="sourceurl"
-              error={errorText !== ''}
               onChange={this.handleChange}
-              label={errorText}
               helperText="http://www.example.com/"
               defaultValue={sourceurl}
             />
@@ -128,7 +122,7 @@ class ReportIncidentPage extends Component {
     const {
       activeStep,
       location,
-      date,
+      isDateSelected,
       groupsHarassed,
       sourceurl,
       latLng,
@@ -139,7 +133,8 @@ class ReportIncidentPage extends Component {
       case 0:
         return location !== '' && latLng.lat;
       case 1:
-        return !(Object.keys(date).length === 0 && date.constructor === Object);
+        // return !(Object.keys(date).length === 0 && date.constructor === Object);
+        return isDateSelected;
       case 2:
         return groupsHarassed.size !== 0;
       case 3:
@@ -169,7 +164,7 @@ class ReportIncidentPage extends Component {
 
   updateLocation = location => this.setState({ location, latLng: {} });
 
-  updateDate = date => this.setState({ date });
+  updateDate = date => this.setState({ date, isDateSelected: true });
 
   handleChange = ({ target: { name, value } }) => this.setState({ [name]: value });
 
