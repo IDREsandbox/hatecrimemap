@@ -2,7 +2,13 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import axios from 'axios';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import {
+  CircularProgress,
+  InputLabel,
+  MenuItem,
+  FormControl,
+  Select,
+} from '@material-ui/core';
 
 import SimpleTable from '../../components/SimpleTable/SimpleTable';
 import SimpleSnackbar from '../../components/SimpleSnackbar/SimpleSnackbar';
@@ -103,7 +109,15 @@ class VerifyIncidentsPage extends Component {
         '1/24/2016',
         report.groupharassedcleaned,
         link,
-        <button onClick={this.removeReport} name={report.featureid}>Remove Report</button>,
+        // <button onClick={this.removeReport} name={report.featureid}>Remove Report</button>,
+        <FormControl>
+          <InputLabel>Choose Action</InputLabel>
+          <Select value="action">
+            <MenuItem value=""><em>None</em></MenuItem>
+            <MenuItem>Add as Verified Report</MenuItem>
+            <MenuItem>Add as Unverified Report</MenuItem>
+          </Select>
+        </FormControl>,
       ];
     });
     return displayableData;
