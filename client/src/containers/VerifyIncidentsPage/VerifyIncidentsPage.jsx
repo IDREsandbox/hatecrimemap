@@ -78,8 +78,15 @@ class VerifyIncidentsPage extends Component {
       });
   }
 
+  removeReport = (i) => {
+    const { incidentReports } = this.state;
+    const reportToRemove = incidentReports[i];
+    const newIncidentReports = incidentReports.filter(({ featureid }) => featureid !== reportToRemove.featureid);
+    this.setState({ incidentReports: newIncidentReports });
+  }
+
   convertReportsToTableData = (reports) => {
-    const displayableData = reports.map((report) => {
+    const displayableData = reports.map((report, i) => {
       const link = report.validsourceurl === 'true'
         ? <button><a href={report.sourceurl} target="_blank">Source link</a></button>
         : 'No link';
@@ -90,7 +97,7 @@ class VerifyIncidentsPage extends Component {
         '1/24/2016',
         report.groupharassedcleaned,
         link,
-        <button onClick={() => alert('Verify Report')}>Action</button>,
+        <button onClick={() => this.removeReport(i)}>Action</button>,
       ];
     });
     return displayableData;

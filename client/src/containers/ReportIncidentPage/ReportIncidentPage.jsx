@@ -164,7 +164,7 @@ class ReportIncidentPage extends Component {
     geocodeByAddress(location)
       .then(results => getLatLng(results[0]))
       .then(latLng => this.setState({ latLng }))
-      .catch(error => console.error('Error', error));
+      .catch(() => alert('Oops! There was an error. Please try again.'));
   }
 
   updateLocation = location => this.setState({ location, latLng: {} });
