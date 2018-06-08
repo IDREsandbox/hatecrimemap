@@ -5,6 +5,7 @@ import axios from 'axios';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 import SimpleTable from '../../components/SimpleTable/SimpleTable';
+import SimpleSnackbar from '../../components/SimpleSnackbar/SimpleSnackbar';
 import { storeMapData } from '../../utils/filtering';
 import { camelize } from '../../utils/utilities';
 
@@ -55,6 +56,7 @@ class VerifyIncidentsPage extends Component {
     this.state = {
       isFetching: true,
       incidentReports: [],
+      openSnackbar: false,
     };
   }
 
@@ -81,7 +83,7 @@ class VerifyIncidentsPage extends Component {
   removeReport = ({ target: { name } }) => {
     const { incidentReports } = this.state;
     const newIncidentReports = incidentReports.filter(({ featureid }) => featureid !== name);
-    this.setState({ incidentReports: newIncidentReports });
+    this.setState({ incidentReports: newIncidentReports, openSnackbar: true });
   }
 
   convertReportsToTableData = (reports) => {
@@ -96,14 +98,14 @@ class VerifyIncidentsPage extends Component {
         '1/24/2016',
         report.groupharassedcleaned,
         link,
-        <button onClick={this.removeReport} name={report.featureid}>Action</button>,
+        <button onClick={this.removeReport} name={report.featureid}>Remove Report</button>,
       ];
     });
     return displayableData;
   }
 
   render() {
-    const { isFetching, incidentReports } = this.state;
+    const { isFetching, incidentReports, openSnackbar } = this.state;
     const { classes } = this.props;
     const tableData = this.convertReportsToTableData(incidentReports);
 
@@ -117,6 +119,9 @@ class VerifyIncidentsPage extends Component {
             tableData={tableData}
           />
         )}
+        {openSnackbar &&
+          <SimpleSnackbar open={openSnackbar} />
+        }
       </div>
     );
   }
