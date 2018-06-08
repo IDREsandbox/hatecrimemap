@@ -186,10 +186,15 @@ class ReportIncidentPage extends Component {
 
   handleBack = () => this.setState({ activeStep: this.state.activeStep - 1 });
 
-  handleReset = () => this.setState({ activeStep: 0 });
+  handleReset = () => {
+    this.setState({ activeStep: 0 });
+    this.reportIncident();
+  }
 
   reportIncident = () => {
-    console.log(this.state);
+    const dataToSubmit = Object.assign({}, this.state, {
+      dateSubmitted: new Date(),
+    });
     this.setState({
       groupsHarassed: new Set(),
       location: '',
@@ -199,7 +204,8 @@ class ReportIncidentPage extends Component {
       latLng: {},
       associatedLink: true,
     });
-    axios.post('/api/maps/reportincident', this.state)
+    console.log(dataToSubmit);
+    axios.post('/api/maps/reportincident', dataToSubmit)
       .then(res => console.log(res.data))
       .catch(err => console.log(err));
   }
