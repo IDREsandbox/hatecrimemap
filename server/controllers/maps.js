@@ -6,6 +6,11 @@ const router = express.Router();
 const desiredColumns = 'lon, lat, reporttype, locationname, verified, featureid, sourceurl, groupharassedcleaned, validsourceurl';
 const pointsInUSQuery = `SELECT ${desiredColumns} FROM hcmdata WHERE (lon < -66.796875 AND lon > -124.5849609375) AND (lat < 49.00905080938215 AND lat > 25.125392611512158)`;
 const unreviewedPointsQuery = `SELECT ${desiredColumns} FROM hcmdata WHERE verified = '0'`;
+const insertUnconfirmedPoint = `
+  INSERT INTO hcmdata
+  (locationname, verified)
+  VALUES('SLO', '-1')
+`;
 
 router.use((req, res, next) => {
   /* queries to /maps api go through here first */
@@ -44,6 +49,23 @@ router.post('/verifyincident', (req, res) => {
   console.log(req.body);
   res.end('incident verified');
 });
+
+/*
+
+{
+  locationname: 'SLO',
+  verified: -1,
+  date: // UTC date
+  datesubmitted: // UTC date
+  groupsharassedcleaned: '',
+  lat: numeric,
+  lon: numeric,
+  locationname: '',
+  sourceurl: '',
+  validsourceurl: bool,
+}
+
+*/
 
 router.post('/reportincident', (req, res) => {
   console.log(req.body);
