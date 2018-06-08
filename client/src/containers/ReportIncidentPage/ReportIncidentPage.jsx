@@ -133,7 +133,6 @@ class ReportIncidentPage extends Component {
       case 0:
         return location !== '' && latLng.lat;
       case 1:
-        // return !(Object.keys(date).length === 0 && date.constructor === Object);
         return isDateSelected;
       case 2:
         return groupsHarassed.size !== 0;
