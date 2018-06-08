@@ -1,9 +1,23 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
 import axios from 'axios';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import SimpleTable from '../../components/SimpleTable/SimpleTable';
 import { storeMapData } from '../../utils/filtering';
 import { camelize } from '../../utils/utilities';
+
+const styles = () => ({
+  root: {
+    textAlign: 'center',
+  },
+  progress: {
+    position: 'fixed',
+    top: '50%',
+    left: '50%',
+  },
+});
 
 function createMockData(mapdata) {
   const mockData = mapdata.map((point) => {
@@ -35,7 +49,7 @@ function addIdProperty(mockData) {
   });
 }
 
-export default class VerifyIncidentsPage extends Component {
+class VerifyIncidentsPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -102,17 +116,26 @@ export default class VerifyIncidentsPage extends Component {
 
   render() {
     const { isFetching, incidentReports } = this.state;
+    const { classes } = this.props;
     const tableData = this.convertReportsToTableData(incidentReports);
 
     return (
-      <div className="verifyIncidentsPage">
-        {!isFetching &&
+      <div className={classes.root}>
+        {isFetching ? (
+          <CircularProgress className={classes.progress} />
+        ) : (
           <SimpleTable
             columnHeaders={getColumnHeaders()}
             tableData={tableData}
           />
-        }
+        )}
       </div>
     );
   }
 }
+
+VerifyIncidentsPage.propTypes = {
+  classes: PropTypes.object.isRequired,
+};
+
+export default withStyles(styles)(VerifyIncidentsPage);
