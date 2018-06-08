@@ -23,7 +23,7 @@ import GHCheckboxList from '../../components/GHCheckboxList/GHCheckboxList';
 const styles = theme => ({
   root: {
     margin: '50px auto',
-    width: '80%',
+    width: '65%',
   },
   button: {
     marginRight: theme.spacing.unit,
