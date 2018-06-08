@@ -80,8 +80,13 @@ class VerifyIncidentsPage extends Component {
       });
   }
 
+  handleOpenSnackbar = () => this.setState({ openSnackbar: true });
+
+  handleCloseSnackbar = () => this.setState({ openSnackbar: false });
+
   removeReport = ({ target: { name } }) => {
     const { incidentReports } = this.state;
+    this.handleOpenSnackbar();
     const newIncidentReports = incidentReports.filter(({ featureid }) => featureid !== name);
     this.setState({ incidentReports: newIncidentReports, openSnackbar: true });
   }
@@ -107,7 +112,7 @@ class VerifyIncidentsPage extends Component {
   render() {
     const { isFetching, incidentReports, openSnackbar } = this.state;
     const { classes } = this.props;
-    const tableData = this.convertReportsToTableData(incidentReports);
+    const tableData = this.convertReportsToTableData(incidentReports).slice(0, 10);
 
     return (
       <div className={classes.root}>
@@ -120,7 +125,11 @@ class VerifyIncidentsPage extends Component {
           />
         )}
         {openSnackbar &&
-          <SimpleSnackbar open={openSnackbar} />
+          <SimpleSnackbar
+            message="Report Removed"
+            open={openSnackbar}
+            handleClose={this.handleCloseSnackbar}
+          />
         }
       </div>
     );
