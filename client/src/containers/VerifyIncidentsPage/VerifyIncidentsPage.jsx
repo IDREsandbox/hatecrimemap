@@ -16,14 +16,16 @@ function createMockData(mapdata) {
   return mockData.slice();
 }
 
-const getColumnHeaders = () => [
+const getColumnHeaders = () => (
+  [
     'Harassment Location',
     'Date of Harassment',
     'Date Submitted',
     'Groups Harassed',
     'Verification Link',
     'Action',
-  ];
+  ]
+);
 
 function addIdProperty(mockData) {
   mockData.forEach((point, i) => {
