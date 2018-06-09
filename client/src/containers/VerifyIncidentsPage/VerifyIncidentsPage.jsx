@@ -99,7 +99,7 @@ class VerifyIncidentsPage extends Component {
 
   convertReportsToTableData = (reports) => {
     const displayableData = reports.map((report) => {
-      const link = report.validsourceurl === 'true'
+      const link = report.validsourceurl
         ? <button><a href={report.sourceurl} target="_blank">Source link</a></button>
         : 'No link';
 

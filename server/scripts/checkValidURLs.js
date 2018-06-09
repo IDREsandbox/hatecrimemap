@@ -12,17 +12,17 @@ function updateValidSourceUrl(urlState, featureid) {
 function validateUrls(urls) {
   urls.forEach(({ featureid, sourceurl, validsourceurl }) => {
     if (!isUri(sourceurl)) {
-      if (validsourceurl !== 'false') updateValidSourceUrl('false', featureid);
+      if (validsourceurl) updateValidSourceUrl(false, featureid);
       return;
     }
     request
       .get(sourceurl)
       .on('response', (res) => {
-        if (res.statusCode < 400 && validsourceurl !== 'true') updateValidSourceUrl('true', featureid);
-        else if (res.statusCode >= 400 && validsourceurl !== 'false') updateValidSourceUrl('false', featureid);
+        if (res.statusCode < 400 && !validsourceurl) updateValidSourceUrl(true, featureid);
+        else if (res.statusCode >= 400 && validsourceurl) updateValidSourceUrl(false, featureid);
       })
       .on('error', (err) => {
-        if (validsourceurl !== 'false') updateValidSourceUrl('false', featureid);
+        if (validsourceurl) updateValidSourceUrl(false, featureid);
         return console.log('ERROR:', err);
       });
   });
