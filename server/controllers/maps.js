@@ -57,10 +57,9 @@ router.post('/verifyincident', (req, res) => {
   verified: -1,
   date: // UTC date
   datesubmitted: // UTC date
-  groupsharassedcleaned: '',
+  groupharassedcleaned: '',
   lat: numeric,
   lon: numeric,
-  locationname: '',
   sourceurl: '',
   validsourceurl: bool,
 }
