@@ -54,13 +54,13 @@ class ReportIncidentPage extends Component {
       date: new Date(),
       activeStep: 0,
       latLng: {},
-      validsourceurl: true,
+      associatedLink: true,
       isDateSelected: false,
     };
   }
 
   getStepContent = (index) => {
-    const { location, sourceurl, activeStep, groupsHarassed, date, validsourceurl } = this.state;
+    const { location, sourceurl, activeStep, groupsHarassed, date, associatedLink } = this.state;
 
     switch (index || activeStep) {
       case 0:
@@ -105,7 +105,7 @@ class ReportIncidentPage extends Component {
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={!validsourceurl}
+                  checked={!associatedLink}
                   onChange={this.updateAssociatedLink}
                   value="associatedLink"
                 />
@@ -127,7 +127,7 @@ class ReportIncidentPage extends Component {
       groupsHarassed,
       sourceurl,
       latLng,
-      validsourceurl,
+      associatedLink,
     } = this.state;
 
     switch (activeStep) {
@@ -138,7 +138,7 @@ class ReportIncidentPage extends Component {
       case 2:
         return groupsHarassed.size !== 0;
       case 3:
-        return (isUrl(sourceurl) && validsourceurl) || (sourceurl === '' && !validsourceurl);
+        return (isUrl(sourceurl) && associatedLink) || (sourceurl === '' && !associatedLink);
       default:
         return true;
     }
@@ -168,7 +168,7 @@ class ReportIncidentPage extends Component {
 
   handleChange = ({ target: { name, value } }) => this.setState({ [name]: value });
 
-  updateAssociatedLink = () => this.setState(oldState => ({ validsourceurl: !oldState.validsourceurl }));
+  updateAssociatedLink = () => this.setState(oldState => ({ associatedLink: !oldState.associatedLink }));
 
   handleNext = () => {
     const { activeStep } = this.state;
@@ -201,7 +201,7 @@ class ReportIncidentPage extends Component {
       date: {},
       activeStep: 0,
       latLng: {},
-      validsourceurl: true,
+      associatedLink: true,
     });
     axios.post('/api/maps/reportincident', dataToSubmit)
       .then(res => console.log(res.data))

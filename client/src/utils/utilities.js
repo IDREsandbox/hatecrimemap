@@ -27,7 +27,6 @@ function printUnique(mapdata) {
 
 export function createGroupHarassedCleaned(groupsHarassed) {
   const groupharassedcleaned = [];
-  console.log(ghFilters);
   groupsHarassed.forEach((group) => {
     ghFilters.forEach((filter) => {
       if (filter.name === group) groupharassedcleaned.push(filter.label);
@@ -37,7 +36,7 @@ export function createGroupHarassedCleaned(groupsHarassed) {
 }
 
 export function createDataToSubmit(formData) {
-  const { groupsHarassed, location, date, latLng, sourceurl, validsourceurl } = formData;
+  const { groupsHarassed, location, date, latLng, sourceurl, associatedLink } = formData;
   const groupharassedcleaned = createGroupHarassedCleaned(groupsHarassed);
   return Object.assign({}, {
     locationname: location,
@@ -48,6 +47,6 @@ export function createDataToSubmit(formData) {
     lat: latLng.lat,
     lon: latLng.lng,
     sourceurl,
-    validsourceurl,
+    validsourceurl: associatedLink,
   });
 }
