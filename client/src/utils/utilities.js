@@ -1,3 +1,5 @@
+import ghFilters from '../globals/ghFilters';
+
 export function arrToObject(arr) {
   const obj = arr.reduce((acc, elem) => {
     acc[elem.name] = Object.assign({}, elem);
@@ -22,3 +24,30 @@ function printUnique(mapdata) {
   console.log(noDupes);
 }
 /* eslint-enable */
+
+export function createGroupHarassedCleaned(groupsHarassed) {
+  const groupharassedcleaned = [];
+  console.log(ghFilters);
+  groupsHarassed.forEach((group) => {
+    ghFilters.forEach((filter) => {
+      if (filter.name === group) groupharassedcleaned.push(filter.label);
+    });
+  });
+  return groupharassedcleaned.join(',');
+}
+
+export function createDataToSubmit(formData) {
+  const { groupsHarassed, location, date, latLng, sourceurl, validsourceurl } = formData;
+  const groupharassedcleaned = createGroupHarassedCleaned(groupsHarassed);
+  return Object.assign({}, {
+    locationname: location,
+    verified: '-1',
+    date,
+    datesubmitted: new Date(),
+    groupharassedcleaned,
+    lat: latLng.lat,
+    lon: latLng.lng,
+    sourceurl,
+    validsourceurl,
+  });
+}

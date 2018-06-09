@@ -21,6 +21,7 @@ import {
 
 import LocationSearchInput from '../../components/LocationSearchInput/LocationSearchInput';
 import GHCheckboxList from '../../components/GHCheckboxList/GHCheckboxList';
+import { createDataToSubmit } from '../../utils/utilities';
 
 const styles = theme => ({
   root: {
@@ -53,13 +54,13 @@ class ReportIncidentPage extends Component {
       date: new Date(),
       activeStep: 0,
       latLng: {},
-      associatedLink: true,
+      validsourceurl: true,
       isDateSelected: false,
     };
   }
 
   getStepContent = (index) => {
-    const { location, sourceurl, activeStep, groupsHarassed, date, associatedLink } = this.state;
+    const { location, sourceurl, activeStep, groupsHarassed, date, validsourceurl } = this.state;
 
     switch (index || activeStep) {
       case 0:
@@ -104,7 +105,7 @@ class ReportIncidentPage extends Component {
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={!associatedLink}
+                  checked={!validsourceurl}
                   onChange={this.updateAssociatedLink}
                   value="associatedLink"
                 />
@@ -126,7 +127,7 @@ class ReportIncidentPage extends Component {
       groupsHarassed,
       sourceurl,
       latLng,
-      associatedLink,
+      validsourceurl,
     } = this.state;
 
     switch (activeStep) {
@@ -137,7 +138,7 @@ class ReportIncidentPage extends Component {
       case 2:
         return groupsHarassed.size !== 0;
       case 3:
-        return (isUrl(sourceurl) && associatedLink) || (sourceurl === '' && !associatedLink);
+        return (isUrl(sourceurl) && validsourceurl) || (sourceurl === '' && !validsourceurl);
       default:
         return true;
     }
@@ -167,7 +168,7 @@ class ReportIncidentPage extends Component {
 
   handleChange = ({ target: { name, value } }) => this.setState({ [name]: value });
 
-  updateAssociatedLink = () => this.setState(oldState => ({ associatedLink: !oldState.associatedLink }));
+  updateAssociatedLink = () => this.setState(oldState => ({ validsourceurl: !oldState.validsourceurl }));
 
   handleNext = () => {
     const { activeStep } = this.state;
@@ -191,9 +192,8 @@ class ReportIncidentPage extends Component {
   }
 
   reportIncident = () => {
-    const dataToSubmit = Object.assign({}, this.state, {
-      dateSubmitted: new Date(),
-    });
+    const dataToSubmit = createDataToSubmit(this.state);
+    console.log(dataToSubmit);
     this.setState({
       groupsHarassed: new Set(),
       location: '',
@@ -201,9 +201,8 @@ class ReportIncidentPage extends Component {
       date: {},
       activeStep: 0,
       latLng: {},
-      associatedLink: true,
+      validsourceurl: true,
     });
-    console.log(dataToSubmit);
     axios.post('/api/maps/reportincident', dataToSubmit)
       .then(res => console.log(res.data))
       .catch(err => console.log(err));
