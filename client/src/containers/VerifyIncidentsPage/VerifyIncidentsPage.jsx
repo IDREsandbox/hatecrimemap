@@ -12,6 +12,7 @@ import {
 
 import SimpleTable from '../../components/SimpleTable/SimpleTable';
 import SimpleSnackbar from '../../components/SimpleSnackbar/SimpleSnackbar';
+import Login from '../../components/Login/Login';
 import { storeMapData } from '../../utils/filtering';
 import { camelize } from '../../utils/utilities';
 
@@ -25,6 +26,9 @@ const styles = () => ({
     left: '50%',
   },
 });
+
+const tempEmail = 't';
+const tempPassword = 't';
 
 function createMockData(mapdata) {
   const mockData = mapdata.map((point) => {
@@ -63,6 +67,9 @@ class VerifyIncidentsPage extends Component {
       isFetching: true,
       incidentReports: [],
       openSnackbar: false,
+      loggedIn: false,
+      email: '',
+      password: '',
     };
   }
 
@@ -89,6 +96,8 @@ class VerifyIncidentsPage extends Component {
   handleOpenSnackbar = () => this.setState({ openSnackbar: true });
 
   handleCloseSnackbar = () => this.setState({ openSnackbar: false });
+
+  handleChange = ({ target: { name, value } }) => this.setState({ [name]: value });
 
   removeReport = ({ target: { name } }) => {
     const { incidentReports } = this.state;
@@ -123,10 +132,30 @@ class VerifyIncidentsPage extends Component {
     return displayableData;
   }
 
+  login = () => {
+    const { email, password } = this.state;
+    if (email.toLowerCase() === tempEmail.toLowerCase() && password === tempPassword) {
+      this.setState({ loggedIn: true });
+    } else {
+      alert('Login or password is incorrect. Please try again.');
+    }
+    this.setState({ email: '', password: '' });
+  }
+
   render() {
-    const { isFetching, incidentReports, openSnackbar } = this.state;
+    const { isFetching, incidentReports, openSnackbar, loggedIn, email, password } = this.state;
     const { classes } = this.props;
     const tableData = this.convertReportsToTableData(incidentReports).slice(0, 10);
+
+    if (!loggedIn) {
+      return (
+        <Login
+          email={email}
+          password={password}
+          onChange={this.handleChange}
+          onSubmit={this.login}
+        />);
+    }
 
     return (
       <div className={classes.root}>
