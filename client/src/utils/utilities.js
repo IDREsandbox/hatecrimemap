@@ -16,7 +16,7 @@ export function camelize(str) {
 }
 
 function printUnique(mapdata) {
-  const gh = mapdata.map(group => group.groupharassedcleaned);
+  const gh = mapdata.map(group => group.groupsharassed);
   const ghDelimited = gh
     .map(group => group.split(','))
     .reduce((acc, val) => acc.concat(val), []);
@@ -25,28 +25,29 @@ function printUnique(mapdata) {
 }
 /* eslint-enable */
 
-export function createGroupHarassedCleaned(groupsHarassed) {
-  const groupharassedcleaned = [];
+export function createGroupsHarassed(groupsHarassed) {
+  const groupsharassed = [];
   groupsHarassed.forEach((group) => {
     ghFilters.forEach((filter) => {
-      if (filter.name === group) groupharassedcleaned.push(filter.label);
+      if (filter.name === group) groupsharassed.push(filter.label);
     });
   });
-  return groupharassedcleaned.join(',');
+  return groupsharassed.join(',');
 }
 
 export function createDataToSubmit(formData) {
   const { groupsHarassed, location, date, latLng, sourceurl, associatedLink } = formData;
-  const groupharassedcleaned = createGroupHarassedCleaned(groupsHarassed);
+  const groupsharassed = createGroupsHarassed(groupsHarassed);
   return Object.assign({}, {
-    locationname: location,
-    verified: -1,
     date,
     datesubmitted: new Date(),
-    groupharassedcleaned,
+    groupsharassed,
     lat: latLng.lat,
+    locationname: location,
     lon: latLng.lng,
     sourceurl,
     validsourceurl: associatedLink,
+    verified: -1,
+    verifiedbystudent: true,
   });
 }

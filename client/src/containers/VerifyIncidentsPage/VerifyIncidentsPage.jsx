@@ -55,7 +55,7 @@ const getColumnHeaders = () => (
 function addIdProperty(mockData) {
   mockData.forEach((point, i) => {
     point.id = i;
-    const camelized = point.groupharassedsplit.map(group => camelize(group));
+    const camelized = point.groupsharassedsplit.map(group => camelize(group));
     point.camelized = new Set(camelized);
   });
 }
@@ -113,7 +113,7 @@ class VerifyIncidentsPage extends Component {
         report.locationname,
         '1/21/1996',
         '1/24/2016',
-        report.groupharassedcleaned,
+        report.groupsharassed,
         link,
         // <button onClick={this.removeReport} name={report.featureid}>Remove Report</button>,
         <FormControl>

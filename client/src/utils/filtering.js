@@ -13,8 +13,8 @@ export function getAllPoints() {
 
 export function addGroupsHarassedSplit(mapdata) {
   const mapdataWithGroupsSplit = mapdata.map((point) => {
-    const groupharassedsplit = point.groupharassedcleaned.split(',');
-    return Object.assign({ groupharassedsplit }, point);
+    const groupsharassedsplit = point.groupsharassed.split(',');
+    return Object.assign({ groupsharassedsplit }, point);
   });
   return mapdataWithGroupsSplit.slice();
 }
@@ -64,8 +64,8 @@ export function getMapData(layerName, prevLayers) {
     return allpoints;
   }
   const mapdata = allpoints.slice();
-  const filteredData = mapdata.filter(({ groupharassedsplit, verified }) => {
-    const camelized = groupharassedsplit.map(groupName => camelize(groupName));
+  const filteredData = mapdata.filter(({ groupsharassedsplit, verified }) => {
+    const camelized = groupsharassedsplit.map(groupName => camelize(groupName));
     if (verified > 0) {
       camelized.push('verified');
     }

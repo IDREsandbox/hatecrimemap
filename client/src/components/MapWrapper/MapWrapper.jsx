@@ -12,7 +12,7 @@ const MapWrapper = ({ mapdata, zoom }) => {
       lon,
       featureid,
       reporttype,
-      groupharassedcleaned,
+      groupsharassed,
       locationname,
       sourceurl,
       validsourceurl,
@@ -29,7 +29,7 @@ const MapWrapper = ({ mapdata, zoom }) => {
           <div>
             <h3>{reporttype}</h3>
             <ul>
-              <li>{groupharassedcleaned}</li>
+              <li>{groupsharassed}</li>
               <li>{locationname}</li>
               {source}
             </ul>
