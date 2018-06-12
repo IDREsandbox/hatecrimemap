@@ -167,21 +167,9 @@ class ReportIncidentPage extends Component {
 
   updateAssociatedLink = () => this.setState(oldState => ({ associatedLink: !oldState.associatedLink }));
 
-  handleNext = () => {
-    const { activeStep } = this.state;
-    if (!this.isFormFilledOut()) {
-      const alertMessage = activeStep === 3
-        ? 'A correctly formatted url is required before continuing.'
-        : 'This field is required before continuing.';
-      alert(alertMessage);
-      return;
-    }
-    this.setState({
-      activeStep: activeStep + 1,
-    });
-  }
+  handleNext = () => this.setState(oldState => ({ activeStep: oldState.activeStep + 1 }));
 
-  handleBack = () => this.setState({ activeStep: this.state.activeStep - 1 });
+  handleBack = () => this.setState(oldState => ({ activeStep: oldState.activeStep - 1 }));
 
   handleReset = () => {
     this.setState({ activeStep: 0 });
@@ -242,7 +230,7 @@ class ReportIncidentPage extends Component {
                   Back
                 </Button>
                 <Button
-                  variant="flat"
+                  variant="raised"
                   color="primary"
                   onClick={this.handleNext}
                   className={classes.button}
