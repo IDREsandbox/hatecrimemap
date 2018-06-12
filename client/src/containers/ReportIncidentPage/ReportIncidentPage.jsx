@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 import isUrl from 'is-url';
-import DateFnsUtils from 'material-ui-pickers/utils/date-fns-utils';
-import MuiPickersUtilsProvider from 'material-ui-pickers/utils/MuiPickersUtilsProvider';
 import DatePicker from 'material-ui-pickers/DatePicker';
 import { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
 import { withStyles } from '@material-ui/core/styles';
@@ -73,16 +71,14 @@ class ReportIncidentPage extends Component {
         );
       case 1:
         return (
-          <MuiPickersUtilsProvider utils={DateFnsUtils}>
-            <DatePicker
-              value={date}
-              onChange={this.handleDateChange}
-              // label="Select a date"
-              // format="MM/DD/YYYY"
-              // showTodayButton
-              // maxDate={new Date()}
-            />
-          </MuiPickersUtilsProvider>
+          <DatePicker
+            value={date}
+            onChange={this.handleDateChange}
+            // label="Select a date"
+            // format="MM/DD/YYYY"
+            // showTodayButton
+            // maxDate={new Date()}
+          />
         );
       case 2:
         return (
