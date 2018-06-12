@@ -25,6 +25,8 @@ const styles = {
   },
   reportIncidentButton: {
     color: 'white',
+  },
+  link: {
     textDecoration: 'none',
   },
 };
@@ -41,13 +43,12 @@ const Header = ({ classes }) => (
         <Typography variant="title" color="inherit" className={classes.flex}>
           Mapping Harassment in the US
         </Typography>
-        <Link to="/reportincident">
+        <Link to="/reportincident" className={classes.link}>
           <Button className={classes.reportIncidentButton} color="inherit">Report Incident</Button>
         </Link>
       </Toolbar>
     </AppBar>
   </div>
-  // />
 );
 
 Header.propTypes = {

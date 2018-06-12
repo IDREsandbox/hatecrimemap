@@ -74,10 +74,10 @@ class ReportIncidentPage extends Component {
           <DatePicker
             value={date}
             onChange={this.handleDateChange}
-            // label="Select a date"
-            // format="MM/DD/YYYY"
-            // showTodayButton
-            // maxDate={new Date()}
+            label="Select a date"
+            format="MM/DD/YYYY"
+            showTodayButton
+            maxDate={new Date()}
           />
         );
       case 2:
