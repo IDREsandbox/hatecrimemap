@@ -44,17 +44,19 @@ const getSteps = () => [
   'Verification Link',
 ];
 
+const getInitialState = () => ({
+  groupsHarassed: new Set(),
+  location: '',
+  sourceurl: '',
+  date: new Date(),
+  activeStep: 0,
+  latLng: {},
+  associatedLink: true,
+  isDateSelected: false,
+});
+
 class ReportIncidentPage extends Component {
-  state = {
-    groupsHarassed: new Set(),
-    location: '',
-    sourceurl: '',
-    date: new Date(),
-    activeStep: 0,
-    latLng: {},
-    associatedLink: true,
-    isDateSelected: false,
-  };
+  state = getInitialState();
 
   getStepContent = (index) => {
     const { location, sourceurl, activeStep, groupsHarassed, date, associatedLink } = this.state;
@@ -64,7 +66,7 @@ class ReportIncidentPage extends Component {
         return (
           <LocationSearchInput
             name="location"
-            onChange={this.updateLocation}
+            onChange={this.handleLocationChange}
             onSelect={this.selectLocation}
             value={location}
           />
@@ -74,11 +76,11 @@ class ReportIncidentPage extends Component {
           <MuiPickersUtilsProvider utils={DateFnsUtils}>
             <DatePicker
               value={date}
-              onChange={this.updateDate}
-              label="Select a date"
-              format="MM/DD/YYYY"
-              showTodayButton
-              maxDate={new Date()}
+              onChange={this.handleDateChange}
+              // label="Select a date"
+              // format="MM/DD/YYYY"
+              // showTodayButton
+              // maxDate={new Date()}
             />
           </MuiPickersUtilsProvider>
         );
@@ -152,16 +154,16 @@ class ReportIncidentPage extends Component {
   }
 
   selectLocation = (location) => {
-    this.updateLocation(location);
+    this.handleLocationChange(location);
     geocodeByAddress(location)
       .then(results => getLatLng(results[0]))
       .then(latLng => this.setState({ latLng }))
       .catch(() => alert('Oops! There was an error. Please try again.'));
   }
 
-  updateLocation = location => this.setState({ location, latLng: {} });
+  handleLocationChange = location => this.setState({ location, latLng: {} });
 
-  updateDate = date => this.setState({ date, isDateSelected: true });
+  handleDateChange = date => this.setState({ date, isDateSelected: true });
 
   handleChange = ({ target: { name, value } }) => this.setState({ [name]: value });
 
@@ -179,19 +181,13 @@ class ReportIncidentPage extends Component {
   reportIncident = () => {
     const dataToSubmit = createDataToSubmit(this.state);
     console.log(dataToSubmit);
-    this.setState({
-      groupsHarassed: new Set(),
-      location: '',
-      sourceurl: '',
-      date: {},
-      activeStep: 0,
-      latLng: {},
-      associatedLink: true,
-    });
+    this.resetState();
     axios.post('/api/maps/reportincident', dataToSubmit)
       .then(res => console.log(res.data))
       .catch(err => console.log(err));
   }
+
+  resetState = () => this.setState(getInitialState());
 
   render() {
     const { activeStep } = this.state;
