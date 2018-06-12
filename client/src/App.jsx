@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import MuiPickersUtilsProvider from 'material-ui-pickers/utils/MuiPickersUtilsProvider';
 import DateFnsUtils from 'material-ui-pickers/utils/date-fns-utils';
+import MomentUtils from 'material-ui-pickers/utils/moment-utils';
 
 import HomePage from './containers/HomePage/HomePage';
 import Header from './components/Header/Header';
@@ -10,7 +11,7 @@ import VerifyIncidentsPage from './containers/VerifyIncidentsPage/VerifyIncident
 import './App.css';
 
 const App = () => (
-  <MuiPickersUtilsProvider utils={DateFnsUtils}>
+  <MuiPickersUtilsProvider utils={MomentUtils}>
     <Router>
       <div className="app">
         <Header />
