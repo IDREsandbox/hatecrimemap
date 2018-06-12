@@ -45,19 +45,16 @@ const getSteps = () => [
 ];
 
 class ReportIncidentPage extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      groupsHarassed: new Set(),
-      location: '',
-      sourceurl: '',
-      date: new Date(),
-      activeStep: 0,
-      latLng: {},
-      associatedLink: true,
-      isDateSelected: false,
-    };
-  }
+  state = {
+    groupsHarassed: new Set(),
+    location: '',
+    sourceurl: '',
+    date: new Date(),
+    activeStep: 0,
+    latLng: {},
+    associatedLink: true,
+    isDateSelected: false,
+  };
 
   getStepContent = (index) => {
     const { location, sourceurl, activeStep, groupsHarassed, date, associatedLink } = this.state;

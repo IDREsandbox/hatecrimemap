@@ -18,14 +18,11 @@ const styles = () => ({
 });
 
 class HomePage extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isFetching: true,
-      mapdata: [],
-      currentLayers: new Set(),
-    };
-  }
+  state = {
+    isFetching: true,
+    mapdata: [],
+    currentLayers: new Set(),
+  };
 
   componentDidMount() {
     const allpoints = getAllPoints();

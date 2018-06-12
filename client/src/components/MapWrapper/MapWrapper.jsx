@@ -14,15 +14,15 @@ const MapWrapper = ({ mapdata, zoom }) => {
       reporttype,
       groupharassedcleaned,
       locationname,
-      verified,
       sourceurl,
       validsourceurl,
     } = markerItemData;
     const markerCenter = [Number(lat), Number(lon)];
     const color = markerItemData.color || 'blue';
-    const isValidSourceUrl = validsourceurl
-      ? 'Source is valid'
-      : 'Source is not valid';
+    const source = validsourceurl
+      ? <li><a href={sourceurl} target="_blank">Source</a></li>
+      : <li>Source not listed</li>;
+
     return (
       <CircleMarker color={color} key={featureid} center={markerCenter} radius={2}>
         <Popup>
@@ -31,9 +31,7 @@ const MapWrapper = ({ mapdata, zoom }) => {
             <ul>
               <li>{groupharassedcleaned}</li>
               <li>{locationname}</li>
-              <li>{`Verified: ${verified}`}</li>
-              <li><a href={sourceurl} target="_blank">Source</a></li>
-              <li>{isValidSourceUrl}</li>
+              {source}
             </ul>
           </div>
         </Popup>

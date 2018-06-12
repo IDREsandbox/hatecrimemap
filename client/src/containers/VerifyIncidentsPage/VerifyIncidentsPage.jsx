@@ -27,8 +27,8 @@ const styles = () => ({
   },
 });
 
-const tempEmail = 't';
-const tempPassword = 't';
+const tempEmail = 'temp@gmail.com';
+const tempPassword = 'temp';
 
 function createMockData(mapdata) {
   const mockData = mapdata.map((point) => {
@@ -61,16 +61,13 @@ function addIdProperty(mockData) {
 }
 
 class VerifyIncidentsPage extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isFetching: true,
-      incidentReports: [],
-      openSnackbar: false,
-      loggedIn: false,
-      email: '',
-      password: '',
-    };
+  state = {
+    isFetching: true,
+    incidentReports: [],
+    openSnackbar: false,
+    loggedIn: false,
+    email: 'temp@gmail.com',
+    password: 'temp',
   }
 
   componentDidMount() {
