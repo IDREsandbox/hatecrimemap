@@ -40,7 +40,7 @@ export function createDataToSubmit(formData) {
   const groupharassedcleaned = createGroupHarassedCleaned(groupsHarassed);
   return Object.assign({}, {
     locationname: location,
-    verified: '-1',
+    verified: -1,
     date,
     datesubmitted: new Date(),
     groupharassedcleaned,

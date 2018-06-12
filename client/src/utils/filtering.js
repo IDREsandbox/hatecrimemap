@@ -66,7 +66,7 @@ export function getMapData(layerName, prevLayers) {
   const mapdata = allpoints.slice();
   const filteredData = mapdata.filter(({ groupharassedsplit, verified }) => {
     const camelized = groupharassedsplit.map(groupName => camelize(groupName));
-    if (Number(verified) > 0) {
+    if (verified > 0) {
       camelized.push('verified');
     }
     return arrayIncludesAllItems(camelized, Array.from(currentLayers));

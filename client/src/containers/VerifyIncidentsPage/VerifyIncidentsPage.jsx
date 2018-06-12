@@ -34,7 +34,7 @@ function createMockData(mapdata) {
   const mockData = mapdata.map((point) => {
     const num = Math.floor(Math.random() * Math.floor(5));
     if (num === 0) {
-      return Object.assign({}, point, { verified: '-1' });
+      return Object.assign({}, point, { verified: -1 });
     }
     return Object.assign({}, point);
   });
@@ -76,7 +76,7 @@ class VerifyIncidentsPage extends Component {
         // remove before pushing to production
         const test = storeMapData(mapdata);
         const mockData = createMockData(test);
-        const incidentReports = mockData.filter(point => point.verified === '-1');
+        const incidentReports = mockData.filter(point => point.verified === -1);
         // end
         addIdProperty(incidentReports);
         this.setState({
