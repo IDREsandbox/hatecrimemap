@@ -46,7 +46,6 @@ export function updateCurrentLayers(layerName, prevLayers, updateShowReports = f
   } else {
     currentLayers.add(layerName);
   }
-  console.log(currentLayers);
   return currentLayers;
 }
 
