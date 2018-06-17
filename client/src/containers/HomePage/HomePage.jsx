@@ -21,7 +21,7 @@ class HomePage extends Component {
   state = {
     isFetching: true,
     mapdata: [],
-    currentLayers: new Set(),
+    currentLayers: new Set(['all']),
   };
 
   componentDidMount() {
@@ -46,11 +46,15 @@ class HomePage extends Component {
       });
   }
 
-  updateMapData = ({ target: { name } }) => {
-    const currentLayers = updateCurrentLayers(name, this.state.currentLayers);
+  updateMapData = ({ target: { name, value } }) => {
+    const { currentLayers } = this.state;
+    const newLayers = name === 'reports'
+      ? updateCurrentLayers(value, currentLayers, true)
+      : updateCurrentLayers(name, currentLayers);
+
     this.setState({
-      mapdata: getMapData(name, currentLayers),
-      currentLayers,
+      mapdata: getMapData(name, newLayers),
+      currentLayers: newLayers,
     });
   }
 

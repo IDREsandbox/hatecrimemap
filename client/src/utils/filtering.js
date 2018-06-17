@@ -5,6 +5,12 @@ const filteringOptions = arrToObject(ghFilters);
 filteringOptions.verified = {
   color: 'red',
 };
+filteringOptions.unverified = {
+  color: 'green',
+};
+filteringOptions.all = {
+  color: 'blue',
+};
 let allpoints = [];
 
 export function getAllPoints() {
@@ -25,14 +31,22 @@ export function storeMapData(mapdata) {
   return mapdataWithGroupsSplit.slice();
 }
 
-export function updateCurrentLayers(layerName, prevLayers) {
+function removePreviousShowReports(layers) {
+  if (layers.has('verified')) layers.delete('verified');
+  if (layers.has('unverified')) layers.delete('unverified');
+  if (layers.has('all')) layers.delete('all');
+}
+
+export function updateCurrentLayers(layerName, prevLayers, updateShowReports = false) {
   const currentLayers = new Set(prevLayers);
+  if (updateShowReports) removePreviousShowReports(currentLayers);
 
   if (currentLayers.has(layerName)) {
     currentLayers.delete(layerName);
   } else {
     currentLayers.add(layerName);
   }
+  console.log(currentLayers);
   return currentLayers;
 }
 
@@ -65,13 +79,17 @@ export function getMapData(layerName, prevLayers) {
   }
   const mapdata = allpoints.slice();
   const filteredData = mapdata.filter(({ groupsharassedsplit, verified }) => {
-    const camelized = groupsharassedsplit.map(groupName => camelize(groupName));
+    const camelizedGroupNames = groupsharassedsplit.map(groupName => camelize(groupName));
+    camelizedGroupNames.push('all');
     if (verified > 0) {
-      camelized.push('verified');
+      camelizedGroupNames.push('verified');
     }
-    return arrayIncludesAllItems(camelized, Array.from(currentLayers));
+    if (verified === 0) {
+      camelizedGroupNames.push('unverified');
+    }
+    return arrayIncludesAllItems(camelizedGroupNames, Array.from(currentLayers));
   });
   const mapdataWithColor = addColor(filteredData, currentLayers);
-  return mapdataWithColor.slice();
+  return mapdataWithColor;
 }
 
