@@ -5,12 +5,14 @@ const db = require('../models');
 const router = express.Router();
 const desiredColumns = 'lon, lat, reporttype, locationname, verified, featureid, sourceurl, groupsharassed, validsourceurl';
 const pointsInUSQuery = `SELECT ${desiredColumns} FROM hcmdata WHERE (lon < -66.796875 AND lon > -124.5849609375) AND (lat < 49.00905080938215 AND lat > 25.125392611512158)`;
-const unreviewedPointsQuery = `SELECT ${desiredColumns} FROM hcmdata WHERE verified = 0`;
-// const insertUnconfirmedPoint = `
-//   INSERT INTO hcmdata
-//   (locationname, verified)
-//   VALUES('SLO', '-1')
-// `;
+const unreviewedPointsQuery = `SELECT ${desiredColumns} FROM hcmdata WHERE verified = -1`;
+/*
+const insertUnconfirmedPoint = `
+  INSERT INTO hcmdata
+  (locationname, verified)
+  VALUES('SLO', '-1')
+`;
+*/
 
 router.use((req, res, next) => {
   /* queries to /maps api go through here first */
