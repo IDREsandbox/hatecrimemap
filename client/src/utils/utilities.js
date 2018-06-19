@@ -48,6 +48,6 @@ export function createDataToSubmit(formData) {
     sourceurl,
     validsourceurl: associatedLink,
     verified: -1,
-    verifiedbystudent: true,
+    reviewedbystudent: true,
   });
 }

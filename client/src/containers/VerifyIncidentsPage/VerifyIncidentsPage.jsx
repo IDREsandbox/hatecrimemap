@@ -99,7 +99,7 @@ class VerifyIncidentsPage extends Component {
   removeReport = ({ target: { name } }) => {
     const { incidentReports } = this.state;
     this.handleOpenSnackbar();
-    const newIncidentReports = incidentReports.filter(({ featureid }) => featureid !== name);
+    const newIncidentReports = incidentReports.filter(({ id }) => id !== name);
     this.setState({ incidentReports: newIncidentReports, openSnackbar: true });
   }
 
@@ -115,7 +115,7 @@ class VerifyIncidentsPage extends Component {
         '1/24/2016',
         report.groupsharassed,
         link,
-        // <button onClick={this.removeReport} name={report.featureid}>Remove Report</button>,
+        // <button onClick={this.removeReport} name={report.id}>Remove Report</button>,
         <FormControl>
           <InputLabel>Choose Action</InputLabel>
           <Select value="action">

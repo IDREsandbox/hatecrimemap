@@ -3,7 +3,7 @@ const express = require('express');
 const db = require('../models');
 
 const router = express.Router();
-const desiredColumns = 'lon, lat, reporttype, locationname, verified, featureid, sourceurl, groupsharassed, validsourceurl';
+const desiredColumns = 'lon, lat, reporttype, locationname, verified, id, sourceurl, groupsharassed, validsourceurl';
 const pointsInUSQuery = `SELECT ${desiredColumns} FROM hcmdata WHERE (lon < -66.796875 AND lon > -124.5849609375) AND (lat < 49.00905080938215 AND lat > 25.125392611512158)`;
 const unreviewedPointsQuery = `SELECT ${desiredColumns} FROM hcmdata WHERE verified = -1`;
 /*
@@ -55,18 +55,25 @@ router.post('/verifyincident', (req, res) => {
 /*
 
 {
-  locationname: 'SLO',
-  verified: -1,
-  date: // UTC date
-  datesubmitted: // UTC date
-  groupsharassed: '',
-  lat: numeric,
-  lon: numeric,
-  sourceurl: '',
+  locationname: string,
+  verified: numeric,
+  reporttype: string,
+  sourceurl: string,
+  datesubmitted: UTC string,
+  groupsharassed: string,
   validsourceurl: bool,
+  lon: numeric,
+  lat: numeric,
+  reviewedbystudent: bool,
+  date: UTC string,
 }
 
 */
+
+// function testInsert() {
+//   db.one(`INSERT INTO hcmdata (date, datesubmitted, groupsharassed, lat, locationname, lon, sourceurl, validsourceurl, verified, reviewedbystudent) VALUES(('Tue, 12 Jun 2018 19:36:46 GMT')::date, ('Tue, 12 Jun 2018 19:36:46 GMT')::date, 'Arab,African American,Asian American', 34.0194543, 'SLO', -118.4911912, '', false, -1, true)`)
+//     .then(data => console.log(data));
+// }
 
 router.post('/reportincident', (req, res) => {
   console.log(req.body);

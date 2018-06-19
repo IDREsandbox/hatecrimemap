@@ -71,7 +71,7 @@ const testData = {
   sourceurl: '',
   validsourceurl: false,
   verified: -1,
-  verifiedbystudent: true,
+  reviewedbystudent: true,
 };
 
 const createInsertUnconfirmedPoint = (data) => {

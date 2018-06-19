@@ -4,32 +4,32 @@ const { isUri } = require('valid-url');
 
 const db = require('../models');
 
-function updateValidSourceUrl(urlState, featureid) {
-  db.none(`UPDATE hcmdata SET validsourceurl = ${urlState} WHERE featureid = ${featureid}::varchar`)
+function updateValidSourceUrl(urlState, id) {
+  db.none(`UPDATE hcmdata SET validsourceurl = ${urlState} WHERE id = ${id}::varchar`)
     .catch(err => console.log('ERROR:', err));
 }
 
 function validateUrls(urls) {
-  urls.forEach(({ featureid, sourceurl, validsourceurl }) => {
+  urls.forEach(({ id, sourceurl, validsourceurl }) => {
     if (!isUri(sourceurl)) {
-      if (validsourceurl) updateValidSourceUrl(false, featureid);
+      if (validsourceurl) updateValidSourceUrl(false, id);
       return;
     }
     request
       .get(sourceurl)
       .on('response', (res) => {
-        if (res.statusCode < 400 && !validsourceurl) updateValidSourceUrl(true, featureid);
-        else if (res.statusCode >= 400 && validsourceurl) updateValidSourceUrl(false, featureid);
+        if (res.statusCode < 400 && !validsourceurl) updateValidSourceUrl(true, id);
+        else if (res.statusCode >= 400 && validsourceurl) updateValidSourceUrl(false, id);
       })
       .on('error', (err) => {
-        if (validsourceurl) updateValidSourceUrl(false, featureid);
+        if (validsourceurl) updateValidSourceUrl(false, id);
         return console.log('ERROR:', err);
       });
   });
 }
 
-function getAllUrls(featureid) {
-  db.any(`SELECT ${featureid}, sourceurl, validsourceurl FROM hcmdata`)
+function getAllUrls(id) {
+  db.any(`SELECT ${id}, sourceurl, validsourceurl FROM hcmdata`)
     .then(urls => validateUrls(urls))
     .catch(err => console.log('ERROR:', err));
 }

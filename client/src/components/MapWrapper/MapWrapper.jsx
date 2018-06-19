@@ -10,7 +10,7 @@ const MapWrapper = ({ mapdata, zoom }) => {
     const {
       lat,
       lon,
-      featureid,
+      id,
       reporttype,
       groupsharassed,
       locationname,
@@ -24,7 +24,7 @@ const MapWrapper = ({ mapdata, zoom }) => {
       : <li>Source not listed</li>;
 
     return (
-      <CircleMarker color={color} key={featureid} center={markerCenter} radius={2}>
+      <CircleMarker color={color} key={id} center={markerCenter} radius={2}>
         <Popup>
           <div>
             <h3>{reporttype}</h3>
