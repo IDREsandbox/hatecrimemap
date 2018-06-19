@@ -2,13 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import axios from 'axios';
-import {
-  CircularProgress,
-  InputLabel,
-  MenuItem,
-  FormControl,
-  Select,
-} from '@material-ui/core';
+import { CircularProgress, IconButton } from '@material-ui/core';
+import { CheckCircle, ReportProblem, Delete } from '@material-ui/icons';
 
 import SimpleTable from '../../components/SimpleTable/SimpleTable';
 import SimpleSnackbar from '../../components/SimpleSnackbar/SimpleSnackbar';
@@ -41,16 +36,16 @@ function createMockData(mapdata) {
   return mockData.slice();
 }
 
-const getColumnHeaders = () => (
-  [
-    'Harassment Location',
-    'Date of Harassment',
-    'Date Submitted',
-    'Groups Harassed',
-    'Verification Link',
-    'Action',
-  ]
-);
+const getColumnHeaders = () => [
+  'Harassment Location',
+  'Date of Harassment',
+  'Date Submitted',
+  'Groups Harassed',
+  'Verification Link',
+  'Verify Report',
+  'Unverify Report',
+  'Remove Report',
+];
 
 function addIdProperty(mockData) {
   mockData.forEach((point, i) => {
@@ -65,7 +60,7 @@ class VerifyIncidentsPage extends Component {
     isFetching: true,
     incidentReports: [],
     openSnackbar: false,
-    loggedIn: false,
+    loggedIn: true,
     email: 'temp@gmail.com',
     password: 'temp',
   }
@@ -115,15 +110,9 @@ class VerifyIncidentsPage extends Component {
         '1/24/2016',
         report.groupsharassed,
         link,
-        // <button onClick={this.removeReport} name={report.id}>Remove Report</button>,
-        <FormControl>
-          <InputLabel>Choose Action</InputLabel>
-          <Select value="action">
-            <MenuItem value=""><em>None</em></MenuItem>
-            <MenuItem>Add as Verified Report</MenuItem>
-            <MenuItem>Add as Unverified Report</MenuItem>
-          </Select>
-        </FormControl>,
+        <IconButton><CheckCircle /></IconButton>,
+        <IconButton><ReportProblem /></IconButton>,
+        <IconButton><Delete /></IconButton>,
       ];
     });
     return displayableData;
@@ -134,7 +123,7 @@ class VerifyIncidentsPage extends Component {
     if (email.toLowerCase() === tempEmail.toLowerCase() && password === tempPassword) {
       this.setState({ loggedIn: true });
     } else {
-      alert('Login or password is incorrect. Please try again.');
+      alert('Email or password is incorrect. Please try again.');
     }
     this.setState({ email: '', password: '' });
   }

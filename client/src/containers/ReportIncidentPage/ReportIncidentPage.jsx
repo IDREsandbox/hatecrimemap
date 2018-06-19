@@ -61,31 +61,31 @@ const getInitialState = () => ({
   isDateSelected: false,
 });
 
-const testData = {
-  date: new Date(),
-  datesubmitted: new Date(),
-  groupsharassed: 'Arab,African American,Asian American',
-  lat: 34.0194543,
-  locationname: 'SLO',
-  lon: -118.4911912,
-  sourceurl: '',
-  validsourceurl: false,
-  verified: -1,
-  reviewedbystudent: true,
-};
+// const testData = {
+//   date: new Date(),
+//   datesubmitted: new Date(),
+//   groupsharassed: 'Arab,African American,Asian American',
+//   lat: 34.0194543,
+//   locationname: 'SLO',
+//   lon: -118.4911912,
+//   sourceurl: '',
+//   validsourceurl: false,
+//   verified: -1,
+//   reviewedbystudent: true,
+// };
 
-const createInsertUnconfirmedPoint = (data) => {
-  const columns = Object.keys(data).join(', ');
-  const values = Object.values(data).map((value) => {
-    if (typeof value === 'string') return `\'${value}\'`; // eslint-disable-line
-    if (value instanceof Date) return `(\'${value.toUTCString()}\')::date`; // eslint-disable-line
-    return value;
-  }).join(', ');
-  const insertUnconfirmedPoint = `INSERT INTO hcmdata (${columns}) VALUES(${values})`;
-  console.log(insertUnconfirmedPoint);
-};
+// const createInsertUnconfirmedPoint = (data) => {
+//   const columns = Object.keys(data).join(', ');
+//   const values = Object.values(data).map((value) => {
+//     if (typeof value === 'string') return `\'${value}\'`; // eslint-disable-line
+//     if (value instanceof Date) return `(\'${value.toUTCString()}\')::date`; // eslint-disable-line
+//     return value;
+//   }).join(', ');
+//   const insertUnconfirmedPoint = `INSERT INTO hcmdata (${columns}) VALUES(${values})`;
+//   console.log(insertUnconfirmedPoint);
+// };
 
-createInsertUnconfirmedPoint(testData);
+// createInsertUnconfirmedPoint(testData);
 
 class ReportIncidentPage extends Component {
   state = getInitialState();

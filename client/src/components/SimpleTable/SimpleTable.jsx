@@ -25,6 +25,9 @@ const styles = theme => ({
       backgroundColor: theme.palette.background.default,
     },
   },
+  cell: {
+    width: '20px',
+  },
 });
 
 const SimpleTable = ({ columnHeaders, tableData, classes }) => (
@@ -32,15 +35,15 @@ const SimpleTable = ({ columnHeaders, tableData, classes }) => (
     <Table className={classes.table}>
       <TableHead>
         <TableRow>
-          <TableCell key="row">Row</TableCell>
-          {columnHeaders.map(header => <TableCell key={header}>{header}</TableCell>)}
+          <TableCell className={classes.cell} key="row">Row</TableCell>
+          {columnHeaders.map(header => <TableCell className={classes.cell} key={header}>{header}</TableCell>)}
         </TableRow>
       </TableHead>
       <TableBody>
         {tableData.map((row, i) => (
           <TableRow className={classes.row} key={uuidv4()}>
-            <TableCell key="rowNum">{i + 1}</TableCell>
-            {row.map(cell => <TableCell key={uuidv4()}>{cell}</TableCell>)}
+            <TableCell className={classes.cell} key="rowNum">{i + 1}</TableCell>
+            {row.map(cell => <TableCell className={classes.cell} key={uuidv4()}>{cell}</TableCell>)}
           </TableRow>
         ))}
       </TableBody>
