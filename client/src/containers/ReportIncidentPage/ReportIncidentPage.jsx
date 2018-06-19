@@ -15,23 +15,31 @@ import {
   Button,
   Paper,
   Typography,
+  StepContent,
 } from '@material-ui/core';
 
 import LocationSearchInput from '../../components/LocationSearchInput/LocationSearchInput';
 import GHCheckboxList from '../../components/GHCheckboxList/GHCheckboxList';
 import { createDataToSubmit } from '../../utils/utilities';
 
-const styles = theme => ({
+const styles = ({ spacing }) => ({
   root: {
-    margin: '50px auto',
-    width: '65%',
+    margin: '0 auto',
+    marginTop: spacing.unit * 2,
+    width: '45%',
+  },
+  stepper: {
+    minWidth: '500px',
   },
   button: {
-    marginRight: theme.spacing.unit,
+    marginTop: spacing.unit,
+    marginRight: spacing.unit,
   },
-  instructions: {
-    marginTop: theme.spacing.unit,
-    marginBottom: theme.spacing.unit,
+  actionsContainer: {
+    marginBottom: spacing.unit * 2,
+  },
+  resetContainer: {
+    padding: spacing.unit * 3,
   },
 });
 
@@ -83,9 +91,9 @@ class ReportIncidentPage extends Component {
   state = getInitialState();
 
   getStepContent = (index) => {
-    const { location, sourceurl, activeStep, groupsHarassed, date, associatedLink } = this.state;
+    const { location, sourceurl, groupsHarassed, date, associatedLink } = this.state;
 
-    switch (index || activeStep) {
+    switch (index) {
       case 0:
         return (
           <LocationSearchInput
@@ -215,51 +223,47 @@ class ReportIncidentPage extends Component {
     const { activeStep } = this.state;
     const { classes } = this.props;
     const steps = getSteps();
-    const nextStepContent = this.getStepContent();
 
     return (
       <Paper className={classes.root}>
-        <Stepper activeStep={activeStep}>
-          {steps.map(label => (
+        <Stepper className={classes.stepper} activeStep={activeStep} orientation="vertical">
+          {steps.map((label, i) => (
             <Step key={label}>
               <StepLabel>{label}</StepLabel>
+              <StepContent>
+                <Typography>{this.getStepContent(i)}</Typography>
+                <div className={classes.actionsContainer}>
+                  <div>
+                    <Button
+                      disabled={activeStep === 0}
+                      onClick={this.handleBack}
+                      className={classes.button}
+                    >
+                      Back
+                    </Button>
+                    <Button
+                      disabled={!this.isFormFilledOut()}
+                      variant="raised"
+                      color="primary"
+                      onClick={this.handleNext}
+                      className={classes.button}
+                    >
+                      {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+                    </Button>
+                  </div>
+                </div>
+              </StepContent>
             </Step>
           ))}
         </Stepper>
-        <div>
-          {activeStep === steps.length ? (
-            <div>
-              <Typography className={classes.instructions}>
-                All steps completed - you&quot;re finished
-              </Typography>
-              <Button onClick={this.handleReset} className={classes.button}>
-                Reset
-              </Button>
-            </div>
-          ) : (
-            <div>
-              <div>{nextStepContent}</div>
-              <div>
-                <Button
-                  disabled={activeStep === 0}
-                  onClick={this.handleBack}
-                  className={classes.button}
-                >
-                  Back
-                </Button>
-                <Button
-                  variant="raised"
-                  color="primary"
-                  onClick={this.handleNext}
-                  className={classes.button}
-                  disabled={!this.isFormFilledOut()}
-                >
-                  {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-                </Button>
-              </div>
-            </div>
-          )}
-        </div>
+        {activeStep === steps.length && (
+          <Paper square elevation={0} className={classes.resetContainer}>
+            <Typography>All steps completed - you&quot;re finished</Typography>
+            <Button onClick={this.handleReset} className={classes.button}>
+              Reset
+            </Button>
+          </Paper>
+        )}
       </Paper>
     );
   }
