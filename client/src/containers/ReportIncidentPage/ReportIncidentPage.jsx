@@ -61,32 +61,6 @@ const getInitialState = () => ({
   isDateSelected: false,
 });
 
-// const testData = {
-//   date: new Date(),
-//   datesubmitted: new Date(),
-//   groupsharassed: 'Arab,African American,Asian American',
-//   lat: 34.0194543,
-//   locationname: 'SLO',
-//   lon: -118.4911912,
-//   sourceurl: '',
-//   validsourceurl: false,
-//   verified: -1,
-//   reviewedbystudent: true,
-// };
-
-// const createInsertUnconfirmedPoint = (data) => {
-//   const columns = Object.keys(data).join(', ');
-//   const values = Object.values(data).map((value) => {
-//     if (typeof value === 'string') return `\'${value}\'`; // eslint-disable-line
-//     if (value instanceof Date) return `(\'${value.toUTCString()}\')::date`; // eslint-disable-line
-//     return value;
-//   }).join(', ');
-//   const insertUnconfirmedPoint = `INSERT INTO hcmdata (${columns}) VALUES(${values})`;
-//   console.log(insertUnconfirmedPoint);
-// };
-
-// createInsertUnconfirmedPoint(testData);
-
 class ReportIncidentPage extends Component {
   state = getInitialState();
 
@@ -212,7 +186,7 @@ class ReportIncidentPage extends Component {
     const dataToSubmit = createDataToSubmit(this.state);
     console.log(dataToSubmit);
     this.resetState();
-    axios.post('/api/maps/reportincident', dataToSubmit)
+    axios.post('/api/maps/incidentreport', dataToSubmit)
       .then(res => console.log(res.data))
       .catch(err => console.log(err));
   }
@@ -231,7 +205,7 @@ class ReportIncidentPage extends Component {
             <Step key={label}>
               <StepLabel>{label}</StepLabel>
               <StepContent>
-                <Typography>{this.getStepContent(i)}</Typography>
+                <div>{this.getStepContent(i)}</div>
                 <div className={classes.actionsContainer}>
                   <div>
                     <Button

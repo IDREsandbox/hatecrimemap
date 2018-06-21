@@ -1,6 +1,7 @@
 const express = require('express');
 
 const db = require('../models');
+const createInsertUnreviewedPointQuery = require('../utilities');
 
 const router = express.Router();
 const desiredColumns = 'lon, lat, reporttype, locationname, verified, id, sourceurl, groupsharassed, validsourceurl';
@@ -45,6 +46,19 @@ router.post('/verifyincident', (req, res) => {
   res.end('incident verified');
 });
 
+// const testData = {
+//   date: new Date(),
+//   datesubmitted: new Date(),
+//   groupsharassed: 'Arab,African American,Asian American',
+//   lat: 34.0194543,
+//   locationname: 'SLO',
+//   lon: -118.4911912,
+//   sourceurl: '',
+//   validsourceurl: false,
+//   verified: -1,
+//   reviewedbystudent: true,
+// };
+
 /*
 
 {
@@ -68,12 +82,12 @@ router.post('/verifyincident', (req, res) => {
 //     .then(data => console.log(data));
 // }
 
-router.post('/reportincident', (req, res) => {
+router.post('/incidentreport', (req, res) => {
   console.log(req.body);
   res.end('server received data');
 });
 
-router.delete('/removeincident', (req, res) => {
+router.delete('/incidentreport', (req, res) => {
   console.log(req.body);
   res.send('incident removed');
 });
