@@ -6,7 +6,7 @@ const createInsertUnreviewedPointQuery = (data) => {
     return value;
   }).join(', ');
   const insertUnconfirmedPoint = `INSERT INTO hcmdata (${columns}) VALUES(${values})`;
-  console.log(insertUnconfirmedPoint);
+  return insertUnconfirmedPoint;
 };
 
 module.exports = createInsertUnreviewedPointQuery;

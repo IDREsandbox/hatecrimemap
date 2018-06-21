@@ -46,45 +46,13 @@ router.post('/verifyincident', (req, res) => {
   res.end('incident verified');
 });
 
-// const testData = {
-//   date: new Date(),
-//   datesubmitted: new Date(),
-//   groupsharassed: 'Arab,African American,Asian American',
-//   lat: 34.0194543,
-//   locationname: 'SLO',
-//   lon: -118.4911912,
-//   sourceurl: '',
-//   validsourceurl: false,
-//   verified: -1,
-//   reviewedbystudent: true,
-// };
-
-/*
-
-{
-  locationname: string,
-  verified: numeric,
-  reporttype: string,
-  sourceurl: string,
-  datesubmitted: UTC string,
-  groupsharassed: string,
-  validsourceurl: bool,
-  lon: numeric,
-  lat: numeric,
-  reviewedbystudent: bool,
-  date: UTC string,
-}
-
-*/
-
-// function testInsert() {
-//   db.one(`INSERT INTO hcmdata (date, datesubmitted, groupsharassed, lat, locationname, lon, sourceurl, validsourceurl, verified, reviewedbystudent) VALUES(('Tue, 12 Jun 2018 19:36:46 GMT')::date, ('Tue, 12 Jun 2018 19:36:46 GMT')::date, 'Arab,African American,Asian American', 34.0194543, 'SLO', -118.4911912, '', false, -1, true)`)
-//     .then(data => console.log(data));
-// }
-
 router.post('/incidentreport', (req, res) => {
-  console.log(req.body);
-  res.end('server received data');
+  const insertUnreviewedPointQuery = createInsertUnreviewedPointQuery(req.body);
+  console.log(insertUnreviewedPointQuery);
+
+  // db.none(insertUnreviewedPointQuery)
+  //   .then(() => {})
+  //   .catch(err => console.log('ERROR:', err));
 });
 
 router.delete('/incidentreport', (req, res) => {
