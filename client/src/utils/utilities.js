@@ -39,8 +39,8 @@ export function createDataToSubmit(formData) {
   const { groupsHarassed, location, date, latLng, sourceurl, associatedLink } = formData;
   const groupsharassed = createGroupsHarassed(groupsHarassed);
   return Object.assign({}, {
-    date,
-    datesubmitted: new Date(),
+    date: date.toUTCString(),
+    datesubmitted: (new Date()).toUTCString(),
     groupsharassed,
     lat: latLng.lat,
     locationname: location,

@@ -1,7 +1,7 @@
 const express = require('express');
 
 const db = require('../models');
-const createInsertUnreviewedPointQuery = require('../utilities');
+// const createInsertUnreviewedPointQuery = require('../utilities');
 
 const router = express.Router();
 const desiredColumns = 'lon, lat, reporttype, locationname, verified, id, sourceurl, groupsharassed, validsourceurl';
@@ -46,14 +46,15 @@ router.post('/verifyincident', (req, res) => {
   res.end('incident verified');
 });
 
+/*
 router.post('/incidentreport', (req, res) => {
   const insertUnreviewedPointQuery = createInsertUnreviewedPointQuery(req.body);
-  console.log(insertUnreviewedPointQuery);
 
-  // db.none(insertUnreviewedPointQuery)
-  //   .then(() => {})
-  //   .catch(err => console.log('ERROR:', err));
+  db.none(insertUnreviewedPointQuery)
+    .then(() => res.send('Post received'))
+    .catch(err => console.log('ERROR:', err));
 });
+*/
 
 router.delete('/incidentreport', (req, res) => {
   console.log(req.body);
