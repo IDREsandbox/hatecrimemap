@@ -2,7 +2,15 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import axios from 'axios';
-import { CircularProgress, IconButton } from '@material-ui/core';
+import {
+  CircularProgress,
+  IconButton,
+  Dialog,
+  DialogTitle,
+  List,
+  ListItem,
+  ListItemText,
+} from '@material-ui/core';
 import { MoreVert } from '@material-ui/icons';
 
 import SimpleTable from '../../components/SimpleTable/SimpleTable';
@@ -36,6 +44,10 @@ function createMockData(mapdata) {
   return mockData.slice();
 }
 
+function deleteReport(e) {
+  console.log(e.currentTarget);
+}
+
 const getColumnHeaders = () => [
   'Harassment Location',
   'Date of Harassment',
@@ -45,23 +57,27 @@ const getColumnHeaders = () => [
   'Action',
 ];
 
-function addIdProperty(mockData) {
+function addRowNumProperty(mockData) {
   mockData.forEach((point, i) => {
-    point.id = i;
+    point.rowNum = i;
     const camelized = point.groupsharassedsplit.map(group => camelize(group));
     point.camelized = new Set(camelized);
   });
 }
 
+const getInitialState = () => ({
+  isFetching: true,
+  incidentReports: [],
+  openSnackbar: false,
+  loggedIn: true,
+  email: 'temp@gmail.com',
+  password: 'temp',
+  openDialog: false,
+  activeReport: null,
+});
+
 class VerifyIncidentsPage extends Component {
-  state = {
-    isFetching: true,
-    incidentReports: [],
-    openSnackbar: false,
-    loggedIn: true,
-    email: 'temp@gmail.com',
-    password: 'temp',
-  }
+  state = getInitialState();
 
   componentDidMount() {
     axios.get('/api/maps/usapoints')
@@ -71,7 +87,7 @@ class VerifyIncidentsPage extends Component {
         const mockData = createMockData(test);
         const incidentReports = mockData.filter(point => point.verified === -1);
         // end
-        addIdProperty(incidentReports);
+        addRowNumProperty(incidentReports);
         this.setState({
           isFetching: false,
           incidentReports,
@@ -83,6 +99,19 @@ class VerifyIncidentsPage extends Component {
       });
   }
 
+  openActions = rowNum => () => {
+    const { incidentReports } = this.state;
+    this.setState(
+      { activeReport: incidentReports[rowNum] },
+      () => this.handleOpenDialog(),
+    );
+    console.log(this.state.activeReport);
+  }
+
+  handleOpenDialog = () => this.setState({ openDialog: true });
+
+  handleCloseDialog = () => this.setState({ openDialog: false });
+
   handleOpenSnackbar = () => this.setState({ openSnackbar: true });
 
   handleCloseSnackbar = () => this.setState({ openSnackbar: false });
@@ -92,12 +121,13 @@ class VerifyIncidentsPage extends Component {
   removeReport = ({ target: { name } }) => {
     const { incidentReports } = this.state;
     this.handleOpenSnackbar();
-    const newIncidentReports = incidentReports.filter(({ id }) => id !== name);
+    const newIncidentReports = incidentReports.filter(({ rowNum }) => rowNum !== name);
     this.setState({ incidentReports: newIncidentReports, openSnackbar: true });
   }
 
   convertReportsToTableData = (reports) => {
     const displayableData = reports.map(({
+      rowNum,
       validsourceurl,
       sourceurl,
       locationname,
@@ -108,6 +138,11 @@ class VerifyIncidentsPage extends Component {
       const link = validsourceurl
         ? <button><a href={sourceurl} target="_blank">Source link</a></button>
         : 'No link';
+      const actionButton = (
+        <IconButton onClick={this.openActions(rowNum)}>
+          <MoreVert />
+        </IconButton>
+      );
 
       return [
         locationname,
@@ -115,7 +150,7 @@ class VerifyIncidentsPage extends Component {
         datesubmitted,
         groupsharassed,
         link,
-        <IconButton><MoreVert /></IconButton>,
+        actionButton,
       ];
     });
     return displayableData;
@@ -132,7 +167,7 @@ class VerifyIncidentsPage extends Component {
   }
 
   render() {
-    const { isFetching, incidentReports, openSnackbar, loggedIn, email, password } = this.state;
+    const { isFetching, incidentReports, openSnackbar, loggedIn, email, password, openDialog } = this.state;
     const { classes } = this.props;
     const tableData = this.convertReportsToTableData(incidentReports).slice(0, 10);
 
@@ -143,7 +178,8 @@ class VerifyIncidentsPage extends Component {
           password={password}
           onChange={this.handleChange}
           onSubmit={this.login}
-        />);
+        />
+      );
     }
 
     return (
@@ -162,6 +198,24 @@ class VerifyIncidentsPage extends Component {
             open={openSnackbar}
             handleClose={this.handleCloseSnackbar}
           />
+        }
+        {openDialog &&
+          <Dialog onClose={this.handleCloseDialog} open={openDialog}>
+            <DialogTitle>Choose Action</DialogTitle>
+            <div>
+              <List>
+                <ListItem button onClick={() => alert()}>
+                  <ListItemText primary="Add as Verified" />
+                </ListItem>
+                <ListItem button onClick={() => alert()}>
+                  <ListItemText primary="Add as Unverified" />
+                </ListItem>
+                <ListItem button onClick={deleteReport}>
+                  <ListItemText primary="Delete Report" />
+                </ListItem>
+              </List>
+            </div>
+          </Dialog>
         }
       </div>
     );

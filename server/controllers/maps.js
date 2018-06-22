@@ -41,7 +41,7 @@ router.get('/unreviewedpoints', (req, res) => {
     .catch(err => console.log('ERROR:', err));
 });
 
-router.post('/verifyincident', (req, res) => {
+router.post('/reviewincident', (req, res) => {
   console.log(req.body);
   res.end('incident verified');
 });
