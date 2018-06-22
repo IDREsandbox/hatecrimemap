@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import axios from 'axios';
 import { CircularProgress, IconButton } from '@material-ui/core';
-import { CheckCircle, ReportProblem, Delete } from '@material-ui/icons';
+import { MoreVert } from '@material-ui/icons';
 
 import SimpleTable from '../../components/SimpleTable/SimpleTable';
 import SimpleSnackbar from '../../components/SimpleSnackbar/SimpleSnackbar';
@@ -42,9 +42,7 @@ const getColumnHeaders = () => [
   'Date Submitted',
   'Groups Harassed',
   'Verification Link',
-  'Verify Report',
-  'Unverify Report',
-  'Remove Report',
+  'Action',
 ];
 
 function addIdProperty(mockData) {
@@ -99,20 +97,25 @@ class VerifyIncidentsPage extends Component {
   }
 
   convertReportsToTableData = (reports) => {
-    const displayableData = reports.map((report) => {
-      const link = report.validsourceurl
-        ? <button><a href={report.sourceurl} target="_blank">Source link</a></button>
+    const displayableData = reports.map(({
+      validsourceurl,
+      sourceurl,
+      locationname,
+      groupsharassed,
+      date,
+      datesubmitted,
+    }) => {
+      const link = validsourceurl
+        ? <button><a href={sourceurl} target="_blank">Source link</a></button>
         : 'No link';
 
       return [
-        report.locationname,
-        '1/21/1996',
-        '1/24/2016',
-        report.groupsharassed,
+        locationname,
+        date || 'No date listed',
+        datesubmitted,
+        groupsharassed,
         link,
-        <IconButton><CheckCircle /></IconButton>,
-        <IconButton><ReportProblem /></IconButton>,
-        <IconButton><Delete /></IconButton>,
+        <IconButton><MoreVert /></IconButton>,
       ];
     });
     return displayableData;
