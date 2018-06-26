@@ -61,9 +61,17 @@ export const reviewIncidentReport = (id, verified, callback = null) => () => {
   callback();
 };
 
-export const deleteIncidentReport = (id, ...callbacks) => () => {
+export const deleteIncidentReport = (id, callback) => () => {
   axios.delete('/api/maps/incidentreport', { data: { id } })
     .then(res => console.log(res.data))
     .catch(err => console.log(err));
-  callbacks.forEach(callback => callback.apply());
+  callback();
+};
+
+export const addRowNumProperty = (data) => {
+  data.forEach((point, i) => {
+    point.rowNum = i;
+    const camelized = point.groupsharassedsplit.map(group => camelize(group));
+    point.camelized = new Set(camelized);
+  });
 };

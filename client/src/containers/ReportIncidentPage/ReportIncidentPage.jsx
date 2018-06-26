@@ -184,7 +184,6 @@ class ReportIncidentPage extends Component {
 
   reportIncident = () => {
     const dataToSubmit = createDataToSubmit(this.state);
-    console.log(dataToSubmit);
     this.resetState();
     axios.post('/api/maps/incidentreport', dataToSubmit)
       .then(res => console.log(res.data))

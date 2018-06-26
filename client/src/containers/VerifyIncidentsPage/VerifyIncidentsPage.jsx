@@ -17,7 +17,7 @@ import SimpleTable from '../../components/SimpleTable/SimpleTable';
 import SimpleSnackbar from '../../components/SimpleSnackbar/SimpleSnackbar';
 import Login from '../../components/Login/Login';
 import { storeMapData } from '../../utils/filtering';
-import { camelize, reviewIncidentReport, deleteIncidentReport } from '../../utils/utilities';
+import { reviewIncidentReport, deleteIncidentReport, addRowNumProperty } from '../../utils/utilities';
 
 const styles = () => ({
   root: {
@@ -41,14 +41,6 @@ const getColumnHeaders = () => [
   'Verification Link',
   'Action',
 ];
-
-function addRowNumProperty(mockData) {
-  mockData.forEach((point, i) => {
-    point.rowNum = i;
-    const camelized = point.groupsharassedsplit.map(group => camelize(group));
-    point.camelized = new Set(camelized);
-  });
-}
 
 const getInitialState = () => ({
   isFetching: true,
@@ -127,8 +119,8 @@ class VerifyIncidentsPage extends Component {
 
       return [
         locationname,
-        date,
-        datesubmitted,
+        new Date(date).toDateString(),
+        new Date(datesubmitted).toDateString(),
         groupsharassed,
         link,
         actionButton,
