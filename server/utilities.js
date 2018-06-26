@@ -8,4 +8,9 @@ const createInsertUnreviewedPointQuery = (data) => {
   return insertUnconfirmedPoint;
 };
 
-module.exports = createInsertUnreviewedPointQuery;
+const createDeleteIncidentReportQuery = id => `DELETE FROM hcmdata WHERE id = ${id}`;
+
+module.exports = {
+  createInsertUnreviewedPointQuery,
+  createDeleteIncidentReportQuery,
+};

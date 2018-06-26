@@ -1,12 +1,13 @@
 const express = require('express');
 
 const db = require('../models');
-// const createInsertUnreviewedPointQuery = require('../utilities');
+const { createInsertUnreviewedPointQuery, createDeleteIncidentReportQuery } = require('../utilities');
 
 const router = express.Router();
 const desiredColumns = 'date, datesubmitted, lon, lat, reporttype, locationname, verified, id, sourceurl, groupsharassed, validsourceurl';
 const pointsInUSQuery = `SELECT ${desiredColumns} FROM hcmdata WHERE (lon < -66.796875 AND lon > -124.5849609375) AND (lat < 49.00905080938215 AND lat > 25.125392611512158)`;
 const unreviewedPointsQuery = `SELECT ${desiredColumns} FROM hcmdata WHERE verified = -1`;
+// `DELETE * FROM hcmdata WHERE id = ${}`
 
 router.use((req, res, next) => {
   /* queries to /maps api go through here first */
@@ -41,24 +42,25 @@ router.get('/unreviewedpoints', (req, res) => {
     .catch(err => console.log('ERROR:', err));
 });
 
-router.post('/reviewincident', (req, res) => {
+router.post('/reviewedincident', (req, res) => {
   console.log(req.body);
-  res.end('incident verified');
+  res.end('incident reviewed');
 });
 
-/*
 router.post('/incidentreport', (req, res) => {
   const insertUnreviewedPointQuery = createInsertUnreviewedPointQuery(req.body);
 
   db.none(insertUnreviewedPointQuery)
-    .then(() => res.send('Post received'))
+    .then(() => res.send('Incident report added'))
     .catch(err => console.log('ERROR:', err));
 });
-*/
 
 router.delete('/incidentreport', (req, res) => {
-  console.log(req.body);
-  res.send('incident removed');
+  const deleteIncidentReportQuery = createDeleteIncidentReportQuery(req.body.id);
+
+  db.result(deleteIncidentReportQuery)
+    .then(() => res.send('Incident report deleted'))
+    .catch(err => console.log('ERROR:', err));
 });
 
 module.exports = router;

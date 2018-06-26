@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 import ghFilters from '../globals/ghFilters';
 
 export function arrToObject(arr) {
@@ -51,3 +53,17 @@ export function createDataToSubmit(formData) {
     reviewedbystudent: true,
   });
 }
+
+export const reviewIncidentReport = (id, verified, callback = null) => () => {
+  axios.post('/api/maps/reviewedincident', { id, verified })
+    .then(res => console.log(res.data))
+    .catch(err => console.log(err));
+  callback();
+};
+
+export const deleteIncidentReport = (id, ...callbacks) => () => {
+  axios.delete('/api/maps/incidentreport', { data: { id } })
+    .then(res => console.log(res.data))
+    .catch(err => console.log(err));
+  callbacks.forEach(callback => callback.apply());
+};

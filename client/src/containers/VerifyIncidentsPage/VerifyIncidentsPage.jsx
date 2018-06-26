@@ -17,7 +17,7 @@ import SimpleTable from '../../components/SimpleTable/SimpleTable';
 import SimpleSnackbar from '../../components/SimpleSnackbar/SimpleSnackbar';
 import Login from '../../components/Login/Login';
 import { storeMapData } from '../../utils/filtering';
-import { camelize } from '../../utils/utilities';
+import { camelize, reviewIncidentReport, deleteIncidentReport } from '../../utils/utilities';
 
 const styles = () => ({
   root: {
@@ -32,21 +32,6 @@ const styles = () => ({
 
 const tempEmail = 'temp@gmail.com';
 const tempPassword = 'temp';
-
-function createMockData(mapdata) {
-  const mockData = mapdata.map((point) => {
-    const num = Math.floor(Math.random() * Math.floor(5));
-    if (num === 0) {
-      return Object.assign({}, point, { verified: -1 });
-    }
-    return Object.assign({}, point);
-  });
-  return mockData.slice();
-}
-
-function deleteReport(e) {
-  console.log(e.currentTarget);
-}
 
 const getColumnHeaders = () => [
   'Harassment Location',
@@ -80,13 +65,9 @@ class VerifyIncidentsPage extends Component {
   state = getInitialState();
 
   componentDidMount() {
-    axios.get('/api/maps/usapoints')
+    axios.get('/api/maps/unreviewedpoints')
       .then(({ data: { mapdata } }) => {
-        // remove before pushing to production
-        const test = storeMapData(mapdata);
-        const mockData = createMockData(test);
-        const incidentReports = mockData.filter(point => point.verified === -1);
-        // end
+        const incidentReports = storeMapData(mapdata);
         addRowNumProperty(incidentReports);
         this.setState({
           isFetching: false,
@@ -101,11 +82,11 @@ class VerifyIncidentsPage extends Component {
 
   openActions = rowNum => () => {
     const { incidentReports } = this.state;
-    this.setState(
-      { activeReport: incidentReports[rowNum] },
-      () => this.handleOpenDialog(),
-    );
-    console.log(this.state.activeReport);
+    this.setState({
+      activeReport: incidentReports[rowNum],
+    }, () => {
+      this.handleOpenDialog();
+    });
   }
 
   handleOpenDialog = () => this.setState({ openDialog: true });
@@ -146,7 +127,7 @@ class VerifyIncidentsPage extends Component {
 
       return [
         locationname,
-        date || 'No date listed',
+        date,
         datesubmitted,
         groupsharassed,
         link,
@@ -167,7 +148,7 @@ class VerifyIncidentsPage extends Component {
   }
 
   render() {
-    const { isFetching, incidentReports, openSnackbar, loggedIn, email, password, openDialog } = this.state;
+    const { isFetching, incidentReports, openSnackbar, loggedIn, email, password, openDialog, activeReport } = this.state;
     const { classes } = this.props;
     const tableData = this.convertReportsToTableData(incidentReports).slice(0, 10);
 
@@ -204,13 +185,16 @@ class VerifyIncidentsPage extends Component {
             <DialogTitle>Choose Action</DialogTitle>
             <div>
               <List>
-                <ListItem button onClick={() => alert()}>
+                <ListItem button onClick={reviewIncidentReport(activeReport.id, 1, this.handleCloseDialog)}>
                   <ListItemText primary="Add as Verified" />
                 </ListItem>
-                <ListItem button onClick={() => alert()}>
+                <ListItem button onClick={reviewIncidentReport(activeReport.id, 0, this.handleCloseDialog)}>
                   <ListItemText primary="Add as Unverified" />
                 </ListItem>
-                <ListItem button onClick={deleteReport}>
+                <ListItem
+                  button
+                  onClick={deleteIncidentReport(activeReport.id, this.handleCloseDialog)}
+                >
                   <ListItemText primary="Delete Report" />
                 </ListItem>
               </List>
