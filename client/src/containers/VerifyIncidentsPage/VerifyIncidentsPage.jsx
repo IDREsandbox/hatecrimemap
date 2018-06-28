@@ -30,6 +30,37 @@ const styles = () => ({
   },
 });
 
+// function deleteCookie(name) {
+//   document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:01 GMT;`;
+// }
+
+function setCookie(cname, cvalue, exdays) {
+  const d = new Date();
+  d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+  const expires = `expires=${d.toUTCString()}`;
+  document.cookie = `${cname}=${cvalue};${expires};path=/`;
+}
+
+function getCookie(cname) {
+  const name = `${cname}=`;
+  const ca = document.cookie.split(';');
+  for (let i = 0; i < ca.length; i++) {
+    let c = ca[i];
+    while (c.charAt(0) === ' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) === 0) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return '';
+}
+
+function checkLoggedInCookie() {
+  const loggedIn = getCookie('loggedIn');
+  return loggedIn !== '';
+}
+
 const tempEmail = 'temp@gmail.com';
 const tempPassword = 'temp';
 
@@ -46,7 +77,6 @@ const getInitialState = () => ({
   isFetching: true,
   incidentReports: [],
   openSnackbar: false,
-  loggedIn: false,
   email: 'temp@gmail.com',
   password: 'temp',
   openDialog: false,
@@ -130,7 +160,7 @@ class VerifyIncidentsPage extends Component {
   login = () => {
     const { email, password } = this.state;
     if (email.toLowerCase() === tempEmail.toLowerCase() && password === tempPassword) {
-      this.setState({ loggedIn: true });
+      setCookie('loggedIn', 'true', 0.001);
     } else {
       alert('Email or password is incorrect. Please try again.');
     }
@@ -138,9 +168,10 @@ class VerifyIncidentsPage extends Component {
   }
 
   render() {
-    const { isFetching, incidentReports, openSnackbar, loggedIn, email, password, openDialog, activeReport } = this.state;
+    const { isFetching, incidentReports, openSnackbar, email, password, openDialog, activeReport } = this.state;
     const { classes } = this.props;
     const tableData = this.convertReportsToTableData(incidentReports).slice(0, 10);
+    const loggedIn = checkLoggedInCookie();
 
     if (!loggedIn) {
       return (
@@ -150,14 +181,6 @@ class VerifyIncidentsPage extends Component {
           onChange={this.handleChange}
           onSubmit={this.login}
         />
-      );
-    }
-
-    if (incidentReports.length === 0) {
-      return (
-        <div>
-          No Reports to Verify
-        </div>
       );
     }
 
