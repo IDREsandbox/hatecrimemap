@@ -10,7 +10,10 @@ const createInsertUnreviewedPointQuery = (data) => {
 
 const createDeleteIncidentReportQuery = id => `DELETE FROM hcmdata WHERE id = ${id}`;
 
+const createPostReviewedIncidentQuery = ({ id, verified }) => `UPDATE hcmdata SET verified = ${verified} WHERE id = ${id}`;
+
 module.exports = {
   createInsertUnreviewedPointQuery,
   createDeleteIncidentReportQuery,
+  createPostReviewedIncidentQuery,
 };

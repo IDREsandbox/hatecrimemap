@@ -1,13 +1,16 @@
 const express = require('express');
 
 const db = require('../models');
-const { createInsertUnreviewedPointQuery, createDeleteIncidentReportQuery } = require('../utilities');
+const {
+  createInsertUnreviewedPointQuery,
+  createDeleteIncidentReportQuery,
+  createPostReviewedIncidentQuery,
+} = require('../utilities');
 
 const router = express.Router();
 const desiredColumns = 'date, datesubmitted, lon, lat, reporttype, locationname, verified, id, sourceurl, groupsharassed, validsourceurl';
 const pointsInUSQuery = `SELECT ${desiredColumns} FROM hcmdata WHERE (lon < -66.796875 AND lon > -124.5849609375) AND (lat < 49.00905080938215 AND lat > 25.125392611512158)`;
 const unreviewedPointsQuery = `SELECT ${desiredColumns} FROM hcmdata WHERE verified = -1`;
-// `DELETE * FROM hcmdata WHERE id = ${}`
 
 router.use((req, res, next) => {
   /* queries to /maps api go through here first */
@@ -43,8 +46,11 @@ router.get('/unreviewedpoints', (req, res) => {
 });
 
 router.post('/reviewedincident', (req, res) => {
-  console.log(req.body);
-  res.end('incident reviewed');
+  const postReviewedIncidentQuery = createPostReviewedIncidentQuery(req.body);
+
+  db.none(postReviewedIncidentQuery)
+    .then(() => res.send('Incident report reviewed'))
+    .catch(err => console.log('ERROR:', err));
 });
 
 router.post('/incidentreport', (req, res) => {
