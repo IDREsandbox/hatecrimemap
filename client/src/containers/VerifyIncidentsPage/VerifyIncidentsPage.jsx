@@ -46,7 +46,7 @@ const getInitialState = () => ({
   isFetching: true,
   incidentReports: [],
   openSnackbar: false,
-  loggedIn: true,
+  loggedIn: false,
   email: 'temp@gmail.com',
   password: 'temp',
   openDialog: false,
@@ -76,9 +76,7 @@ class VerifyIncidentsPage extends Component {
     const { incidentReports } = this.state;
     this.setState({
       activeReport: incidentReports[rowNum],
-    }, () => {
-      this.handleOpenDialog();
-    });
+    }, this.handleOpenDialog);
   }
 
   handleOpenDialog = () => this.setState({ openDialog: true });
@@ -152,6 +150,14 @@ class VerifyIncidentsPage extends Component {
           onChange={this.handleChange}
           onSubmit={this.login}
         />
+      );
+    }
+
+    if (incidentReports.length === 0) {
+      return (
+        <div>
+          No Reports to Verify
+        </div>
       );
     }
 
