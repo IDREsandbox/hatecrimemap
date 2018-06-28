@@ -183,10 +183,16 @@ class VerifyIncidentsPage extends Component {
             <DialogTitle>Choose Action</DialogTitle>
             <div>
               <List>
-                <ListItem button onClick={reviewIncidentReport(activeReport.id, 1, this.handleCloseDialog)}>
+                <ListItem
+                  button
+                  onClick={reviewIncidentReport(activeReport.id, 1, this.handleCloseDialog)}
+                >
                   <ListItemText primary="Add as Verified" />
                 </ListItem>
-                <ListItem button onClick={reviewIncidentReport(activeReport.id, 0, this.handleCloseDialog)}>
+                <ListItem
+                  button
+                  onClick={reviewIncidentReport(activeReport.id, 0, this.handleCloseDialog)}
+                >
                   <ListItemText primary="Add as Unverified" />
                 </ListItem>
                 <ListItem
