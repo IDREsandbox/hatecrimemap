@@ -17,7 +17,13 @@ import SimpleTable from '../../components/SimpleTable/SimpleTable';
 import SimpleSnackbar from '../../components/SimpleSnackbar/SimpleSnackbar';
 import Login from '../../components/Login/Login';
 import { storeMapData } from '../../utils/filtering';
-import { reviewIncidentReport, deleteIncidentReport, addRowNumProperty } from '../../utils/utilities';
+import {
+  reviewIncidentReport,
+  deleteIncidentReport,
+  addRowNumProperty,
+  checkLoggedInCookie,
+  setCookie,
+} from '../../utils/utilities';
 
 const styles = () => ({
   root: {
@@ -29,37 +35,6 @@ const styles = () => ({
     left: '50%',
   },
 });
-
-// function deleteCookie(name) {
-//   document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:01 GMT;`;
-// }
-
-function setCookie(cname, cvalue, exdays) {
-  const d = new Date();
-  d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
-  const expires = `expires=${d.toUTCString()}`;
-  document.cookie = `${cname}=${cvalue};${expires};path=/`;
-}
-
-function getCookie(cname) {
-  const name = `${cname}=`;
-  const ca = document.cookie.split(';');
-  for (let i = 0; i < ca.length; i++) {
-    let c = ca[i];
-    while (c.charAt(0) === ' ') {
-      c = c.substring(1);
-    }
-    if (c.indexOf(name) === 0) {
-      return c.substring(name.length, c.length);
-    }
-  }
-  return '';
-}
-
-function checkLoggedInCookie() {
-  const loggedIn = getCookie('loggedIn');
-  return loggedIn !== '';
-}
 
 const tempEmail = 'temp@gmail.com';
 const tempPassword = 'temp';
@@ -160,7 +135,7 @@ class VerifyIncidentsPage extends Component {
   login = () => {
     const { email, password } = this.state;
     if (email.toLowerCase() === tempEmail.toLowerCase() && password === tempPassword) {
-      setCookie('loggedIn', 'true', 0.001);
+      setCookie('loggedIn', 'true', 0.05);
     } else {
       alert('Email or password is incorrect. Please try again.');
     }
