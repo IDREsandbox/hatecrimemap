@@ -5,7 +5,7 @@ const { isUri } = require('valid-url');
 const db = require('../models');
 
 function updateValidSourceUrl(urlState, id) {
-  db.none(`UPDATE hcmdata SET validsourceurl = ${urlState} WHERE id = ${id}::varchar`)
+  db.none(`UPDATE hcmdata SET validsourceurl = ${urlState} WHERE id = ${id}`)
     .catch(err => console.log('ERROR:', err));
 }
 
