@@ -71,7 +71,7 @@ const ghFilters = [
     color: '#34af3e',
   },
   {
-    label: 'LGBT',
+    label: 'LGBTQ',
     color: '#7b9ec8',
   },
   {
