@@ -16,7 +16,7 @@ import { MoreVert } from '@material-ui/icons';
 import SimpleTable from '../../components/SimpleTable/SimpleTable';
 import SimpleSnackbar from '../../components/SimpleSnackbar/SimpleSnackbar';
 import Login from '../../components/Login/Login';
-import { storeMapData } from '../../utils/filtering';
+import { addGroupsHarassedSplit } from '../../utils/filtering';
 import {
   reviewIncidentReport,
   deleteIncidentReport,
@@ -64,7 +64,7 @@ class VerifyIncidentsPage extends Component {
   componentDidMount() {
     axios.get('/api/maps/unreviewedpoints')
       .then(({ data: { mapdata } }) => {
-        const incidentReports = storeMapData(mapdata);
+        const incidentReports = addGroupsHarassedSplit(mapdata);
         addRowNumProperty(incidentReports);
         this.setState({
           isFetching: false,
