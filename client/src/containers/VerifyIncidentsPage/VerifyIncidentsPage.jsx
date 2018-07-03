@@ -145,7 +145,7 @@ class VerifyIncidentsPage extends Component {
   render() {
     const { isFetching, incidentReports, openSnackbar, email, password, openDialog, activeReport } = this.state;
     const { classes } = this.props;
-    const tableData = this.convertReportsToTableData(incidentReports).slice(0, 10);
+    const tableData = this.convertReportsToTableData(incidentReports);
     const loggedIn = checkLoggedInCookie();
 
     if (!loggedIn) {
