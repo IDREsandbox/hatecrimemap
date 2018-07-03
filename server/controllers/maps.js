@@ -5,6 +5,7 @@ const {
   createInsertUnreviewedPointQuery,
   createDeleteIncidentReportQuery,
   createPostReviewedIncidentQuery,
+  checkLoginInfo,
 } = require('../utilities');
 
 const router = express.Router();
@@ -34,6 +35,12 @@ router.get('/usapoints', (req, res) => {
 });
 
 router.get('/unreviewedpoints', (req, res) => {
+  const { email, password, loggedIn } = req.query;
+  if (loggedIn === 'false' && !checkLoginInfo(email, password)) {
+    res.status(403).send('unauthorized');
+    return;
+  }
+
   db.any(findUnreviewedPoints)
     .then((mapdata) => {
       res.status(200)

@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import axios from 'axios';
 import {
-  CircularProgress,
   IconButton,
   Dialog,
   DialogTitle,
@@ -14,7 +13,6 @@ import {
 import { MoreVert } from '@material-ui/icons';
 
 import SimpleTable from '../../components/SimpleTable/SimpleTable';
-import SimpleSnackbar from '../../components/SimpleSnackbar/SimpleSnackbar';
 import Login from '../../components/Login/Login';
 import { addGroupsHarassedSplit } from '../../utils/filtering';
 import {
@@ -36,9 +34,6 @@ const styles = () => ({
   },
 });
 
-const tempEmail = 'temp@gmail.com';
-const tempPassword = 'temp';
-
 const getColumnHeaders = () => [
   'Harassment Location',
   'Date of Harassment',
@@ -49,11 +44,9 @@ const getColumnHeaders = () => [
 ];
 
 const getInitialState = () => ({
-  isFetching: true,
   incidentReports: [],
-  openSnackbar: false,
-  email: 'temp@gmail.com',
-  password: 'temp',
+  email: '',
+  password: '',
   openDialog: false,
   activeReport: null,
 });
@@ -62,18 +55,22 @@ class VerifyIncidentsPage extends Component {
   state = getInitialState();
 
   componentDidMount() {
-    axios.get('/api/maps/unreviewedpoints')
+    if (checkLoggedInCookie()) {
+      this.getUnreviewedPoints('', '', true);
+    }
+  }
+
+  getUnreviewedPoints = (email, password, loggedIn) => {
+    axios.get('/api/maps/unreviewedpoints', { params: { email, password, loggedIn } })
       .then(({ data: { mapdata } }) => {
+        setCookie('loggedIn', 'true', 0.05);
         const incidentReports = addGroupsHarassedSplit(mapdata);
         addRowNumProperty(incidentReports);
-        this.setState({
-          isFetching: false,
-          incidentReports,
-        });
+        this.setState({ incidentReports });
       })
       .catch((err) => {
-        this.setState({ isFetching: false });
-        alert(`API call failed: ${err}`);
+        alert(`Email or password incorrect. Please try again.\n\n${err}`);
+        this.setState({ email: '', password: '' });
       });
   }
 
@@ -88,17 +85,13 @@ class VerifyIncidentsPage extends Component {
 
   handleCloseDialog = () => this.setState({ openDialog: false });
 
-  handleOpenSnackbar = () => this.setState({ openSnackbar: true });
-
-  handleCloseSnackbar = () => this.setState({ openSnackbar: false });
-
   handleChange = ({ target: { name, value } }) => this.setState({ [name]: value });
 
   removeReport = ({ target: { name } }) => {
     const { incidentReports } = this.state;
     this.handleOpenSnackbar();
     const newIncidentReports = incidentReports.filter(({ rowNum }) => rowNum !== name);
-    this.setState({ incidentReports: newIncidentReports, openSnackbar: true });
+    this.setState({ incidentReports: newIncidentReports });
   }
 
   convertReportsToTableData = (reports) => {
@@ -134,21 +127,15 @@ class VerifyIncidentsPage extends Component {
 
   login = () => {
     const { email, password } = this.state;
-    if (email.toLowerCase() === tempEmail.toLowerCase() && password === tempPassword) {
-      setCookie('loggedIn', 'true', 0.05);
-    } else {
-      alert('Email or password is incorrect. Please try again.');
-    }
-    this.setState({ email: '', password: '' });
+    this.getUnreviewedPoints(email, password, checkLoggedInCookie());
   }
 
   render() {
-    const { isFetching, incidentReports, openSnackbar, email, password, openDialog, activeReport } = this.state;
+    const { incidentReports, email, password, openDialog, activeReport } = this.state;
     const { classes } = this.props;
     const tableData = this.convertReportsToTableData(incidentReports);
-    const loggedIn = checkLoggedInCookie();
 
-    if (!loggedIn) {
+    if (!checkLoggedInCookie()) {
       return (
         <Login
           email={email}
@@ -161,21 +148,10 @@ class VerifyIncidentsPage extends Component {
 
     return (
       <div className={classes.root}>
-        {isFetching ? (
-          <CircularProgress className={classes.progress} />
-        ) : (
-          <SimpleTable
-            columnHeaders={getColumnHeaders()}
-            tableData={tableData}
-          />
-        )}
-        {openSnackbar &&
-          <SimpleSnackbar
-            message="Report Removed"
-            open={openSnackbar}
-            handleClose={this.handleCloseSnackbar}
-          />
-        }
+        <SimpleTable
+          columnHeaders={getColumnHeaders()}
+          tableData={tableData}
+        />
         {openDialog &&
           <Dialog onClose={this.handleCloseDialog} open={openDialog}>
             <DialogTitle>Choose Action</DialogTitle>

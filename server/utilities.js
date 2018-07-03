@@ -12,8 +12,13 @@ const createDeleteIncidentReportQuery = id => `DELETE FROM hcmdata WHERE id = ${
 
 const createPostReviewedIncidentQuery = ({ id, verified }) => `UPDATE hcmdata SET verified = ${verified} WHERE id = ${id}`;
 
+const checkLoginInfo = (email, password) => (
+  email === process.env.GMAIL_ADDRESS && password === process.env.GMAIL_PASSWORD
+);
+
 module.exports = {
   createInsertUnreviewedPointQuery,
   createDeleteIncidentReportQuery,
   createPostReviewedIncidentQuery,
+  checkLoginInfo,
 };
