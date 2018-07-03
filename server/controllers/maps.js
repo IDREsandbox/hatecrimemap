@@ -1,10 +1,8 @@
 const express = require('express');
+const PQ = require('pg-promise').ParameterizedQuery;
 
 const db = require('../models');
 const {
-  createInsertUnreviewedPointQuery,
-  createDeleteIncidentReportQuery,
-  createPostReviewedIncidentQuery,
   checkLoginInfo,
 } = require('../utilities');
 
@@ -53,25 +51,25 @@ router.get('/unreviewedpoints', (req, res) => {
 });
 
 router.post('/reviewedincident', (req, res) => {
-  const postReviewedIncidentQuery = createPostReviewedIncidentQuery(req.body);
+  const updateUnreviewedIncident = new PQ('UPDATE hcmdata SET verified = $2 WHERE id = $1', Object.values(req.body));
 
-  db.none(postReviewedIncidentQuery)
+  db.none(updateUnreviewedIncident)
     .then(() => res.send('Incident report reviewed'))
     .catch(err => console.log('ERROR:', err));
 });
 
 router.post('/incidentreport', (req, res) => {
-  const insertUnreviewedPointQuery = createInsertUnreviewedPointQuery(req.body);
+  const addUnreviewedIncident = new PQ('INSERT INTO hcmdata(date, datesubmitted, groupsharassed, lat, locationname, lon, sourceurl, validsourceurl, verified, reviewedbystudent) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)', Object.values(req.body));
 
-  db.none(insertUnreviewedPointQuery)
+  db.none(addUnreviewedIncident)
     .then(() => res.send('Incident report added'))
     .catch(err => console.log('ERROR:', err));
 });
 
 router.delete('/incidentreport', (req, res) => {
-  const deleteIncidentReportQuery = createDeleteIncidentReportQuery(req.body.id);
+  const deleteUnreviewedIncident = new PQ('DELETE FROM hcmdata WHERE id = $1', Object.values(req.body));
 
-  db.result(deleteIncidentReportQuery)
+  db.result(deleteUnreviewedIncident)
     .then(() => res.send('Incident report deleted'))
     .catch(err => console.log('ERROR:', err));
 });
