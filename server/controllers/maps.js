@@ -8,9 +8,9 @@ const {
 } = require('../utilities');
 
 const router = express.Router();
-const desiredColumns = 'date, datesubmitted, lon, lat, reporttype, locationname, verified, id, sourceurl, groupsharassed, validsourceurl';
-const pointsInUSQuery = `SELECT ${desiredColumns} FROM hcmdata WHERE (lon < -66.796875 AND lon > -124.5849609375) AND (lat < 49.00905080938215 AND lat > 25.125392611512158)`;
-const unreviewedPointsQuery = `SELECT ${desiredColumns} FROM hcmdata WHERE verified = -1`;
+const columns = 'date, datesubmitted, lon, lat, reporttype, locationname, verified, id, sourceurl, groupsharassed, validsourceurl';
+const findPointsInUS = `SELECT ${columns} FROM hcmdata WHERE (lon < -66.796875 AND lon > -124.5849609375) AND (lat < 49.00905080938215 AND lat > 25.125392611512158)`;
+const findUnreviewedPoints = `SELECT ${columns} FROM hcmdata WHERE verified = -1`;
 
 router.use((req, res, next) => {
   /* queries to /maps api go through here first */
@@ -22,7 +22,7 @@ router.get('/', (req, res) => {
 });
 
 router.get('/usapoints', (req, res) => {
-  db.any(pointsInUSQuery)
+  db.any(findPointsInUS)
     .then((mapdata) => {
       res.status(200)
         .json({
@@ -34,7 +34,7 @@ router.get('/usapoints', (req, res) => {
 });
 
 router.get('/unreviewedpoints', (req, res) => {
-  db.any(unreviewedPointsQuery)
+  db.any(findUnreviewedPoints)
     .then((mapdata) => {
       res.status(200)
         .json({
