@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const helmet = require('helmet');
 
 const routes = require('./controllers');
+const unreviewedPointsEmailJob = require('./scripts/email');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -24,3 +25,5 @@ app.get('*', (req, res) => {
 });
 
 app.listen(PORT);
+
+unreviewedPointsEmailJob.start();
