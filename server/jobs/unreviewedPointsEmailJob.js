@@ -15,6 +15,7 @@ const transporter = nodemailer.createTransport({
 });
 
 const onTick = () => {
+  console.log('Running unreveiwed points email job...');
   db.one(countUnreviewedPoints)
     .then(({ count }) => {
       if (Number(count) < 1) {
@@ -28,11 +29,11 @@ const onTick = () => {
       };
       transporter.sendMail(mailOptions);
     })
-    .catch(err => console.log('ERROR:', err));
+    .catch(err => console.log(err));
 };
 
 const unreviewedPointsEmailJob = new CronJob({
-  cronTime: '0 0 0 * * 0',
+  cronTime: '0 0 8 * * 1',
   onTick,
   start: false,
   timeZone: 'America/Los_Angeles',
