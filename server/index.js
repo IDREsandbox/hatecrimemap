@@ -6,7 +6,6 @@ const helmet = require('helmet');
 const routes = require('./controllers');
 const startJobs = require('./jobs');
 
-
 const app = express();
 const PORT = process.env.PORT || 5000;
 

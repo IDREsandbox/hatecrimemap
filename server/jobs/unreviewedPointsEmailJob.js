@@ -28,6 +28,7 @@ const onTick = () => {
         html: 'You have 9 reports that need to be reviewed. Click <a href="http://www.hatecrimemap.com/verifyincidents" target="_blank">here</a> to review them.',
       };
       transporter.sendMail(mailOptions);
+      console.log('Finished unreviewed points email job.');
     })
     .catch(err => console.log(err));
 };

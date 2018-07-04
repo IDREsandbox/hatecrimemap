@@ -1,49 +1,49 @@
 const { CronJob } = require('cron');
-const request = require('request');
+const axios = require('axios');
 const { isUri } = require('valid-url');
 const PQ = require('pg-promise').ParameterizedQuery;
 
 const db = require('../models');
 
-const updateValidSourceUrl = (urlState, id) => {
+const updateValidSourceUrl = (urlState, id) => new Promise((resolve) => {
   db.none(new PQ('UPDATE hcmdata SET validsourceurl = $1 WHERE id = $2', [urlState, id]))
-    .catch(err => console.log('ERROR:', err));
+    .then(() => resolve())
+    .catch(err => console.log(err));
+});
+
+const checkUrl = async (url, validsourceurl, id) => {
+  await axios.get(url)
+    .then(async () => {
+      if (!validsourceurl) {
+        await updateValidSourceUrl(true, id);
+      }
+    })
+    .catch(async () => {
+      if (validsourceurl) {
+        await updateValidSourceUrl(false, id);
+      }
+    });
 };
 
-const validateUrls = (urls) => {
-  let invalidUrls = 0;
-  urls.forEach(({ id, sourceurl, validsourceurl }) => {
-    if (!isUri(sourceurl)) {
-      if (validsourceurl) {
-        updateValidSourceUrl(false, id);
-        invalidUrls++;
-      }
-      return;
+/* eslint-disable */
+
+const validateUrls = async (data) => {
+  for (const point of data) {
+    console.log(point);
+    const { id, sourceurl, validsourceurl } = point;
+    if (isUri(sourceurl)) {
+      await checkUrl(sourceurl, validsourceurl, id);
     }
-    request
-      .get(sourceurl)
-      .on('response', (res) => {
-        if (res.statusCode < 400 && !validsourceurl) {
-          updateValidSourceUrl(true, id);
-        } else if (res.statusCode >= 400 && validsourceurl) {
-          updateValidSourceUrl(false, id);
-          invalidUrls++;
-        }
-      })
-      .on('error', () => {
-        if (validsourceurl) {
-          updateValidSourceUrl(false, id);
-          invalidUrls++;
-        }
-      });
-  });
-  console.log(`${invalidUrls} urls flagged as invalid.`);
+  }
+  console.log('Finished check for valid urls job.');
 };
+
+/* eslint-enable */
 
 const onTick = () => {
   console.log('Running check for valid urls job...');
   db.any(`SELECT id, sourceurl, validsourceurl FROM hcmdata WHERE sourceurl != ''`) // eslint-disable-line
-    .then(urls => validateUrls(urls))
+    .then(data => validateUrls(data))
     .catch(err => console.log(err));
 };
 

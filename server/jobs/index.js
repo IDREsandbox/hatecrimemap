@@ -1,8 +1,8 @@
-const checkValidUrlsJob = require('./checkValidUrlsJob');
+// const checkValidUrlsJob = require('./checkValidUrlsJob');
 const unreviewedPointsEmailJob = require('./unreviewedPointsEmailJob');
 
 const startJobs = () => {
-  checkValidUrlsJob.start();
+  // checkValidUrlsJob.start();
   unreviewedPointsEmailJob.start();
 };
 
