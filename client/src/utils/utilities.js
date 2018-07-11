@@ -51,6 +51,7 @@ export function createDataToSubmit(formData) {
     validsourceurl: associatedLink,
     verified: -1,
     reviewedbystudent: true,
+    reporttype: 'Harassment/Attack',
   });
 }
 
