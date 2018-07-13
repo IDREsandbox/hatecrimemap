@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Map, TileLayer, CircleMarker, Popup } from 'react-leaflet';
 
+import { getSourceLI } from '../../utils/utilities';
 import './MapWrapper.css';
 
 const MapWrapper = ({ mapdata, zoom }) => {
@@ -16,12 +17,12 @@ const MapWrapper = ({ mapdata, zoom }) => {
       locationname,
       sourceurl,
       validsourceurl,
+      waybackurl,
+      validwaybackurl,
     } = markerItemData;
     const markerCenter = [Number(lat), Number(lon)];
     const color = markerItemData.color || 'blue';
-    const source = validsourceurl
-      ? <li><a href={sourceurl} target="_blank">Source</a></li>
-      : <li>Source not listed</li>;
+    const source = getSourceLI(sourceurl, validsourceurl, waybackurl, validwaybackurl);
 
     return (
       <CircleMarker color={color} key={id} center={markerCenter} radius={2}>

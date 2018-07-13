@@ -1,4 +1,5 @@
 import axios from 'axios';
+import React from 'react';
 
 import ghFilters from '../globals/ghFilters';
 
@@ -105,3 +106,13 @@ export const checkLoggedInCookie = () => {
   const loggedIn = getCookie('loggedIn');
   return loggedIn !== '';
 };
+
+export function getSourceLI(sourceurl, validsourceurl, waybackurl, validwaybackurl) {
+  if (validsourceurl) {
+    return <li><a href={sourceurl} target="_blank">Source</a></li>;
+  }
+  if (validwaybackurl) {
+    return <li><a href={waybackurl} target="_blank">Source</a></li>;
+  }
+  return <li>Source not listed</li>;
+}
