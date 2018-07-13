@@ -34,7 +34,7 @@ const onTick = () => {
 };
 
 const unreviewedPointsEmailJob = new CronJob({
-  cronTime: '0 8 * * 1',
+  cronTime: '0 8 * * 1', // Monday at 8am
   onTick,
   start: false,
   timeZone: 'America/Los_Angeles',
