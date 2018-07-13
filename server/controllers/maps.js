@@ -59,7 +59,8 @@ router.post('/reviewedincident', (req, res) => {
 });
 
 router.post('/incidentreport', (req, res) => {
-  const addUnreviewedIncident = new PQ('INSERT INTO hcmdata(date, datesubmitted, groupsharassed, lat, locationname, lon, sourceurl, validsourceurl, verified, reviewedbystudent, reporttype) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)', Object.values(req.body));
+  const values = [...Object.values(req.body), false, false];
+  const addUnreviewedIncident = new PQ('INSERT INTO hcmdata(date, datesubmitted, groupsharassed, lat, locationname, lon, sourceurl, validsourceurl, verified, reviewedbystudent, reporttype, attemptedwaybackurl, validwaybackurl) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)', values);
 
   db.none(addUnreviewedIncident)
     .then(() => res.send('Incident report added'))
