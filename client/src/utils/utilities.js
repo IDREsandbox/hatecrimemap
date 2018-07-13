@@ -60,6 +60,7 @@ export const reviewIncidentReport = (id, verified, callback = null) => () => {
     .then(res => console.log(res.data))
     .catch(err => console.log(err));
   callback();
+  window.location.reload();
 };
 
 export const deleteIncidentReport = (id, callback = null) => () => {
@@ -67,6 +68,7 @@ export const deleteIncidentReport = (id, callback = null) => () => {
     .then(res => console.log(res.data))
     .catch(err => console.log(err));
   callback();
+  window.location.reload();
 };
 
 export const addRowNumProperty = (data) => {
