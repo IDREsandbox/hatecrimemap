@@ -29,7 +29,6 @@ const checkUrl = async (url, validsourceurl, id) => {
 
 const validateUrls = async (data) => {
   for (const point of data) {
-    console.log(point);
     const { id, sourceurl, validsourceurl } = point;
     if (isUri(sourceurl)) {
       await checkUrl(sourceurl, validsourceurl, id);
@@ -48,7 +47,7 @@ const onTick = () => {
 };
 
 const checkValidUrlsJob = new CronJob({
-  cronTime: '0 0 0 * * 0',
+  cronTime: '0 0 0 * * 0', // Sunday at midnight
   onTick,
   start: false,
   timeZone: 'America/Los_Angeles',

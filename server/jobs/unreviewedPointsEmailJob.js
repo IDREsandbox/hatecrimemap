@@ -25,7 +25,7 @@ const onTick = () => {
         from: gmailAddress,
         to: gmailAddress,
         subject: `${count} unreviewed incident reports!`,
-        html: 'You have 9 reports that need to be reviewed. Click <a href="http://www.hatecrimemap.com/verifyincidents" target="_blank">here</a> to review them.',
+        html: `You have ${count} reports that need to be reviewed. Click <a href="http://www.hatecrimemap.com/verifyincidents" target="_blank">here</a> to review them.`,
       };
       transporter.sendMail(mailOptions);
       console.log('Finished unreviewed points email job.');
@@ -34,7 +34,7 @@ const onTick = () => {
 };
 
 const unreviewedPointsEmailJob = new CronJob({
-  cronTime: '0 0 8 * * 1',
+  cronTime: '0 0 8 * * 1', // Monday at 8am
   onTick,
   start: false,
   timeZone: 'America/Los_Angeles',

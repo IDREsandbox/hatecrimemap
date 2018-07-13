@@ -105,7 +105,7 @@ class VerifyIncidentsPage extends Component {
       datesubmitted,
     }) => {
       const link = validsourceurl
-        ? <button><a href={sourceurl} target="_blank">Source link</a></button>
+        ? <a href={sourceurl} target="_blank">Source link</a>
         : 'No link';
       const actionButton = (
         <IconButton onClick={this.openActions(rowNum)}>
