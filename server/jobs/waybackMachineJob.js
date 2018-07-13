@@ -78,7 +78,7 @@ const onTick = async () => {
 };
 
 const waybackMachineJob = new CronJob({
-  cronTime: '0 0 2 * * 1', // Monday at 2am
+  cronTime: '0 2 * * 1', // Monday at 2am
   onTick,
   start: false,
   timeZone: 'America/Los_Angeles',

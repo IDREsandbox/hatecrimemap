@@ -47,7 +47,7 @@ const onTick = () => {
 };
 
 const checkValidUrlsJob = new CronJob({
-  cronTime: '0 0 0 * * 0', // Sunday at midnight
+  cronTime: '0 23 * * 0', // Sunday at midnight
   onTick,
   start: false,
   timeZone: 'America/Los_Angeles',
