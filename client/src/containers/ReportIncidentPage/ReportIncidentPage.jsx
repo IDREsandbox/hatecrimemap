@@ -41,6 +41,9 @@ const styles = ({ spacing }) => ({
   resetContainer: {
     padding: spacing.unit * 3,
   },
+  checkboxWrapper: {
+    marginLeft: spacing.unit,
+  },
 });
 
 const getSteps = () => [
@@ -55,7 +58,7 @@ const getInitialState = () => ({
   location: '',
   sourceurl: '',
   date: new Date(),
-  activeStep: 0,
+  activeStep: 2,
   latLng: {},
   associatedLink: true,
   isDateSelected: false,
@@ -66,6 +69,7 @@ class ReportIncidentPage extends Component {
 
   getStepContent = (index) => {
     const { location, sourceurl, groupsHarassed, date, associatedLink } = this.state;
+    const { classes } = this.props;
 
     switch (index) {
       case 0:
@@ -90,11 +94,13 @@ class ReportIncidentPage extends Component {
         );
       case 2:
         return (
-          <GHCheckboxList
-            onClick={this.updateGroupsHarassed}
-            showSVGs={false}
-            groupsChecked={groupsHarassed}
-          />
+          <div className={classes.checkboxWrapper}>
+            <GHCheckboxList
+              onClick={this.updateGroupsHarassed}
+              showSVGs={false}
+              groupsChecked={groupsHarassed}
+            />
+          </div>
         );
       case 3:
         return (
