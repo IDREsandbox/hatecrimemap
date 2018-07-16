@@ -41,7 +41,7 @@ const validateUrls = async (data) => {
 
 const onTick = () => {
   console.log('Running check for valid urls job...');
-  db.any(`SELECT id, sourceurl, validsourceurl FROM hcmdata WHERE sourceurl != ''`) // eslint-disable-line
+  db.any(`SELECT id, sourceurl, validsourceurl FROM hcmdata WHERE sourceurl != '' AND validsourceurl = TRUE`) // eslint-disable-line
     .then(data => validateUrls(data))
     .catch(err => console.log(err));
 };
