@@ -21,6 +21,7 @@ import {
   addRowNumProperty,
   checkLoggedInCookie,
   setCookie,
+  sortByDateSubmitted,
 } from '../../utils/utilities';
 
 const styles = () => ({
@@ -66,6 +67,7 @@ class VerifyIncidentsPage extends Component {
         setCookie('loggedIn', 'true', 0.05);
         const incidentReports = addGroupsHarassedSplit(mapdata);
         addRowNumProperty(incidentReports);
+        sortByDateSubmitted(incidentReports);
         this.setState({ incidentReports });
       })
       .catch((err) => {

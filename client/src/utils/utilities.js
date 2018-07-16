@@ -116,3 +116,7 @@ export function getSourceLI(sourceurl, validsourceurl, waybackurl, validwaybacku
   }
   return <li>Source not listed</li>;
 }
+
+export function sortByDateSubmitted(arr) {
+  arr.sort((a, b) => new Date(a.datesubmitted) - new Date(b.datesubmitted));
+}
