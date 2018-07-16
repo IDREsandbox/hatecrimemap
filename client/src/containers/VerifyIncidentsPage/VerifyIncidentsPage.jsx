@@ -89,13 +89,6 @@ class VerifyIncidentsPage extends Component {
 
   handleChange = ({ target: { name, value } }) => this.setState({ [name]: value });
 
-  removeReport = ({ target: { name } }) => {
-    const { incidentReports } = this.state;
-    this.handleOpenSnackbar();
-    const newIncidentReports = incidentReports.filter(({ rowNum }) => rowNum !== name);
-    this.setState({ incidentReports: newIncidentReports });
-  }
-
   convertReportsToTableData = (reports) => {
     const displayableData = reports.map(({
       rowNum,

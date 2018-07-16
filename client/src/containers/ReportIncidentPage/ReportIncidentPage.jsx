@@ -15,6 +15,7 @@ import {
   Button,
   Paper,
   StepContent,
+  Tooltip,
 } from '@material-ui/core';
 
 import LocationSearchInput from '../../components/LocationSearchInput/LocationSearchInput';
@@ -104,12 +105,14 @@ class ReportIncidentPage extends Component {
       case 3:
         return (
           <div>
-            <TextField
-              name="sourceurl"
-              onChange={this.handleChange}
-              helperText="http://www.example.com/"
-              defaultValue={sourceurl}
-            />
+            <Tooltip title="Please include http:// in any links" placement="left">
+              <TextField
+                name="sourceurl"
+                onChange={this.handleChange}
+                helperText="http://www.example.com/"
+                defaultValue={sourceurl}
+              />
+            </Tooltip>
             <FormControlLabel
               control={
                 <Checkbox
