@@ -14,7 +14,6 @@ import {
   StepLabel,
   Button,
   Paper,
-  Typography,
   StepContent,
 } from '@material-ui/core';
 
@@ -58,7 +57,7 @@ const getInitialState = () => ({
   location: '',
   sourceurl: '',
   date: new Date(),
-  activeStep: 2,
+  activeStep: 0,
   latLng: {},
   associatedLink: true,
   isDateSelected: false,
@@ -202,6 +201,8 @@ class ReportIncidentPage extends Component {
     const { activeStep } = this.state;
     const { classes } = this.props;
     const steps = getSteps();
+    const buttonOnclick = activeStep === steps.length - 1 ? this.handleReset : this.handleNext;
+
 
     return (
       <Paper className={classes.root}>
@@ -224,7 +225,7 @@ class ReportIncidentPage extends Component {
                       disabled={!this.isFormFilledOut()}
                       variant="raised"
                       color="primary"
-                      onClick={this.handleNext}
+                      onClick={buttonOnclick}
                       className={classes.button}
                     >
                       {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
@@ -235,14 +236,6 @@ class ReportIncidentPage extends Component {
             </Step>
           ))}
         </Stepper>
-        {activeStep === steps.length && (
-          <Paper square elevation={0} className={classes.resetContainer}>
-            <Typography>All steps completed - you&quot;re finished</Typography>
-            <Button onClick={this.handleReset} className={classes.button}>
-              Reset
-            </Button>
-          </Paper>
-        )}
       </Paper>
     );
   }
