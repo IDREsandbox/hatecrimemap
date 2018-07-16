@@ -61,7 +61,7 @@ class HomePage extends Component {
   resetMapData = () => {
     this.setState({
       mapdata: getAllPoints(),
-      currentLayers: new Set(),
+      currentLayers: new Set(['all']),
      });
   }
 

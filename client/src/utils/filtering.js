@@ -57,15 +57,24 @@ function arrayIncludesAllItems(arr, items) {
   return includesAll;
 }
 
+function getColor(currentLayers) {
+  let color;
+  currentLayers.forEach((layer) => {
+    if (layer !== 'verified' && layer !== 'unverified' && layer !== 'all') {
+      color = filteringOptions[layer].color; // eslint-disable-line
+    }
+  });
+  return color;
+}
+
 function addColor(mapdata, currentLayers) {
   let mapdataWithColor;
-  // const { size } = currentLayers;
-  // const sizeWithoutVerified = (currentLayers.has('verified')) ? size - 1 : size;
-  if (currentLayers.size >= 2) {
+  const { size } = currentLayers;
+  const sizeWithoutVerified = size - 1;
+  if (sizeWithoutVerified >= 2) {
     mapdataWithColor = mapdata.map(point => Object.assign({ color: '#000000' }, point));
   } else {
-    const currentLayer = currentLayers.values().next().value;
-    const { color } = filteringOptions[currentLayer];
+    const color = getColor(currentLayers);
     mapdataWithColor = mapdata.map(point => Object.assign({ color }, point));
   }
   return mapdataWithColor;
