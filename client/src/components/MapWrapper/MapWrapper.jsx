@@ -1,12 +1,21 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Map, TileLayer, CircleMarker, Popup } from 'react-leaflet';
+import { Map, TileLayer, CircleMarker, Popup, GeoJSON } from 'react-leaflet';
 
 import { getSourceLI } from '../../utils/utilities';
 import './MapWrapper.css';
+import { counties } from './counties/statecounties.js';
 
 const MapWrapper = ({ mapdata, zoom }) => {
-  const mapCenter = [38, -95];
+  const mapCenter = [35, -120];
+  // const countyLines = counties_ca['features'].map((county) => <GeoJSON data={county} />);
+
+  const states = ['Alabama','Alaska','American Samoa','Arizona','Arkansas','California','Colorado','Connecticut','Delaware','District of Columbia','Federated States of Micronesia','Florida','Georgia','Guam','Hawaii','Idaho','Illinois','Indiana','Iowa','Kansas','Kentucky','Louisiana','Maine','Marshall Islands','Maryland','Massachusetts','Michigan','Minnesota','Mississippi','Missouri','Montana','Nebraska','Nevada','New Hampshire','New Jersey','New Mexico','New York','North Carolina','North Dakota','Northern Mariana Islands','Ohio','Oklahoma','Oregon','Palau','Pennsylvania','Puerto Rico','Rhode Island','South Carolina','South Dakota','Tennessee','Texas','Utah','Vermont','Virgin Island','Virginia','Washington','West Virginia','Wisconsin','Wyoming'];
+  const stateAbrv = ['al', 'ak', 'az', 'ar', 'ca', 'co', 'ct', 'de', 'dc', 'fl', 'ga', 'hi', 'id', 'il', 'in', 'ia',
+  'ks', 'ky', 'la', 'me', 'md', 'ma', 'mi', 'mn', 'ms', 'mo', 'mt', 'ne', 'nv', 'nh', 'nj', 'nm', 'ny',
+  'nc', 'nd', 'oh', 'ok', 'or', 'pa', 'ri', 'sc', 'sd', 'tn', 'tx', 'ut', 'vt', 'va', 'wa', 'wv', 'wi',
+  'wy', 'as', 'gu', 'mp', 'pr', 'vi']
+
   const markerItems = mapdata.map((markerItemData) => {
     const {
       lat,
@@ -24,6 +33,17 @@ const MapWrapper = ({ mapdata, zoom }) => {
     const color = markerItemData.color || 'blue';
     const source = getSourceLI(sourceurl, validsourceurl, waybackurl, validwaybackurl);
 
+    let location = markerItemData.locationname.split(", ");
+    if(location.length > 1) location = location[1];
+    else location = location[0];
+    if(states.includes(location))
+    {
+      let data = counties[states.indexOf(location)];
+      states[states.indexOf(location)] = " ";
+      return (
+        <GeoJSON data={data} />
+      );
+    }
     return (
       <CircleMarker color={color} key={id} center={markerCenter} radius={2}>
         <Popup>
@@ -40,6 +60,7 @@ const MapWrapper = ({ mapdata, zoom }) => {
     );
   });
 
+
   return (
     <Map id="MapWrapper" center={mapCenter} zoom={zoom}>
       <TileLayer
@@ -47,6 +68,7 @@ const MapWrapper = ({ mapdata, zoom }) => {
         url="https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png"
       />
       {markerItems}
+      {/*   counties.map(state => <GeoJSON data={state} /> )     */}
     </Map>
   );
 };
