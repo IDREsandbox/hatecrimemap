@@ -75,7 +75,7 @@ class HomePage extends Component {
           <CircularProgress className={classes.progress} />
         ) : (
           <React.Fragment>
-            <MapWrapper mapdata={mapdata} zoom={4} />
+            <MapWrapper mapdata={mapdata} zoom={6} />
             <SideMenu updateMapData={this.updateMapData} resetMapData={this.resetMapData} currentLayers={currentLayers} />
           </React.Fragment>
         )}
