@@ -27,7 +27,7 @@ router.use((req, res, next) => {
 router.get('/', (req, res) => {
 	db.any(getTotals)
 	.then((result) => {
-		res.status(200);
+		res.status(200)
 		.json({
 			status: 'success',
 			result
@@ -39,7 +39,7 @@ router.get('/', (req, res) => {
 router.get('/:state', (req, res) => {
 	db.any(getCategory)
 	.then(result => {
-		res.status(200);
+		res.status(200)
 		.json({
 			status: 'success',
 			result
@@ -52,7 +52,7 @@ router.get('/update', (req, res) => {
 	res.write('Updating totals...');
 	db.one(updateAll)
 	.then((result) => {
-		res.status(200);
+		res.status(200)
 		.json({
 			status: 'success',
 			mapdata,
@@ -65,7 +65,7 @@ router.get('/update/:state', (req, res) => {
 	this.category = req.params.state;
 	db.one(updateAll)
 	.then(result => {
-		res.status(200);
+		res.status(200)
 		.json({
 			status: 'success',
 			result
