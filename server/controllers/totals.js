@@ -44,8 +44,7 @@ router.use((req, res, next) => {
 
 router.get('/', (req, res) => {
 	db.map(getTotals, [], eachState => {
-		let {[name], ...rest} = eachState;
-		return (eachState.name: rest);
+		return (eachState.name: eachState);
 	})
 	.then((result) => {
 		res.status(200)
@@ -61,8 +60,7 @@ router.get('/:state/:category?', (req, res) => {
 	this.category = req.params.category;
 	this.state = req.params.state;
 	db.map(getStateCategory, [], eachState => {
-		let {[name], ...rest} = eachState;
-		return (eachState.name: rest);
+		return (eachState.name: eachState);
 	})
 	.then(result => {
 		res.status(200)
