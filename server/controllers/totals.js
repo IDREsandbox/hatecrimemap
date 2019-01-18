@@ -43,9 +43,7 @@ router.use((req, res, next) => {
 });
 
 router.get('/', (req, res) => {
-	db.map(getTotals, [], eachState => {
-		return (eachState.name: eachState);
-	})
+	db.any(getTotals)
 	.then((result) => {
 		res.status(200)
 		.json({
@@ -59,9 +57,7 @@ router.get('/', (req, res) => {
 router.get('/:state/:category?', (req, res) => {
 	this.category = req.params.category;
 	this.state = req.params.state;
-	db.map(getStateCategory, [], eachState => {
-		return (eachState.name: eachState);
-	})
+	db.any(getStateCategory)
 	.then(result => {
 		res.status(200)
 		.json({
