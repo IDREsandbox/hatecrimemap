@@ -9,8 +9,8 @@ const {
 const router = express.Router();
 
 const columns = 'name, sum_harassment, jewish_harassed_total';
-let category = 'jewish';
-let state = 'california';
+var category = 'jewish';
+var state = 'california';
 const updateAll = `
 update us_states set sum_harassment = (select count(*) from hcmdata where ST_Intersects(us_states.geom, ST_SetSRID(ST_MakePoint(hcmdata.lon, hcmdata.lat), 4326))),
 jewish_harassed_total = (select count(*) from hcmdata where groupsharassed ilike '%jewish%' and ST_Intersects(us_states.geom, ST_SetSRID(ST_MakePoint(hcmdata.lon, hcmdata.lat), 4326)))
