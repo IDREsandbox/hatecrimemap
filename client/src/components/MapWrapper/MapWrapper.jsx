@@ -5,6 +5,7 @@ import { Map, TileLayer, CircleMarker, Popup, GeoJSON } from 'react-leaflet';
 import { getSourceLI } from '../../utils/utilities';
 import './MapWrapper.css';
 import { counties } from './counties/statecounties.js';
+import { stateData } from './states.js';
 
 const MapWrapper = ({ mapdata, zoom }) => {
   const mapCenter = [35, -120];
@@ -32,18 +33,6 @@ const MapWrapper = ({ mapdata, zoom }) => {
     const markerCenter = [Number(lat), Number(lon)];
     const color = markerItemData.color || 'blue';
     const source = getSourceLI(sourceurl, validsourceurl, waybackurl, validwaybackurl);
-
-    let location = markerItemData.locationname.split(", ");
-    if(location.length > 1) location = location[1];
-    else location = location[0];
-    if(states.includes(location))
-    {
-      let data = counties[states.indexOf(location)];
-      states[states.indexOf(location)] = " ";
-      return (
-        <GeoJSON data={data} />
-      );
-    }
     return (
       <CircleMarker color={color} key={id} center={markerCenter} radius={2}>
         <Popup>
@@ -60,6 +49,11 @@ const MapWrapper = ({ mapdata, zoom }) => {
     );
   });
 
+  eachState(feature, layer) {
+    if(features.properties && features.properties.name) {
+      layer.bindPopup(feature.properties.name);
+    }
+  }
 
   return (
     <Map id="MapWrapper" center={mapCenter} zoom={zoom}>
@@ -69,6 +63,7 @@ const MapWrapper = ({ mapdata, zoom }) => {
       />
       {markerItems}
       {/*   counties.map(state => <GeoJSON data={state} /> )     */}
+      <GeoJSON data={stateData} onEachFeature={this.eachState} />
     </Map>
   );
 };
