@@ -7,6 +7,12 @@ import './MapWrapper.css';
 import { counties } from './counties/statecounties.js';
 import { stateData } from './states.js';
 
+function eachState(feature, layer) {
+  if(features.properties && features.properties.name) {
+    layer.bindPopup(feature.properties.name);
+  }
+}
+
 const MapWrapper = ({ mapdata, zoom }) => {
   const mapCenter = [35, -120];
   // const countyLines = counties_ca['features'].map((county) => <GeoJSON data={county} />);
@@ -49,12 +55,6 @@ const MapWrapper = ({ mapdata, zoom }) => {
     );
   });
 
-  eachState(feature, layer) {
-    if(features.properties && features.properties.name) {
-      layer.bindPopup(feature.properties.name);
-    }
-  }
-
   return (
     <Map id="MapWrapper" center={mapCenter} zoom={zoom}>
       <TileLayer
@@ -63,7 +63,7 @@ const MapWrapper = ({ mapdata, zoom }) => {
       />
       {markerItems}
       {/*   counties.map(state => <GeoJSON data={state} /> )     */}
-      <GeoJSON data={stateData} onEachFeature={this.eachState} />
+      <GeoJSON data={stateData} onEachFeature={eachState} />
     </Map>
   );
 };
