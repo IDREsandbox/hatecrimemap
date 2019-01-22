@@ -8,7 +8,7 @@ import { counties } from './counties/statecounties.js';
 import { stateData } from './states.js';
 
 function eachState(feature, layer) {
-  if(features.properties && features.properties.name) {
+  if(feature.properties && feature.properties.name) {
     layer.bindPopup(feature.properties.name);
   }
 }
