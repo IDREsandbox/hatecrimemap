@@ -21,6 +21,7 @@ class HomePage extends Component {
   state = {
     isFetching: true,
     mapdata: [],
+    statesdata: [],
     currentLayers: new Set(['all']),
   };
 
@@ -44,6 +45,13 @@ class HomePage extends Component {
         this.setState({ isFetching: false });
         alert(`API call failed: ${err}`);
       });
+      axios.get('/api/totals')
+        .then(({ data: { statesdata } }) => {
+          this.setState({
+            isFetching: false,  // TODO: wait for both points and aggregates
+            statesdata: statesdata.result
+          })
+        })
   }
 
   updateMapData = ({ target: { name, value } }) => {
@@ -52,10 +60,15 @@ class HomePage extends Component {
       ? updateCurrentLayers(value, currentLayers, true)
       : updateCurrentLayers(name, currentLayers);
 
-    this.setState({
-      mapdata: getMapData(name, newLayers),
-      currentLayers: newLayers,
+    axios.get('/api/totals/' + name)
+      .then(({ data: {statesdata} }) => {
+        this.setState({
+        mapdata: getMapData(name, newLayers),
+        statesdata: statesdata.result,
+        currentLayers: newLayers,
+      });
     });
+    
   }
 
   resetMapData = () => {
@@ -66,7 +79,7 @@ class HomePage extends Component {
   }
 
   render() {
-    const { isFetching, mapdata, currentLayers } = this.state;
+    const { isFetching, mapdata, statesdata, currentLayers } = this.state;
     const { classes } = this.props;
 
     return (
@@ -75,7 +88,7 @@ class HomePage extends Component {
           <CircularProgress className={classes.progress} />
         ) : (
           <React.Fragment>
-            <MapWrapper mapdata={mapdata} zoom={6} />
+            <MapWrapper mapdata={mapdata} statesdata={statesdata} zoom={6} />
             <SideMenu updateMapData={this.updateMapData} resetMapData={this.resetMapData} currentLayers={currentLayers} />
           </React.Fragment>
         )}

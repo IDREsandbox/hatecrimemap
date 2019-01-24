@@ -37,7 +37,7 @@ router.use((req, res, next) => {
 });
 
 router.get('/', (req, res) => {
-	db.any(`select ${columns} from us_states`)
+	db.any(`select ${columns} from us_states order by name asc`)
 	.then((result) => {
 		res.status(200)
 		.json({
@@ -48,8 +48,8 @@ router.get('/', (req, res) => {
 	.catch(err => console.log('ERROR: ', err));
 });
 
-router.get('/:state/:category?', (req, res) => {
-	db.any(`select ${req.params.category ? req.params.category + '_harassed_total, name' : columns} from us_states where name ilike '%${req.params.state}%'`)
+router.get('/:category', (req, res) => {
+	db.any(`select ${req.params.category + '_harassed_total, sum_harassment name'} from us_states order by name asc`)
 	.then(result => {
 		res.status(200)
 		.json({
