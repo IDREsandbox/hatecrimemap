@@ -26,9 +26,9 @@ export function addGroupsHarassedSplit(mapdata) {
 }
 
 export function storeMapData(mapdata) {
-  const mapdataWithGroupsSplit = addGroupsHarassedSplit(mapdata);
-  allpoints = mapdataWithGroupsSplit.slice();
-  return mapdataWithGroupsSplit.slice();
+  const mapdataWithGroupsSplit = addGroupsHarassedSplit(mapdata); // 'groupsharassed' comma-separated to array
+  allpoints = mapdataWithGroupsSplit.slice(); // Make a copy
+  return mapdataWithGroupsSplit.slice();  // return a different copy
 }
 
 function removePreviousShowReports(layers) {
@@ -51,7 +51,7 @@ export function updateCurrentLayers(layerName, prevLayers, updateShowReports = f
 
 function arrayIncludesAllItems(arr, items) {
   let includesAll = true;
-  items.forEach((item) => {
+  items.forEach((item) => { // a for loop with breaking will probably be faster
     if (!arr.includes(item)) includesAll = false;
   });
   return includesAll;

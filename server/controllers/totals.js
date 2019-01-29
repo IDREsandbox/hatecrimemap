@@ -49,7 +49,7 @@ router.get('/', (req, res) => {
 });
 
 router.get('/:category', (req, res) => {
-	db.any(`select ${req.params.category + '_harassed_total, sum_harassment name'} from us_states order by name asc`)
+	db.any(`select ${req.params.category + '_harassed_total, sum_harassment, name'} from us_states order by name asc`)
 	.then(result => {
 		res.status(200)
 		.json({

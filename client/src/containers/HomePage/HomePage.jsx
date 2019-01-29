@@ -34,6 +34,13 @@ class HomePage extends Component {
       });
       return;
     }
+    // axios.all(['/api/maps/usapoints', '/api/totals'])
+    //   .then(axios.spread((points, totals) => {
+    //     this.setState({
+    //       isFetching: false,
+    //       mapdata: storeMapData(mapdata)
+    //     })
+    //   }));
     axios.get('/api/maps/usapoints')
       .then(({ data: { mapdata } }) => {
         this.setState({
@@ -45,13 +52,6 @@ class HomePage extends Component {
         this.setState({ isFetching: false });
         alert(`API call failed: ${err}`);
       });
-      axios.get('/api/totals')
-        .then(({ data: { statesdata } }) => {
-          this.setState({
-            isFetching: false,  // TODO: wait for both points and aggregates
-            statesdata: statesdata.result
-          })
-        })
   }
 
   updateMapData = ({ target: { name, value } }) => {
