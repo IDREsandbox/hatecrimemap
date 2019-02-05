@@ -78,7 +78,7 @@ const MapWrapper = ({ mapdata, statesdata, zoom }) => {
       />
       {markerItems}
       {/*   counties.map(state => <GeoJSON data={state} /> ) */}     
-      <GeoJSON data={statesWithData} onEachFeature={eachState} />
+      <GeoJSON data={states} onEachFeature={eachState} />
     </Map>
   );
 };
