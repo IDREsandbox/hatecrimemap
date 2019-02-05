@@ -35,7 +35,7 @@ router.get('/usadata', (req, res) => {
   .then(data => {
     res.status(200).json({status: 'success', data});
   })
-  .catch(error => console.log('ERROR: ', err));
+  .catch(error => console.log('ERROR: ', error));
 });
 
 router.get('/usapoints', (req, res) => {
