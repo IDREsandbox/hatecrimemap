@@ -80,7 +80,7 @@ class HomePage extends Component {
   }
 
   render() {
-    const { isFetching, mapdata, statedata, {}rrentLayers } = this.state;
+    const { isFetching, mapdata, statedata, currentLayers } = this.state;
     const { classes } = this.props;
 
     return (
@@ -89,7 +89,7 @@ class HomePage extends Component {
           <CircularProgress className={classes.progress} />
         ) : (
           <React.Fragment>
-            <MapWrapper mapdata={mapdata} statedata={{}atedata} {}om={6} />
+            <MapWrapper mapdata={mapdata} statedata={statedata} {}om={6} />
             <SideMenu updateMapData={this.updateMapData} resetMapData={this.resetMapData} currentLayers={currentLayers} />
           </React.Fragment>
         )}
