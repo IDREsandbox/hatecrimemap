@@ -12,6 +12,7 @@ filteringOptions.all = {
   color: 'blue',
 };
 let allpoints = [];
+let statesdata = {};
 
 export function getAllPoints() {
   return allpoints.slice();
@@ -101,3 +102,11 @@ export function getMapData(layerName, prevLayers) {
   return mapdataWithColor;
 }
 
+////////////////////////////
+
+export function storeStateData(statedata) {
+  statedata.forEach(state => {
+    this.statesdata[state.name] = {... state };
+  });
+  return JSON.parse(JSON.stringify(statedata));  // return copy of object
+}

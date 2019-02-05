@@ -10,6 +10,11 @@ const router = express.Router();
 const columns = 'date, datesubmitted, lon, lat, reporttype, locationname, verified, id, sourceurl, groupsharassed, validsourceurl, waybackurl, validwaybackurl';
 const findPointsInUS = `SELECT ${columns} FROM hcmdata WHERE (lon < -66.796875 AND lon > -124.5849609375) AND (lat < 49.00905080938215 AND lat > 25.125392611512158)`;
 const findUnreviewedPoints = `SELECT ${columns} FROM hcmdata WHERE verified = -1`;
+const stateColumns = 'name, sum_harassment, jewish_harassed_total, african_american_harassed_total, arab_american_harassed_total,\
+asian_american_harassed_total, disabled_harassed_total, latinx_harassed_total, lgbt_harassed_total, muslim_harassed_total,\
+native_american_harassed_total, pacific_islander_harassed_total, sikh_harassed_total, women_harassed_total, men_harassed_total,\
+girls_harassed_total, boys_harassed_total, white_harassed_total, immigrants_harassed_total, trump_supporter_harassed_total';
+const getStateTotals = `SELECT ${stateColumns} FROM us_states ORDER BY name ASC`;
 
 router.use((req, res, next) => {
   /* queries to /maps api go through here first */
@@ -18,6 +23,19 @@ router.use((req, res, next) => {
 
 router.get('/', (req, res) => {
   res.send('Maps home route');
+});
+
+router.get('/usadata', (req, res) => {
+  db.task('get-data', t => {
+    return t.batch([
+      t.any(findPointInUS),
+      t.any(getStateTotals)
+    ]);
+  })
+  .then(data => {
+    res.status(200).json({status: 'success', data});
+  })
+  .catch(error => console.log('ERROR: ', err));
 });
 
 router.get('/usapoints', (req, res) => {
