@@ -70,8 +70,7 @@ class HomePage extends Component {
   //       currentLayers: newLayers,
   //     });
   //   });
-    
-  }
+  // }
 
   resetMapData = () => {
     this.setState({
