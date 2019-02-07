@@ -28,7 +28,7 @@ router.get('/', (req, res) => {
 router.get('/usadata', (req, res) => {
   db.task('get-data', t => {
     return t.batch([
-      t.any(findPointInUS),
+      t.any(findPointsInUS),
       t.any(getStateTotals)
     ]);
   })
