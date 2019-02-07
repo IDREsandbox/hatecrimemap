@@ -43,7 +43,6 @@ class HomePage extends Component {
     //   }));
     axios.get('/api/maps/usadata')
       .then(({ data: { data } }) => {
-        console.log(data);
         this.setState({
           isFetching: false,
           mapdata: storeMapData(data[0]),
@@ -89,8 +88,9 @@ class HomePage extends Component {
           <CircularProgress className={classes.progress} />
         ) : (
           <React.Fragment>
+        {/* TODO: context for mapdata and statesdata? */}
             <MapWrapper mapdata={mapdata} statesdata={statesdata} zoom={6} />
-            <SideMenu updateMapData={this.updateMapData} resetMapData={this.resetMapData} currentLayers={currentLayers} />
+            <SideMenu updateMapData={this.updateMapData} resetMapData={this.resetMapData} statesdata={statesdata} currentLayers={currentLayers} />
           </React.Fragment>
         )}
       </div>

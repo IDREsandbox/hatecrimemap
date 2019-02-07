@@ -1,3 +1,7 @@
 #mapWrapper {
   grid-area: map;
 }
+
+.leaflet-popup-pane {
+	pointer-events: none;
+}

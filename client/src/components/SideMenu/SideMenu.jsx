@@ -28,9 +28,22 @@ const styles = theme => ({
   },
 });
 
-const SideMenu = ({ updateMapData, resetMapData, currentLayers, classes }) => {
+const SideMenu = ({ updateMapData, resetMapData, statesdata, currentLayers, classes }) => {
   const showReportsValue = getShowReportsValue(currentLayers);
 
+  return (
+    <div className="sideMenu">
+      <h2 className="sideMenu__header">Data</h2>
+        {/* Insert react-chartJS stuff here */}
+        {/* Don't forget to install and import the library here */}
+        {/* and I think the statesdata looks like the pastebin on slack */}
+
+    </div>
+  );
+
+
+
+  /////////// filtering side menu
   return (
     <div className="sideMenu">
       <h2 className="sideMenu__header">Filters</h2>

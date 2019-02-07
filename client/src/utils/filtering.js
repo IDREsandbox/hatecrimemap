@@ -106,7 +106,7 @@ export function getMapData(layerName, prevLayers) {
 
 export function storeStateData(statedata) {
   statedata.forEach(state => {
-    this.statesdata[state.name] = {... state };
+    statesdata[state.name] = {... state };
   });
-  return JSON.parse(JSON.stringify(statedata));  // return copy of object
+  return JSON.parse(JSON.stringify(statesdata));  // return copy of object
 }
