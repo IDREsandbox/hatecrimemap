@@ -23,6 +23,7 @@ class HomePage extends Component {
     mapdata: [],
     statesdata: {},
     currentLayers: new Set(['all']),
+    display: 'none'
   };
 
   componentDidMount() {
@@ -78,8 +79,13 @@ class HomePage extends Component {
      });
   }
 
+  sideMenuDisplay = (state) => {
+    console.log(state);
+    this.setState({display: state});
+  }
+
   render() {
-    const { isFetching, mapdata, statesdata, currentLayers } = this.state;
+    const { isFetching, mapdata, statesdata, display, currentLayers } = this.state;
     const { classes } = this.props;
 
     return (
@@ -89,8 +95,9 @@ class HomePage extends Component {
         ) : (
           <React.Fragment>
         {/* TODO: context for mapdata and statesdata? */}
-            <MapWrapper mapdata={mapdata} statesdata={statesdata} zoom={6} />
-            <SideMenu updateMapData={this.updateMapData} resetMapData={this.resetMapData} statesdata={statesdata} currentLayers={currentLayers} />
+            <MapWrapper mapdata={mapdata} statesdata={statesdata} zoom={6} updateDisplay={this.sideMenuDisplay} />
+            <SideMenu updateMapData={this.updateMapData} resetMapData={this.resetMapData}
+              statesdata={statesdata} currentDisplay={display} currentLayers={currentLayers} />
           </React.Fragment>
         )}
       </div>

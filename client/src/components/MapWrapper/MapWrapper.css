@@ -2,6 +2,11 @@
   grid-area: map;
 }
 
-.leaflet-popup-pane {
+.leaflet-popup-pane { /* Allow the mouse to stay over the popup without causing a mouseOut event */
 	pointer-events: none;
+}
+
+.show-state {
+	stroke: rgb(227, 255, 255);
+	z-index: 1;
 }

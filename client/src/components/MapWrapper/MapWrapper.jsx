@@ -7,36 +7,39 @@ import './MapWrapper.css';
 // import { counties } from './counties/statecounties.js';
 import { states } from './states.js';
 
-var statesdata = {};
-
-function eachState(feature, layer) {
-  if(feature.properties.sum_harassment > 0) {
-    layer.bindPopup('<h3>' + feature.properties.NAME+ '</h3>' +
-      '<p><strong>Total Harassment: </strong>' + feature.properties.sum_harassment + '</p>');
+function eachState(feature, layer, statesdata, update) {
+  if(statesdata[feature.properties.NAME].sum_harassment > 0) {
+    // layer.bindPopup('<h3>' + feature.properties.NAME+ '</h3>' +
+      // '<p><strong>Total Harassment: </strong>' + feature.properties.sum_harassment + '</p>');
     layer.on('mouseover', function(event){
-      console.log(event,layer);
-      layer.openPopup();
+      // console.log(event,layer);
+      // layer.openPopup();
+      update(feature.properties.NAME);
+      layer._path.classList.add("show-state");
+      console.log(layer);
     });
     layer.on('mouseout', function(event){
-      layer.closePopup();
+      // layer.closePopup();
+      layer._path.classList.remove("show-state");
     });
   } else {
     layer.setStyle({color: 'rgba(0, 0, 0, 0)'});
   }
 }
 
-const MapWrapper = ({ mapdata, statesdata, zoom }) => {
+const MapWrapper = ({ mapdata, statesdata, updateDisplay, zoom }) => {
   // const statesWithData = {"features": statesdata.map((eachState,index) => Object.assign(states.features[index].properties, eachState)), ...states};
   
   // const statesWithData = {...states, features: states.features.map((eachFeature, index) => ({...eachFeature, properties: Object.assign({}, eachFeature.properties, statesdata[index])}))}
   const mapCenter = [35, -120];
   // const countyLines = counties_ca['features'].map((county) => <GeoJSON data={county} />);
-  this.statesdata = statesdata;
-  console.log(JSON.stringify(statesdata));
-  states.features.forEach((state, index) => {
-    Object.assign(states.features[index].properties, statesdata[states.features[index].properties.NAME]);
-  });
-  console.log(states);
+
+  // this.statesdata = statesdata;
+  // console.log(JSON.stringify(statesdata));
+  // states.features.forEach((state, index) => {
+  //   Object.assign(states.features[index].properties, statesdata[states.features[index].properties.NAME]);
+  // });
+  // console.log(states);
   // const states = ['Alabama','Alaska','American Samoa','Arizona','Arkansas','California','Colorado','Connecticut','Delaware','District of Columbia','Federated States of Micronesia','Florida','Georgia','Guam','Hawaii','Idaho','Illinois','Indiana','Iowa','Kansas','Kentucky','Louisiana','Maine','Marshall Islands','Maryland','Massachusetts','Michigan','Minnesota','Mississippi','Missouri','Montana','Nebraska','Nevada','New Hampshire','New Jersey','New Mexico','New York','North Carolina','North Dakota','Northern Mariana Islands','Ohio','Oklahoma','Oregon','Palau','Pennsylvania','Puerto Rico','Rhode Island','South Carolina','South Dakota','Tennessee','Texas','Utah','Vermont','Virgin Island','Virginia','Washington','West Virginia','Wisconsin','Wyoming'];
   // const stateAbrv = ['al', 'ak', 'az', 'ar', 'ca', 'co', 'ct', 'de', 'dc', 'fl', 'ga', 'hi', 'id', 'il', 'in', 'ia',
   // 'ks', 'ky', 'la', 'me', 'md', 'ma', 'mi', 'mn', 'ms', 'mo', 'mt', 'ne', 'nv', 'nh', 'nj', 'nm', 'ny',
@@ -83,7 +86,7 @@ const MapWrapper = ({ mapdata, statesdata, zoom }) => {
       />
       {markerItems}
       {/*   counties.map(state => <GeoJSON data={state} /> ) */}     
-      <GeoJSON data={states} onEachFeature={eachState} />
+      <GeoJSON data={states} onEachFeature={(feature, layer) => eachState(feature, layer, statesdata, updateDisplay)} />
     </Map>
   );
 };
