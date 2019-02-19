@@ -9,9 +9,9 @@ import {
   MenuItem,
   Button,
 } from '@material-ui/core';
-
 import GHCheckboxList from '../GHCheckboxList/GHCheckboxList';
 import './SideMenu.css';
+import { Bar } from 'react-chartjs-2';
 
 function getShowReportsValue(layers) {
   if (layers.has('verified')) return 'verified';
@@ -28,8 +28,39 @@ const styles = theme => ({
   },
 });
 
-const SideMenu = ({ updateMapData, resetMapData, statesdata, currentDisplay, currentLayers, classes }) => {
+const SideMenu = ({ statesdata, currentDisplay, currentLayers, classes }) => {
   const showReportsValue = getShowReportsValue(currentLayers);
+
+  if(currentDisplay != "none")
+  {
+    const a = statesdata[currentDisplay];
+    var raceData = [a['african_american_harassed_total'], a['arab_harassed_total'], a['asian_american_harassed_total'], a['latinx_harassed_total'], a['native_american_harassed_total'], a['pacific_islander_harassed_total'], a['immigrants_harassed_total'], a['white_harassed_total']];
+    // ( ({ african_american_harassed_total, arab_harassed_total, asian_american_harassed_total, latinx_harassed_total, native_american_harassed_total, pacific_islander_harassed_total, immigrants_harassed_total, white_harassed_total }) => ({ african_american_harassed_total, arab_harassed_total, asian_american_harassed_total, latinx_harassed_total, native_american_harassed_total, pacific_islander_harassed_total, immigrants_harassed_total, white_harassed_total }) )(statesdata[currentDisplay]);
+  var religionData = [a['jewish_harassed_total'], a['muslim_harassed_total'], a['sikh_harassed_total']];
+    //( ({jewish_harassed_total, muslim_harassed_total, sikh_harassed_total}) => ({jewish_harassed_total, muslim_harassed_total, sikh_harassed_total}) )(statesdata[currentDisplay]);
+  var genderData = [a['lgbt_harassed_total'], a['women_harassed_total'], a['girls_harassed_total'], a['men_harassed_total'], a['boys_harssed_total']];
+    //( ({lgbt_harassed_total, women_harassed_total, girls_harassed_total, men_harassed_total, boys_harassed_total}) => ({lgbt_harassed_total, women_harassed_total, girls_harassed_total, men_harassed_total, boys_harassed_total}) )(statesdata[currentDisplay]);
+  var otherData = [a['diabled_harassed_total'], a['trump_supporter_harassed_total'], a['others_harassed_total']];
+    //( ({disabled_harassed_total, trump_supporter_harassed_total, others_harassed_total}) => ({disabled_harassed_total, trump_supporter_harassed_total, others_harassed_total}))(statesdata[currentDisplay]);
+} else {
+  var raceData = [];
+  var religionData = [];
+  var genderData = [];
+  var otherData = [];
+}
+  var raceChartData = {
+               labels: ["African American", "Arab", "Asian American", "Chinese", "Native American/Alaska Native", "Latinx", "Pacific Islander", "White"],
+               datasets: [
+               {       label:"Number of Hate Crimes against Race Groups",
+                        backgroundColor: 'rgba(255,99,132,0.2)',
+                        borderColor: 'rgba(255,99,132,1)',
+                        borderWidth: 1,
+                        hoverBackgroundColor: 'rgba(255,99,132,0.4)',
+                        hoverBorderColor: 'rgba(255,99,132,1)',
+                       data: raceData
+               }
+               ]
+           };
 
   return (
     <div className="sideMenu">
@@ -37,6 +68,39 @@ const SideMenu = ({ updateMapData, resetMapData, statesdata, currentDisplay, cur
         {/* Insert react-chartJS stuff here */}
         {/* Don't forget to install and import the library here */}
         {/* and I think the statesdata looks like the pastebin on slack */}
+        <div className="sideMenu__chart">
+        { raceData && 
+            <Bar data={raceChartData} />
+         }
+         </div>
+         {/*
+         <BarChart
+           type: 'bar',
+           data: {
+               labels: ["Jewish","Muslim", "Sikh"],
+               datasets:[
+               {
+                   label: "Number of Hate Crimes against Religious Groups",
+                   backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f"],
+                   data: [religionData]
+               }
+               ]
+           }
+       />
+         <BarChart
+             type: 'bar',
+           data: {
+               labels: ["Women","Men", "Girls", "Boys"];
+               datasets:[
+                   {
+                       label: "Number of Hate Crimes based on Gender",
+                       backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9"],
+                   data: [genderData]
+                   }
+               ]
+         }
+       />*/}
+
 
     </div>
   );
@@ -44,7 +108,7 @@ const SideMenu = ({ updateMapData, resetMapData, statesdata, currentDisplay, cur
 
 
   /////////// filtering side menu
-  return (
+  /*return (
     <div className="sideMenu">
       <h2 className="sideMenu__header">Filters</h2>
       <FormGroup className="sideMenu__form">
@@ -69,12 +133,12 @@ const SideMenu = ({ updateMapData, resetMapData, statesdata, currentDisplay, cur
         </Button>
       </FormGroup>
     </div>
-  );
+  );*/
 };
 
 SideMenu.propTypes = {
-  updateMapData: PropTypes.func.isRequired,
-  resetMapData: PropTypes.func.isRequired,
+  // updateMapData: PropTypes.func.isRequired,
+  // resetMapData: PropTypes.func.isRequired,
   currentLayers: PropTypes.instanceOf(Set).isRequired,
   classes: PropTypes.object.isRequired,
 };

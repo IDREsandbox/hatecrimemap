@@ -18,3 +18,7 @@
 .sideMenu__form {
   grid-area: smform;
 }
+
+.sideMenu__chart {
+  grid-area: smform;
+}

@@ -96,7 +96,7 @@ class HomePage extends Component {
           <React.Fragment>
         {/* TODO: context for mapdata and statesdata? */}
             <MapWrapper mapdata={mapdata} statesdata={statesdata} zoom={6} updateDisplay={this.sideMenuDisplay} />
-            <SideMenu updateMapData={this.updateMapData} resetMapData={this.resetMapData}
+            <SideMenu
               statesdata={statesdata} currentDisplay={display} currentLayers={currentLayers} />
           </React.Fragment>
         )}
