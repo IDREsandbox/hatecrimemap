@@ -10,6 +10,7 @@
     "map toc";
   grid-template-columns: 1.6fr 1fr;
   height: 100vh;
+    overflow-y: auto;
 }
 
 @media (max-width: 800px) {
@@ -19,5 +20,6 @@
       "toc";
     grid-template-columns: none;
     grid-template-rows: 1.25fr 1fr;
+      
   }
 }

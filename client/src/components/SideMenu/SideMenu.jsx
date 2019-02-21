@@ -61,6 +61,46 @@ const SideMenu = ({ statesdata, currentDisplay, currentLayers, classes }) => {
                }
                ]
            };
+    var religionChartData = {
+               labels: ["Jewish", "Muslim", "Sikh"],
+               datasets: [
+               {       label:"Number of Hate Crimes against Religious Groups",
+                        backgroundColor: 'rgba(255,99,132,0.2)',
+                        borderColor: 'rgba(255,99,132,1)',
+                        borderWidth: 1,
+                        hoverBackgroundColor: 'rgba(255,99,132,0.4)',
+                        hoverBorderColor: 'rgba(255,99,132,1)',
+                       data: religionData
+               }
+               ]
+           };
+    var genderChartData = {
+               labels: ["Women", "Men", "Girls", "Boys"],
+               datasets: [
+               {       label:"Number of Hate Crimes based on Gender",
+                        backgroundColor: 'rgba(255,99,132,0.2)',
+                        borderColor: 'rgba(255,99,132,1)',
+                        borderWidth: 1,
+                        hoverBackgroundColor: 'rgba(255,99,132,0.4)',
+                        hoverBorderColor: 'rgba(255,99,132,1)',
+                       data: genderData
+               }
+               ]
+           };
+    var otherChartData = {
+               labels: ["LGBT", "Trump Supporter", "Disabled"],
+               datasets: [
+               {       label:"Number of Hate Crimes against Other Groups",
+                        backgroundColor: 'rgba(255,99,132,0.2)',
+                        borderColor: 'rgba(255,99,132,1)',
+                        borderWidth: 1,
+                        hoverBackgroundColor: 'rgba(255,99,132,0.4)',
+                        hoverBorderColor: 'rgba(255,99,132,1)',
+                       data: otherData
+               }
+               ]
+           };
+    
 
   return (
     <div className="sideMenu">
@@ -71,6 +111,15 @@ const SideMenu = ({ statesdata, currentDisplay, currentLayers, classes }) => {
         <div className="sideMenu__chart">
         { raceData && 
             <Bar data={raceChartData} />
+         }
+        { religionData && 
+            <Bar data={religionChartData} />
+         }
+        { genderData && 
+            <Bar data={genderChartData} />
+         }
+        { otherData && 
+            <Bar data={otherChartData} />
          }
          </div>
          {/*
