@@ -25,17 +25,12 @@ router.get('/', (req, res) => {
   res.send('Maps home route');
 });
 
-router.get('/usadata', (req, res) => {
-  db.task('get-data', t => {
-    return t.batch([
-      t.any(findPointsInUS),
-      t.any(getStateTotals)
-    ]);
-  })
-  .then(data => {
-    res.status(200).json({status: 'success', data});
-  })
-  .catch(error => console.log('ERROR: ', error));
+router.get('/statedata', (req, res) => {
+  db.any(getStateTotals)
+    .then(data => {
+      res.status(200).json({status: 'success', data});
+    })
+    .catch(error => console.log('ERROR: ', error));
 });
 
 router.get('/usapoints', (req, res) => {

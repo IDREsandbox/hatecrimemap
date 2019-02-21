@@ -7,8 +7,8 @@ import './MapWrapper.css';
 // import { counties } from './counties/statecounties.js';
 import { states } from './states.js';
 
-function eachState(feature, layer, statesdata, update) {
-  if(statesdata[feature.properties.NAME].sum_harassment > 0) {
+function eachState(feature, layer, statetotals, total, update) {
+  if(statetotals[feature.properties.NAME] && statetotals[feature.properties.NAME].sum_harassment > 0) {
     // layer.bindPopup('<h3>' + feature.properties.NAME+ '</h3>' +
       // '<p><strong>Total Harassment: </strong>' + feature.properties.sum_harassment + '</p>');
     layer.on('mouseover', function(event){
@@ -16,67 +16,58 @@ function eachState(feature, layer, statesdata, update) {
       // layer.openPopup();
       update(feature.properties.NAME);
       layer._path.classList.add("show-state");
-      console.log(layer);
+      layer.setStyle({fillColor: 'rgb(100, 100, 100)'});
+      // console.log(layer);
     });
     layer.on('mouseout', function(event){
       // layer.closePopup();
       layer._path.classList.remove("show-state");
+      layer.setStyle({stroke: 0, fillColor: `rgb(255, ${150-gradient}, ${150-gradient})`, fillOpacity: 0.75});
+      update("none");
     });
+    const gradient = 750 * (statetotals[feature.properties.NAME].sum_harassment/total);
+    layer.setStyle({stroke: 0, fillColor: `rgb(255, ${150-gradient}, ${150-gradient})`, fillOpacity: 0.75});
   } else {
     layer.setStyle({color: 'rgba(0, 0, 0, 0)'});
   }
 }
 
-const MapWrapper = ({ mapdata, statesdata, updateDisplay, zoom }) => {
-  // const statesWithData = {"features": statesdata.map((eachState,index) => Object.assign(states.features[index].properties, eachState)), ...states};
-  
-  // const statesWithData = {...states, features: states.features.map((eachFeature, index) => ({...eachFeature, properties: Object.assign({}, eachFeature.properties, statesdata[index])}))}
-  const mapCenter = [35, -120];
-  // const countyLines = counties_ca['features'].map((county) => <GeoJSON data={county} />);
+const MapWrapper = ({ statetotals, updateDisplay, zoom }) => {
+  // const mapCenter = [35, -120];
+  const mapCenter = [38, -95];
+  const totalHarassment = Object.keys(statetotals).map(state => statetotals[state].sum_harassment).reduce((prev, curr) => prev + curr);
 
-  // this.statesdata = statesdata;
-  // console.log(JSON.stringify(statesdata));
-  // states.features.forEach((state, index) => {
-  //   Object.assign(states.features[index].properties, statesdata[states.features[index].properties.NAME]);
+  // const markerItems = mapdata.map((markerItemData) => {
+  //   const {
+  //     lat,
+  //     lon,
+  //     id,
+  //     reporttype,
+  //     groupsharassed,
+  //     locationname,
+  //     sourceurl,
+  //     validsourceurl,
+  //     waybackurl,
+  //     validwaybackurl,
+  //   } = markerItemData;
+  //   const markerCenter = [Number(lat), Number(lon)];
+  //   const color = markerItemData.color || 'blue';
+  //   const source = getSourceLI(sourceurl, validsourceurl, waybackurl, validwaybackurl);
+  //   return (
+  //     <CircleMarker color={color} key={id} center={markerCenter} radius={2}>
+  //       <Popup>
+  //         <div>
+  //           <h3>{reporttype}</h3>
+  //           <ul>
+  //             <li>{groupsharassed}</li>
+  //             <li>{locationname}</li>
+  //             {source}
+  //           </ul>
+  //         </div>
+  //       </Popup>
+  //     </CircleMarker>
+  //   );
   // });
-  // console.log(states);
-  // const states = ['Alabama','Alaska','American Samoa','Arizona','Arkansas','California','Colorado','Connecticut','Delaware','District of Columbia','Federated States of Micronesia','Florida','Georgia','Guam','Hawaii','Idaho','Illinois','Indiana','Iowa','Kansas','Kentucky','Louisiana','Maine','Marshall Islands','Maryland','Massachusetts','Michigan','Minnesota','Mississippi','Missouri','Montana','Nebraska','Nevada','New Hampshire','New Jersey','New Mexico','New York','North Carolina','North Dakota','Northern Mariana Islands','Ohio','Oklahoma','Oregon','Palau','Pennsylvania','Puerto Rico','Rhode Island','South Carolina','South Dakota','Tennessee','Texas','Utah','Vermont','Virgin Island','Virginia','Washington','West Virginia','Wisconsin','Wyoming'];
-  // const stateAbrv = ['al', 'ak', 'az', 'ar', 'ca', 'co', 'ct', 'de', 'dc', 'fl', 'ga', 'hi', 'id', 'il', 'in', 'ia',
-  // 'ks', 'ky', 'la', 'me', 'md', 'ma', 'mi', 'mn', 'ms', 'mo', 'mt', 'ne', 'nv', 'nh', 'nj', 'nm', 'ny',
-  // 'nc', 'nd', 'oh', 'ok', 'or', 'pa', 'ri', 'sc', 'sd', 'tn', 'tx', 'ut', 'vt', 'va', 'wa', 'wv', 'wi',
-  // 'wy', 'as', 'gu', 'mp', 'pr', 'vi']
-
-  const markerItems = mapdata.map((markerItemData) => {
-    const {
-      lat,
-      lon,
-      id,
-      reporttype,
-      groupsharassed,
-      locationname,
-      sourceurl,
-      validsourceurl,
-      waybackurl,
-      validwaybackurl,
-    } = markerItemData;
-    const markerCenter = [Number(lat), Number(lon)];
-    const color = markerItemData.color || 'blue';
-    const source = getSourceLI(sourceurl, validsourceurl, waybackurl, validwaybackurl);
-    return (
-      <CircleMarker color={color} key={id} center={markerCenter} radius={2}>
-        <Popup>
-          <div>
-            <h3>{reporttype}</h3>
-            <ul>
-              <li>{groupsharassed}</li>
-              <li>{locationname}</li>
-              {source}
-            </ul>
-          </div>
-        </Popup>
-      </CircleMarker>
-    );
-  });
 
   return (
     <Map id="MapWrapper" center={mapCenter} zoom={zoom}>
@@ -84,15 +75,15 @@ const MapWrapper = ({ mapdata, statesdata, updateDisplay, zoom }) => {
         attribution="&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
         url="https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png"
       />
-      {markerItems}
+      {/*markerItems*/}
       {/*   counties.map(state => <GeoJSON data={state} /> ) */}     
-      <GeoJSON data={states} onEachFeature={(feature, layer) => eachState(feature, layer, statesdata, updateDisplay)} />
+      <GeoJSON data={states} onEachFeature={(feature, layer) => eachState(feature, layer, statetotals, totalHarassment, updateDisplay)} />
     </Map>
   );
 };
 
 MapWrapper.propTypes = {
-  mapdata: PropTypes.arrayOf(PropTypes.object).isRequired,
+  // mapdata: PropTypes.arrayOf(PropTypes.object).isRequired,
   zoom: PropTypes.number.isRequired,
 };
 
