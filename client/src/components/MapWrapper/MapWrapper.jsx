@@ -22,11 +22,11 @@ function eachState(feature, layer, statetotals, total, update) {
     layer.on('mouseout', function(event){
       // layer.closePopup();
       layer._path.classList.remove("show-state");
-      layer.setStyle({stroke: 0, fillColor: `rgb(255, ${150-gradient}, ${150-gradient})`, fillOpacity: 0.75});
+      layer.setStyle({stroke: 0.5, fillColor: `rgb(255, ${150-gradient}, ${150-gradient})`, fillOpacity: 0.75});
       update("none");
     });
     const gradient = 750 * (statetotals[feature.properties.NAME].sum_harassment/total);
-    layer.setStyle({stroke: 0, fillColor: `rgb(255, ${150-gradient}, ${150-gradient})`, fillOpacity: 0.75});
+    layer.setStyle({stroke: 0.5, fillColor: `rgb(255, ${150-gradient}, ${150-gradient})`, fillOpacity: 0.75});
   } else {
     layer.setStyle({color: 'rgba(0, 0, 0, 0)'});
   }

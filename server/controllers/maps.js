@@ -15,6 +15,7 @@ asian_american_harassed_total, disabled_harassed_total, latinx_harassed_total, l
 native_american_harassed_total, pacific_islander_harassed_total, sikh_harassed_total, women_harassed_total, men_harassed_total,\
 girls_harassed_total, boys_harassed_total, white_harassed_total, immigrants_harassed_total, trump_supporter_harassed_total, others_harassed_total';
 const getStateTotals = `SELECT ${stateColumns} FROM us_states ORDER BY name ASC`;
+// const getUSATotals = `SELECT COUNT(`
 
 router.use((req, res, next) => {
   /* queries to /maps api go through here first */
@@ -32,6 +33,14 @@ router.get('/statedata', (req, res) => {
     })
     .catch(error => console.log('ERROR: ', error));
 });
+
+// router.get('/usedata', (req, res) => {  // We could just aggregate the data on the front-end...
+//   db.any(getUSATotals)
+//     .then(data => {
+//       res.status(200).json({status: 'success', data})
+//     });
+//     .catch(error => console.log('ERROR: ', error));
+// });
 
 router.get('/usapoints', (req, res) => {
   db.any(findPointsInUS)

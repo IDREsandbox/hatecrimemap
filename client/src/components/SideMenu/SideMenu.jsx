@@ -30,98 +30,110 @@ const styles = theme => ({
 
 const SideMenu = ({ statetotals, currentDisplay, currentLayers, classes }) => {
   const showReportsValue = getShowReportsValue(currentLayers);
+  // const maxAxis = Object.keys(statetotals).map(state => Object.keys(statetotals[state]).reduce((prev, curr) => (statetotals[state].curr) > prev ? statetotals[state].curr : prev)).reduce((prev, curr) => (prev > curr ? prev : curr));
 
   if(currentDisplay != "none")
   {
     const a = statetotals[currentDisplay];
     var raceData = [a['african_american_harassed_total'], a['arab_harassed_total'], a['asian_american_harassed_total'], a['latinx_harassed_total'], a['native_american_harassed_total'], a['pacific_islander_harassed_total'], a['immigrants_harassed_total'], a['white_harassed_total']];
     // ( ({ african_american_harassed_total, arab_harassed_total, asian_american_harassed_total, latinx_harassed_total, native_american_harassed_total, pacific_islander_harassed_total, immigrants_harassed_total, white_harassed_total }) => ({ african_american_harassed_total, arab_harassed_total, asian_american_harassed_total, latinx_harassed_total, native_american_harassed_total, pacific_islander_harassed_total, immigrants_harassed_total, white_harassed_total }) )(statetotals[currentDisplay]);
-  var religionData = [a['jewish_harassed_total'], a['muslim_harassed_total'], a['sikh_harassed_total']];
+    var religionData = [a['jewish_harassed_total'], a['muslim_harassed_total'], a['sikh_harassed_total']];
     //( ({jewish_harassed_total, muslim_harassed_total, sikh_harassed_total}) => ({jewish_harassed_total, muslim_harassed_total, sikh_harassed_total}) )(statetotals[currentDisplay]);
-  var genderData = [a['lgbt_harassed_total'], a['women_harassed_total'], a['girls_harassed_total'], a['men_harassed_total'], a['boys_harssed_total']];
+    var genderData = [a['lgbt_harassed_total'], a['women_harassed_total'], a['girls_harassed_total'], a['men_harassed_total'], a['boys_harssed_total']];
     //( ({lgbt_harassed_total, women_harassed_total, girls_harassed_total, men_harassed_total, boys_harassed_total}) => ({lgbt_harassed_total, women_harassed_total, girls_harassed_total, men_harassed_total, boys_harassed_total}) )(statetotals[currentDisplay]);
-  var otherData = [a['diabled_harassed_total'], a['trump_supporter_harassed_total'], a['others_harassed_total']];
+    var otherData = [a['diabled_harassed_total'], a['trump_supporter_harassed_total'], a['others_harassed_total']];
     //( ({disabled_harassed_total, trump_supporter_harassed_total, others_harassed_total}) => ({disabled_harassed_total, trump_supporter_harassed_total, others_harassed_total}))(statetotals[currentDisplay]);
-} else {
-  var raceData = [];
-  var religionData = [];
-  var genderData = [];
-  var otherData = [];
-}
+  } else {
+    var raceData = [];
+    var religionData = [];
+    var genderData = [];
+    var otherData = [];
+  }
   var raceChartData = {
-               labels: ["African American", "Arab", "Asian American", "Chinese", "Native American/Alaska Native", "Latinx", "Pacific Islander", "White"],
-               datasets: [
-               {       label:"Number of Hate Crimes against Race Groups",
-                        backgroundColor: 'rgba(255,99,132,0.2)',
-                        borderColor: 'rgba(255,99,132,1)',
-                        borderWidth: 1,
-                        hoverBackgroundColor: 'rgba(255,99,132,0.4)',
-                        hoverBorderColor: 'rgba(255,99,132,1)',
-                       data: raceData
-               }
-               ]
-           };
-    var religionChartData = {
-               labels: ["Jewish", "Muslim", "Sikh"],
-               datasets: [
-               {       label:"Number of Hate Crimes against Religious Groups",
-                        backgroundColor: 'rgba(255,99,132,0.2)',
-                        borderColor: 'rgba(255,99,132,1)',
-                        borderWidth: 1,
-                        hoverBackgroundColor: 'rgba(255,99,132,0.4)',
-                        hoverBorderColor: 'rgba(255,99,132,1)',
-                       data: religionData
-               }
-               ]
-           };
-    var genderChartData = {
-               labels: ["Women", "Men", "Girls", "Boys"],
-               datasets: [
-               {       label:"Number of Hate Crimes based on Gender",
-                        backgroundColor: 'rgba(255,99,132,0.2)',
-                        borderColor: 'rgba(255,99,132,1)',
-                        borderWidth: 1,
-                        hoverBackgroundColor: 'rgba(255,99,132,0.4)',
-                        hoverBorderColor: 'rgba(255,99,132,1)',
-                       data: genderData
-               }
-               ]
-           };
-    var otherChartData = {
-               labels: ["LGBT", "Trump Supporter", "Disabled"],
-               datasets: [
-               {       label:"Number of Hate Crimes against Other Groups",
-                        backgroundColor: 'rgba(255,99,132,0.2)',
-                        borderColor: 'rgba(255,99,132,1)',
-                        borderWidth: 1,
-                        hoverBackgroundColor: 'rgba(255,99,132,0.4)',
-                        hoverBorderColor: 'rgba(255,99,132,1)',
-                       data: otherData
-               }
-               ]
-           };
-    
+    labels: ["African American", "Arab", "Asian American", "Chinese", "Native American/Alaska Native", "Latinx", "Pacific Islander", "White"],
+    datasets: [
+    {
+      label:"Number of Hate Crimes against Race Groups",
+      backgroundColor: 'rgba(255,99,132,0.2)',
+      borderColor: 'rgba(255,99,132,1)',
+      borderWidth: 1,
+      hoverBackgroundColor: 'rgba(255,99,132,0.4)',
+      hoverBorderColor: 'rgba(255,99,132,1)',
+      data: raceData
+    }]
+  };
+  var religionChartData = {
+    labels: ["Jewish", "Muslim", "Sikh"],
+    datasets: [
+    {
+      label:"Number of Hate Crimes against Religious Groups",
+      backgroundColor: 'rgba(255,99,132,0.2)',
+      borderColor: 'rgba(255,99,132,1)',
+      borderWidth: 1,
+      hoverBackgroundColor: 'rgba(255,99,132,0.4)',
+      hoverBorderColor: 'rgba(255,99,132,1)',
+      data: religionData
+    }]
+  };
+  var genderChartData = {
+    labels: ["Women", "Men", "Girls", "Boys"],
+    datasets: [
+    {
+      label:"Number of Hate Crimes based on Gender",
+      backgroundColor: 'rgba(255,99,132,0.2)',
+      borderColor: 'rgba(255,99,132,1)',
+      borderWidth: 1,
+      hoverBackgroundColor: 'rgba(255,99,132,0.4)',
+      hoverBorderColor: 'rgba(255,99,132,1)',
+      data: genderData
+    }]
+  };
+  var otherChartData = {
+    labels: ["LGBT", "Trump Supporter", "Disabled"],
+    datasets: [
+    {
+      label:"Number of Hate Crimes against Other Groups",
+      backgroundColor: 'rgba(255,99,132,0.2)',
+      borderColor: 'rgba(255,99,132,1)',
+      borderWidth: 1,
+      hoverBackgroundColor: 'rgba(255,99,132,0.4)',
+      hoverBorderColor: 'rgba(255,99,132,1)',
+      data: otherData
+    }]
+  };
+
+  const wholeYAxis = {scales: {
+        yAxes: [{
+          ticks: {
+            // beginAtZero:true,
+            // callback: function(value) {if(value % 1 ===0) {return value;}},
+            min: 0,
+            max: 30
+            // stepSize: 1
+          }
+        }]
+      }};
 
   return (
     <div className="sideMenu">
-      <h2 className="sideMenu__header">{currentDisplay}</h2>
-        {/* Insert react-chartJS stuff here */}
-        {/* Don't forget to install and import the library here */}
-        {/* and I think the statetotals looks like the pastebin on slack */}
-        <div className="sideMenu__chart">
-        { raceData && 
-            <Bar data={raceChartData} />
-         }
-        { religionData && 
-            <Bar data={religionChartData} />
-         }
-        { genderData && 
-            <Bar data={genderChartData} />
-         }
-        { otherData && 
-            <Bar data={otherChartData} />
-         }
-         </div>
+    <h2 className="sideMenu__header">{currentDisplay}</h2>
+  {/* Insert react-chartJS stuff here */}
+{/* Don't forget to install and import the library here */}
+{/* and I think the statetotals looks like the pastebin on slack */}
+<div className="sideMenu__chart">
+{ raceData && 
+  <Bar data={raceChartData} options={wholeYAxis}/>
+}
+{ religionData && 
+  <Bar data={religionChartData} options={wholeYAxis}/>
+}
+{ genderData && 
+  <Bar data={genderChartData} options={wholeYAxis}/>
+}
+{ otherData && 
+  <Bar data={otherChartData} options={wholeYAxis}/>
+}
+</div>
          {/*
          <BarChart
            type: 'bar',
@@ -151,8 +163,8 @@ const SideMenu = ({ statetotals, currentDisplay, currentLayers, classes }) => {
        />*/}
 
 
-    </div>
-  );
+       </div>
+       );
 
 
 
@@ -182,10 +194,10 @@ const SideMenu = ({ statetotals, currentDisplay, currentLayers, classes }) => {
         </Button>
       </FormGroup>
     </div>
-  );*/
-};
+    );*/
+  };
 
-SideMenu.propTypes = {
+  SideMenu.propTypes = {
   // updateMapData: PropTypes.func.isRequired,
   // resetMapData: PropTypes.func.isRequired,
   currentLayers: PropTypes.instanceOf(Set).isRequired,

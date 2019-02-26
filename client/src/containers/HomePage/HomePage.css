@@ -9,7 +9,8 @@
   grid-template-areas: 
     "map toc";
   grid-template-columns: 1.6fr 1fr;
-  height: 100vh;
+  height: 100%;
+  overflow: auto;
 }
 
 @media (max-width: 800px) {

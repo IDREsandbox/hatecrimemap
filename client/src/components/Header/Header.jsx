@@ -26,6 +26,9 @@ const styles = {
   reportIncidentButton: {
     color: 'white',
   },
+  aboutButton: {
+    color: 'white',
+  },
   link: {
     textDecoration: 'none',
   },
@@ -45,6 +48,9 @@ const Header = ({ classes }) => (
         </Typography>
         <Link to="/reportincident" className={classes.link}>
           <Button className={classes.reportIncidentButton} color="inherit">Report Incident</Button>
+        </Link>
+        <Link to="/about" className={classes.link}>
+          <Button className={classes.aboutButton} color="inherit">About</Button>
         </Link>
       </Toolbar>
     </AppBar>
