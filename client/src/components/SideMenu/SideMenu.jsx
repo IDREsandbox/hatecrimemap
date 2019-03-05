@@ -44,10 +44,15 @@ const SideMenu = ({ statetotals, currentDisplay, currentLayers, classes }) => {
     var otherData = [a['diabled_harassed_total'], a['trump_supporter_harassed_total'], a['others_harassed_total']];
     //( ({disabled_harassed_total, trump_supporter_harassed_total, others_harassed_total}) => ({disabled_harassed_total, trump_supporter_harassed_total, others_harassed_total}))(statetotals[currentDisplay]);
   } else {
-    var raceData = [];
-    var religionData = [];
-    var genderData = [];
-    var otherData = [];
+    return (
+      <div className="sideMenu">
+        <h2 className="sideMenu__header">Hover over a state</h2>
+        <div className="sideMenu__info">
+          <p>Hover a state to display 4 charts of hate crime data within that state</p>
+          <p>Click a state to lock onto it</p>
+        </div>
+      </div>
+    );
   }
   var raceChartData = {
     labels: ["African American", "Arab", "Asian American", "Chinese", "Native American/Alaska Native", "Latinx", "Pacific Islander", "White"],
@@ -116,55 +121,24 @@ const SideMenu = ({ statetotals, currentDisplay, currentLayers, classes }) => {
 
   return (
     <div className="sideMenu">
-    <h2 className="sideMenu__header">{currentDisplay}</h2>
-  {/* Insert react-chartJS stuff here */}
-{/* Don't forget to install and import the library here */}
-{/* and I think the statetotals looks like the pastebin on slack */}
-<div className="sideMenu__chart">
-{ raceData && 
-  <Bar data={raceChartData} options={wholeYAxis}/>
-}
-{ religionData && 
-  <Bar data={religionChartData} options={wholeYAxis}/>
-}
-{ genderData && 
-  <Bar data={genderChartData} options={wholeYAxis}/>
-}
-{ otherData && 
-  <Bar data={otherChartData} options={wholeYAxis}/>
-}
-</div>
-         {/*
-         <BarChart
-           type: 'bar',
-           data: {
-               labels: ["Jewish","Muslim", "Sikh"],
-               datasets:[
-               {
-                   label: "Number of Hate Crimes against Religious Groups",
-                   backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f"],
-                   data: [religionData]
-               }
-               ]
-           }
-       />
-         <BarChart
-             type: 'bar',
-           data: {
-               labels: ["Women","Men", "Girls", "Boys"];
-               datasets:[
-                   {
-                       label: "Number of Hate Crimes based on Gender",
-                       backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9"],
-                   data: [genderData]
-                   }
-               ]
-         }
-       />*/}
+      <h2 className="sideMenu__header">{currentDisplay}</h2>
+      <div className="sideMenu__chart">
+        { raceData && 
+          <Bar data={raceChartData} options={wholeYAxis}/>
+        }
+        { religionData && 
+          <Bar data={religionChartData} options={wholeYAxis}/>
+        }
+        { genderData && 
+          <Bar data={genderChartData} options={wholeYAxis}/>
+        }
+        { otherData && 
+          <Bar data={otherChartData} options={wholeYAxis}/>
+        }
+      </div>
 
-
-       </div>
-       );
+    </div>
+  );
 
 
 

@@ -23,7 +23,8 @@ class HomePage extends Component {
     isFetching: true,
     statetotals: {},
     currentLayers: new Set(['all']),
-    display: 'none'
+    display: 'none',
+    locked: false
   };
 
   componentDidMount() {
@@ -72,8 +73,16 @@ class HomePage extends Component {
      });
   }
 
-  sideMenuDisplay = (state) => {
-    this.setState({display: state});
+  // Return value, success (in our terms, not react's)
+  sideMenuDisplay = (state, lock = false) => {
+    if(lock) {
+      this.setState({display: state, locked: state!=="none"});  // we never want to lock onto None
+      return true;
+    } else if(!this.state.locked) {
+      this.setState({display: state});
+      return true;
+    }
+    return false;
   }
 
   render() {

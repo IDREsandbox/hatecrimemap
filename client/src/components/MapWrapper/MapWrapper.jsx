@@ -7,36 +7,65 @@ import './MapWrapper.css';
 // import { counties } from './counties/statecounties.js';
 import { states } from './states.js';
 
-function eachState(feature, layer, statetotals, total, update) {
+const colorBins = [0, 50, 75, 100, 120];
+var lockedLayer = null;
+var lockedLayerColor = null;
+
+function eachState(feature, layer, statetotals, total, setStateDisplay) {
   if(statetotals[feature.properties.NAME] && statetotals[feature.properties.NAME].sum_harassment > 0) {
-    // layer.bindPopup('<h3>' + feature.properties.NAME+ '</h3>' +
-      // '<p><strong>Total Harassment: </strong>' + feature.properties.sum_harassment + '</p>');
+    // const colorHashed = colorBins[Math.floor((5*statetotals[feature.properties.NAME].sum_harassment-1)/total)];
+    let colorHashed = 0;
+    if(statetotals[feature.properties.NAME].sum_harassment < total/10) colorHashed = colorBins[0];
+    else if(statetotals[feature.properties.NAME].sum_harassment < total/8) colorHashed = colorBins[1];
+    else if(statetotals[feature.properties.NAME].sum_harassment < total/6) colorHashed = colorBins[2];
+    else if(statetotals[feature.properties.NAME].sum_harassment < total/4) colorHashed = colorBins[3];
+    else if(statetotals[feature.properties.NAME].sum_harassment < total + 1) colorHashed = colorBins[4];
     layer.on('mouseover', function(event){
-      // console.log(event,layer);
-      // layer.openPopup();
-      update(feature.properties.NAME);
-      layer._path.classList.add("show-state");
-      layer.setStyle({fillColor: 'rgb(100, 100, 100)'});
-      // console.log(layer);
+      if(!setStateDisplay(feature.properties.NAME)) return;  // setStateDisplay() will return false if we're locked onto something else
+      // layer._path.classList.add("show-state");
+      layer.setStyle({fillColor: 'rgb(200, 200, 200)'});
     });
     layer.on('mouseout', function(event){
-      // layer.closePopup();
-      layer._path.classList.remove("show-state");
-      layer.setStyle({stroke: 0.5, fillColor: `rgb(255, ${150-gradient}, ${150-gradient})`, fillOpacity: 0.75});
-      update("none");
+      if(!setStateDisplay("none")) return;
+      // layer._path.classList.remove("show-state");
+      layer.setStyle({fillColor: `rgb(255, ${150-colorHashed}, ${150-colorHashed})`});
     });
-    const gradient = 750 * (statetotals[feature.properties.NAME].sum_harassment/total);
-    layer.setStyle({stroke: 0.5, fillColor: `rgb(255, ${150-gradient}, ${150-gradient})`, fillOpacity: 0.75});
+    layer.on('click', function(event) {
+      if(lockedLayer) {
+        lockedLayer.setStyle({fillColor: `rgb(255, ${lockedLayerColor}, ${lockedLayerColor})`});
+        layer.setStyle({fillColor: `rgb(100, 100, 100)`});
+        if(lockedLayer === layer) {
+          setStateDisplay("none", true);
+          return;
+        }
+      }
+      setStateDisplay(feature.properties.NAME, true);  // true parameter for locking
+
+
+      lockedLayerColor = 150-colorHashed;
+      lockedLayer = layer;
+    });
+    layer.setStyle({stroke: 0.5, color: 'white', fillColor: `rgb(255, ${150-colorHashed}, ${150-colorHashed})`, fillOpacity: 0.75});
   } else {
     layer.setStyle({color: 'rgba(0, 0, 0, 0)'});
   }
+}
+
+function unlockLayer(e, setStateDisplay) {
+  // console.log(e,setStateDisplay);  // need to check if e.originalEvent.path is a geoJson or a blank spot
+  // if(lockedLayer) {
+  //   lockedLayer.setStyle({fillColor: `rgb(255, ${lockedLayerColor}, ${lockedLayerColor})`});
+  //   setStateDisplay("none");
+  //   lockedLayer = null;
+  //   lockedLayerColor = null;
+  // }
 }
 
 const MapWrapper = ({ statetotals, updateDisplay, zoom }) => {
   // const mapCenter = [35, -120];
   const mapCenter = [38, -95];
   const totalHarassment = Object.keys(statetotals).map(state => statetotals[state].sum_harassment).reduce((prev, curr) => prev + curr);
-
+  const maxHarassment = Object.keys(statetotals).map(state => statetotals[state].sum_harassment).reduce((prev, curr) => curr > prev ? curr : prev);
   // const markerItems = mapdata.map((markerItemData) => {
   //   const {
   //     lat,
@@ -77,7 +106,7 @@ const MapWrapper = ({ statetotals, updateDisplay, zoom }) => {
       />
       {/*markerItems*/}
       {/*   counties.map(state => <GeoJSON data={state} /> ) */}     
-      <GeoJSON data={states} onEachFeature={(feature, layer) => eachState(feature, layer, statetotals, totalHarassment, updateDisplay)} />
+      <GeoJSON data={states} onEachFeature={(feature, layer) => eachState(feature, layer, statetotals, maxHarassment, updateDisplay)} />
     </Map>
   );
 };

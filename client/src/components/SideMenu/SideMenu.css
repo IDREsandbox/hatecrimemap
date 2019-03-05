@@ -23,3 +23,7 @@
 .sideMenu__chart {
   grid-area: smform;
 }
+
+.sideMenu__info {
+  grid-area: smform;
+}
