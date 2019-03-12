@@ -10,11 +10,11 @@ const router = express.Router();
 const columns = 'date, datesubmitted, lon, lat, reporttype, locationname, verified, id, sourceurl, groupsharassed, validsourceurl, waybackurl, validwaybackurl';
 const findPointsInUS = `SELECT ${columns} FROM hcmdata WHERE (lon < -66.796875 AND lon > -124.5849609375) AND (lat < 49.00905080938215 AND lat > 25.125392611512158)`;
 const findUnreviewedPoints = `SELECT ${columns} FROM hcmdata WHERE verified = -1`;
-const stateColumns = 'name, sum_harassment, jewish_harassed_total, african_american_harassed_total, arab_harassed_total,\
+const totalsColumns = 'name, sum_harassment, jewish_harassed_total, african_american_harassed_total, arab_harassed_total,\
 asian_american_harassed_total, disabled_harassed_total, latinx_harassed_total, lgbt_harassed_total, muslim_harassed_total,\
 native_american_harassed_total, pacific_islander_harassed_total, sikh_harassed_total, women_harassed_total, men_harassed_total,\
 girls_harassed_total, boys_harassed_total, white_harassed_total, immigrants_harassed_total, trump_supporter_harassed_total, others_harassed_total';
-const getStateTotals = `SELECT ${stateColumns} FROM us_states ORDER BY name ASC`;
+const getStateTotals = `SELECT ${totalsColumns} FROM us_states ORDER BY name ASC`;
 // const getUSATotals = `SELECT COUNT(`
 
 router.use((req, res, next) => {
@@ -41,6 +41,22 @@ router.get('/statedata', (req, res) => {
 //     });
 //     .catch(error => console.log('ERROR: ', error));
 // });
+
+router.get('/countydata', (req,res) => {
+  db.any(`SELECT ${totalsColumns}, county_state from us_counties`)
+    .then(data => {
+      res.status(200).json({status: 'success', data});
+    })
+    .catch(error => console.log('ERROR: ', error));
+});
+
+router.get('/countydata/:state', (req, res) => {
+  db.any(`SELECT ${totalsColumns}, county_state FROM us_counties WHERE state_name='${req.params.state}'`)
+    .then(data => {
+      res.status(200).json({status: 'success', data});
+    })
+    .catch(error => console.log('ERROR: ', error));
+});
 
 router.get('/usapoints', (req, res) => {
   db.any(findPointsInUS)

@@ -13,6 +13,7 @@ filteringOptions.all = {
 };
 let allpoints = [];
 let statesdata = {};
+let countiesdata = {};
 
 export function getAllPoints() {
   return allpoints.slice();
@@ -109,4 +110,13 @@ export function storeStateData(statedata) {
     statesdata[state.name] = {... state };
   });
   return JSON.parse(JSON.stringify(statesdata));  // return copy of object
+}
+
+export function storeCountyData(countydata) {
+  countydata.forEach(county => {
+    console.log(county);
+    countiesdata[county.county_state] = {... county };
+  });
+  console.log(countiesdata);
+  return countiesdata;
 }
