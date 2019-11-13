@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React from 'react';
 
-import ghFilters from '../globals/ghFilters';
+import groupsHarassed from '../globals/groupsHarassed';
 
 export function arrToObject(arr) {
   const obj = arr.reduce((acc, elem) => {
@@ -28,14 +28,17 @@ function printUnique(mapdata) {
 }
 /* eslint-enable */
 
-export function createGroupsHarassed(groupsHarassed) {
-  const groupsharassed = [];
-  groupsHarassed.forEach((group) => {
-    ghFilters.forEach((filter) => {
-      if (filter.name === group) groupsharassed.push(filter.label);
+export function createGroupsHarassed(groups) {
+  const filtered = [];
+  groups.forEach((group) => {
+    Object.values(groupsHarassed).flat().forEach((filter) => {
+      if (group == filter.name) filtered.push(filter.label);
+      else if (filter.sub_groups) {
+        filter.sub_groups.forEach(sub => { if(group == sub.name) filtered.push(sub.label)})
+      }
     });
   });
-  return groupsharassed.join(',');
+  return filtered.join(',');
 }
 
 export function createDataToSubmit(formData) {

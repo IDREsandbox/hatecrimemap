@@ -1,13 +1,19 @@
 import React, { Component } from 'react';
-import axios from 'axios';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { CircularProgress } from '@material-ui/core';
 
 import MapWrapper from '../../components/MapWrapper/MapWrapper';
 import SideMenu from '../../components/SideMenu/SideMenu';
+import Charts from '../../components/Charts/Charts';
 // import { updateCurrentLayers, getMapData, storeMapData, getAllPoints, storeStateData } from '../../utils/filtering';
-import { storeStateData, storeCountyData } from '../../utils/filtering';
+import { counties } from '../../res/counties/statecounties.js';
+import { states } from '../../res/states.js';
+import { Rectangle, GeoJSON } from 'react-leaflet';
+import { Bar } from 'react-chartjs-2';
+import { labels, getRaceChartData, wholeYAxis } from '../../utils/chart-utils';
+import { getAllData, eachState, eachStatesCounties, storeStateData, storeCountyData, resetStateColor } from '../../utils/data-utils';
+
 import './HomePage.css';
 
 const styles = () => ({
@@ -19,80 +25,46 @@ const styles = () => ({
 });
 
 class HomePage extends Component {
-  state = {
-    zoom: 4,
-    isFetching: true,
-    statetotals: {},
-    currentLayers: new Set(['all']),
-    countytotals: {},
-    displayState: 'none',
-    displayCounty: 'none',
-    locked: false
-  };
-
-  componentDidMount() {
-    // const allpoints = getAllPoints();
-    // if (allpoints.length !== 0) {
-    //   this.setState({
-    //     isFetching: false,
-    //     mapdata: allpoints,
-    //   });
-    //   return;
-    // }
-
-    axios.get('/api/maps/statedata')
-      .then(({data: {data}}) => {
-        this.setState({
-          isFetching: false,
-          statetotals: storeStateData(data)  // Converts array to objects with state names as keys
-        });
-      })
-      .catch((err) => {
-        this.setState({ isFetching: false });
-        alert(`API call failed: ${err}`);
-      });
-
-    axios.get('/api/maps/countydata')
-      .then(({data: {data}}) => {
-        this.setState({
-          countytotals: storeCountyData(data)
-        });
-      })
-      .catch((err) => {
-        alert(`API call failed: ${err}`);
-      });
+  constructor(props) {
+    super(props);
+    this.state = {
+      zoom: 4,
+      isFetching: true,
+      data: {},  // { states, counties }
+      currentDisplay: '',
+      locked: false
+    };
+    this.statesRef = React.createRef();
   }
 
-  // updateMapData = ({ target: { name, value } }) => {
-  //   const { currentLayers } = this.state;
-  //   const newLayers = name === 'reports'
-  //     ? updateCurrentLayers(value, currentLayers, true)
-  //     : updateCurrentLayers(name, currentLayers);
-
-  //   axios.get('/api/totals/' + name)
-  //     .then(({ data: {statetotals} {} => {
-  //       this.setState({
-  //       mapdata: getMapData(name, newLayers),
-  //       statetotals: statetotals.result,
-  //       currentLayers: newLayers,
-  //     });
-  //   });
-  // }
+  async componentDidMount() {
+    getAllData().then(values => {
+      this.setState({
+        data: { states: storeStateData(values[0].result) },
+        isFetching: false
+      });
+      
+    });
+  }
 
   resetMapData = () => {
-    this.setState({
-      // mapdata: getAllPoints(),
-      currentLayers: new Set(['all']),
-     });
+  }
+
+  resetStateColors() {
+    Object.values(this.statesRef.current.contextValue.layerContainer._layers).forEach(layer => {
+      if(layer.feature) {  // only the states/counties have a feature
+        resetStateColor(layer, this.state.data.states);
+      }
+    })
   }
 
   // Return value, success (in our terms, not react's)
   updateState = (state, lock = false) => {
-    if(lock) {
-      this.setState({displayState: state, locked: state!=="none"});  // we never want to lock onto None
-      return true;
-    } else if(!this.state.locked) {
-      this.setState({displayState: state});
+    if(lock || !this.state.locked) {  // lock parameter overrides current lock
+      if(this.state.locked && state == "none") this.resetStateColors();  // would like color-setting to be more declarative
+      // but onEachFeature only executes to initialize, so color handling is all done within events (mouseon, mouseout, click)
+
+      this.setState({currentDisplay: state, locked: lock && state!=="none"});  // we never want to lock onto None
       return true;
     }
     return false;
@@ -101,10 +73,10 @@ class HomePage extends Component {
   updateCounty = (county, lock = false) => {
     console.log(county);
     if(lock) {
-      this.setState({displayCounty: county, locked: county!=="none"});
+      this.setState({currentDisplay: county, locked: county!=="none"});
       return true;
     } else if(!this.state.locked) {
-      this.setState({displayCounty: county});
+      this.setState({currentDisplay: county});
       return true;
     }
     return false;
@@ -115,30 +87,38 @@ class HomePage extends Component {
   }
 
   updateZoom = (zoom = 4) => {
-    if((this.state.zoom > 6 && zoom < 6) || (this.state.zoom < 6 && zoom > 6))  // threshold for switching between county and state, unlock display
-      this.setState({zoom: zoom, lock: false}, () => this.state.zoom);
-    else
-      this.setState({zoom: zoom}, () => this.state.zoom);
+    // if((this.state.zoom > 6 && zoom < 6) || (this.state.zoom < 6 && zoom > 6))  // threshold for switching between county and state, unlock display
+    //   this.setState({zoom: zoom, lock: false}, () => this.state.zoom);
+    // else
+    //   this.setState({zoom: zoom}, () => this.state.zoom);
+    // console.log(this.statesRef);
   }
 
-
-
   render() {
-    const { isFetching, statetotals, displayState, currentLayers } = this.state;
+    const { isFetching, data, currentDisplay } = this.state;
     const { classes } = this.props;
+
+    if(isFetching) {
+      return <CircularProgress className={classes.progress} />;
+    }
 
     return (
       <div className="homePage">
-        {isFetching ? (
-          <CircularProgress className={classes.progress} />
-        ) : (
-          <React.Fragment>
-        {/* TODO: context for mapdata and statetotals? */}
-            <MapWrapper statetotals={statetotals} countytotals={this.state.countytotals} updateState={this.updateState} updateCounty={this.updateCounty} zoom={this.getZoom} updateZoom={this.updateZoom} />
-            <SideMenu
-              statetotals={statetotals} countytotals={this.state.countytotals} currentState={displayState} currentCounty={this.state.displayCounty} currentLayers={currentLayers} />
-          </React.Fragment>
-        )}
+        <React.Fragment>
+          {/* TODO: context for mapdata and data.states? */}
+          <MapWrapper zoom={this.getZoom} updateZoom={this.updateZoom}>
+            <Rectangle bounds={[[-90., -180.], [90., 180.]]} fillOpacity="0" onClick={() => this.updateState("none", true)} />
+            { this.state.zoom >= 6 && counties.map((state, index) => <GeoJSON key={index} data={state} onEachFeature={(feature, layer) => eachStatesCounties(feature, layer, data.counties, this.updateCounty)} /> ) }     
+            <GeoJSON ref={this.statesRef} data={states} onEachFeature={(feature, layer) => eachState(feature, layer, data.states, 100, this.updateState)} />
+          </MapWrapper>
+
+          <SideMenu header={this.state.currentDisplay}>
+            {/* Charts */}
+            <div className="sideMenu__chart">
+              <Charts data={data.states[currentDisplay]} />
+            </div>
+          </SideMenu>
+        </React.Fragment>
       </div>
     );
   }

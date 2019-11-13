@@ -11,13 +11,10 @@ filteringOptions.unverified = {
 filteringOptions.all = {
   color: 'blue',
 };
-let allpoints = [];
-let statesdata = {};
-let countiesdata = {};
 
-export function getAllPoints() {
-  return allpoints.slice();
-}
+// export function getAllPoints() {
+//   return allpoints.slice();
+// }
 
 export function addGroupsHarassedSplit(mapdata) {
   const mapdataWithGroupsSplit = mapdata.map((point) => {
@@ -27,11 +24,11 @@ export function addGroupsHarassedSplit(mapdata) {
   return mapdataWithGroupsSplit.slice();
 }
 
-export function storeMapData(mapdata) {
-  const mapdataWithGroupsSplit = addGroupsHarassedSplit(mapdata); // 'groupsharassed' comma-separated to array
-  allpoints = mapdataWithGroupsSplit.slice(); // Make a copy
-  return mapdataWithGroupsSplit.slice();  // return a different copy
-}
+// export function storeMapData(mapdata) {
+//   const mapdataWithGroupsSplit = addGroupsHarassedSplit(mapdata); // 'groupsharassed' comma-separated to array
+//   allpoints = mapdataWithGroupsSplit.slice(); // Make a copy
+//   return mapdataWithGroupsSplit.slice();  // return a different copy
+// }
 
 function removePreviousShowReports(layers) {
   if (layers.has('verified')) layers.delete('verified');
@@ -82,41 +79,23 @@ function addColor(mapdata, currentLayers) {
   return mapdataWithColor;
 }
 
-export function getMapData(layerName, prevLayers) {
-  const currentLayers = new Set(prevLayers);
-  if (currentLayers.size === 0) {
-    return allpoints;
-  }
-  const mapdata = allpoints.slice();
-  const filteredData = mapdata.filter(({ groupsharassedsplit, verified }) => {
-    const camelizedGroupNames = groupsharassedsplit.map(groupName => camelize(groupName));
-    camelizedGroupNames.push('all');
-    if (verified > 0) {
-      camelizedGroupNames.push('verified');
-    }
-    if (verified === 0) {
-      camelizedGroupNames.push('unverified');
-    }
-    return arrayIncludesAllItems(camelizedGroupNames, Array.from(currentLayers));
-  });
-  const mapdataWithColor = addColor(filteredData, currentLayers);
-  return mapdataWithColor;
-}
-
-////////////////////////////
-
-export function storeStateData(statedata) {
-  statedata.forEach(state => {
-    statesdata[state.name] = {... state };
-  });
-  return JSON.parse(JSON.stringify(statesdata));  // return copy of object
-}
-
-export function storeCountyData(countydata) {
-  countydata.forEach(county => {
-    console.log(county);
-    countiesdata[county.county_state] = {... county };
-  });
-  console.log(countiesdata);
-  return countiesdata;
-}
+// export function getMapData(layerName, prevLayers) {
+//   const currentLayers = new Set(prevLayers);
+//   if (currentLayers.size === 0) {
+//     return allpoints;
+//   }
+//   const mapdata = allpoints.slice();
+//   const filteredData = mapdata.filter(({ groupsharassedsplit, verified }) => {
+//     const camelizedGroupNames = groupsharassedsplit.map(groupName => camelize(groupName));
+//     camelizedGroupNames.push('all');
+//     if (verified > 0) {
+//       camelizedGroupNames.push('verified');
+//     }
+//     if (verified === 0) {
+//       camelizedGroupNames.push('unverified');
+//     }
+//     return arrayIncludesAllItems(camelizedGroupNames, Array.from(currentLayers));
+//   });
+//   const mapdataWithColor = addColor(filteredData, currentLayers);
+//   return mapdataWithColor;
+// }

@@ -64,6 +64,8 @@ const getInitialState = () => ({
   isDateSelected: false,
 });
 
+
+
 class ReportIncidentPage extends Component {
   state = getInitialState();
 
