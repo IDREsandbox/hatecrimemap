@@ -22,6 +22,19 @@ import LocationSearchInput from '../../components/LocationSearchInput/LocationSe
 import GHCheckboxList from '../../components/GHCheckboxList/GHCheckboxList';
 import { createDataToSubmit } from '../../utils/utilities';
 
+import 'react-checkbox-tree/lib/react-checkbox-tree.css';
+import CheckboxTree from 'react-checkbox-tree';
+/*
+nodes = [
+  {value: id_of_group, label: Name, children: [grab all whose parent is id_of_group]},
+];
+
+    state = {
+        checked: [node values],
+        expanded: [node values],
+    };
+*/
+
 const styles = ({ spacing }) => ({
   root: {
     margin: '0 auto',
@@ -54,20 +67,54 @@ const getSteps = () => [
 ];
 
 const getInitialState = () => ({
-  groupsHarassed: new Set(),
+  groups: {},
+  groupsChecked: [],
+  groupsExpanded: [],
+  latLng: {},
   location: '',
   sourceurl: '',
-  date: new Date(),
+  date: null,
   activeStep: 0,
-  latLng: {},
   associatedLink: true,
   isDateSelected: false,
 });
 
-
-
 class ReportIncidentPage extends Component {
-  state = getInitialState();
+
+  constructor(props) {
+    super(props)
+    this.state = getInitialState();
+  }
+
+  groupToNodes = (groups) => {
+    return groups.map(eachGroup => {
+      eachGroup['value'] = eachGroup['key'];
+      delete eachGroup['key'];
+      eachGroup['label'] = eachGroup['name'];
+      delete eachGroup['name'];
+      if(eachGroup.children) {
+        eachGroup.children = this.groupToNodes(eachGroup.children);
+      }
+
+      if(eachGroup['level'] == 0) {  // disable toplevel categories, they're just for grouping
+        eachGroup['showCheckbox'] = false;
+        this.setState((prevState) => prevState.groupsExpanded.push(eachGroup['value']));
+      }
+
+      // Do other node customizations, e.g. custom icons or class
+
+      return eachGroup;
+    });
+  }
+
+  async componentDidMount() {
+    axios.get('/api/totals/query')  // change to /groups
+      .then(res => this.setState({groups: this.groupToNodes(res.data.ret)}))
+      .catch((err) => {
+        alert(`API call failed: ${err}`);
+        return {};
+      })
+  }
 
   getStepContent = (index) => {
     const { location, sourceurl, groupsHarassed, date, associatedLink } = this.state;
@@ -86,7 +133,7 @@ class ReportIncidentPage extends Component {
       case 1:
         return (
           <DatePicker
-            value={date}
+            value={this.state.date}
             onChange={this.handleDateChange}
             label="Select a date"
             format="MM/DD/YYYY"
@@ -97,11 +144,20 @@ class ReportIncidentPage extends Component {
       case 2:
         return (
           <div className={classes.checkboxWrapper}>
-            <GHCheckboxList
-              onClick={this.updateGroupsHarassed}
-              showSVGs={false}
-              groupsChecked={groupsHarassed}
+            <CheckboxTree
+              nodes={this.state.groups}
+              checked={this.state.groupsChecked}
+              expanded={this.state.groupsExpanded}
+              onCheck={groupsChecked => this.setState({ groupsChecked })}
+              onExpand={groupsExpanded => this.setState({ groupsExpanded })}
+              icons={{
+                parentClose: null,
+                parentOpen: null,
+                leaf: null
+              }}
+              noCascade={true}  // Should "Asian American" automatically select everything under?
             />
+            <p>{this.state.groupsChecked.join(" ")}</p>
           </div>
         );
       case 3:
@@ -137,7 +193,7 @@ class ReportIncidentPage extends Component {
       activeStep,
       location,
       isDateSelected,
-      groupsHarassed,
+      groupsChecked,
       sourceurl,
       latLng,
       associatedLink,
@@ -149,22 +205,12 @@ class ReportIncidentPage extends Component {
       case 1:
         return isDateSelected;
       case 2:
-        return groupsHarassed.size !== 0;
+        return groupsChecked.length > 0;
       case 3:
         return (isUrl(sourceurl) && associatedLink) || (sourceurl === '' && !associatedLink);
       default:
         return true;
     }
-  }
-
-  updateGroupsHarassed = ({ target: { name } }) => {
-    const { groupsHarassed } = this.state;
-    if (groupsHarassed.has(name)) {
-      groupsHarassed.delete(name);
-    } else {
-      groupsHarassed.add(name);
-    }
-    this.setState({ groupsHarassed });
   }
 
   selectLocation = (location) => {

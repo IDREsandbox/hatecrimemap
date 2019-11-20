@@ -1,5 +1,6 @@
 const express = require('express');
-const PQ = require('pg-promise').ParameterizedQuery;
+const PG = require('pg-promise')();
+const PQ = PG.ParameterizedQuery;
 
 const db = require('../models');
 const {
@@ -111,6 +112,39 @@ router.delete('/incidentreport', (req, res) => {
   db.result(deleteUnreviewedIncident)
     .then(() => res.send('Incident report deleted'))
     .catch(err => console.log('ERROR:', err));
+});
+
+// "Let it cache": https://stackoverflow.com/questions/37300997/multi-row-insert-with-pg-promise
+const incident_groups_column = new PG.helpers.ColumnSet(['incident_id', 'groups_id'], {table: 'incident_groups'});
+
+const groupsDict = {
+  // pull from database
+}
+
+const insertGroupsValues = (id, groups) => {
+  return groups.map(group => ({incident_id: id, groups_id: groupsDict[group]}));
+}
+
+// Clean data. Check url is a url by regex
+
+// TODO: move to reporter controller
+router.post('/incident', (req, res) => {
+
+  db.tx(async t => {
+    // Transaction: insert into incident, get ID => for each group, insert relation into incident_groups
+    // Reference: https://stackoverflow.com/questions/40166201/how-to-return-the-serial-primary-key-from-a-db-insert-to-use-for-another-db-inse
+    const id = await t.one(`INSERT INTO incident(lon, lat, locationname, verified, reporttype, type, sourceurl,
+    validsourceurl, target_category, race_ethnicity_targeted, religion_targeted, gender_sexual_targeted,
+    other_targeted, other_groups, reviewedbystudent, incident_date, submitted_date, attemptedwaybackurl, validwaybackurl)
+    VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19)
+    RETURNING id`, [], c=>+c.id);  // interpolation
+
+    return t.none(`INSERT INTO incident_groups(incident_id, group_id) VALUES(..)`, [id])
+  }).then(data => {
+
+  }).catch(error => {
+    // fail
+  })
 });
 
 module.exports = router;

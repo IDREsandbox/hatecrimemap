@@ -26,6 +26,7 @@
     "helmet": "^3.21.1",
     "nodemailer": "^4.6.7",
     "pg-promise": "^8.7.5",
+    "react-checkbox-tree": "^1.5.1",
     "valid-url": "^1.0.9"
   },
   "repository": {

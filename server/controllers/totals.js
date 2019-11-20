@@ -107,10 +107,93 @@ const categorizeHarassed = `UPDATE ${data_table_name} SET
 // FROM (SELECT string_to_array("groupsharassed", ',') as groups, id FROM hcmdata) as subquery
 // WHERE subquery.id = hcmdata.id
 
+const groupsQuery = `WITH RECURSIVE groups_tree AS (
+	SELECT id, name, "order", 0 AS level, cast("order" as varchar) AS path
+	FROM groups WHERE parent_id is null
+
+	UNION ALL
+	
+	SELECT g.id, g.name, g."order", level + 1, cast(gt.path || '.' || cast(g."order" as varchar) as varchar)
+	FROM groups_tree gt
+	INNER JOIN groups g ON (g.parent_id = gt.id)
+)
+SELECT * from groups_tree
+ORDER BY path`
+
 router.use((req, res, next) => {
 	/* queries to /totals api go through here first */
 	next();
 });
+
+
+// TODO: redesign
+// function formatGroups(results, index, ret, level) {
+// 	if(results.length == index) return;
+
+// 	if(results[index].level < level) return;
+
+// 	var item = { name: results[index].name, key: results[index].id };
+// 	var children = [];
+
+// 	if(results.length-1 > index && results[index].level < results[index+1].level)	// this has children
+// 	{
+// 		formatGroups(results, index+1, children, level+1);
+// 		item.children = children;
+// 	}
+// 	else if(results.length-1 > index && results[index].level > results[index+1].level)
+// 	{
+// 		ret.push(item);
+// 		return;
+// 	}
+
+// 	ret.push(item);
+
+// 	formatGroups(results, index+1+children.length, ret, level);
+// }
+
+function formatGroups(results) {
+	var ret = [];
+	var parent = [];
+	var prev = null;
+
+	for(var i = 0; i < results.length; i++) {
+		const currentItem = { name: results[i].name, key: results[i].id , level: results[i].level, children: []};
+
+		for(var k=parent.length;k>currentItem.level;k--){
+			parent.pop();
+		}
+
+		if(currentItem.level == 0){
+			ret.push(currentItem);
+		}
+		else if(currentItem.level > prev.level){
+			parent.push(prev);
+			parent[parent.length-1].children.push(currentItem);
+		}
+		else{
+			parent[parent.length-1].children.push(currentItem);
+		}
+
+		
+
+		prev = currentItem;
+	}
+
+	return ret;
+}
+
+router.get('/query', (req,res) => {
+	db.any(groupsQuery)
+	.then((result) => {
+		const ret = formatGroups(result)
+		res.status(200)
+		.json({
+			status: 'success',
+			ret
+		});
+	})
+	.catch(err => console.log('ERROR: ', err));
+})
 
 router.get('/', (req, res) => {
 	db.any(`select ${columns}, name, state_total from ${state_totals_table_name} order by name asc`)
