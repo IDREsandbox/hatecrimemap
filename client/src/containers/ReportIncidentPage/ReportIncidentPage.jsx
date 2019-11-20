@@ -10,13 +10,14 @@ import {
   FormControlLabel,
   Checkbox,
   Stepper,
-  Step,
-  StepLabel,
+  Step, StepLabel,
   Button,
   Paper,
   StepContent,
   Tooltip,
+  Select, MenuItem
 } from '@material-ui/core';
+import { CheckBox, CheckBoxOutlineBlank } from '@material-ui/icons';
 
 import LocationSearchInput from '../../components/LocationSearchInput/LocationSearchInput';
 import GHCheckboxList from '../../components/GHCheckboxList/GHCheckboxList';
@@ -62,11 +63,13 @@ const styles = ({ spacing }) => ({
 const getSteps = () => [
   'Harassment Location',
   'Date of Harassment',
-  'Groups Harassed',
+  'Main Reason of Target',
+  'Harassed Demographics',
   'Verification Link',
 ];
 
 const getInitialState = () => ({
+  targetCategory: '',
   groups: {},
   groupsChecked: [],
   groupsExpanded: [],
@@ -143,6 +146,19 @@ class ReportIncidentPage extends Component {
         );
       case 2:
         return (
+          <Select
+            name="targetSelect"
+            id="targetSelect"
+            value={this.state.targetCategory}
+            onChange={this.handleTargetChange}
+            displayEmpty
+          >
+            <MenuItem value="" disabled>Please Select One</MenuItem>
+            <MenuItem value={10}>Testtttttttttttttttt</MenuItem>
+          </Select>
+        );
+      case 3:
+        return (
           <div className={classes.checkboxWrapper}>
             <CheckboxTree
               nodes={this.state.groups}
@@ -151,6 +167,8 @@ class ReportIncidentPage extends Component {
               onCheck={groupsChecked => this.setState({ groupsChecked })}
               onExpand={groupsExpanded => this.setState({ groupsExpanded })}
               icons={{
+                check: <CheckBox style={{color: '#f50057'}} />,
+                uncheck: <CheckBoxOutlineBlank style={{color: 'rgba(0, 0, 0, 0.54)'}}/>,
                 parentClose: null,
                 parentOpen: null,
                 leaf: null
@@ -160,7 +178,7 @@ class ReportIncidentPage extends Component {
             <p>{this.state.groupsChecked.join(" ")}</p>
           </div>
         );
-      case 3:
+      case 4:
         return (
           <div>
             <Tooltip title="Please include http:// in any links" placement="left">
@@ -205,8 +223,10 @@ class ReportIncidentPage extends Component {
       case 1:
         return isDateSelected;
       case 2:
-        return groupsChecked.length > 0;
+        return this.state.targetCategory !== '';
       case 3:
+        return groupsChecked.length > 0;
+      case 4:
         return (isUrl(sourceurl) && associatedLink) || (sourceurl === '' && !associatedLink);
       default:
         return true;
@@ -224,6 +244,8 @@ class ReportIncidentPage extends Component {
   handleLocationChange = location => this.setState({ location, latLng: {} });
 
   handleDateChange = date => this.setState({ date: date.toDate(), isDateSelected: true });
+
+  handleTargetChange = event => this.setState({ targetCategory: event.target.value });
 
   handleChange = ({ target: { name, value } }) => this.setState({ [name]: value });
 
