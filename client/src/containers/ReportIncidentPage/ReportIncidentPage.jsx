@@ -69,7 +69,7 @@ const getSteps = () => [
 ];
 
 const getInitialState = () => ({
-  targetCategory: '',
+  primaryGroup: '',
   groups: {},
   groupsChecked: [],
   groupsExpanded: [],
@@ -120,7 +120,7 @@ class ReportIncidentPage extends Component {
   }
 
   getStepContent = (index) => {
-    const { location, sourceurl, groupsHarassed, date, associatedLink } = this.state;
+    const { location, sourceurl, groups, date, associatedLink } = this.state;
     const { classes } = this.props;
 
     switch (index) {
@@ -149,12 +149,17 @@ class ReportIncidentPage extends Component {
           <Select
             name="targetSelect"
             id="targetSelect"
-            value={this.state.targetCategory}
+            value={this.state.primaryGroup}
             onChange={this.handleTargetChange}
             displayEmpty
           >
             <MenuItem value="" disabled>Please Select One</MenuItem>
-            <MenuItem value={10}>Testtttttttttttttttt</MenuItem>
+            {
+              Object.keys(groups).map(category => <MenuItem key={groups[category].value} 
+                                                            value={groups[category].value}>
+                                                            {groups[category].label}
+                                                            </MenuItem>) //Top level 
+            }
           </Select>
         );
       case 3:
@@ -175,7 +180,6 @@ class ReportIncidentPage extends Component {
               }}
               noCascade={true}  // Should "Asian American" automatically select everything under?
             />
-            <p>{this.state.groupsChecked.join(" ")}</p>
           </div>
         );
       case 4:
@@ -223,7 +227,7 @@ class ReportIncidentPage extends Component {
       case 1:
         return isDateSelected;
       case 2:
-        return this.state.targetCategory !== '';
+        return this.state.primaryGroup !== '';
       case 3:
         return groupsChecked.length > 0;
       case 4:
@@ -245,7 +249,7 @@ class ReportIncidentPage extends Component {
 
   handleDateChange = date => this.setState({ date: date.toDate(), isDateSelected: true });
 
-  handleTargetChange = event => this.setState({ targetCategory: event.target.value });
+  handleTargetChange = event => this.setState({ primaryGroup: event.target.value });
 
   handleChange = ({ target: { name, value } }) => this.setState({ [name]: value });
 
@@ -263,7 +267,8 @@ class ReportIncidentPage extends Component {
   reportIncident = () => {
     const dataToSubmit = createDataToSubmit(this.state);
     this.resetState();
-    axios.post('/api/maps/incidentreport', dataToSubmit)
+    console.log(dataToSubmit)
+    axios.post('/api/maps/incident', dataToSubmit)
       .then(res => console.log(res.data))
       .catch(err => console.log(err));
   }

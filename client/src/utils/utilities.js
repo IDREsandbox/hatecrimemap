@@ -42,21 +42,19 @@ export function createGroupsHarassed(groups) {
 }
 
 export function createDataToSubmit(formData) {
-  const { groupsHarassed, location, date, latLng, sourceurl, associatedLink } = formData;
-  const groupsharassed = createGroupsHarassed(groupsHarassed);
-  return Object.assign({}, {
-    date: date.toUTCString(),
-    datesubmitted: (new Date()).toUTCString(),
-    groupsharassed,
+  const { targetCategory, groups, primaryGroup, groupsChecked, groupsExpanded, latLng, location, sourceurl,
+          date, associatedLink } = formData;
+  return ({
     lat: latLng.lat,
-    locationname: location,
     lon: latLng.lng,
-    sourceurl,
-    validsourceurl: associatedLink,
-    verified: -1,
-    reviewedbystudent: true,
-    reporttype: 'Harassment/Attack',
-  });
+    location: location,
+    incidentdate: date,
+    sourceurl: sourceurl,
+    primaryGroup: primaryGroup,
+    groups: groupsChecked,
+    othergroups: ""
+  }); // TODO allow user to input their own text, then SANITIZE
+  // [coord, location, incidentdate, sourceurl, othergroup]
 }
 
 export const reviewIncidentReport = (id, verified, callback = null) => () => {
