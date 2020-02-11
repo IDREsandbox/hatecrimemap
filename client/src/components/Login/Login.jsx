@@ -61,11 +61,11 @@ class Login extends Component {
             Login to Verify Incidents
           </Typography>
           <Divider />
-          <form className={classes.container}>
+          <form className={classes.container} onSubmit={onSubmit}>
             <TextField
               id="email"
               name="email"
-              label="Email"
+              label="Username/Email"
               value={email}
               onChange={onChange}
               className={classes.textField}
@@ -91,10 +91,10 @@ class Login extends Component {
                 }
               />
             </FormControl>
+            <Button type="submit" variant="raised" color="primary" className={classes.button}>
+              Login
+            </Button>
           </form>
-          <Button variant="raised" color="primary" onClick={onSubmit} className={classes.button}>
-            Login
-          </Button>
         </Paper>
       </div>
     );

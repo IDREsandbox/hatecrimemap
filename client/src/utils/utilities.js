@@ -58,15 +58,18 @@ export function createDataToSubmit(formData) {
 }
 
 export const reviewIncidentReport = (id, verified, callback = null) => () => {
-  axios.post('/api/maps/reviewedincident', { id, verified })
-    .then(res => console.log(res.data))
+  axios.post('/api/verify/reviewedincident', { id, verified })
+    .then(res => {
+      console.log(res.data)
+      callback();
+      window.location.reload();
+    })
     .catch(err => console.log(err));
-  callback();
-  window.location.reload();
+  
 };
 
 export const deleteIncidentReport = (id, callback = null) => () => {
-  axios.delete('/api/maps/incidentreport', { data: { id } })
+  axios.delete('/api/verify/incidentreport', { data: { id } })
     .then(res => console.log(res.data))
     .catch(err => console.log(err));
   callback();
