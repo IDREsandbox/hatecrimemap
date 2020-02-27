@@ -7,9 +7,9 @@ const MapWrapper = (props) => {
   const mapCenter = [38, -95];
 
   return (
-    <Map id="MapWrapper" center={mapCenter} zoom={props.zoom()} onZoomEnd={(e) => props.updateZoom(e.target._zoom)}>
-      <TileLayer attribution="&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
-      url="https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png" />
+    <Map id="MapWrapper" maxBounds={[[-90., -180.], [90., 180.]]} center={mapCenter} zoom={props.zoom()} minZoom={2} onZoomEnd={(e) => props.updateZoom(e.target._zoom)}>
+      <TileLayer bounds={[[-90., -180.], [90., 180.]]} attribution="&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
+      url="http://c.tiles.wmflabs.org/osm-no-labels/{z}/{x}/{y}.png" />
       {props.children}
     </Map>
   );

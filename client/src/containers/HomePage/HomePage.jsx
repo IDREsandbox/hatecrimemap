@@ -9,6 +9,7 @@ import Charts from '../../components/Charts/Charts';
 // import { updateCurrentLayers, getMapData, storeMapData, getAllPoints, storeStateData } from '../../utils/filtering';
 import { counties } from '../../res/counties/statecounties.js';
 import { states } from '../../res/states.js';
+import { usa } from '../../res/usa.js';
 import { Rectangle, GeoJSON } from 'react-leaflet';
 import { Bar } from 'react-chartjs-2';
 import { labels, getRaceChartData, wholeYAxis } from '../../utils/chart-utils';
@@ -32,7 +33,8 @@ class HomePage extends Component {
       isFetching: true,
       data: {},  // { states, counties }
       currentDisplay: '',
-      locked: false
+      locked: false,
+      firstTime: true
     };
     this.statesRef = React.createRef();
   }
@@ -45,6 +47,16 @@ class HomePage extends Component {
       });
       
     });
+
+    let hasVisited = (localStorage.getItem('visitedPage')) == 'true';
+    if(hasVisited) {
+      this.setState({
+        firstTime: false
+      });
+    } else {
+    }
+    localStorage.setItem('visitedPage', false);
+
   }
 
   resetMapData = () => {
@@ -105,11 +117,21 @@ class HomePage extends Component {
     return (
       <div className="homePage">
         <React.Fragment>
+          { this.state.firstTime &&
+              <React.Fragment>
+                <div className="black">
+                  <div className="welcome">
+                    <p>Hello</p>
+                  </div>
+                </div>
+              </React.Fragment>
+           }
           {/* TODO: context for mapdata and data.states? */}
           <MapWrapper zoom={this.getZoom} updateZoom={this.updateZoom}>
-            <Rectangle bounds={[[-90., -180.], [90., 180.]]} fillOpacity="0" onClick={() => this.updateState("none", true)} />
-            { this.state.zoom >= 6 && counties.map((state, index) => <GeoJSON key={index} data={state} onEachFeature={(feature, layer) => eachStatesCounties(feature, layer, data.counties, this.updateCounty)} /> ) }     
+            <Rectangle bounds={[[-90., -180.], [90., 180.]]} stroke={false} fillOpacity="0" onClick={() => this.updateState("none", true)} />
+            { this.state.zoom >= 6 && counties.map((state, index) => <GeoJSON key={index} data={state} onEahFeature={(feature, layer) => eachStatesCounties(feature, layer, data.counties, this.updateCounty)} /> ) }     
             <GeoJSON ref={this.statesRef} data={states} onEachFeature={(feature, layer) => eachState(feature, layer, data.states, 100, this.updateState)} />
+            <GeoJSON data={usa} />
           </MapWrapper>
 
           <SideMenu header={this.state.currentDisplay}>
