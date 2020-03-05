@@ -1,5 +1,7 @@
 import React from 'react';
 import { Map, TileLayer } from 'react-leaflet';
+import { GeoJSON } from 'react-leaflet';
+import { usa } from '../../res/usa.js';
 
 import './MapWrapper.css';
 
@@ -11,6 +13,7 @@ const MapWrapper = (props) => {
       <TileLayer bounds={[[-90., -180.], [90., 180.]]} attribution="&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
       url="http://c.tiles.wmflabs.org/osm-no-labels/{z}/{x}/{y}.png" />
       {props.children}
+      <GeoJSON data={usa} onEachFeature={(feature, layer) => { layer.setStyle({stroke: 1})}} />
     </Map>
   );
 };

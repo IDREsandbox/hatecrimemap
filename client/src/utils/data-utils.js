@@ -66,7 +66,9 @@ function hashStateColor(sum, max) {
 
 export function resetStateColor(layer, statesData) {
 	const STATE_NAME = layer.feature.properties.NAME;
+	if(!STATE_NAME) return;
 	const stateData = statesData[STATE_NAME];
+	console.log(stateData);
 
 	if(!stateData || stateData.state_total <= 0) {
 		layer.setStyle({color: 'rgba(0, 0, 0, 0)'});
