@@ -30,7 +30,7 @@ class HomePage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      zoom: 4,
+      zoom: 3,
       isFetching: true,
       data: {},  // { states, counties }
       currentDisplay: '',
@@ -54,10 +54,7 @@ class HomePage extends Component {
       this.setState({
         firstTime: false
       });
-    } else {
     }
-    localStorage.setItem('visitedPage', false);
-
   }
 
   closeOverlay = () => {

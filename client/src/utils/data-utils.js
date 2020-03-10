@@ -2,17 +2,29 @@
 Is a utilities the best place for this?
 */
 import axios from 'axios';
+import { setTopMax } from './chart-utils';
+
 
 var _stateData = {};
 var _countyData = {};
 
 export function storeStateData(stateData) {
 	let max = 0;
-	stateData.forEach(state => {
-		max = max < state.state_total ? state.state_total : max;
-		_stateData[state.name] = {... state };	// pull out and index by state's name
+	let groupMax = 0;
+	stateData.forEach(stateGroup => { // transform into object of 51 objects, per state
+		// {name:, group:, count:}
+		if(!_stateData[stateGroup.name]) _stateData[stateGroup.name] = { total: 0 };
+		_stateData[stateGroup.name][stateGroup.group] = stateGroup.count;
+		_stateData[stateGroup.name]["total"] += stateGroup.count;
+		if(stateGroup.count > groupMax) groupMax = stateGroup.count;
 	});
+	Object.keys(_stateData).forEach(state => {
+		let total = Object.values(_stateData[state]).reduce((a, b) => a + b);
+		if(total > max) max = total;
+	})
 	_stateData.max = max;
+	console.log(_stateData);
+	setTopMax(groupMax);
   return JSON.parse(JSON.stringify(_stateData));  // return copy of object
 }
 
@@ -45,6 +57,7 @@ function getCountyData() {  // TODO: Lazy load?
 }
 
 export async function getAllData() {
+	return Promise.all([getStateData()]); // TODO: remove once we get county data working
 	return Promise.all([getStateData(), getCountyData()]);
 }
 
@@ -70,12 +83,12 @@ export function resetStateColor(layer, statesData) {
 	const stateData = statesData[STATE_NAME];
 	console.log(stateData);
 
-	if(!stateData || stateData.state_total <= 0) {
+	if(!stateData || stateData.total <= 0) {
 		layer.setStyle({color: 'rgba(0, 0, 0, 0)'});
 		return;
 	}
 
-	let colorHashed = hashStateColor(stateData.state_total, statesData.max);
+	let colorHashed = hashStateColor(stateData.total, statesData.max);
     
     layer.setStyle({fillColor: `rgb(255, ${150-colorHashed}, ${150-colorHashed})`})
 }
@@ -83,12 +96,12 @@ export function resetStateColor(layer, statesData) {
 export function eachState(feature, layer, statesData, currentState, setStateDisplay) {
 	const STATE_NAME = feature.properties.NAME;
 	const stateData = statesData[STATE_NAME];
-	if(!stateData || stateData.state_total <= 0) {
+	if(!stateData || stateData.total <= 0) {
 		layer.setStyle({color: 'rgba(0, 0, 0, 0)'});
 		return;
 	}
-    // const colorHashed = colorBins[Math.floor((5*stateData.state_total-1)/total)];
-    let colorHashed = hashStateColor(stateData.state_total, statesData.max);
+    // const colorHashed = colorBins[Math.floor((5*stateData.total-1)/total)];
+    let colorHashed = hashStateColor(stateData.total, statesData.max);
     layer.on('mouseover', function(event){
 	    if(!setStateDisplay(STATE_NAME)) return;  // setStateDisplay() will return false if we're locked onto something else
 	    // layer._path.classList.add("show-state");
@@ -120,14 +133,14 @@ export function eachState(feature, layer, statesData, currentState, setStateDisp
 
 export function eachStatesCounties(feature, layer, countytotals, setCountyDisplay, total=33)
 {
-	if(countytotals[feature.properties.County_state] && countytotals[feature.properties.County_state].state_total > 0) {
-    // const colorHashed = colorBins[Math.floor((5*countytotals[feature.properties.County_state].state_total-1)/total)];
+	if(countytotals[feature.properties.County_state] && countytotals[feature.properties.County_state].total > 0) {
+    // const colorHashed = colorBins[Math.floor((5*countytotals[feature.properties.County_state].total-1)/total)];
     let colorHashed = 0;
-    // if(countytotals[feature.properties.County_state].state_total < total/10) colorHashed = colorBins[0];
-    // else if(countytotals[feature.properties.County_state].state_total < total/8) colorHashed = colorBins[1];
-    // else if(countytotals[feature.properties.County_state].state_total < total/6) colorHashed = colorBins[2];
-    // else if(countytotals[feature.properties.County_state].state_total < total/4) colorHashed = colorBins[3];
-    // else if(countytotals[feature.properties.County_state].state_total < total + 1) colorHashed = colorBins[4];
+    // if(countytotals[feature.properties.County_state].total < total/10) colorHashed = colorBins[0];
+    // else if(countytotals[feature.properties.County_state].total < total/8) colorHashed = colorBins[1];
+    // else if(countytotals[feature.properties.County_state].total < total/6) colorHashed = colorBins[2];
+    // else if(countytotals[feature.properties.County_state].total < total/4) colorHashed = colorBins[3];
+    // else if(countytotals[feature.properties.County_state].total < total + 1) colorHashed = colorBins[4];
     colorHashed = colorBins[0];
     layer.on('mouseover', function(event){
       if(!setCountyDisplay(feature.properties.County_state)) return;  // setCountyDisplay() will return false if we're locked onto something else

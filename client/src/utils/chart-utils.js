@@ -2,7 +2,14 @@ export const CHARTS = {
   RACE_ETHNICITY: 1,
   RELIGION: 2,
   GENDER_SEXUALITY: 3,
-  OTHER: 4
+  OTHER: 4,
+  TOP: 5
+}
+
+var max = 50;
+
+export function setTopMax(mmax) {
+  max = mmax;
 }
 
 // var raceData = 
@@ -63,6 +70,18 @@ var otherChartData = {
     hoverBorderColor: 'rgba(255,99,132,1)'
   }]
 };
+var topChartData = {
+  labels: ["Race/Ethnicity", "Gender/Sexuality", "Religion", "Other"],
+  datasets: [
+  {
+    label:"Number of Hate Crimes against Other Groups",
+    backgroundColor: 'rgba(255,99,132,0.2)',
+    borderColor: 'rgba(255,99,132,1)',
+    borderWidth: 1,
+    hoverBackgroundColor: 'rgba(255,99,132,0.4)',
+    hoverBorderColor: 'rgba(255,99,132,1)'
+  }]
+}
 
 // Could make a single function, but this should allow us to customize chart colors more easily in the future
 export function getChartData(chart, allData) {
@@ -80,6 +99,9 @@ export function getChartData(chart, allData) {
   } else if (chart === CHARTS.OTHER) {
     chartData = otherChartData;
     data = getOtherData(allData);
+  } else if (chart == CHARTS.TOP) {
+    chartData = topChartData;
+    data = getTopData(allData);
   }
 
   chartData.datasets[0].data = data;
@@ -119,13 +141,22 @@ const getOtherData = (data) => (
   ]
 );
 
+const getTopData = (data) => (
+    [
+      data['Race/Ethnicity'],
+      data['Gender/Sexuality'],
+      data['Religion'],
+      data['Other']
+    ]
+  )
+
 export const wholeYAxis = {scales: {
       yAxes: [{
         ticks: {
           // beginAtZero:true,
           // callback: function(value) {if(value % 1 ===0) {return value;}},
           min: 0,
-          max: 30
+          max: max
           // stepSize: 1
         }
       }]

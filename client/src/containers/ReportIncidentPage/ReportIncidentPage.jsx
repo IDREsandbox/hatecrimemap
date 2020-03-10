@@ -111,7 +111,7 @@ class ReportIncidentPage extends Component {
   }
 
   async componentDidMount() {
-    axios.get('/api/totals/query')  // change to /groups
+    axios.get('/api/totals/groups')
       .then(res => this.setState({groups: this.groupToNodes(res.data.ret)}))
       .catch((err) => {
         alert(`API call failed: ${err}`);

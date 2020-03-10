@@ -7,7 +7,12 @@ import { Bar } from 'react-chartjs-2';
 const styles = theme => ({
 
 });
-
+/*
+          <Bar data={getChartData(CHARTS.RACE_ETHNICITY, this.props.data)} options={wholeYAxis} />
+          <Bar data={getChartData(CHARTS.RELIGION, this.props.data)} options={wholeYAxis} />
+          <Bar data={getChartData(CHARTS.GENDER_SEXUALITY, this.props.data)} options={wholeYAxis} />
+          <Bar data={getChartData(CHARTS.OTHER, this.props.data)} options={wholeYAxis} />
+*/
 class Charts extends React.Component {
 
   constructor(props) {
@@ -22,10 +27,7 @@ class Charts extends React.Component {
     if (this.props.data) {
       return (
         <div className="charts">
-          <Bar data={getChartData(CHARTS.RACE_ETHNICITY, this.props.data)} options={wholeYAxis} />
-          <Bar data={getChartData(CHARTS.RELIGION, this.props.data)} options={wholeYAxis} />
-          <Bar data={getChartData(CHARTS.GENDER_SEXUALITY, this.props.data)} options={wholeYAxis} />
-          <Bar data={getChartData(CHARTS.OTHER, this.props.data)} options={wholeYAxis} />
+          <Bar data={getChartData(CHARTS.TOP, this.props.data)} options={wholeYAxis} />
         </div>
       )
     }

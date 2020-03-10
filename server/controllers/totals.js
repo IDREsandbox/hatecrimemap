@@ -182,7 +182,7 @@ function formatGroups(results) {
 	return ret;
 }
 
-router.get('/query', (req,res) => {
+router.get('/groups', (req,res) => {
 	db.any(groupsQuery)
 	.then((result) => {
 		const ret = formatGroups(result)
@@ -195,8 +195,16 @@ router.get('/query', (req,res) => {
 	.catch(err => console.log('ERROR: ', err));
 })
 
+const stateTopCategories = `SELECT us_states.name, groups.name as group, t.count
+							FROM (SELECT state_id, i.primary_group_id, COUNT(state_id)
+								FROM incident i
+								GROUP BY state_id, i.primary_group_id
+								ORDER BY state_id
+							) t JOIN us_states ON us_states.id = t.state_id JOIN groups ON groups.id = t.primary_group_id
+							`
+
 router.get('/', (req, res) => {
-	db.any(`select ${columns}, name, state_total from ${state_totals_table_name} order by name asc`)
+	db.any(stateTopCategories)
 	.then((result) => {
 		res.status(200)
 		.json({
