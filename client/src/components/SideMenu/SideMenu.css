@@ -18,12 +18,18 @@
 
 .sideMenu__form {
   grid-area: smform;
+  height: 100%;
 }
 
 .sideMenu__chart {
   grid-area: smform;
 }
 
+.charts { 
+  height: 100%;
+}
+
 .sideMenu__info {
   grid-area: smform;
+  padding: 0 8px;
 }

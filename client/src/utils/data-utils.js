@@ -2,7 +2,6 @@
 Is a utilities the best place for this?
 */
 import axios from 'axios';
-import { setTopMax } from './chart-utils';
 
 
 var _stateData = {};
@@ -14,17 +13,20 @@ export function storeStateData(stateData) {
 	stateData.forEach(stateGroup => { // transform into object of 51 objects, per state
 		// {name:, group:, count:}
 		if(!_stateData[stateGroup.name]) _stateData[stateGroup.name] = { total: 0 };
+		stateGroup.count = parseInt(stateGroup.count)
 		_stateData[stateGroup.name][stateGroup.group] = stateGroup.count;
-		_stateData[stateGroup.name]["total"] += stateGroup.count;
-		if(stateGroup.count > groupMax) groupMax = stateGroup.count;
+		_stateData[stateGroup.name].total += stateGroup.count;
+		if(stateGroup.count > groupMax) {
+			groupMax = stateGroup.count;
+			console.log(groupMax, stateGroup);
+		}
 	});
 	Object.keys(_stateData).forEach(state => {
 		let total = Object.values(_stateData[state]).reduce((a, b) => a + b);
 		if(total > max) max = total;
 	})
 	_stateData.max = max;
-	console.log(_stateData);
-	setTopMax(groupMax);
+	_stateData.groupMax = groupMax;
   return JSON.parse(JSON.stringify(_stateData));  // return copy of object
 }
 

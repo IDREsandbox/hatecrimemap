@@ -13,7 +13,7 @@ import { counties } from '../../res/counties/statecounties.js';
 import { states } from '../../res/states.js';
 import { Rectangle, GeoJSON } from 'react-leaflet';
 import { Bar } from 'react-chartjs-2';
-import { labels, getRaceChartData, wholeYAxis } from '../../utils/chart-utils';
+import { labels, getRaceChartData } from '../../utils/chart-utils';
 import { getAllData, eachState, eachStatesCounties, storeStateData, storeCountyData, resetStateColor } from '../../utils/data-utils';
 
 import './HomePage.css';
@@ -33,7 +33,7 @@ class HomePage extends Component {
       zoom: 3,
       isFetching: true,
       data: {},  // { states, counties }
-      currentDisplay: '',
+      currentDisplay: 'none',
       locked: false,
       firstTime: true
     };
@@ -174,7 +174,7 @@ class HomePage extends Component {
           <SideMenu header={this.state.currentDisplay}>
             {/* Charts */}
             <div className="sideMenu__chart">
-              <Charts data={data.states[currentDisplay]} />
+              <Charts data={data.states[currentDisplay]} max={data.states.groupMax} />
             </div>
           </SideMenu>
         </React.Fragment>

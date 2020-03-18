@@ -6,12 +6,6 @@ export const CHARTS = {
   TOP: 5
 }
 
-var max = 50;
-
-export function setTopMax(mmax) {
-  max = mmax;
-}
-
 // var raceData = 
 // // ( ({ african_american, arab, asian_american, latinx, native_american, pacific_islander, immigrants, white }) => ({ african_american, arab, asian_american, latinx, native_american, pacific_islander, immigrants, white }) )(statetotals[currentState]);
 // var religionData = [];
@@ -149,15 +143,3 @@ const getTopData = (data) => (
       data['Other']
     ]
   )
-
-export const wholeYAxis = {scales: {
-      yAxes: [{
-        ticks: {
-          // beginAtZero:true,
-          // callback: function(value) {if(value % 1 ===0) {return value;}},
-          min: 0,
-          max: max
-          // stepSize: 1
-        }
-      }]
-    }};
