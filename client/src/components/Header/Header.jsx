@@ -49,7 +49,7 @@ const Header = ({ classes }) => (
         <Link to="/reportincident" className={classes.link}>
           <Button className={classes.reportIncidentButton} color="inherit">Report Incident</Button>
         </Link>
-        <AboutDialog classes={classes}></AboutDialog>
+        <AboutDialog></AboutDialog>
       </Toolbar>
     </AppBar>
   </div>

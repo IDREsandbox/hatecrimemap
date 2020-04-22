@@ -15,9 +15,6 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
 const styles = {
-  actions: {
-    'justify-content': 'space-around'
-  }
 };
 
 class FirstTimeOverlay extends Component {
@@ -64,8 +61,7 @@ class FirstTimeOverlay extends Component {
             For more details, click on “About Us.”
           </DialogContentText>
         </DialogContent>
-        <DialogActions className={this.props.classes.actions}>
-          <div>{/* Dummy for space-around flexing */}</div>
+        <DialogActions>
           <Button variant="contained" onClick={this.handleClose} color="primary" autoFocus>
             Close
           </Button>

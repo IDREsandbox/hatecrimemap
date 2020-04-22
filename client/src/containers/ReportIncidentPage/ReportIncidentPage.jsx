@@ -24,7 +24,9 @@ import GHCheckboxList from '../../components/GHCheckboxList/GHCheckboxList';
 import { createDataToSubmit } from '../../utils/utilities';
 
 import 'react-checkbox-tree/lib/react-checkbox-tree.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import CheckboxTree from 'react-checkbox-tree';
+
 /*
 nodes = [
   {value: id_of_group, label: Name, children: [grab all whose parent is id_of_group]},
@@ -57,7 +59,7 @@ const styles = ({ spacing }) => ({
   },
   checkboxWrapper: {
     marginLeft: spacing.unit,
-  },
+  }
 });
 
 const getSteps = () => [
@@ -77,9 +79,10 @@ const getInitialState = () => ({
   location: '',
   sourceurl: '',
   date: null,
-  activeStep: 0,
-  associatedLink: true,
   isDateSelected: false,
+  associatedLink: true,
+  description: '',
+  activeStep: 0,
 });
 
 class ReportIncidentPage extends Component {
@@ -120,7 +123,7 @@ class ReportIncidentPage extends Component {
   }
 
   getStepContent = (index) => {
-    const { location, sourceurl, groups, date, associatedLink } = this.state;
+    const { location, sourceurl, groups, date, associatedLink, description } = this.state;
     const { classes } = this.props;
 
     switch (index) {
@@ -174,6 +177,11 @@ class ReportIncidentPage extends Component {
               icons={{
                 check: <CheckBox style={{color: '#f50057'}} />,
                 uncheck: <CheckBoxOutlineBlank style={{color: 'rgba(0, 0, 0, 0.54)'}}/>,
+                halfCheck: <FontAwesomeIcon className='rct-icon rct-icon-half-check' icon='check-square' />,
+                expandClose: <div style={{fontSize: '14px'}}><FontAwesomeIcon className='rct-icon rct-icon-expand-close' icon='chevron-right' /></div>,
+                expandOpen: <div style={{fontSize: '14px'}}><FontAwesomeIcon className='rct-icon rct-icon-expand-close' icon='chevron-down' /></div>,
+                expandAll: <div style={{fontSize: '14px'}}><FontAwesomeIcon className='rct-icon rct-icon-expand-close' icon='plus-square' /></div>,
+                collapseAll: <FontAwesomeIcon className='rct-icon rct-icon-expand-close' icon='minus-square' />,
                 parentClose: null,
                 parentOpen: null,
                 leaf: null
@@ -191,6 +199,7 @@ class ReportIncidentPage extends Component {
                 onChange={this.handleChange}
                 helperText="http://www.example.com/"
                 defaultValue={sourceurl}
+                disabled={!associatedLink}
               />
             </Tooltip>
             <FormControlLabel
@@ -203,6 +212,16 @@ class ReportIncidentPage extends Component {
               }
               label="No associated link"
             />
+            <Tooltip title="Include the demographic(s) of the group(s) harassed" placement="left">
+              <TextField
+                name="description"
+                onChange={this.handleChange}
+                helperText="If no associated link, provide a description of the incident"
+                defaultValue={description}
+                fullWidth
+                disabled={associatedLink}
+              />
+            </Tooltip>
           </div>
         );
       default:
@@ -219,6 +238,7 @@ class ReportIncidentPage extends Component {
       sourceurl,
       latLng,
       associatedLink,
+      description
     } = this.state;
 
     switch (activeStep) {
@@ -231,7 +251,7 @@ class ReportIncidentPage extends Component {
       case 3:
         return groupsChecked.length > 0;
       case 4:
-        return (isUrl(sourceurl) && associatedLink) || (sourceurl === '' && !associatedLink);
+        return (isUrl(sourceurl) && associatedLink) || (sourceurl === '' && !associatedLink && description != '');
       default:
         return true;
     }

@@ -43,7 +43,7 @@ export function createGroupsHarassed(groups) {
 
 export function createDataToSubmit(formData) {
   const { targetCategory, groups, primaryGroup, groupsChecked, groupsExpanded, latLng, location, sourceurl,
-          date, associatedLink } = formData;
+          date, associatedLink, description } = formData;
   return ({
     lat: latLng.lat,
     lon: latLng.lng,
@@ -52,7 +52,8 @@ export function createDataToSubmit(formData) {
     sourceurl: sourceurl,
     primaryGroup: primaryGroup,
     groups: groupsChecked,
-    othergroups: ""
+    othergroups: "",
+    description: description
   }); // TODO allow user to input their own text, then SANITIZE
   // [coord, location, incidentdate, sourceurl, othergroup]
 }

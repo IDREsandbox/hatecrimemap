@@ -2,12 +2,17 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { MuiPickersUtilsProvider } from 'material-ui-pickers';
 import MomentUtils from 'material-ui-pickers/utils/moment-utils';
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faCheckSquare, faChevronRight, faChevronLeft,
+          faChevronDown, faPlusSquare, faMinusSquare } from '@fortawesome/free-solid-svg-icons'
 
 import HomePage from './containers/HomePage/HomePage';
 import Header from './components/Header/Header';
 import ReportIncidentPage from './containers/ReportIncidentPage/ReportIncidentPage';
 import VerifyIncidentsPage from './containers/VerifyIncidentsPage/VerifyIncidentsPage';
 import './App.css';
+
+library.add(faCheckSquare, faChevronRight, faChevronLeft, faChevronDown, faPlusSquare, faMinusSquare)
 
 const App = () => (
   <MuiPickersUtilsProvider utils={MomentUtils}>
