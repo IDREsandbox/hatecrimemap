@@ -2,21 +2,12 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { CircularProgress, Button, IconButton } from '@material-ui/core';
-import Link from '@material-ui/core/Link';
-import Close from '@material-ui/icons/Close';
 
-// TODO: Barrel these and add an @components relative path
-import MapWrapper from '../../components/MapWrapper/MapWrapper';
-import SideMenu from '../../components/SideMenu/SideMenu';
-import Charts from '../../components/Charts/Charts';
-import FirstTimeOverlay from '../../components/FirstTimeOverlay/FirstTimeOverlay';
-// import { updateCurrentLayers, getMapData, storeMapData, getAllPoints, storeStateData } from '../../utils/filtering';
+import { FirstTimeOverlay, MapWrapper, SideMenu, Charts, ChartText, FilterBar } from '../../components';
 import { counties } from '../../res/counties/statecounties.js';
 import { states } from '../../res/states.js';
 import { Rectangle, GeoJSON } from 'react-leaflet';
-import { Bar } from 'react-chartjs-2';
-import { labels, getRaceChartData } from '../../utils/chart-utils';
-import { getAllData, eachState, eachStatesCounties, storeStateData, storeCountyData, resetStateColor } from '../../utils/data-utils';
+import { getAllData, eachState, eachStatesCounties, storeStateData, resetStateColor } from '../../utils/data-utils';
 
 import './HomePage.css';
 
@@ -66,7 +57,7 @@ class HomePage extends Component {
   // Return value, success (in our terms, not react's)
   updateState = (state, lock = false) => {
     if(lock || !this.state.locked) {  // lock parameter overrides current lock
-      if(this.state.locked && state == "none") this.resetStateColors();  // would like color-setting to be more declarative
+      if(this.state.locked && state === "none") this.resetStateColors();  // would like color-setting to be more declarative
       // but onEachFeature only executes to initialize, so color handling is all done within events (mouseon, mouseout, click)
 
       this.setState({currentDisplay: state, locked: lock && state!=="none"});  // we never want to lock onto None
@@ -117,12 +108,16 @@ class HomePage extends Component {
             <GeoJSON ref={this.statesRef} data={states} onEachFeature={(feature, layer) => eachState(feature, layer, data.states, 100, this.updateState)} />
           </MapWrapper>
 
-          <SideMenu header={this.state.currentDisplay}>
-            {/* Charts */}
-            <div className="sideMenu__chart">
-              <Charts data={data.states[currentDisplay]} max={data.states.groupMax} />
-            </div>
-          </SideMenu>
+          <div>
+            <FilterBar />
+            <SideMenu className="side" header={this.state.currentDisplay}>
+              {/* Charts */}
+              <div className="sideMenu__chart">
+                <Charts data={data.states[currentDisplay]} max={data.states.groupMax} />
+                <ChartText data={data.states[currentDisplay]} />
+              </div>
+            </SideMenu>
+          </div>
       </div>
     );
   }

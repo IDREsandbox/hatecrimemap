@@ -68,7 +68,7 @@ var topChartData = {
   labels: ["Race/Ethnicity", "Gender/Sexuality", "Religion", "Other"],
   datasets: [
   {
-    label:"Number of Hate Crimes against Other Groups",
+    label:"Number of Hate Crimes",
     backgroundColor: 'rgba(255,99,132,0.2)',
     borderColor: 'rgba(255,99,132,1)',
     borderWidth: 1,
@@ -93,7 +93,7 @@ export function getChartData(chart, allData) {
   } else if (chart === CHARTS.OTHER) {
     chartData = otherChartData;
     data = getOtherData(allData);
-  } else if (chart == CHARTS.TOP) {
+  } else if (chart === CHARTS.TOP) {
     chartData = topChartData;
     data = getTopData(allData);
   }

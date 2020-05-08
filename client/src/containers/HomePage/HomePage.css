@@ -7,7 +7,7 @@
   flex-basis: auto
   */
   grid-template-areas: 
-    "map toc";
+    "map side";
   grid-template-columns: 1.6fr 1fr;
   height: 100%;
   overflow: auto;
@@ -17,12 +17,16 @@
   .homePage {
     grid-template-areas:
       "map"
-      "toc";
+      "filter"
+      "side";
     grid-template-columns: none;
     grid-template-rows: 1.25fr 1fr;
   }
 }
 
+.side {
+  grid-area: side;
+}
 
 .black {
   background: rgba(0, 0, 0, 0.8); 

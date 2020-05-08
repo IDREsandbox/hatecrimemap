@@ -1,15 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-// import {
-//   FormGroup,
-//   FormControl,
-//   InputLabel,
-//   Select,
-//   MenuItem,
-//   Button,
-// } from '@material-ui/core';
-import GHCheckboxList from '../GHCheckboxList/GHCheckboxList';
 import './SideMenu.css';
 import { Bar } from 'react-chartjs-2';
 

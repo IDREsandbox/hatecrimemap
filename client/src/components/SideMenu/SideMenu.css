@@ -1,6 +1,5 @@
 .sideMenu {
   display: grid;
-  grid-area: toc;
   grid-template-areas:
     ". smheader ."
     ". smform .";
