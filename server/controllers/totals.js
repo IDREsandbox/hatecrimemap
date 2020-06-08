@@ -202,9 +202,19 @@ const stateTopCategories = `SELECT us_states.name, groups.name as group, t.count
 								ORDER BY state_id
 							) t JOIN us_states ON us_states.id = t.state_id JOIN groups ON groups.id = t.primary_group_id
 							`
+const stateAllCategories = `SELECT us_states.name, g2.name as parent, g1.name as group, t.count
+							FROM (SELECT state_id, i.primary_group_id as parent, group_id, COUNT(state_id)
+									FROM incident i
+									JOIN incident_groups ON i.id = incident_id
+									GROUP BY state_id, i.primary_group_id, group_id
+									ORDER BY state_id
+							) t JOIN us_states ON us_states.id = t.state_id
+								JOIN groups g1 ON g1.id = t.group_id
+								join groups g2 on g2.id = t.parent
+							`
 
 router.get('/', (req, res) => {
-	db.any(stateTopCategories)
+	db.any(stateAllCategories)
 	.then((result) => {
 		res.status(200)
 		.json({

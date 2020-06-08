@@ -12,12 +12,12 @@ const ChartText = (props) => {
     return null;
   }
 
+  console.log(props.data)
+  const counts = Object.entries(props.data).filter(([key, x]) => x && x.count)
+
   return (
     <div>
-     	<p>Race/Ethnicity: {props.data['Race/Ethnicity'] || 0}</p>
-		<p>Religion: {props.data['Religion'] || 0}</p>
-		<p>Gender/Sexuality: {props.data['Gender/Sexuality'] || 0}</p>
-		<p>Misc: {props.data['Miscellaneous'] || 0}</p>
+     	{counts.map(([key, obj]) => <p key={key}>{key}: {obj.count}</p>)}
     </div>
   )
 };

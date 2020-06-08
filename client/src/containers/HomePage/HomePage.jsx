@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { CircularProgress, Button, IconButton } from '@material-ui/core';
 
-import { FirstTimeOverlay, MapWrapper, SideMenu, Charts, ChartText, FilterBar } from '../../components';
+import { FirstTimeOverlay, MapWrapper, SideMenu, Charts, FilterBar } from '../../components';
 import { counties } from '../../res/counties/statecounties.js';
 import { states } from '../../res/states.js';
 import { Rectangle, GeoJSON } from 'react-leaflet';
@@ -25,9 +25,8 @@ class HomePage extends Component {
     this.state = {
       zoom: 3,
       isFetching: true,
-      data: {},  // { states, counties }
       currentDisplay: 'none',
-      locked: false
+      locked: false, // lock the sidebar on a state or county
     };
     this.statesRef = React.createRef();
   }
@@ -35,7 +34,7 @@ class HomePage extends Component {
   async componentDidMount() {
     getAllData().then(values => {
       this.setState({
-        data: { states: storeStateData(values[0].result) },
+        data: { states: storeStateData(values[0].result, values[1]) },
         isFetching: false
       });
       
@@ -48,7 +47,7 @@ class HomePage extends Component {
   resetStateColors() {
     Object.values(this.statesRef.current.contextValue.layerContainer._layers).forEach(layer => {
       if(layer.feature) {  // only the states/counties have a feature
-        console.log(layer.feature);
+        // console.log(layer.feature);
         resetStateColor(layer, this.state.data.states);
       }
     })
@@ -108,15 +107,14 @@ class HomePage extends Component {
             <GeoJSON ref={this.statesRef} data={states} onEachFeature={(feature, layer) => eachState(feature, layer, data.states, 100, this.updateState)} />
           </MapWrapper>
 
-          <div>
-            <FilterBar />
-            <SideMenu className="side" header={this.state.currentDisplay}>
+          <div className="side">
+            <SideMenu header={this.state.currentDisplay}>
               {/* Charts */}
               <div className="sideMenu__chart">
                 <Charts data={data.states[currentDisplay]} max={data.states.groupMax} />
-                <ChartText data={data.states[currentDisplay]} />
               </div>
             </SideMenu>
+            <FilterBar />
           </div>
       </div>
     );

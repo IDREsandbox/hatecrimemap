@@ -17,7 +17,6 @@
   .homePage {
     grid-template-areas:
       "map"
-      "filter"
       "side";
     grid-template-columns: none;
     grid-template-rows: 1.25fr 1fr;
@@ -26,6 +25,7 @@
 
 .side {
   grid-area: side;
+  position: relative;
 }
 
 .black {
