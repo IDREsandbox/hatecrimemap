@@ -1,7 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { MuiPickersUtilsProvider } from 'material-ui-pickers';
-import MomentUtils from 'material-ui-pickers/utils/moment-utils';
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faCheckSquare, faChevronRight, faChevronLeft,
           faChevronDown, faPlusSquare, faMinusSquare } from '@fortawesome/free-solid-svg-icons'
@@ -15,18 +14,16 @@ import './App.css';
 library.add(faCheckSquare, faChevronRight, faChevronLeft, faChevronDown, faPlusSquare, faMinusSquare)
 
 const App = () => (
-  <MuiPickersUtilsProvider utils={MomentUtils}>
-    <Router>
-      <div className="app">
-        <Header />
-        <Switch>
-          <Route exact path="/reportincident" component={ReportIncidentPage} />
-          <Route exact path="/verifyincidents" component={VerifyIncidentsPage} />
-          <Route path="/" component={HomePage} />
-        </Switch>
-      </div>
-    </Router>
-  </MuiPickersUtilsProvider>
+  <Router>
+    <div className="app">
+      <Header />
+      <Switch>
+        <Route exact path="/reportincident" component={ReportIncidentPage} />
+        <Route exact path="/verifyincidents" component={VerifyIncidentsPage} />
+        <Route path="/" component={HomePage} />
+      </Switch>
+    </div>
+  </Router>
 );
 
 export default App;

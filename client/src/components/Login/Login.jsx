@@ -57,7 +57,7 @@ class Login extends Component {
     return (
       <div>
         <Paper className={classes.root} elevation={5}>
-          <Typography className={classes.headline} variant="headline" component="h3">
+          <Typography className={classes.headline} variant="h6" component="h3">
             Login to Verify Incidents
           </Typography>
           <Divider />
@@ -91,7 +91,7 @@ class Login extends Component {
                 }
               />
             </FormControl>
-            <Button type="submit" variant="raised" color="primary" className={classes.button}>
+            <Button type="submit" variant="contained" color="primary" className={classes.button}>
               Login
             </Button>
           </form>

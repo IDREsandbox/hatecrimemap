@@ -38,6 +38,8 @@ async function getStateStructure() {
 		groupToCounts(groups.data.ret, stateData[state])
 	})
 
+	console.log(stateData)
+
 	return stateData
 }
 

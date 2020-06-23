@@ -321,7 +321,7 @@ class ReportIncidentPage extends Component {
                     </Button>
                     <Button
                       disabled={!this.isFormFilledOut()}
-                      variant="raised"
+                      variant="contained"
                       color="primary"
                       onClick={buttonOnclick}
                       className={classes.button}

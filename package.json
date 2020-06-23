@@ -8,7 +8,7 @@
   "scripts": {
     "start": "node server",
     "heroku-postbuild": "cd client/ && npm install && npm install --only=dev --no-shrinkwrap && npm run build",
-    "server": "nodemon server",
+    "server": "nodemon ./server/index.js",
     "client": "npm start --prefix client",
     "dev": "concurrently \"npm run server\" \"npm run client\""
   },
@@ -17,19 +17,19 @@
     "client/node_modules"
   ],
   "dependencies": {
-    "@material-ui/core": "^4.9.5",
-    "axios": "^0.18.1",
+    "@material-ui/core": "^4.10.2",
+    "axios": "^0.19.2",
     "body-parser": "^1.19.0",
-    "concurrently": "^3.5.1",
+    "concurrently": "^5.2.0",
     "connect-pg-simple": "^6.1.0",
-    "cron": "^1.7.2",
-    "dotenv": "^5.0.1",
+    "cron": "^1.8.2",
+    "dotenv": "^8.2.0",
     "express": "^4.17.1",
-    "express-session": "^1.17.0",
-    "helmet": "^3.21.1",
-    "nodemailer": "^4.6.7",
-    "pg-promise": "^8.7.5",
-    "react-checkbox-tree": "^1.5.1",
+    "express-session": "^1.17.1",
+    "helmet": "^3.23.1",
+    "nodemailer": "^6.4.10",
+    "pg-promise": "^10.5.6",
+    "react-checkbox-tree": "^1.6.0",
     "valid-url": "^1.0.9"
   },
   "repository": {
@@ -44,11 +44,10 @@
   ],
   "license": "MIT",
   "devDependencies": {
-    "eslint": "^4.19.1",
-    "eslint-config-airbnb": "^16.1.0",
-    "eslint-plugin-import": "^2.18.2",
-    "eslint-plugin-jsx-a11y": "^6.2.3",
-    "eslint-plugin-react": "^7.15.1",
-    "nodemon": "^1.19.3"
+    "eslint-config-airbnb": "^18.2.0",
+    "eslint-plugin-import": "^2.21.2",
+    "eslint-plugin-jsx-a11y": "^6.3.0",
+    "eslint-plugin-react": "^7.20.0",
+    "nodemon": "^2.0.4"
   }
 }

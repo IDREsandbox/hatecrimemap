@@ -3,13 +3,18 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { CircularProgress, Button, IconButton } from '@material-ui/core';
 
-import { FirstTimeOverlay, MapWrapper, SideMenu, Charts, FilterBar } from '../../components';
+import { FirstTimeOverlay, MapWrapper, SideMenu, Charts, FilterBar, MapBar } from '../../components';
 import { counties } from '../../res/counties/statecounties.js';
-import { states } from '../../res/states.js';
-import { Rectangle, GeoJSON } from 'react-leaflet';
-import { getAllData, eachState, eachStatesCounties, storeStateData, resetStateColor } from '../../utils/data-utils';
+import { GeoJSON } from 'react-leaflet';
+import { getAllData, eachStatesCounties, storeStateData, resetStateColor } from '../../utils/data-utils';
 
 import './HomePage.css';
+
+export const MAP_DISPLAY = {
+  USA: 1,
+  ALASKA: 2,
+  HAWAII: 3
+}
 
 const styles = () => ({
   progress: {
@@ -23,12 +28,16 @@ class HomePage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      zoom: 3,
+      region: MAP_DISPLAY.USA,
+      zoom: 4,
       isFetching: true,
       currentDisplay: 'none',
       locked: false, // lock the sidebar on a state or county
     };
     this.statesRef = React.createRef();
+    this.alaskaRef = React.createRef();
+    this.hawaiiRef = React.createRef();
+    this.mapRef = React.createRef();
   }
 
   async componentDidMount() {
@@ -51,6 +60,25 @@ class HomePage extends Component {
         resetStateColor(layer, this.state.data.states);
       }
     })
+  }
+
+  changeViewRegion = (event, region) => {
+    if (region !== null) {
+      this.setState({region: region}, () => {
+        if (this.mapRef.current !== null && this.statesRef.current !== null) {
+          let bounds;
+          if (region == MAP_DISPLAY.ALASKA) {
+            bounds = this.alaskaRef.current.leafletElement.getBounds().pad(0.1)
+          } else if (region == MAP_DISPLAY.USA) {
+            bounds = this.statesRef.current.leafletElement.getBounds()
+          } else if (region == MAP_DISPLAY.HAWAII) {
+            bounds = this.hawaiiRef.current.leafletElement.getBounds().pad(0.5)
+          }
+          console.log(bounds)
+          this.mapRef.current.leafletElement.fitBounds(bounds)
+        }
+      })
+    }
   }
 
   // Return value, success (in our terms, not react's)
@@ -81,14 +109,6 @@ class HomePage extends Component {
     return this.state.zoom;
   }
 
-  updateZoom = (zoom = 4) => {
-    // if((this.state.zoom > 6 && zoom < 6) || (this.state.zoom < 6 && zoom > 6))  // threshold for switching between county and state, unlock display
-    //   this.setState({zoom: zoom, lock: false}, () => this.state.zoom);
-    // else
-    //   this.setState({zoom: zoom}, () => this.state.zoom);
-    // console.log(this.statesRef);
-  }
-
   render() {
     const { isFetching, data, currentDisplay } = this.state;
     const { classes } = this.props;
@@ -101,10 +121,10 @@ class HomePage extends Component {
       <div className="homePage">
           <FirstTimeOverlay />
           {/* TODO: context for mapdata and data.states? */}
-          <MapWrapper zoom={this.getZoom} updateZoom={this.updateZoom}>
-            <Rectangle bounds={[[-90., -180.], [90., 180.]]} stroke={false} fillOpacity="0" onClick={() => this.updateState("none", true)} />
-            { this.state.zoom >= 6 && counties.map((state, index) => <GeoJSON key={index} data={state} onEahFeature={(feature, layer) => eachStatesCounties(feature, layer, data.counties, this.updateCounty)} /> ) }     
-            <GeoJSON ref={this.statesRef} data={states} onEachFeature={(feature, layer) => eachState(feature, layer, data.states, 100, this.updateState)} />
+          <MapWrapper region={this.state.region} updateState={this.updateState}
+          statesRef={this.statesRef} mapRef={this.mapRef} alaskaRef={this.alaskaRef} hawaiiRef={this.hawaiiRef}
+          data={data} updateView={this.changeViewRegion}>
+            <MapBar changeRegion={this.changeViewRegion} region={this.state.region}/>
           </MapWrapper>
 
           <div className="side">

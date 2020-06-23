@@ -43,7 +43,7 @@ const Header = ({ classes }) => (
             <HomeIcon />
           </IconButton>
         </Link>
-        <Typography variant="title" color="inherit" className={classes.flex}>
+        <Typography variant="subtitle1" color="inherit" className={classes.flex}>
           Mapping Harassment in the US
         </Typography>
         <Link to="/reportincident" className={classes.link}>

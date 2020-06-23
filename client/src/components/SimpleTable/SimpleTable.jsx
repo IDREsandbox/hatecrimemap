@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import uuidv4 from 'uuid/v4';
+import { uuid } from 'uuidv4';
 import axios from 'axios';
 import {
   Table,
@@ -80,7 +80,7 @@ class SimpleTable extends Component {
           <TableBody>
             {tableData.map((row, i) => (
               <TableRow className={classes.row} key={row[0]}>
-                {row.map(cell => <TableCell className={classes.cell} key={uuidv4()}>{cell}</TableCell>)}
+                {row.map(cell => <TableCell className={classes.cell} key={uuid()}>{cell}</TableCell>)}
               </TableRow>
             ))}
           </TableBody>

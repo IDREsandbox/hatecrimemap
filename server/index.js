@@ -1,3 +1,5 @@
+require('dotenv').config()
+
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
@@ -10,6 +12,9 @@ const startJobs = require('./jobs');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// 'DEPTH_ZERO_SELF_SIGNED_CERT' Error
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0"
+
 app.use(helmet());
 
 // Priority serve any static files
@@ -20,7 +25,7 @@ app.use(bodyParser.json());
 
 app.use(session({
 	store: new (require('connect-pg-simple')(session))({
-		conString: 'postgres://wijhpidbhbgnez:58a7cbbf8ea368029c7c9f63aea3caddb900eb6a357e572830cb7ab456c06c2a@ec2-54-235-156-60.compute-1.amazonaws.com:5432/de1of4ov5iao3o?ssl=true'
+		conString: process.env.DB_STRING
 	}),
 	secret: 'dumb',
 	resave: false,

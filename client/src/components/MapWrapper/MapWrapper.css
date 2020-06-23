@@ -11,3 +11,23 @@
 	/*z-index: 1;*/
 	/*opacity: 1;*/
 }
+
+#MapWrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    height: 100%;
+    overflow: auto;
+    position: relative;
+}
+
+#USA {
+	height: 100%;
+    grid-column: 1 / 4;
+    grid-row: 1 / 4;
+}
+
+#Alaska {
+	position: relative;
+    grid-area: 3 / 1 / auto / auto;
+}
