@@ -1,8 +1,10 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import './Charts.css';
+import { Button } from '@material-ui/core';
+import { ArrowBack } from '@material-ui/icons';
 import { CHARTS, getChartData } from '../../utils/chart-utils';
-import { Bar } from 'react-chartjs-2';
+import { Bar, Pie } from 'react-chartjs-2';
 import ChartsText from './ChartText';
 
 const styles = theme => ({
@@ -44,6 +46,9 @@ class Charts extends React.Component {
 
   barClick = (elems) => {
     // index into `data` of the bar clicked
+    if (!elems[0]) {
+      return
+    }
     const dataIdx = elems[0]._index
     switch(dataIdx) {
       case 0:
@@ -65,10 +70,11 @@ class Charts extends React.Component {
   render() {
     if (this.props.data && this.state.options) {
       if(this.state.currentDisplay != CHARTS.TOP) {
+        // Pie charts!
         return (
           <div className="charts">
-            <Bar data={getChartData(this.state.currentDisplay, this.state.drilldown)} options={this.state.options}
-                 onElementsClick={this.barUnClick} />
+            <Button variant="outlined" color="primary" aria-label="back" onClick={this.barUnClick} startIcon={<ArrowBack />}>Back</Button>
+            <Pie data={getChartData(this.state.currentDisplay, this.state.drilldown)} />
             <ChartsText data={this.state.drilldown} />
           </div>
         )
