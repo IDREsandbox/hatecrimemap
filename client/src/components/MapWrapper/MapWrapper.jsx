@@ -20,7 +20,7 @@ const MapWrapper = (props) => {
   return (
     <div id="MapWrapper">
 
-      <Map id="USA" ref={props.mapRef} maxBounds={worldBounds} zoomSnap={0.25} center={usaCentre} zoom={4.5}>
+      <Map id="USA" ref={props.mapRef} maxBounds={worldBounds} minZoom={2} zoomSnap={0.25} center={usaCentre} zoom={4.5}>
         <TileLayer bounds={worldBounds} attribution="&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
         url="http://c.tiles.wmflabs.org/osm-no-labels/{z}/{x}/{y}.png" />
           <Rectangle bounds={worldBounds} stroke={false} fillOpacity="0" onClick={() => props.updateState("none", true)} />

@@ -30,7 +30,7 @@ class Charts extends React.Component {
               // beginAtZero:true,
               // callback: function(value) {if(value % 1 ===0) {return value;}},
               min: 0,
-              max: parseInt(props.max) || 50
+              max: parseInt(props.max) || 68
               // stepSize: 1
             }
           }]

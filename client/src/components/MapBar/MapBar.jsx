@@ -19,13 +19,13 @@ class MapBar extends MapControl {
           onChange={props.changeRegion}
           aria-label="region display"
         >
-          <ToggleButton value={1} aria-label="left aligned">
+          <ToggleButton value={1} aria-label="central usa">
             Center
           </ToggleButton>
-          <ToggleButton value={2} aria-label="centered">
+          <ToggleButton value={2} aria-label="alaska">
             Alaska
           </ToggleButton>
-          <ToggleButton value={3} aria-label="right aligned">
+          <ToggleButton value={3} aria-label="hawaii">
             Hawaii
           </ToggleButton>
         </ToggleButtonGroup>
