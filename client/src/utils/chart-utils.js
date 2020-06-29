@@ -88,16 +88,27 @@ export function getChartData(chart, allData) {
     chartData = otherChartData;
   } else if (chart === CHARTS.TOP) {
     chartData = topChartData;
+    data = mapData(allData);
   }
 
-  data = mapData(allData);
+  if (chart !== CHARTS.TOP) {
+    // Sort the counts
+    data = mapData(allData, true);
+  }
+
   chartData.datasets[0].data = data.counts; // because we don't want "counts" => undefined
   chartData.labels = data.labels;
   return chartData;
 }
 
-const mapData = (data) => {
+const mapData = (data, sort=false) => {
+  // [[label, {count: 0}], [label, {count: 1}]]
   data = Object.entries(data).filter(([key, obj]) => obj && (obj.count || obj.count===0))
+  if (sort) {
+    data.sort((a, b) => {
+      return (a[1].count < b[1].count) ? -1 : ((a[1].count==b[1].count) ? 0 : 1)
+    })
+  }
   return ({
             labels: data.map(([label, x]) => label),
             counts: data.map(([parent, counts]) => counts.count)
