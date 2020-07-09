@@ -19,6 +19,8 @@ import Login from '../../components/Login/Login';
 import { addGroupsHarassedSplit } from '../../utils/filtering';
 import {
   reviewIncidentReport,
+  validateIncidentReport,
+  publishedIncidentReport,
   deleteIncidentReport,
   addRowNumProperty,
   checkLoggedInCookie,
@@ -50,6 +52,9 @@ const getColumnHeaders = () => [
   'Date Submitted',
   'Groups Harassed',
   'Verification Link',
+  'Student Reviewed',
+  'URL Valid',
+  'Published Source',
   'Action',
 ];
 
@@ -82,10 +87,13 @@ class VerifyIncidentsPage extends Component {
         .catch((err) => alert(err))
   }
 
-  openActions = id => () => {
+  openActions = (id, v, s, p) => () => {
     console.log("Opening " + id)
     this.setState({
       activeReport: id,
+      verified: v,
+      urlvalid: s,
+      published: p
     }, this.handleOpenDialog);
   }
 
@@ -102,16 +110,17 @@ class VerifyIncidentsPage extends Component {
       submittedon,
       location,
       sourceurl,
-      isvalidsourceurl,
+      issourceurlvalid,
+      verified,
+      published,
       waybackurl,
-      othergroups,
       groupsharassed,
     }) => {
       const link = sourceurl
         ? <a href={sourceurl} target="_blank">Source link</a>
         : 'No link';
       const actionButton = (
-        <IconButton onClick={this.openActions(id)}>
+        <IconButton onClick={this.openActions(id, verified, issourceurlvalid, published)}>
           <MoreVert />
         </IconButton>
       );
@@ -122,10 +131,6 @@ class VerifyIncidentsPage extends Component {
         incidentdate = new Date(incidentdate).toDateString();
       }
 
-      if(othergroups) {
-        groupsharassed.push(othergroups)
-      }
-
       return [
         id,
         location,
@@ -133,9 +138,13 @@ class VerifyIncidentsPage extends Component {
         new Date(submittedon).toDateString(),
         groupsharassed.join(", "),
         link,
+        verified.toString(),
+        issourceurlvalid.toString(),
+        published.toString(),
         actionButton,
       ];
     });
+    console.log(displayableData)
     return displayableData;
   }
 
@@ -215,18 +224,51 @@ class VerifyIncidentsPage extends Component {
             <DialogTitle>Choose Action</DialogTitle>
             <div>
               <List>
-                <ListItem
-                  button
-                  onClick={reviewIncidentReport(activeReport, 1, this.handleCloseDialog)}
-                >
-                  <ListItemText primary="Add as Verified" />
-                </ListItem>
-                <ListItem
-                  button
-                  onClick={reviewIncidentReport(activeReport, 0, this.handleCloseDialog)}
-                >
-                  <ListItemText primary="Add as Unverified" />
-                </ListItem>
+                {!this.state.verified ?
+                  <ListItem
+                    button
+                    onClick={reviewIncidentReport(activeReport, 1, this.handleCloseDialog)}
+                  >
+                    <ListItemText primary="Mark Verified" />
+                  </ListItem>
+                  :
+                  <ListItem
+                    button
+                    onClick={reviewIncidentReport(activeReport, 0, this.handleCloseDialog)}
+                  >
+                    <ListItemText primary="Mark Unverified" />
+                  </ListItem>
+                }
+                {!this.state.urlvalid ?
+                  <ListItem
+                    button
+                    onClick={validateIncidentReport(activeReport, 1, this.handleCloseDialog)}
+                  >
+                    <ListItemText primary="Mark Valid URL" />
+                  </ListItem>
+                  :
+                  <ListItem
+                    button
+                    onClick={validateIncidentReport(activeReport, 0, this.handleCloseDialog)}
+                  >
+                    <ListItemText primary="Mark Invalid URL" />
+                  </ListItem>
+                }
+                {!this.state.published ?
+                  <ListItem
+                    button
+                    onClick={publishedIncidentReport(activeReport, 1, this.handleCloseDialog)}
+                  >
+                    <ListItemText primary="Mark Published Source" />
+                  </ListItem>
+                  :
+                  <ListItem
+                    button
+                    onClick={publishedIncidentReport(activeReport, 0, this.handleCloseDialog)}
+                  >
+                    <ListItemText primary="Mark Unpublished Source" />
+                  </ListItem>
+                }
                 <ListItem
                   button
                   onClick={deleteIncidentReport(activeReport, this.handleCloseDialog)}

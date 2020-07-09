@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import { MuiPickersUtilsProvider } from 'material-ui-pickers';
+import DateFnsUtils from '@date-io/date-fns';
+import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faCheckSquare, faChevronRight, faChevronLeft,
           faChevronDown, faPlusSquare, faMinusSquare } from '@fortawesome/free-solid-svg-icons'
@@ -14,6 +15,7 @@ import './App.css';
 library.add(faCheckSquare, faChevronRight, faChevronLeft, faChevronDown, faPlusSquare, faMinusSquare)
 
 const App = () => (
+  <MuiPickersUtilsProvider utils={DateFnsUtils}>
   <Router>
     <div className="app">
       <Header />
@@ -24,6 +26,7 @@ const App = () => (
       </Switch>
     </div>
   </Router>
+  </MuiPickersUtilsProvider>
 );
 
 export default App;

@@ -15,7 +15,7 @@ router.use('*', (req, res, next) => {
   }
 });
 
-const columns = 'i.id, i.location, i.incidentdate, i.submittedon, i.sourceurl, i.waybackurl, i.othergroup, g.groupsharassed'
+const columns = 'i.id, i.location, i.incidentdate, i.submittedon, i.sourceurl, i.verified, i.issourceurlvalid, i.published, i.waybackurl, g.groupsharassed'
 const findUnreviewedPoints = `SELECT ${columns}
                               FROM incident i
                               JOIN (
@@ -28,7 +28,7 @@ const findUnreviewedPoints = `SELECT ${columns}
                                 ORDER BY i.submittedon`
 
 router.get('/unreviewedcount', (req, res) => {
-  db.one('SELECT COUNT(*) FROM incident')
+  db.one('SELECT COUNT(*) FROM incident WHERE verified=FALSE and issourceurlvalid=TRUE')
     .then((counts) => {
       res.status(200)
         .json({
@@ -67,6 +67,24 @@ router.post('/reviewedincident', (req, res) => {
 
   db.none(updateUnreviewedIncident)
     .then(() => res.send('Incident report reviewed'))
+    .catch(err => console.log('ERROR:', err));
+});
+
+router.post('/validateincident', (req, res) => {
+  const { id, urvalid } = req.body;
+  const updateUnreviewedIncident = new PQ('UPDATE incident SET issourceurlvalid = $2 WHERE id = $1', [id, urvalid]);
+
+  db.none(updateUnreviewedIncident)
+    .then(() => res.send('Incident url validated'))
+    .catch(err => console.log('ERROR:', err));
+});
+
+router.post('/publishedincident', (req, res) => {
+  const { id, published } = req.body;
+  const updateUnreviewedIncident = new PQ('UPDATE incident SET published = $2 WHERE id = $1', [id, published]);
+
+  db.none(updateUnreviewedIncident)
+    .then(() => res.send('Incident report marked published'))
     .catch(err => console.log('ERROR:', err));
 });
 

@@ -17,25 +17,23 @@ import { Visibility, VisibilityOff } from '@material-ui/icons';
 
 const styles = theme => ({
   root: {
-    position: 'absolute',
     top: 0,
     bottom: 0,
     left: 0,
     right: 0,
-    margin: 'auto',
+    margin: '25px auto',
     width: '500px',
-    height: '500px',
     textAlign: 'center',
   },
   headline: {
-    padding: theme.spacing.unit * 3,
+    padding: theme.spacing(3),
   },
   textField: {
-    margin: theme.spacing.unit * 3,
+    margin: theme.spacing(3),
     width: '300px',
   },
   button: {
-    margin: theme.spacing.unit * 3,
+    margin: theme.spacing(3),
     marginTop: '50px',
     width: '300px',
   },

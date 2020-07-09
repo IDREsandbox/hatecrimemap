@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 import isUrl from 'is-url';
-import DatePicker from 'material-ui-pickers/DatePicker';
+import { KeyboardDatePicker } from '@material-ui/pickers';
 import { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
 import { withStyles } from '@material-ui/core/styles';
 import {
@@ -75,6 +75,10 @@ const getInitialState = () => ({
   groups: {},
   groupsChecked: [],
   groupsExpanded: [],
+  other_race: "",
+  other_religion: "",
+  other_gender: "",
+  other_misc: "",
   latLng: {},
   location: '',
   sourceurl: '',
@@ -138,14 +142,19 @@ class ReportIncidentPage extends Component {
         );
       case 1:
         return (
-          <DatePicker
+           <KeyboardDatePicker
+            margin="normal"
+            id="date-picker-dialog"
+            label="Date of Incident"
+            format="MM/dd/yyyy"
             value={this.state.date}
             onChange={this.handleDateChange}
-            label="Select a date"
-            format="MM/DD/YYYY"
             showTodayButton
             maxDate={new Date()}
-          />
+            KeyboardButtonProps={{
+              'aria-label': 'change date',
+            }}
+           />
         );
       case 2:
         return (
@@ -188,6 +197,22 @@ class ReportIncidentPage extends Component {
               }}
               noCascade={true}  // Should "Asian American" automatically select everything under?
             />
+            { this.state.groupsChecked.includes("40") &&
+                  <div>
+                    <TextField name="other_race" onChange={this.handleChange} helperText="Other (Race/Ethnicity)"/>
+                  </div>}
+            { this.state.groupsChecked.includes("41") &&
+                  <div>
+                    <TextField name="other_religion" onChange={this.handleChange} helperText="Other (Religion)"/>
+                  </div>}
+            { this.state.groupsChecked.includes("42") &&
+                  <div>
+                    <TextField name="other_gender" onChange={this.handleChange} helperText="Other (Gender/Sexuality)"/>
+                  </div>}
+            { this.state.groupsChecked.includes("43") &&
+                  <div>
+                    <TextField name="other_misc" onChange={this.handleChange} helperText="Other (Miscellaneous)"/>
+                  </div>}
           </div>
         );
       case 4:
@@ -267,7 +292,7 @@ class ReportIncidentPage extends Component {
 
   handleLocationChange = location => this.setState({ location, latLng: {} });
 
-  handleDateChange = date => this.setState({ date: date.toDate(), isDateSelected: true });
+  handleDateChange = date => this.setState({ date: date, isDateSelected: true });
 
   handleTargetChange = event => this.setState({ primaryGroup: event.target.value });
 

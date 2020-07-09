@@ -42,8 +42,9 @@ export function createGroupsHarassed(groups) {
 }
 
 export function createDataToSubmit(formData) {
-  const { targetCategory, groups, primaryGroup, groupsChecked, groupsExpanded, latLng, location, sourceurl,
-          date, associatedLink, description } = formData;
+  const { targetCategory, groups, primaryGroup, groupsChecked, groupsExpanded,
+          latLng, location, sourceurl, other_race, other_religion, other_gender, other_misc,
+          date, description } = formData;
   return ({
     lat: latLng.lat,
     lon: latLng.lng,
@@ -52,10 +53,12 @@ export function createDataToSubmit(formData) {
     sourceurl: sourceurl,
     primaryGroup: primaryGroup,
     groups: groupsChecked,
-    othergroups: "",
+    other_race: other_race,
+    other_religion: other_religion,
+    other_gender: other_gender,
+    other_misc: other_misc,
     description: description
-  }); // TODO allow user to input their own text, then SANITIZE
-  // [coord, location, incidentdate, sourceurl, othergroup]
+  });
 }
 
 export const reviewIncidentReport = (id, verified, callback = null) => () => {
@@ -66,7 +69,26 @@ export const reviewIncidentReport = (id, verified, callback = null) => () => {
       window.location.reload();
     })
     .catch(err => console.log(err));
-  
+};
+
+export const validateIncidentReport = (id, urlvalid, callback = null) => () => {
+  axios.post('/api/verify/validateincident', { id, urlvalid })
+    .then(res => {
+      console.log(res.data)
+      callback();
+      window.location.reload();
+    })
+    .catch(err => console.log(err));
+};
+
+export const publishedIncidentReport = (id, published, callback = null) => () => {
+  axios.post('/api/verify/publishedincident', { id, published })
+    .then(res => {
+      console.log(res.data)
+      callback();
+      window.location.reload();
+    })
+    .catch(err => console.log(err));
 };
 
 export const deleteIncidentReport = (id, callback = null) => () => {
