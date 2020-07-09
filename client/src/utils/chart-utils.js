@@ -6,6 +6,8 @@ export const CHARTS = {
   TOP: 5
 }
 
+export const CHART_STRINGS = ["Race/Ethnicity", "Religion", "Gender/Sexuality", "Other"]
+
 // var raceData = 
 // // ( ({ african_american, arab, asian_american, latinx, native_american, pacific_islander, immigrants, white }) => ({ african_american, arab, asian_american, latinx, native_american, pacific_islander, immigrants, white }) )(statetotals[currentState]);
 // var religionData = [];
@@ -114,3 +116,7 @@ const mapData = (data, sort=false) => {
             counts: data.map(([parent, counts]) => counts.count)
           })
 };
+
+export const sumData = (data) => {
+  return Object.entries(data).filter(([key, obj]) => obj && (obj.count || obj.count===0)).map(([key, obj]) => obj.count).reduce((a, b) => a+b)
+}

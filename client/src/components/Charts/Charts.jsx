@@ -3,9 +3,11 @@ import { withStyles } from '@material-ui/core/styles';
 import './Charts.css';
 import { Button } from '@material-ui/core';
 import { ArrowBack } from '@material-ui/icons';
-import { CHARTS, getChartData } from '../../utils/chart-utils';
+import { CHARTS, CHART_STRINGS, getChartData, sumData } from '../../utils/chart-utils';
 import { Bar, Pie } from 'react-chartjs-2';
 import ChartsText from './ChartText';
+import Grid from '@material-ui/core/Grid';
+
 
 const styles = theme => ({
 
@@ -73,7 +75,15 @@ class Charts extends React.Component {
         // Pie charts!
         return (
           <div className="charts">
-            <Button variant="outlined" color="primary" aria-label="back" onClick={this.barUnClick} startIcon={<ArrowBack />}>Back</Button>
+            <Grid container justify="space-between">
+              <Grid item xs={3}>
+                <Button variant="outlined" color="primary" size="small" aria-label="back" onClick={this.barUnClick} startIcon={<ArrowBack />}>Back</Button>
+              </Grid>
+              <Grid item xs={6} style={{'textAlign': 'center'}}>
+                <h4>{CHART_STRINGS[this.state.currentDisplay]} ({sumData(this.state.drilldown)} total)</h4>
+              </Grid>
+              <Grid item xs={3}>{/* to center the title */}</Grid>
+            </Grid>
             <Pie data={getChartData(this.state.currentDisplay, this.state.drilldown)} />
             <ChartsText data={this.state.drilldown} />
           </div>
