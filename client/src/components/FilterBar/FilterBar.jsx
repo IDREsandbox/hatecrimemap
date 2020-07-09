@@ -1,13 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import './FilterBar.css';
 
-// import {ToggleButton, ToggleButtonGroup} from '@material-ui/lab/';
-import FormGroup from '@material-ui/core/FormGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Switch from '@material-ui/core/Switch';
-import Grid from '@material-ui/core/Grid';
+import ToggleButton from '@material-ui/lab/ToggleButton';
+import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
+
 
 
 const styles = theme => ({
@@ -15,30 +13,25 @@ const styles = theme => ({
 });
 
 const FilterBar = (props) => {
+
+  const [published, filterPublished] = useState('published');
+
   return (
     <div className="filterBar">
-      {/*<ToggleButtonGroup
+      <ToggleButtonGroup
+        value={published}
         size="small"
-        aria-label="text alignment"
+        exclusive
+        onChange={(e, v) => {filterPublished(v); props.filterfn(v)}}
+        aria-label="filter published sources"
       >
-        <ToggleButton value="published" aria-label="left aligned">
-          Published
+        <ToggleButton value={'published'} aria-label="published">
+          Published Sources
         </ToggleButton>
-        <ToggleButton value="verified" aria-label="centered">
-          Verified
-        </ToggleButton>
-        <ToggleButton value="validUrl" aria-label="right aligned">
-          Valid URL
+        <ToggleButton value={'all'} aria-label="all">
+          All Sources
         </ToggleButton>
       </ToggleButtonGroup>
-      Placeholder for filter*/}
-      <Grid component="label" container alignItems="center">
-        <Grid item>Published Only</Grid>
-        <Grid item>
-          <Switch checked={true} name="checkedC" />
-        </Grid>
-        <Grid item>All</Grid>
-      </Grid>
     </div>
   )
 };

@@ -58,7 +58,7 @@ export function storeStateData(data, start) {
 			stateData[name][parent].children[group].count = count
 			stateData[name].count += count
 		}
-	})
+	}) 
 
 	let maxState = 0;
 
@@ -96,6 +96,15 @@ function getStateData() {
 	});
 }
 
+function getPublishedStateData() {
+	return axios.get('/api/totals/published')
+	.then(res => { console.log(res); return res.data })
+	.catch((err) => {
+		alert(`API call failed: ${err}`);
+		return {};
+	});
+}
+
 function getCountyData() {  // TODO: Lazy load?
 	return axios.get('/api/maps/countydata')
 	.then(res => { return res.data })
@@ -106,7 +115,7 @@ function getCountyData() {  // TODO: Lazy load?
 }
 
 export async function getAllData() {
-	return Promise.all([getStateData(), getStateStructure()]); // TODO: remove once we get county data working
+	return Promise.all([getStateData(), getPublishedStateData(), getStateStructure()]); // TODO: remove once we get county data working
 	return Promise.all([getStateData(), getCountyData()]);
 }
 

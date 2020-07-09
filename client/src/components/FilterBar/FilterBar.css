@@ -1,6 +1,5 @@
 .filterBar {
 	position: absolute;
-	bottom: 0px;
-	left: 50%;
-	transform: translateX(-50%);
+	bottom: 10px;
+	left: 10px;
 }

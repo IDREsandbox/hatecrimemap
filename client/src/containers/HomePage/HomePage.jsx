@@ -32,6 +32,7 @@ class HomePage extends Component {
       zoom: 4,
       isFetching: true,
       currentDisplay: 'none',
+      currentFilter: 'published',
       locked: false, // lock the sidebar on a state or county
     };
     this.statesRef = React.createRef();
@@ -43,7 +44,10 @@ class HomePage extends Component {
   async componentDidMount() {
     getAllData().then(values => {
       this.setState({
-        data: { states: storeStateData(values[0].result, values[1]) },
+        data: { states: storeStateData(values[0].result, values[2]),
+                publishedStates: storeStateData(values[1].result, values[2])
+                // we shouldn't add more api endpoints for filters, it should be dynamic within the front-end
+              },
         isFetching: false
       });
       
@@ -81,6 +85,10 @@ class HomePage extends Component {
     }
   }
 
+  filterIncidents = (flt) => {
+    this.setState({ currentFilter: flt }) // 'all' or 'published'
+  }
+
   // Return value, success (in our terms, not react's)
   updateState = (state, lock = false) => {
     if(lock || !this.state.locked) {  // lock parameter overrides current lock
@@ -110,13 +118,16 @@ class HomePage extends Component {
   }
 
   render() {
-    const { isFetching, data, currentDisplay } = this.state;
+    const { isFetching, currentDisplay } = this.state;
     const { classes } = this.props;
+
 
     if(isFetching) {
       return <CircularProgress className={classes.progress} />;
     }
 
+    const data = this.state.currentFilter=='all' ? this.state.data.states : this.state.data.publishedStates
+    
     return (
       <div className="homePage">
           <FirstTimeOverlay />
@@ -131,10 +142,10 @@ class HomePage extends Component {
             <SideMenu header={this.state.currentDisplay}>
               {/* Charts */}
               <div className="sideMenu__chart">
-                <Charts data={data.states[currentDisplay]} max={data.states.groupMax} />
+                <Charts data={data[currentDisplay]} max={data.groupMax} />
               </div>
             </SideMenu>
-            <FilterBar />
+            <FilterBar filterfn={this.filterIncidents} />
           </div>
       </div>
     );

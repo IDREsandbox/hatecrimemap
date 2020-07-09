@@ -212,9 +212,36 @@ const stateAllCategories = `SELECT us_states.name, g2.name as parent, g1.name as
 								JOIN groups g1 ON g1.id = t.group_id
 								join groups g2 on g2.id = t.parent
 							`
+const statePublishedOnly = `SELECT us_states.name, g2.name as parent, g1.name as group, t.count
+							FROM (SELECT state_id, i.primary_group_id as parent, group_id, COUNT(state_id)
+									FROM incident i
+									JOIN incident_groups ON i.id = incident_id
+									WHERE i.published = TRUE
+									GROUP BY state_id, i.primary_group_id, group_id
+									ORDER BY state_id
+							) t JOIN us_states ON us_states.id = t.state_id
+								JOIN groups g1 ON g1.id = t.group_id
+								join groups g2 on g2.id = t.parent
+							`
 
 router.get('/', (req, res) => {
 	db.any(stateAllCategories)
+	.then((result) => {
+		res.status(200)
+		.json({
+			status: 'success',
+			result
+		});
+	})
+	.catch(err => console.log('ERROR: ', err));
+});
+
+router.get('/:filter', (req, res) => {
+	let useQuery;
+	if (req.params.filter == 'published') {
+		userQuery = statePublishedOnly
+	}
+	db.any(userQuery)
 	.then((result) => {
 		res.status(200)
 		.json({
