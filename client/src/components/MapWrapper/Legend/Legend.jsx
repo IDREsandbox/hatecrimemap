@@ -34,7 +34,9 @@ class Legend extends MapControl {
 				  );
 				}
 
-				div.innerHTML = labels.join("<br>");
+				let header = '<p><strong>Cases per state</strong></p>'
+
+				div.innerHTML = header + labels.join("<br>");
 				return div;
 		    }
 	    })
