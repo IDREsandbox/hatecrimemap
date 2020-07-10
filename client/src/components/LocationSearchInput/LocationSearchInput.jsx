@@ -36,7 +36,7 @@ const LocationSearchInput = ({ value, onChange, onSelect, classes, name, errorTe
               ? { backgroundColor: '#fafafa', cursor: 'pointer' }
               : { backgroundColor: '#ffffff', cursor: 'pointer' };
             return (
-              <div className="locationSearchInput__menu__item" {...getSuggestionItemProps(suggestion, { style })}>
+              <div key={suggestion.description} className="locationSearchInput__menu__item" {...getSuggestionItemProps(suggestion, { style })}>
                 <span>{suggestion.description}</span>
               </div>
             );

@@ -72,7 +72,7 @@ const getSteps = () => [
 
 const getInitialState = () => ({
   primaryGroup: '',
-  groups: {},
+  tag: 0,
   groupsChecked: [],
   groupsExpanded: [],
   other_race: "",
@@ -94,6 +94,7 @@ class ReportIncidentPage extends Component {
   constructor(props) {
     super(props)
     this.state = getInitialState();
+    this.setState({ groups: {} })
   }
 
   groupToNodes = (groups) => {
@@ -108,7 +109,7 @@ class ReportIncidentPage extends Component {
 
       if(eachGroup['level'] == 0) {  // disable toplevel categories, they're just for grouping
         eachGroup['showCheckbox'] = false;
-        this.setState((prevState) => prevState.groupsExpanded.push(eachGroup['value']));
+        // this.setState((prevState) => prevState.groupsExpanded.push(eachGroup['value']));
       }
 
       // Do other node customizations, e.g. custom icons or class
@@ -167,7 +168,7 @@ class ReportIncidentPage extends Component {
           >
             <MenuItem value="" disabled>Please Select One</MenuItem>
             {
-              Object.keys(groups).map(category => <MenuItem key={groups[category].value} 
+              groups && Object.keys(groups).map(category => <MenuItem key={groups[category].value} 
                                                             value={groups[category].value}>
                                                             {groups[category].label}
                                                             </MenuItem>) //Top level 
@@ -177,6 +178,17 @@ class ReportIncidentPage extends Component {
       case 3:
         return (
           <div className={classes.checkboxWrapper}>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={this.state.tag==1}
+                  onChange={this.handleTagChange}
+                  name="iscovid"
+                  color="primary"
+                />
+              }
+              label="Is this a COVID incident?"
+            />
             <CheckboxTree
               nodes={this.state.groups}
               checked={this.state.groupsChecked}
@@ -296,6 +308,12 @@ class ReportIncidentPage extends Component {
 
   handleTargetChange = event => this.setState({ primaryGroup: event.target.value });
 
+  handleTagChange = event => {
+    if (event.target.name=='iscovid') {
+      this.setState({ tag: event.target.checked ? 1 : 0 })
+    }
+  }
+
   handleChange = ({ target: { name, value } }) => this.setState({ [name]: value });
 
   updateAssociatedLink = () => this.setState(oldState => ({ associatedLink: !oldState.associatedLink }));
@@ -311,10 +329,10 @@ class ReportIncidentPage extends Component {
 
   reportIncident = () => {
     const dataToSubmit = createDataToSubmit(this.state);
-    this.resetState();
+    
     console.log(dataToSubmit)
     axios.post('/api/maps/incident', dataToSubmit)
-      .then(res => console.log(res.data))
+      .then(res => this.resetState())
       .catch(err => console.log(err));
   }
 

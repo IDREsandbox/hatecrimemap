@@ -44,7 +44,7 @@ export function createGroupsHarassed(groups) {
 export function createDataToSubmit(formData) {
   const { targetCategory, groups, primaryGroup, groupsChecked, groupsExpanded,
           latLng, location, sourceurl, other_race, other_religion, other_gender, other_misc,
-          date, description } = formData;
+          date, description, tag } = formData;
   return ({
     lat: latLng.lat,
     lon: latLng.lng,
@@ -57,7 +57,8 @@ export function createDataToSubmit(formData) {
     other_religion: other_religion,
     other_gender: other_gender,
     other_misc: other_misc,
-    description: description
+    description: description,
+    tag: tag ? tag : null
   });
 }
 
