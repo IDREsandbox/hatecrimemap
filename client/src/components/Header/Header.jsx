@@ -44,7 +44,7 @@ const Header = ({ classes }) => (
           </IconButton>
         </Link>
         <Typography variant="subtitle1" color="inherit" className={classes.flex}>
-          Mapping Harassment in the US
+          Mapping Harassment and Hate Crimes in the US
         </Typography>
         <Link to="/reportincident" className={classes.link}>
           <Button className={classes.reportIncidentButton} color="inherit">Report Incident</Button>

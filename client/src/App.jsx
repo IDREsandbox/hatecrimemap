@@ -7,7 +7,7 @@ import { faCheckSquare, faChevronRight, faChevronLeft,
           faChevronDown, faPlusSquare, faMinusSquare } from '@fortawesome/free-solid-svg-icons'
 
 import HomePage from './containers/HomePage/HomePage';
-import Header from './components/Header/Header';
+import { Header, Footer } from './components';
 import ReportIncidentPage from './containers/ReportIncidentPage/ReportIncidentPage';
 import VerifyIncidentsPage from './containers/VerifyIncidentsPage/VerifyIncidentsPage';
 import './App.css';
@@ -24,6 +24,7 @@ const App = () => (
         <Route exact path="/verifyincidents" component={VerifyIncidentsPage} />
         <Route path="/" component={HomePage} />
       </Switch>
+      <Footer />
     </div>
   </Router>
   </MuiPickersUtilsProvider>
