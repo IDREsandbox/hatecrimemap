@@ -2,33 +2,10 @@
   display: grid;
   grid-template-areas:
     ". smheader ."
-    ". smform .";
+    ". smform ."
+    ". smcharts .";
   grid-template-columns: 10px 1fr 10px;
-  grid-template-rows: 60px 1fr;
+  grid-template-rows: 1fr 1fr 6fr;
   overflow-y: auto;
 }
 
-.sideMenu__header {
-  align-self: center;
-  font-weight: 800;
-  grid-area: smheader;
-  justify-self: center;
-}
-
-.sideMenu__form {
-  grid-area: smform;
-  height: 100%;
-}
-
-.sideMenu__chart {
-  grid-area: smform;
-}
-
-.charts { 
-  height: 100%;
-}
-
-.sideMenu__info {
-  grid-area: smform;
-  padding: 0 8px;
-}

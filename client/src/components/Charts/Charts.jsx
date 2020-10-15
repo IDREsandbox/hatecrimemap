@@ -54,16 +54,16 @@ class Charts extends React.Component {
     const dataIdx = elems[0]._index
     switch(dataIdx) {
       case 0:
-        this.setState({currentDisplay: dataIdx+1, drilldown: this.props.data["Race/Ethnicity"].children})
+        this.setState({currentDisplay: dataIdx+1, drilldown: "Race/Ethnicity"})
         break
       case 1:
-        this.setState({currentDisplay: dataIdx+1, drilldown: this.props.data["Religion"].children})
+        this.setState({currentDisplay: dataIdx+1, drilldown: "Religion"})
         break
       case 2:
-        this.setState({currentDisplay: dataIdx+1, drilldown: this.props.data["Gender/Sexuality"].children})
+        this.setState({currentDisplay: dataIdx+1, drilldown: "Gender/Sexuality"})
         break
       case 3:
-        this.setState({currentDisplay: dataIdx+1, drilldown: this.props.data["Miscellaneous"].children})
+        this.setState({currentDisplay: dataIdx+1, drilldown: "Miscellaneous"})
     }
 
     
@@ -74,18 +74,18 @@ class Charts extends React.Component {
       if(this.state.currentDisplay != CHARTS.TOP) {
         // Pie charts!
         return (
-          <div className="charts">
+          <div key={this.props.currState} className="charts">
             <Grid container justify="space-between">
               <Grid item xs={3}>
                 <Button variant="outlined" color="primary" size="small" aria-label="back" onClick={this.barUnClick} startIcon={<ArrowBack />}>Back</Button>
               </Grid>
               <Grid item xs={6} style={{'textAlign': 'center'}}>
-                <h4>{CHART_STRINGS[this.state.currentDisplay]} ({sumData(this.state.drilldown)} total)</h4>
+                <h4>{CHART_STRINGS[this.state.currentDisplay]} ({sumData(this.props.data[this.state.drilldown].children)} total)</h4>
               </Grid>
               <Grid item xs={3}>{/* to center the title */}</Grid>
             </Grid>
-            <Pie data={getChartData(this.state.currentDisplay, this.state.drilldown)} />
-            <ChartsText data={this.state.drilldown} />
+            <Pie data={getChartData(this.state.currentDisplay, this.props.data[this.state.drilldown].children)} />
+            <ChartsText data={this.props.data[this.state.drilldown].children} />
           </div>
         )
       }

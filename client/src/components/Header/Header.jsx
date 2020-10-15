@@ -13,6 +13,8 @@ import {
 
 import AboutDialog from '../AboutDialog/AboutDialog';
 
+import { useLocation } from 'react-router-dom'; // change color... 
+
 const styles = {
   root: {
 
@@ -34,9 +36,14 @@ const styles = {
 };
 
 
-const Header = ({ classes }) => (
+const Header = ({ classes }) => {
+
+  const location = useLocation();
+  console.log(location.pathname)
+
+  return (
   <div className={classes.root}>
-    <AppBar position="static">
+    <AppBar position="static" style={ location.pathname=="/covid" ? {background: '#FDD835'} : {}}>
       <Toolbar>
         <Link to="/">
           <IconButton className={classes.menuButton} color="inherit" aria-label="Menu">
@@ -53,7 +60,8 @@ const Header = ({ classes }) => (
       </Toolbar>
     </AppBar>
   </div>
-);
+  )
+};
 
 Header.propTypes = {
   classes: PropTypes.object.isRequired,

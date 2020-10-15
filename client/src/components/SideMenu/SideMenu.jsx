@@ -20,29 +20,11 @@ const styles = theme => ({
 });
 
 const SideMenu = (props) => {
-  if(props.header != 'none') {
     return (
       <div className="sideMenu">
-        <h2 className="sideMenu__header">{props.header}</h2>
         {props.children}
       </div>
     );
-  }
-
-  return (
-    <div className="sideMenu">
-      <h2 className="sideMenu__header">How to Use</h2>
-      <div className="sideMenu__info">
-        <p>Hover over a state to show hate crime data</p>
-        <p>Click on a state to lock on it to interact with the chart</p>
-        <p>Click away from the state to unlock or switch states</p>
-        <br />
-        <hr />
-        <br />
-        <p>Report incident(s) by navigating to the report page on the top-right</p>
-      </div>
-    </div>
-  )
 };
 
 SideMenu.propTypes = {

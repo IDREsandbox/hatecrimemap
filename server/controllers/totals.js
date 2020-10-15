@@ -126,6 +126,23 @@ router.use((req, res, next) => {
 });
 
 
+const covidQuery = `SELECT id, date_incident as date, Time_Incident, Gender, City_Updated as city, State_Updated as state, Ethnicity_Cleaned as ethnicity, Type_Discrimination_Cleaned as type, Reason_Discrimination_Cleaned, Description
+							FROM aapi_covid_data_raw_10_2020
+							WHERE State_Updated <> 'OTHER' OR (State_Updated = 'Other' AND City_Updated <> 'Online') AND flag_troll = 0`
+
+router.get('/covid', (req, res) => {
+	db.any(covidQuery)
+	.then(result => {
+		res.status(200)
+		.json({
+			status: 'success',
+			result
+		});
+	})
+	.catch(err => console.log('ERROR: ', err));
+})
+
+
 // TODO: redesign
 // function formatGroups(results, index, ret, level) {
 // 	if(results.length == index) return;

@@ -6,6 +6,14 @@ export const CHARTS = {
   TOP: 5
 }
 
+export const COVID_CHARTS = {
+  TOP: 0,
+  RACE_ETHNICITY: 1,
+  GENDER_SEXUALITY: 2,
+  HARASSMENT_TYPE: 3,
+  OTHER: 4
+}
+
 export const CHART_STRINGS = ["Race/Ethnicity", "Religion", "Gender/Sexuality", "Other"]
 
 // var raceData = 
@@ -119,4 +127,78 @@ const mapData = (data, sort=false) => {
 
 export const sumData = (data) => {
   return Object.entries(data).filter(([key, obj]) => obj && (obj.count || obj.count===0)).map(([key, obj]) => obj.count).reduce((a, b) => a+b)
+}
+
+
+const covidRE = ["Asian", "Native American/Indigenous", "African American", "Latinx", "White", "Other"]
+const covidGender = ["Male", "Female", "Other"]
+const covidType = ["Verbal", "Physical", "Coughing/Spitting", "Online", "Other"]
+const covidOther = ["Unknown"]
+
+
+var covidChartData = [
+{
+  datasets: [
+  {
+    label:"Race/Ethnicity",
+    backgroundColor: CHART_COLORS.map(c => c + "33"),
+    borderColor: CHART_COLORS,
+    borderWidth: 1,
+    hoverBackgroundColor: CHART_COLORS.map(c => c + "66"),
+    hoverBorderColor: CHART_COLORS
+  }],
+  labels: covidRE
+},
+{
+  datasets: [
+  {
+    label:"Gender",
+    backgroundColor: CHART_COLORS.map(c => c + "33"),
+    borderColor: CHART_COLORS,
+    borderWidth: 1,
+    hoverBackgroundColor: CHART_COLORS.map(c => c + "66"),
+    hoverBorderColor: CHART_COLORS
+  }],
+  labels: covidGender
+},
+{
+  datasets: [
+  {
+    label:"Type of Harassment",
+    backgroundColor: CHART_COLORS.map(c => c + "33"),
+    borderColor: CHART_COLORS,
+    borderWidth: 1,
+    hoverBackgroundColor: CHART_COLORS.map(c => c + "66"),
+    hoverBorderColor: CHART_COLORS
+  }],
+  labels: covidType
+},
+{
+  datasets: [
+  {
+    label:"Other",
+    backgroundColor: CHART_COLORS.map(c => c + "33"),
+    borderColor: CHART_COLORS,
+    borderWidth: 1,
+    hoverBackgroundColor: CHART_COLORS.map(c => c + "66"),
+    hoverBorderColor: CHART_COLORS
+  }],
+  labels: covidOther
+},
+]
+
+export const getCovidChartData = (data, state) => {
+  let chartData = covidChartData;
+  if (state != "none")
+  {
+    // filter by state first
+    data = { state: data[state] }
+  }
+
+  chartData[0].datasets[0].data = covidRE.map(filt => Object.values(data).reduce( ((prev, s) => prev+s.children.filter(c => c.ethnicity==filt).length), 0)) // map from data.ethnicity::aggregate
+  chartData[1].datasets[0].data = covidGender.map(filt => Object.values(data).reduce( ((prev, s) => prev+s.children.filter(c => c.gender==filt).length), 0)) // map from data.gender::aggregate
+  chartData[2].datasets[0].data = covidType.map(filt => Object.values(data).reduce( ((prev, s) => prev+s.children.filter(c => c.type==filt).length), 0)) // map from data.type::aggregate
+  chartData[3].datasets[0].data = covidOther.map(filt => Object.values(data).reduce( ((prev, s) => prev+s.children.filter(c => c.other==filt).length), 0)) // map from data.Other::aggregate
+  
+  return chartData
 }

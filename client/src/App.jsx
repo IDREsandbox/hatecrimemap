@@ -7,7 +7,8 @@ import { faCheckSquare, faChevronRight, faChevronLeft,
           faChevronDown, faPlusSquare, faMinusSquare } from '@fortawesome/free-solid-svg-icons'
 
 import HomePage from './containers/HomePage/HomePage';
-import Header from './components/Header/Header';
+import CovidPage from './containers/CovidPage/CovidPage.jsx';
+import Header from './components/Header/Header'
 import ReportIncidentPage from './containers/ReportIncidentPage/ReportIncidentPage';
 import VerifyIncidentsPage from './containers/VerifyIncidentsPage/VerifyIncidentsPage';
 import './App.css';
@@ -22,6 +23,7 @@ const App = () => (
       <Switch>
         <Route exact path="/reportincident" component={ReportIncidentPage} />
         <Route exact path="/verifyincidents" component={VerifyIncidentsPage} />
+        <Route path="/covid" component={CovidPage} />
         <Route path="/" component={HomePage} />
       </Switch>
     </div>
