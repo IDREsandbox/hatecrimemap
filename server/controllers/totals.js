@@ -142,7 +142,6 @@ router.get('/covid', (req, res) => {
 	.catch(err => console.log('ERROR: ', err));
 })
 
-
 // TODO: redesign
 // function formatGroups(results, index, ret, level) {
 // 	if(results.length == index) return;

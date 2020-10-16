@@ -8,7 +8,7 @@ import { faCheckSquare, faChevronRight, faChevronLeft,
 
 import HomePage from './containers/HomePage/HomePage';
 import CovidPage from './containers/CovidPage/CovidPage.jsx';
-import Header from './components/Header/Header'
+import { Header, Footer } from './components';
 import ReportIncidentPage from './containers/ReportIncidentPage/ReportIncidentPage';
 import VerifyIncidentsPage from './containers/VerifyIncidentsPage/VerifyIncidentsPage';
 import './App.css';

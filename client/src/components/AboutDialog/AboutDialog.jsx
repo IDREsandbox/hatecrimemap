@@ -14,6 +14,20 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 const styles = {
   aboutButton: {
     color: 'white',
+  },
+  images: {
+    display: 'table',
+    'border-collapse': 'collapse',
+    width: '100%'
+  },
+  inline: {
+    display: 'table-cell',
+    'vertical-align': 'middle',
+    "& img": {
+      display: 'block',
+      width: '100%',
+      height: 'auto'
+    }
   }
 };
 
@@ -45,31 +59,50 @@ class AboutDialog extends Component {
           <DialogTitle id="responsive-dialog-title">Hate Crime Map</DialogTitle>
           <DialogContent>
             <DialogContentText>
-              <p>Hate crime—violence impelled by bigotry or bias—is a global and national human rights 
-              problem of significant concern. According to experts like the FBI, the Southern Poverty Law 
-              Center, and ProPublica, there has been a dramatic increase in hate crimes and harassment in 
-              the United States during the past three years. The presence of high-profile incidents of 
-              violence and aggression based on racial or other bias and intolerance is much more visible 
-              in the media; nevertheless, hate crimes statistics are notoriously unreliable. The definition 
-              of what constitutes a hate crime varies from jurisdiction to jurisdiction, and often is quite 
-              reduced in terms of what actions qualify. Underreporting is widespread, and often even when 
-              reporting happens, law enforcement is reluctant to designate crimes as hate crimes. 
-              The need for a publicly available resource documenting hate crimes has never been greater, 
-              yet accessible data on the type and frequency of crimes occurring is not currently available. 
-              The HateMap Project seeks to address this need by providing a crowd-sourced platform that 
-              enables researchers and victims to report hate-based incidents in detail, without having to 
-              approach law enforcement.</p>
+              <p>Hate crime is a global and national human rights problem of significant concern. 
+              Incidents are on the rise, but hate crimes statistics are notoriously unreliable. 
+              The definition of hate crime varies from jurisdiction to jurisdiction, underreporting 
+              is widespread, and law enforcement is reluctant to designate crimes as hate crimes. 
+              The need for a publicly available resource documenting hate crimes has never been 
+              greater, yet accurate data on the type and frequency of crimes is not available.</p>
               <br />
-              <p>The map of the United States is shown to the left, and the side panel on the right displays
-               data as you hover over states/counties. Click on a location to lock it on the side panel, then
-               you may interact with the graphs by clicking on top-level categories to see finer details. Click 
-               anywhere else on the map to unlock it from that location.</p>
-              <br />
-              <p>If you would like to contribute to the database, click on "Report Incident" on the top right to 
-              be taken to a page where you can submit a hate crime report. This will not be immediately updated in 
-              the map, as the report must be verified with a valid report source in order to prevent mass false reports.</p>  
+              <p>The Hate Crime Map seeks to address this need by providing a crowd-sourced platform that 
+              enables victims to report hate-based incidents in detail, and researchers to study the data. 
+              In addition to self-reported incidents, reports are culled from newspapers, and ProPublica 
+              and the Stop AAPI Hate Reporting Center have shared their data. For the reasons listed above, 
+              the data included herein represents only a fraction of the true number.</p>
               <br />
               <p>Any questions? Email us at <a href="mailto:aisc@ucla.edu?Subject=Hate%20Crime%20Map%20Inquiry">aisc@ucla.edu</a></p>
+              <br />
+              <hr />
+              <br />
+              <h3>Acknowledgements</h3>
+              <p>This map was made possible with funding from the UCLA Institute of American Cultures, 
+              Dean of UCLA Social Sciences Darnell Hunt, and the UCLA American Indian Studies Center. 
+              Data was graciously provided by ProPublica’s Documenting Hate project and Russell Jeung 
+              of the Stop AAPI Hate Reporting Center. Published incidents were culled from newspaper 
+              reports by UCLA American Indian Studies Center staff and from self-reporting. Special 
+              thanks go to mapping genius Albert Kochaphum, UCLA Institute of Digital Research & 
+              Education, and Christopher Lam, brilliant UCLA engineering student, for their 
+              extraordinary work in creating a functional and sophisticated, yet accessible, map. 
+              Thanks also go to the originators of the “Harass Map,” which formed the foundation 
+              of the current map: Patrick Meier, PhD, a consultant on humanitarian technology and 
+              innovation; Andrew Schroeder, a geographic information systems expert; and Vanessa Diaz, 
+              assistant professor in anthropology at Loyola Marymount University.</p>
+              <div className={this.props.classes.images}>
+                <div className={this.props.classes.inline}>
+                  <img src={require("../../res/img/AISC_logo.png")} />
+                </div>
+                <div className={this.props.classes.inline}>
+                  <img src={require("../../res/img/idre-logo.png")} />
+                </div>
+                <div className={this.props.classes.inline}>
+                  <img src={require("../../res/img/InstAmerCultures_A.png")} />
+                </div>
+                <div className={this.props.classes.inline}>
+                  <img src={require("../../res/img/social-sciences-logo.png")} />
+                </div>
+              </div>
             </DialogContentText>
           </DialogContent>
           <DialogActions>
