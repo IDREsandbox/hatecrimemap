@@ -32,7 +32,7 @@ class HomePage extends Component {
       zoom: 4,
       isFetching: true,
       currentDisplay: 'none',
-      currentFilter: 'published',
+      filterPublished: true,
       locked: false, // lock the sidebar on a state or county
     };
     this.statesRef = React.createRef();
@@ -86,7 +86,7 @@ class HomePage extends Component {
   }
 
   filterIncidents = (flt) => {
-    this.setState({ currentFilter: flt }) // 'all' or 'published'
+    this.setState({ filterPublished: flt }) // 'all' or 'published'
   }
 
   // Return value, success (in our terms, not react's)
@@ -126,7 +126,7 @@ class HomePage extends Component {
       return <CircularProgress className={classes.progress} />;
     }
 
-    const data = this.state.currentFilter=='all' ? this.state.data.states : this.state.data.publishedStates
+    const data = this.state.filterPublished ? this.state.data.publishedStates : this.state.data.states
     
     return (
       <div className="homePage">
@@ -140,25 +140,28 @@ class HomePage extends Component {
 
           <div className="side">
             <SideMenu>
-            <h2 className="sideMenu__header">{this.state.currentDisplay == 'none' ? "How to Use" : this.state.currentDisplay }</h2>
-            { this.state.currentDisplay == 'none' ? (
-                <div className="sideMenu__info">
-                  <p>Hover over a state to show hate crime data</p>
-                  <p>Click on a state to lock on it to interact with the chart</p>
-                  <p>Click away from the state to unlock or switch states</p>
-                  <br />
-                  <hr />
-                  <br />
-                  <p>Report incident(s) by navigating to the report page on the top-right</p>
+              <h2 className="sideMenu__header">{this.state.currentDisplay == 'none' ? "How to Use" : this.state.currentDisplay }</h2>
+              { this.state.currentDisplay == 'none' ? (
+                  <div className="sideMenu__info">
+                    <p>Hover over a state to show hate crime data</p>
+                    <p>Click on a state to lock on it to interact with the chart</p>
+                    <p>Click away from the state to unlock or switch states</p>
+                    <br />
+                    <hr />
+                    <br />
+                    <p>Report incident(s) by navigating to the report page on the top-right</p>
+                  </div>
+                  ) : (
+                <div className="sideMenu__chart">
+                  <Charts data={data[this.state.currentDisplay]} max={data.groupMax} currState={this.state.currentDisplay} />
                 </div>
-                ) : (
-              <div className="sideMenu__chart">
-                <Charts data={data[this.state.currentDisplay]} max={data.groupMax} currState={this.state.currentDisplay} />
-              </div>
-              )
-            }
+                )
+              }
+              <br />
+              <hr />
+              <br />
+              <FilterBar filterfn={this.filterIncidents} />
             </SideMenu>
-            <FilterBar filterfn={this.filterIncidents} />
           </div>
       </div>
     );

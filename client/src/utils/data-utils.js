@@ -138,6 +138,7 @@ function formatCovidData(data) {
 			max = stateData[state].count
 		}
 	})
+	stateData.max = max
 
 	return stateData
 }
@@ -210,6 +211,7 @@ export function resetStateColor(layer, statesData) {
 export function eachState(feature, layer, statesData, currentState, setStateDisplay) {
 	const STATE_NAME = feature.properties.NAME;
 	const stateData = statesData[STATE_NAME];
+	console.log(STATE_NAME + " count " + stateData.count + " with max " + statesData.max)
 	if(!stateData || stateData.count <= 0) {
 		layer.setStyle({color: 'rgba(0, 0, 0, 0)'});
 		return;

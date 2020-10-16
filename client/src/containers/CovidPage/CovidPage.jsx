@@ -22,6 +22,10 @@ const styles = () => ({
     top: '50%',
     left: '50%',
   },
+  dateRange: {
+    'text-align': 'center',
+    'margin-bottom': '15px'
+  }
 });
 
 class CovidPage extends Component {
@@ -125,7 +129,7 @@ class CovidPage extends Component {
     
     return (
       <div className="CovidPage">
-          <FirstTimeOverlay />
+          {/*<FirstTimeOverlay />*/}
           {/* TODO: context for mapdata and data.states? */}
           <MapWrapper region={this.state.region} updateState={this.updateState}
           statesRef={this.statesRef} mapRef={this.mapRef} alaskaRef={this.alaskaRef} hawaiiRef={this.hawaiiRef}
@@ -135,15 +139,15 @@ class CovidPage extends Component {
 
           <div className="side">
             <SideMenu>
-            <h2 className="sideMenu__header">{this.state.currentDisplay == 'none' ? "COVID" : this.state.currentDisplay }</h2>
-                <div className="sideMenu__info">
-                  <p>Insert text here</p>
-                </div>
+            <h2 className="sideMenu__header">{"COVID Hate Crimes in " + (this.state.currentDisplay == 'none' ? "US" : this.state.currentDisplay) }</h2>
+                { this.state.currentDisplay != "none" &&
+                  <div className={ `sideMenu__info ${classes.dateRange}` }>
+                    <p>Date Range...</p>
+                  </div>}
               <div className="sideMenu__chart">
                 <CovidCharts data={this.state.data} currState={this.state.currentDisplay} max={this.state.data.groupMax} />
               </div>
             </SideMenu>
-            <FilterBar filterfn={this.filterIncidents} />
           </div>
       </div>
     );

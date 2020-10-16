@@ -6,7 +6,9 @@ import './FilterBar.css';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 
-
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
 
 const styles = theme => ({
 
@@ -14,11 +16,22 @@ const styles = theme => ({
 
 const FilterBar = (props) => {
 
-  const [published, filterPublished] = useState('published');
+  const [published, filterPublished] = useState(true);
 
   return (
     <div className="filterBar">
-      <ToggleButtonGroup
+      <FormControlLabel
+        control={
+          <Checkbox
+            checked={published}
+            onChange={(e, v) => {filterPublished(v); props.filterfn(v)}}
+            name="published"
+            color="primary"
+          />
+        }
+        label="Published Sources Only"
+      />
+      {/*<ToggleButtonGroup
         value={published}
         size="small"
         exclusive
@@ -31,7 +44,7 @@ const FilterBar = (props) => {
         <ToggleButton value={'all'} aria-label="all">
           All Sources
         </ToggleButton>
-      </ToggleButtonGroup>
+      </ToggleButtonGroup>*/}
     </div>
   )
 };

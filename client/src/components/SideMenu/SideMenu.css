@@ -1,11 +1,17 @@
 .sideMenu {
   display: grid;
   grid-template-areas:
-    ". smheader ."
-    ". smform ."
-    ". smcharts .";
-  grid-template-columns: 10px 1fr 10px;
-  grid-template-rows: 1fr 1fr 6fr;
+    "smheader"
+    "smform"
+    "smcharts"
+    "filters";
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr;
+  padding: 10px 20px;
   overflow-y: auto;
+}
+
+.sideMenu__header {
+	margin: 10px 0;
 }
 
