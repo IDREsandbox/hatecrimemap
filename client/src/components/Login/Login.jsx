@@ -17,25 +17,23 @@ import { Visibility, VisibilityOff } from '@material-ui/icons';
 
 const styles = theme => ({
   root: {
-    position: 'absolute',
     top: 0,
     bottom: 0,
     left: 0,
     right: 0,
-    margin: 'auto',
+    margin: '25px auto',
     width: '500px',
-    height: '500px',
     textAlign: 'center',
   },
   headline: {
-    padding: theme.spacing.unit * 3,
+    padding: theme.spacing(3),
   },
   textField: {
-    margin: theme.spacing.unit * 3,
+    margin: theme.spacing(3),
     width: '300px',
   },
   button: {
-    margin: theme.spacing.unit * 3,
+    margin: theme.spacing(3),
     marginTop: '50px',
     width: '300px',
   },
@@ -57,15 +55,15 @@ class Login extends Component {
     return (
       <div>
         <Paper className={classes.root} elevation={5}>
-          <Typography className={classes.headline} variant="headline" component="h3">
+          <Typography className={classes.headline} variant="h6" component="h3">
             Login to Verify Incidents
           </Typography>
           <Divider />
-          <form className={classes.container}>
+          <form className={classes.container} onSubmit={onSubmit}>
             <TextField
               id="email"
               name="email"
-              label="Email"
+              label="Username/Email"
               value={email}
               onChange={onChange}
               className={classes.textField}
@@ -91,10 +89,10 @@ class Login extends Component {
                 }
               />
             </FormControl>
+            <Button type="submit" variant="contained" color="primary" className={classes.button}>
+              Login
+            </Button>
           </form>
-          <Button variant="raised" color="primary" onClick={onSubmit} className={classes.button}>
-            Login
-          </Button>
         </Paper>
       </div>
     );

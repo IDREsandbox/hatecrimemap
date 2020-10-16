@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { withStyles } from '@material-ui/core/styles';
@@ -8,8 +8,10 @@ import {
   Toolbar,
   Typography,
   Button,
-  IconButton,
+  IconButton
 } from '@material-ui/core';
+
+import AboutDialog from '../AboutDialog/AboutDialog';
 
 const styles = {
   root: {
@@ -28,8 +30,9 @@ const styles = {
   },
   link: {
     textDecoration: 'none',
-  },
+  }
 };
+
 
 const Header = ({ classes }) => (
   <div className={classes.root}>
@@ -40,12 +43,13 @@ const Header = ({ classes }) => (
             <HomeIcon />
           </IconButton>
         </Link>
-        <Typography variant="title" color="inherit" className={classes.flex}>
-          Mapping Harassment in the US
+        <Typography variant="subtitle1" color="inherit" className={classes.flex}>
+          Mapping Harassment and Hate Crimes in the US
         </Typography>
         <Link to="/reportincident" className={classes.link}>
           <Button className={classes.reportIncidentButton} color="inherit">Report Incident</Button>
         </Link>
+        <AboutDialog></AboutDialog>
       </Toolbar>
     </AppBar>
   </div>

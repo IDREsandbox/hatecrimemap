@@ -1,17 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import {
-  FormGroup,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  Button,
-} from '@material-ui/core';
-
-import GHCheckboxList from '../GHCheckboxList/GHCheckboxList';
 import './SideMenu.css';
+import { Bar } from 'react-chartjs-2';
 
 function getShowReportsValue(layers) {
   if (layers.has('verified')) return 'verified';
@@ -28,41 +19,36 @@ const styles = theme => ({
   },
 });
 
-const SideMenu = ({ updateMapData, resetMapData, currentLayers, classes }) => {
-  const showReportsValue = getShowReportsValue(currentLayers);
+const SideMenu = (props) => {
+  if(props.header != 'none') {
+    return (
+      <div className="sideMenu">
+        <h2 className="sideMenu__header">{props.header}</h2>
+        {props.children}
+      </div>
+    );
+  }
 
   return (
     <div className="sideMenu">
-      <h2 className="sideMenu__header">Filters</h2>
-      <FormGroup className="sideMenu__form">
-        <FormControl className={classes.formControl}>
-          <InputLabel htmlFor="showReports">Show Reports</InputLabel>
-          <Select
-            value={showReportsValue}
-            onChange={updateMapData}
-            inputProps={{
-              name: 'reports',
-              id: 'showReports',
-            }}
-          >
-            <MenuItem value="all">All</MenuItem>
-            <MenuItem value="verified">Verified Reports</MenuItem>
-            <MenuItem value="unverified">Unverified Reports</MenuItem>
-          </Select>
-        </FormControl>
-        <GHCheckboxList onClick={updateMapData} groupsChecked={currentLayers} showSVGs />
-        <Button className={classes.button} variant="raised" onClick={resetMapData} color="primary">
-          Reset Filters
-        </Button>
-      </FormGroup>
+      <h2 className="sideMenu__header">How to Use</h2>
+      <div className="sideMenu__info">
+        <p>Hover over a state to show hate crime data</p>
+        <p>Click on a state to lock on it to interact with the chart</p>
+        <p>Click away from the state to unlock or switch states</p>
+        <br />
+        <hr />
+        <br />
+        <p>Report incident(s) by navigating to the report page on the top-right</p>
+      </div>
     </div>
-  );
+  )
 };
 
 SideMenu.propTypes = {
-  updateMapData: PropTypes.func.isRequired,
-  resetMapData: PropTypes.func.isRequired,
-  currentLayers: PropTypes.instanceOf(Set).isRequired,
+  // updateMapData: PropTypes.func.isRequired,
+  // resetMapData: PropTypes.func.isRequired,
+  // currentLayers: PropTypes.instanceOf(Set).isRequired,
   classes: PropTypes.object.isRequired,
 };
 

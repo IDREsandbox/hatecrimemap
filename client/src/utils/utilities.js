@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React from 'react';
 
-import ghFilters from '../globals/ghFilters';
+import groupsHarassed from '../globals/groupsHarassed';
 
 export function arrToObject(arr) {
   const obj = arr.reduce((acc, elem) => {
@@ -28,44 +28,72 @@ function printUnique(mapdata) {
 }
 /* eslint-enable */
 
-export function createGroupsHarassed(groupsHarassed) {
-  const groupsharassed = [];
-  groupsHarassed.forEach((group) => {
-    ghFilters.forEach((filter) => {
-      if (filter.name === group) groupsharassed.push(filter.label);
+export function createGroupsHarassed(groups) {
+  const filtered = [];
+  groups.forEach((group) => {
+    Object.values(groupsHarassed).flat().forEach((filter) => {
+      if (group == filter.name) filtered.push(filter.label);
+      else if (filter.sub_groups) {
+        filter.sub_groups.forEach(sub => { if(group == sub.name) filtered.push(sub.label)})
+      }
     });
   });
-  return groupsharassed.join(',');
+  return filtered.join(',');
 }
 
 export function createDataToSubmit(formData) {
-  const { groupsHarassed, location, date, latLng, sourceurl, associatedLink } = formData;
-  const groupsharassed = createGroupsHarassed(groupsHarassed);
-  return Object.assign({}, {
-    date: date.toUTCString(),
-    datesubmitted: (new Date()).toUTCString(),
-    groupsharassed,
+  const { targetCategory, groups, primaryGroup, groupsChecked, groupsExpanded,
+          latLng, location, sourceurl, other_race, other_religion, other_gender, other_misc,
+          date, description, tag } = formData;
+  return ({
     lat: latLng.lat,
-    locationname: location,
     lon: latLng.lng,
-    sourceurl,
-    validsourceurl: associatedLink,
-    verified: -1,
-    reviewedbystudent: true,
-    reporttype: 'Harassment/Attack',
+    location: location,
+    incidentdate: date,
+    sourceurl: sourceurl,
+    primaryGroup: primaryGroup,
+    groups: groupsChecked,
+    other_race: other_race,
+    other_religion: other_religion,
+    other_gender: other_gender,
+    other_misc: other_misc,
+    description: description,
+    tag: tag ? tag : null
   });
 }
 
 export const reviewIncidentReport = (id, verified, callback = null) => () => {
-  axios.post('/api/maps/reviewedincident', { id, verified })
-    .then(res => console.log(res.data))
+  axios.post('/api/verify/reviewedincident', { id, verified })
+    .then(res => {
+      console.log(res.data)
+      callback();
+      window.location.reload();
+    })
     .catch(err => console.log(err));
-  callback();
-  window.location.reload();
+};
+
+export const validateIncidentReport = (id, urlvalid, callback = null) => () => {
+  axios.post('/api/verify/validateincident', { id, urlvalid })
+    .then(res => {
+      console.log(res.data)
+      callback();
+      window.location.reload();
+    })
+    .catch(err => console.log(err));
+};
+
+export const publishedIncidentReport = (id, published, callback = null) => () => {
+  axios.post('/api/verify/publishedincident', { id, published })
+    .then(res => {
+      console.log(res.data)
+      callback();
+      window.location.reload();
+    })
+    .catch(err => console.log(err));
 };
 
 export const deleteIncidentReport = (id, callback = null) => () => {
-  axios.delete('/api/maps/incidentreport', { data: { id } })
+  axios.delete('/api/verify/incidentreport', { data: { id } })
     .then(res => console.log(res.data))
     .catch(err => console.log(err));
   callback();

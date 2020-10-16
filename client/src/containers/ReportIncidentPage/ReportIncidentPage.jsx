@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 import isUrl from 'is-url';
-import DatePicker from 'material-ui-pickers/DatePicker';
+import { KeyboardDatePicker } from '@material-ui/pickers';
 import { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
 import { withStyles } from '@material-ui/core/styles';
 import {
@@ -10,17 +10,33 @@ import {
   FormControlLabel,
   Checkbox,
   Stepper,
-  Step,
-  StepLabel,
+  Step, StepLabel,
   Button,
   Paper,
   StepContent,
   Tooltip,
+  Select, MenuItem
 } from '@material-ui/core';
+import { CheckBox, CheckBoxOutlineBlank } from '@material-ui/icons';
 
 import LocationSearchInput from '../../components/LocationSearchInput/LocationSearchInput';
 import GHCheckboxList from '../../components/GHCheckboxList/GHCheckboxList';
 import { createDataToSubmit } from '../../utils/utilities';
+
+import 'react-checkbox-tree/lib/react-checkbox-tree.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import CheckboxTree from 'react-checkbox-tree';
+
+/*
+nodes = [
+  {value: id_of_group, label: Name, children: [grab all whose parent is id_of_group]},
+];
+
+    state = {
+        checked: [node values],
+        expanded: [node values],
+    };
+*/
 
 const styles = ({ spacing }) => ({
   root: {
@@ -43,32 +59,76 @@ const styles = ({ spacing }) => ({
   },
   checkboxWrapper: {
     marginLeft: spacing.unit,
-  },
+  }
 });
 
 const getSteps = () => [
   'Harassment Location',
   'Date of Harassment',
-  'Groups Harassed',
+  'Main Reason of Target',
+  'Harassed Demographics',
   'Verification Link',
 ];
 
 const getInitialState = () => ({
-  groupsHarassed: new Set(),
+  primaryGroup: '',
+  tag: 0,
+  groupsChecked: [],
+  groupsExpanded: [],
+  other_race: "",
+  other_religion: "",
+  other_gender: "",
+  other_misc: "",
+  latLng: {},
   location: '',
   sourceurl: '',
-  date: new Date(),
-  activeStep: 0,
-  latLng: {},
-  associatedLink: true,
+  date: null,
   isDateSelected: false,
+  associatedLink: true,
+  description: '',
+  activeStep: 0,
 });
 
 class ReportIncidentPage extends Component {
-  state = getInitialState();
+
+  constructor(props) {
+    super(props)
+    this.state = getInitialState();
+    this.setState({ groups: {} })
+  }
+
+  groupToNodes = (groups) => {
+    return groups.map(eachGroup => {
+      eachGroup['value'] = eachGroup['key'];
+      delete eachGroup['key'];
+      eachGroup['label'] = eachGroup['name'];
+      delete eachGroup['name'];
+      if(eachGroup.children) {
+        eachGroup.children = this.groupToNodes(eachGroup.children);
+      }
+
+      if(eachGroup['level'] == 0) {  // disable toplevel categories, they're just for grouping
+        eachGroup['showCheckbox'] = false;
+        // this.setState((prevState) => prevState.groupsExpanded.push(eachGroup['value']));
+      }
+
+      // Do other node customizations, e.g. custom icons or class
+
+      return eachGroup;
+    });
+  }
+
+  async componentDidMount() {
+    axios.get('/api/totals/groups')
+      .then(res => this.setState({groups: this.groupToNodes(res.data.ret)}))
+      .catch((err) => {
+        alert(`API call failed: ${err}`);
+        return {};
+      })
+  }
 
   getStepContent = (index) => {
-    const { location, sourceurl, groupsHarassed, date, associatedLink } = this.state;
+    const { location, sourceurl, groups, date, associatedLink, description } = this.state;
     const { classes } = this.props;
 
     switch (index) {
@@ -83,26 +143,91 @@ class ReportIncidentPage extends Component {
         );
       case 1:
         return (
-          <DatePicker
-            value={date}
+           <KeyboardDatePicker
+            margin="normal"
+            id="date-picker-dialog"
+            label="Date of Incident"
+            format="MM/dd/yyyy"
+            value={this.state.date}
             onChange={this.handleDateChange}
-            label="Select a date"
-            format="MM/DD/YYYY"
             showTodayButton
             maxDate={new Date()}
-          />
+            KeyboardButtonProps={{
+              'aria-label': 'change date',
+            }}
+           />
         );
       case 2:
         return (
-          <div className={classes.checkboxWrapper}>
-            <GHCheckboxList
-              onClick={this.updateGroupsHarassed}
-              showSVGs={false}
-              groupsChecked={groupsHarassed}
-            />
-          </div>
+          <Select
+            name="targetSelect"
+            id="targetSelect"
+            value={this.state.primaryGroup}
+            onChange={this.handleTargetChange}
+            displayEmpty
+          >
+            <MenuItem value="" disabled>Please Select One</MenuItem>
+            {
+              groups && Object.keys(groups).map(category => <MenuItem key={groups[category].value} 
+                                                            value={groups[category].value}>
+                                                            {groups[category].label}
+                                                            </MenuItem>) //Top level 
+            }
+          </Select>
         );
       case 3:
+        return (
+          <div className={classes.checkboxWrapper}>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={this.state.tag==1}
+                  onChange={this.handleTagChange}
+                  name="iscovid"
+                  color="primary"
+                />
+              }
+              label="Is this a COVID incident?"
+            />
+            <CheckboxTree
+              nodes={this.state.groups}
+              checked={this.state.groupsChecked}
+              expanded={this.state.groupsExpanded}
+              onCheck={groupsChecked => this.setState({ groupsChecked })}
+              onExpand={groupsExpanded => this.setState({ groupsExpanded })}
+              icons={{
+                check: <CheckBox style={{color: '#f50057'}} />,
+                uncheck: <CheckBoxOutlineBlank style={{color: 'rgba(0, 0, 0, 0.54)'}}/>,
+                halfCheck: <FontAwesomeIcon className='rct-icon rct-icon-half-check' icon='check-square' />,
+                expandClose: <div style={{fontSize: '14px'}}><FontAwesomeIcon className='rct-icon rct-icon-expand-close' icon='chevron-right' /></div>,
+                expandOpen: <div style={{fontSize: '14px'}}><FontAwesomeIcon className='rct-icon rct-icon-expand-close' icon='chevron-down' /></div>,
+                expandAll: <div style={{fontSize: '14px'}}><FontAwesomeIcon className='rct-icon rct-icon-expand-close' icon='plus-square' /></div>,
+                collapseAll: <FontAwesomeIcon className='rct-icon rct-icon-expand-close' icon='minus-square' />,
+                parentClose: null,
+                parentOpen: null,
+                leaf: null
+              }}
+              noCascade={true}  // Should "Asian American" automatically select everything under?
+            />
+            { this.state.groupsChecked.includes("40") &&
+                  <div>
+                    <TextField name="other_race" onChange={this.handleChange} helperText="Other (Race/Ethnicity)"/>
+                  </div>}
+            { this.state.groupsChecked.includes("41") &&
+                  <div>
+                    <TextField name="other_religion" onChange={this.handleChange} helperText="Other (Religion)"/>
+                  </div>}
+            { this.state.groupsChecked.includes("42") &&
+                  <div>
+                    <TextField name="other_gender" onChange={this.handleChange} helperText="Other (Gender/Sexuality)"/>
+                  </div>}
+            { this.state.groupsChecked.includes("43") &&
+                  <div>
+                    <TextField name="other_misc" onChange={this.handleChange} helperText="Other (Miscellaneous)"/>
+                  </div>}
+          </div>
+        );
+      case 4:
         return (
           <div>
             <Tooltip title="Please include http:// in any links" placement="left">
@@ -111,6 +236,7 @@ class ReportIncidentPage extends Component {
                 onChange={this.handleChange}
                 helperText="http://www.example.com/"
                 defaultValue={sourceurl}
+                disabled={!associatedLink}
               />
             </Tooltip>
             <FormControlLabel
@@ -123,6 +249,16 @@ class ReportIncidentPage extends Component {
               }
               label="No associated link"
             />
+            <Tooltip title="Include the demographic(s) of the group(s) harassed" placement="left">
+              <TextField
+                name="description"
+                onChange={this.handleChange}
+                helperText="If no associated link, provide a description of the incident"
+                defaultValue={description}
+                fullWidth
+                disabled={associatedLink}
+              />
+            </Tooltip>
           </div>
         );
       default:
@@ -135,10 +271,11 @@ class ReportIncidentPage extends Component {
       activeStep,
       location,
       isDateSelected,
-      groupsHarassed,
+      groupsChecked,
       sourceurl,
       latLng,
       associatedLink,
+      description
     } = this.state;
 
     switch (activeStep) {
@@ -147,22 +284,14 @@ class ReportIncidentPage extends Component {
       case 1:
         return isDateSelected;
       case 2:
-        return groupsHarassed.size !== 0;
+        return this.state.primaryGroup !== '';
       case 3:
-        return (isUrl(sourceurl) && associatedLink) || (sourceurl === '' && !associatedLink);
+        return groupsChecked.length > 0;
+      case 4:
+        return (isUrl(sourceurl) && associatedLink) || (sourceurl === '' && !associatedLink && description != '');
       default:
         return true;
     }
-  }
-
-  updateGroupsHarassed = ({ target: { name } }) => {
-    const { groupsHarassed } = this.state;
-    if (groupsHarassed.has(name)) {
-      groupsHarassed.delete(name);
-    } else {
-      groupsHarassed.add(name);
-    }
-    this.setState({ groupsHarassed });
   }
 
   selectLocation = (location) => {
@@ -175,7 +304,15 @@ class ReportIncidentPage extends Component {
 
   handleLocationChange = location => this.setState({ location, latLng: {} });
 
-  handleDateChange = date => this.setState({ date: date.toDate(), isDateSelected: true });
+  handleDateChange = date => this.setState({ date: date, isDateSelected: true });
+
+  handleTargetChange = event => this.setState({ primaryGroup: event.target.value });
+
+  handleTagChange = event => {
+    if (event.target.name=='iscovid') {
+      this.setState({ tag: event.target.checked ? 1 : 0 })
+    }
+  }
 
   handleChange = ({ target: { name, value } }) => this.setState({ [name]: value });
 
@@ -192,9 +329,10 @@ class ReportIncidentPage extends Component {
 
   reportIncident = () => {
     const dataToSubmit = createDataToSubmit(this.state);
-    this.resetState();
-    axios.post('/api/maps/incidentreport', dataToSubmit)
-      .then(res => console.log(res.data))
+    
+    console.log(dataToSubmit)
+    axios.post('/api/maps/incident', dataToSubmit)
+      .then(res => this.resetState())
       .catch(err => console.log(err));
   }
 
@@ -226,7 +364,7 @@ class ReportIncidentPage extends Component {
                     </Button>
                     <Button
                       disabled={!this.isFormFilledOut()}
-                      variant="raised"
+                      variant="contained"
                       color="primary"
                       onClick={buttonOnclick}
                       className={classes.button}

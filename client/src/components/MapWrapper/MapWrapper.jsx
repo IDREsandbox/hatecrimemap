@@ -1,59 +1,43 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { Map, TileLayer, CircleMarker, Popup } from 'react-leaflet';
-
-import { getSourceLI } from '../../utils/utilities';
+import { Map, TileLayer, MapControl } from 'react-leaflet';
+import { Rectangle, GeoJSON } from 'react-leaflet';
+import { usa } from '../../res/usa.js';
+import Legend from './Legend/Legend';
 import './MapWrapper.css';
+import { states_usa } from '../../res/states.js';
+import { states_alaska } from '../../res/alaska.js';
+import { states_hawaii } from '../../res/hawaii.js';
+import { eachState } from '../../utils/data-utils';
 
-const MapWrapper = ({ mapdata, zoom }) => {
-  const mapCenter = [38, -95];
-  const markerItems = mapdata.map((markerItemData) => {
-    const {
-      lat,
-      lon,
-      id,
-      reporttype,
-      groupsharassed,
-      locationname,
-      sourceurl,
-      validsourceurl,
-      waybackurl,
-      validwaybackurl,
-    } = markerItemData;
-    const markerCenter = [Number(lat), Number(lon)];
-    const color = markerItemData.color || 'blue';
-    const source = getSourceLI(sourceurl, validsourceurl, waybackurl, validwaybackurl);
 
-    return (
-      <CircleMarker color={color} key={id} center={markerCenter} radius={2}>
-        <Popup>
-          <div>
-            <h3>{reporttype}</h3>
-            <ul>
-              <li>{groupsharassed}</li>
-              <li>{locationname}</li>
-              {source}
-            </ul>
-          </div>
-        </Popup>
-      </CircleMarker>
-    );
-  });
+// move to map res utils
+const usaCentre = [38., -96.], usaBounds = [[18., -135.], [52., -60.]];
+const alaskaCentre = [64., -150.], alaskaBounds = [[34., -110.], [94., -190.]];
+const hawaiiCentre = [20., -155.], hawaiiBounds = [[0., -170.], [40., -135.]];
+const worldBounds = [[-90., -180.], [90., 180.]]
+const MapWrapper = (props) => {
 
   return (
-    <Map id="MapWrapper" center={mapCenter} zoom={zoom}>
-      <TileLayer
-        attribution="&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
-        url="https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png"
-      />
-      {markerItems}
-    </Map>
+    <div id="MapWrapper">
+
+      <Map id="USA" ref={props.mapRef} maxBounds={worldBounds} minZoom={2} zoomSnap={0.25} center={usaCentre} zoom={4.5}>
+        <TileLayer bounds={worldBounds} attribution="&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
+        url="https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png" />
+          <Rectangle bounds={worldBounds} stroke={false} fillOpacity="0" onClick={() => props.updateState("none", true)} />
+          <GeoJSON ref={props.statesRef} data={states_usa} onAdd={() => props.updateView(0, 1)} onEachFeature={(feature, layer) => eachState(feature, layer, props.data, 100, props.updateState)} />
+          <GeoJSON ref={props.alaskaRef} data={states_alaska} onEachFeature={(feature, layer) => eachState(feature, layer, props.data, 100, props.updateState)} />
+          <GeoJSON ref={props.hawaiiRef} data={states_hawaii} onEachFeature={(feature, layer) => eachState(feature, layer, props.data, 100, props.updateState)} />
+          <GeoJSON data={usa} onEachFeature={(feature, layer) => { layer.setStyle({stroke: 0.3, color: '#777777'})}} />
+        <Legend />
+        {props.children}
+      </Map>
+    </div>
   );
 };
 
 MapWrapper.propTypes = {
-  mapdata: PropTypes.arrayOf(PropTypes.object).isRequired,
-  zoom: PropTypes.number.isRequired,
+  // mapdata: PropTypes.arrayOf(PropTypes.object).isRequired,
+  // zoom: PropTypes.function.isRequired,
 };
-
+//https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png
 export default MapWrapper;

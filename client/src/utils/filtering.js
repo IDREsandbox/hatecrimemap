@@ -11,11 +11,10 @@ filteringOptions.unverified = {
 filteringOptions.all = {
   color: 'blue',
 };
-let allpoints = [];
 
-export function getAllPoints() {
-  return allpoints.slice();
-}
+// export function getAllPoints() {
+//   return allpoints.slice();
+// }
 
 export function addGroupsHarassedSplit(mapdata) {
   const mapdataWithGroupsSplit = mapdata.map((point) => {
@@ -25,11 +24,11 @@ export function addGroupsHarassedSplit(mapdata) {
   return mapdataWithGroupsSplit.slice();
 }
 
-export function storeMapData(mapdata) {
-  const mapdataWithGroupsSplit = addGroupsHarassedSplit(mapdata);
-  allpoints = mapdataWithGroupsSplit.slice();
-  return mapdataWithGroupsSplit.slice();
-}
+// export function storeMapData(mapdata) {
+//   const mapdataWithGroupsSplit = addGroupsHarassedSplit(mapdata); // 'groupsharassed' comma-separated to array
+//   allpoints = mapdataWithGroupsSplit.slice(); // Make a copy
+//   return mapdataWithGroupsSplit.slice();  // return a different copy
+// }
 
 function removePreviousShowReports(layers) {
   if (layers.has('verified')) layers.delete('verified');
@@ -51,7 +50,7 @@ export function updateCurrentLayers(layerName, prevLayers, updateShowReports = f
 
 function arrayIncludesAllItems(arr, items) {
   let includesAll = true;
-  items.forEach((item) => {
+  items.forEach((item) => { // a for loop with breaking will probably be faster
     if (!arr.includes(item)) includesAll = false;
   });
   return includesAll;
@@ -80,24 +79,23 @@ function addColor(mapdata, currentLayers) {
   return mapdataWithColor;
 }
 
-export function getMapData(layerName, prevLayers) {
-  const currentLayers = new Set(prevLayers);
-  if (currentLayers.size === 0) {
-    return allpoints;
-  }
-  const mapdata = allpoints.slice();
-  const filteredData = mapdata.filter(({ groupsharassedsplit, verified }) => {
-    const camelizedGroupNames = groupsharassedsplit.map(groupName => camelize(groupName));
-    camelizedGroupNames.push('all');
-    if (verified > 0) {
-      camelizedGroupNames.push('verified');
-    }
-    if (verified === 0) {
-      camelizedGroupNames.push('unverified');
-    }
-    return arrayIncludesAllItems(camelizedGroupNames, Array.from(currentLayers));
-  });
-  const mapdataWithColor = addColor(filteredData, currentLayers);
-  return mapdataWithColor;
-}
-
+// export function getMapData(layerName, prevLayers) {
+//   const currentLayers = new Set(prevLayers);
+//   if (currentLayers.size === 0) {
+//     return allpoints;
+//   }
+//   const mapdata = allpoints.slice();
+//   const filteredData = mapdata.filter(({ groupsharassedsplit, verified }) => {
+//     const camelizedGroupNames = groupsharassedsplit.map(groupName => camelize(groupName));
+//     camelizedGroupNames.push('all');
+//     if (verified > 0) {
+//       camelizedGroupNames.push('verified');
+//     }
+//     if (verified === 0) {
+//       camelizedGroupNames.push('unverified');
+//     }
+//     return arrayIncludesAllItems(camelizedGroupNames, Array.from(currentLayers));
+//   });
+//   const mapdataWithColor = addColor(filteredData, currentLayers);
+//   return mapdataWithColor;
+// }

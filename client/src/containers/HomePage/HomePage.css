@@ -7,17 +7,54 @@
   flex-basis: auto
   */
   grid-template-areas: 
-    "map toc";
+    "map side";
   grid-template-columns: 1.6fr 1fr;
-  height: 100vh;
+  height: 100%;
+  overflow: auto;
 }
 
 @media (max-width: 800px) {
   .homePage {
     grid-template-areas:
       "map"
-      "toc";
+      "side";
     grid-template-columns: none;
     grid-template-rows: 1.25fr 1fr;
   }
+}
+
+.side {
+  grid-area: side;
+  position: relative;
+}
+
+.black {
+  background: rgba(0, 0, 0, 0.8); 
+  width:      100%;
+  height:     100%; 
+  z-index:    1001;
+  top:        0; 
+  left:       0; 
+  position:   fixed; 
+}
+
+.welcome {
+  position: absolute;
+  z-index: 1001; /* Map appears to have z-index 400 */
+  top: 40%;
+  transform: translate(0, -50%);
+  left: 0;
+  right: 0;
+  margin: 0 5%;
+
+  color: white;
+  text-align: center;
+}
+
+.noShow {
+  position: absolute;
+  bottom: 64px;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
 }
