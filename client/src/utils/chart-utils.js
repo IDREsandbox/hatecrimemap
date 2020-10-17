@@ -6,7 +6,6 @@ export const CHARTS = {
   TOP: 5
 }
 
-<<<<<<< HEAD
 export const COVID_CHARTS = {
   TOP: 0,
   RACE_ETHNICITY: 1,
@@ -15,8 +14,6 @@ export const COVID_CHARTS = {
   OTHER: 4
 }
 
-=======
->>>>>>> upstream/master
 export const CHART_STRINGS = ["Race/Ethnicity", "Religion", "Gender/Sexuality", "Other"]
 
 // var raceData = 
