@@ -3,12 +3,12 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { CircularProgress, Button, IconButton } from '@material-ui/core';
 
-import { FirstTimeOverlay, MapWrapper, SideMenu, Charts, FilterBar, MapBar } from '../../components';
+import { FirstTimeOverlay, MapWrapper, SideMenu, CovidCharts, FilterBar, MapBar } from '../../components';
 import { counties } from '../../res/counties/statecounties.js';
 import { GeoJSON } from 'react-leaflet';
-import { getAllData, eachStatesCounties, storeStateData, resetStateColor } from '../../utils/data-utils';
+import { getCovidData, eachStatesCounties, storeStateData, resetStateColor } from '../../utils/data-utils';
 
-import './HomePage.css';
+import './CovidPage.css';
 
 export const MAP_DISPLAY = {
   USA: 1,
@@ -22,9 +22,13 @@ const styles = () => ({
     top: '50%',
     left: '50%',
   },
+  dateRange: {
+    'text-align': 'center',
+    'margin-bottom': '15px'
+  }
 });
 
-class HomePage extends Component {
+class CovidPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -32,7 +36,6 @@ class HomePage extends Component {
       zoom: 4,
       isFetching: true,
       currentDisplay: 'none',
-      filterPublished: true,
       locked: false, // lock the sidebar on a state or county
     };
     this.statesRef = React.createRef();
@@ -42,12 +45,10 @@ class HomePage extends Component {
   }
 
   async componentDidMount() {
-    getAllData().then(values => {
+    getCovidData().then(values => {
+      console.log(values);
       this.setState({
-        data: { states: storeStateData(values[0].result, values[2]),
-                publishedStates: storeStateData(values[1].result, values[2])
-                // we shouldn't add more api endpoints for filters, it should be dynamic within the front-end
-              },
+        data: values,
         isFetching: false
       });
       
@@ -61,32 +62,13 @@ class HomePage extends Component {
     Object.values(this.statesRef.current.contextValue.layerContainer._layers).forEach(layer => {
       if(layer.feature) {  // only the states/counties have a feature
         // console.log(layer.feature);
-        resetStateColor(layer, this.state.data.states);
+        resetStateColor(layer, this.state.data);
       }
     })
   }
 
-  changeViewRegion = (event, region) => {
-    if (region !== null) {
-      this.setState({region: region}, () => {
-        if (this.mapRef.current !== null && this.statesRef.current !== null) {
-          let bounds;
-          if (region == MAP_DISPLAY.ALASKA) {
-            bounds = this.alaskaRef.current.leafletElement.getBounds().pad(0.1)
-          } else if (region == MAP_DISPLAY.USA) {
-            bounds = this.statesRef.current.leafletElement.getBounds()
-          } else if (region == MAP_DISPLAY.HAWAII) {
-            bounds = this.hawaiiRef.current.leafletElement.getBounds().pad(0.5)
-          }
-          console.log(bounds)
-          this.mapRef.current.leafletElement.fitBounds(bounds)
-        }
-      })
-    }
-  }
-
   filterIncidents = (flt) => {
-    this.setState({ filterPublished: flt }) // 'all' or 'published'
+    this.setState({ currentFilter: flt }) // 'all' or 'published'
   }
 
   // Return value, success (in our terms, not react's)
@@ -113,6 +95,25 @@ class HomePage extends Component {
     return false;
   }
 
+  changeViewRegion = (event, region) => {
+    if (region !== null) {
+      this.setState({region: region}, () => {
+        if (this.mapRef.current !== null && this.statesRef.current !== null) {
+          let bounds;
+          if (region == MAP_DISPLAY.ALASKA) {
+            bounds = this.alaskaRef.current.leafletElement.getBounds().pad(0.1)
+          } else if (region == MAP_DISPLAY.USA) {
+            bounds = this.statesRef.current.leafletElement.getBounds()
+          } else if (region == MAP_DISPLAY.HAWAII) {
+            bounds = this.hawaiiRef.current.leafletElement.getBounds().pad(0.5)
+          }
+          console.log(bounds)
+          this.mapRef.current.leafletElement.fitBounds(bounds)
+        }
+      })
+    }
+  }
+
   getZoom = () => {
     return this.state.zoom;
   }
@@ -125,42 +126,27 @@ class HomePage extends Component {
     if(isFetching) {
       return <CircularProgress className={classes.progress} />;
     }
-
-    const data = this.state.filterPublished ? this.state.data.publishedStates : this.state.data.states
     
     return (
-      <div className="homePage">
-          <FirstTimeOverlay />
+      <div className="CovidPage">
+          {/*<FirstTimeOverlay />*/}
           {/* TODO: context for mapdata and data.states? */}
           <MapWrapper region={this.state.region} updateState={this.updateState}
           statesRef={this.statesRef} mapRef={this.mapRef} alaskaRef={this.alaskaRef} hawaiiRef={this.hawaiiRef}
-          data={data} updateView={this.changeViewRegion}>
+          data={this.state.data} updateView={this.changeViewRegion}>
             <MapBar changeRegion={this.changeViewRegion} region={this.state.region}/>
           </MapWrapper>
 
           <div className="side">
             <SideMenu>
-              <h2 className="sideMenu__header">{this.state.currentDisplay == 'none' ? "How to Use" : this.state.currentDisplay }</h2>
-              { this.state.currentDisplay == 'none' ? (
-                  <div className="sideMenu__info">
-                    <p>Hover over a state to show hate crime data</p>
-                    <p>Click on a state to lock on it to interact with the chart</p>
-                    <p>Click away from the state to unlock or switch states</p>
-                    <br />
-                    <hr />
-                    <br />
-                    <p>Report incident(s) by navigating to the report page on the top-right</p>
-                  </div>
-                  ) : (
-                <div className="sideMenu__chart">
-                  <Charts data={data[this.state.currentDisplay]} max={data.groupMax} currState={this.state.currentDisplay} />
-                </div>
-                )
-              }
-              <br />
-              <hr />
-              <br />
-              <FilterBar filterfn={this.filterIncidents} />
+            <h2 className="sideMenu__header">{"COVID Hate Crimes in " + (this.state.currentDisplay == 'none' ? "US" : this.state.currentDisplay) }</h2>
+                { this.state.currentDisplay != "none" &&
+                  <div className={ `sideMenu__info ${classes.dateRange}` }>
+                    <p>Date Range...</p>
+                  </div>}
+              <div className="sideMenu__chart">
+                <CovidCharts data={this.state.data} currState={this.state.currentDisplay} max={this.state.data.groupMax} />
+              </div>
             </SideMenu>
           </div>
       </div>
@@ -168,8 +154,8 @@ class HomePage extends Component {
   }
 }
 
-HomePage.propTypes = {
+CovidPage.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(HomePage);
+export default withStyles(styles)(CovidPage);

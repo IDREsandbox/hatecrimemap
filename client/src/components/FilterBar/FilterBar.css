@@ -1,5 +1,6 @@
 .filterBar {
-	position: absolute;
+	/*position: absolute;
 	bottom: 10px;
-	left: 10px;
+	left: 10px;*/
+	grid-area: "filters";
 }

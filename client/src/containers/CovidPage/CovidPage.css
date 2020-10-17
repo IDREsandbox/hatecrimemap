@@ -1,0 +1,85 @@
+.CovidPage {
+  display: grid;
+  flex: 0 1 auto;
+  /* The above is shorthand for:
+  flex-grow: 0,
+  flex-shrink: 1,
+  flex-basis: auto
+  */
+  grid-template-areas: 
+    "map side";
+  grid-template-columns: 1.6fr 1fr;
+  height: 100%;
+  overflow: auto;
+}
+
+@media (max-width: 800px) {
+  .CovidPage {
+    grid-template-areas:
+      "map"
+      "side";
+    grid-template-columns: none;
+    grid-template-rows: 1.25fr 1fr;
+  }
+}
+
+.side {
+  grid-area: side;
+  position: relative;
+}
+
+.black {
+  background: rgba(0, 0, 0, 0.8); 
+  width:      100%;
+  height:     100%; 
+  z-index:    1001;
+  top:        0; 
+  left:       0; 
+  position:   fixed; 
+}
+
+.welcome {
+  position: absolute;
+  z-index: 1001; /* Map appears to have z-index 400 */
+  top: 40%;
+  transform: translate(0, -50%);
+  left: 0;
+  right: 0;
+  margin: 0 5%;
+
+  color: white;
+  text-align: center;
+}
+
+.noShow {
+  position: absolute;
+  bottom: 64px;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.sideMenu__header {
+  align-self: center;
+  font-weight: 800;
+  grid-area: smheader;
+  justify-self: center;
+}
+
+.sideMenu__form {
+  grid-area: smform;
+  height: 100%;
+}
+
+.sideMenu__chart {
+  grid-area: smcharts;
+}
+
+.charts { 
+  height: 100%;
+}
+
+.sideMenu__info {
+  grid-area: smform;
+  padding: 0 8px;
+}

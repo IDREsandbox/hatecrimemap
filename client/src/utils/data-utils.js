@@ -119,6 +119,64 @@ export async function getAllData() {
 	return Promise.all([getStateData(), getCountyData()]);
 }
 
+function formatCovidData(data) {
+	let stateData = {}
+	STATES.forEach(state => {
+		stateData[state] = { count: 0, children: [] }
+	})
+
+	data.forEach(report => {
+		if (stateData[report.state]) {
+			stateData[report.state].children.push(report);
+		}
+	})
+
+	let max = 0
+	Object.keys(stateData).forEach(state => {
+		stateData[state].count = stateData[state].children.length
+		if (stateData[state].count > max) {
+			max = stateData[state].count
+		}
+	})
+	stateData.max = max
+
+	return stateData
+}
+
+export async function getCovidData() {
+	return axios.get('/api/totals/covid')
+	.then(res => { console.log(res); return formatCovidData(res.data.result) })
+	.catch((err) => {
+		alert(`API call failed: ${err}`);
+		return {};
+	});
+	return new Promise((resolve, reject) => {
+		resolve(
+			{ "California" : {
+					"count": 5,
+					children: [
+						{ name: "test", gender: "Male", ethnicity: "Asian", type: "Online", date: "", description: "A description here"},
+						{ name: "test2", gender: "Male", ethnicity: "African American", type: "Online", date: "", description: "Something happened" },
+						{ name: "test3", gender: "Male", ethnicity: "Asian", type: "Online", date: "" },
+						{ name: "test4", gender: "Female", ethnicity: "African American", type: "Verbal", date: "" },
+						{ name: "test5", gender: "Female", ethnicity: "Asian", type: "Verbal", date: "" },
+					]
+				},
+				"Alaska" : {
+					"count": 5,
+					children: [
+						{ name: "test", gender: "Female", ethnicity: "Asian", type: "Physical", date: "" },
+						{ name: "test2", gender: "Male", ethnicity: "Asian", type: "Online", date: "" },
+						{ name: "test3", gender: "Male", ethnicity: "Asian", type: "Verbal", date: "" },
+						{ name: "test4", gender: "Female", ethnicity: "Native American/Indigenous", type: "Verbal", date: "" },
+						{ name: "test5", gender: "Female", ethnicity: "White", type: "Online", date: "" },
+					]
+				}	
+			}
+		);
+	});
+}
+
 const colorBins = ["#f2f0f7", "#cbc9e2", "#9e9ac8", "#756bb1", "#54278f"];
 var lockedLayer = null;
 var lockedLayerColor = null;
