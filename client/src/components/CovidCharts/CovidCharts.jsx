@@ -156,10 +156,10 @@ class CovidCharts extends React.Component {
                 <h4>Type</h4>
                 <Pie onElementsClick={this.pieTypeClick} data={covidData[2]} options={{legend: { display: false } }} />
               </Grid>
-              <Grid container item justify="center" xs={6}>
+              {/*<Grid container item justify="center" xs={6}>
                 <h4>Other</h4>
                 <Pie onElementsClick={this.pieClick} data={covidData[3]} options={{legend: { display: false } }} />
-              </Grid>
+              </Grid>*/}
             </Grid>
 
 
@@ -197,7 +197,7 @@ class CovidCharts extends React.Component {
                               <TableCell>{row.ethnicity}</TableCell>
                               <TableCell>{row.gender}</TableCell>
                               <TableCell>{row.type}</TableCell>
-                              <TableCell>{row.description}</TableCell>
+                              <TableCell>{row.description}<br />{row.link && <a href={row.link}>{row.link}</a>}</TableCell>
                             </TableRow>
                           ))
                           )

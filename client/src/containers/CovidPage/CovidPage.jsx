@@ -142,7 +142,7 @@ class CovidPage extends Component {
             <h2 className="sideMenu__header">{"COVID Hate Crimes in " + (this.state.currentDisplay == 'none' ? "US" : this.state.currentDisplay) }</h2>
                 { this.state.currentDisplay != "none" &&
                   <div className={ `sideMenu__info ${classes.dateRange}` }>
-                    <p>Date Range...</p>
+                    <p>{this.state.data[this.state.currentDisplay].children[0].date.split('T')[0]} - {this.state.data[this.state.currentDisplay].children[this.state.data[this.state.currentDisplay].children.length - 1].date.split('T')[0]}</p>
                   </div>}
               <div className="sideMenu__chart">
                 <CovidCharts data={this.state.data} currState={this.state.currentDisplay} max={this.state.data.groupMax} />
