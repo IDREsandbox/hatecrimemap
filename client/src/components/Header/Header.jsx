@@ -59,9 +59,9 @@ const CovidHeader = ({ classes }) => {
         <Link to="/" className={classes.link}>
           <Button className={classes.gotoOriginal} color="inherit">See All Other Hate Crimes</Button>
         </Link>
-        <Link to="/reportincident" className={classes.link}>
+        <a href="http://www.asianpacificpolicyandplanningcouncil.org/stop-aapi-hate/" className={classes.link}>
           <Button className={classes.reportIncidentButton} color="inherit">Report Incident</Button>
-        </Link>
+        </a>
         <AboutCovidDialog></AboutCovidDialog>
       </Toolbar>
     </AppBar>
@@ -88,7 +88,7 @@ const Header = ({ classes }) => {
           </IconButton>
         </Link>
         <Typography variant="h6" color="inherit" className={classes.flex}>
-          Mapping Harassment in the US
+          Mapping Hate Crimes in the US
         </Typography>
         <Link to="/covid" className={classes.link}>
           <Button className={classes.gotoCovid} color="inherit">See COVID Hate Crimes</Button>

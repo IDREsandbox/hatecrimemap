@@ -76,7 +76,7 @@ class AboutDialog extends Component {
               <br />
               <hr />
               <br />
-              <h3>Acknowledgements</h3>
+              <h3>Acknowledgments</h3>
               <p>This map was made possible with funding from the UCLA Institute of American Cultures, 
               Dean of UCLA Social Sciences Darnell Hunt, and the UCLA American Indian Studies Center. 
               Data was graciously provided by ProPublica’s Documenting Hate project and Russell Jeung 

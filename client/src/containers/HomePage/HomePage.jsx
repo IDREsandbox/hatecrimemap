@@ -143,9 +143,10 @@ class HomePage extends Component {
               <h2 className="sideMenu__header">{this.state.currentDisplay == 'none' ? "How to Use" : this.state.currentDisplay }</h2>
               { this.state.currentDisplay == 'none' ? (
                   <div className="sideMenu__info">
-                    <p>Hover over a state to show hate crime data</p>
-                    <p>Click on a state to lock on it to interact with the chart</p>
-                    <p>Click away from the state to unlock or switch states</p>
+                    <p>Hover over a state to show hate crime data.</p>
+                    <p>Click on a state to lock on it to interact with the chart.</p>
+                    <p>Click away from the state to unlock or switch states.</p>
+                    <p>Click on “See COVID Hate Crimes” to navigate to a separate map.</p>
                     <br />
                     <hr />
                     <br />
