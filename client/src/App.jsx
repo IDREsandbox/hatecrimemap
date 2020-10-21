@@ -26,6 +26,7 @@ const App = () => (
         <Route path="/covid" component={CovidPage} />
         <Route path="/" component={HomePage} />
       </Switch>
+      <Footer />
     </div>
   </Router>
   </MuiPickersUtilsProvider>

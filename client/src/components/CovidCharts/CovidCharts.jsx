@@ -156,10 +156,10 @@ class CovidCharts extends React.Component {
                 <h4>Type</h4>
                 <Pie onElementsClick={this.pieTypeClick} data={covidData[2]} options={{legend: { display: false } }} />
               </Grid>
-              <Grid container item justify="center" xs={6}>
+              {/*<Grid container item justify="center" xs={6}>
                 <h4>Other</h4>
                 <Pie onElementsClick={this.pieClick} data={covidData[3]} options={{legend: { display: false } }} />
-              </Grid>
+              </Grid>*/}
             </Grid>
 
 
@@ -189,15 +189,15 @@ class CovidCharts extends React.Component {
                         { this.props.currState == "none" ? 
                           (
                             Object.values(this.props.data).filter(val => val instanceof Object).reduce( (prev, next) => (
-                              prev.concat(next.children.filter(el => el[this.state.dialogShow] == this.state.dialogFilter))
+                              prev.concat(next.children.filter(el => el[this.state.dialogShow] && el[this.state.dialogShow].includes(this.state.dialogFilter)))
                               ), []).map((row) => (
                             <TableRow key={row.id}>
-                              <TableCell>{row.date.split('T')[0]}</TableCell>
+                              <TableCell>{row.date}</TableCell>
                               <TableCell>{row.city + ", " + row.state}</TableCell>
                               <TableCell>{row.ethnicity}</TableCell>
                               <TableCell>{row.gender}</TableCell>
                               <TableCell>{row.type}</TableCell>
-                              <TableCell>{row.description}</TableCell>
+                              <TableCell>{row.description}<br />{row.link && <a href={row.link}>{row.link}</a>}</TableCell>
                             </TableRow>
                           ))
                           )
@@ -205,9 +205,9 @@ class CovidCharts extends React.Component {
 
                           this.props.data[this.props.currState]
                           && this.props.data[this.props.currState].children
-                          && this.props.data[this.props.currState].children.filter(el => el[this.state.dialogShow]==this.state.dialogFilter).map((row) => (
+                          && this.props.data[this.props.currState].children.filter(el => el[this.state.dialogShow] && el[this.state.dialogShow].includes(this.state.dialogFilter)).map((row) => (
                             <TableRow key={row.id}>
-                            <TableCell>{row.date.split('T')[0]}</TableCell>
+                            <TableCell>{row.date}</TableCell>
                             <TableCell>{row.city + ", " + row.state}</TableCell>
                             <TableCell>{row.ethnicity}</TableCell>
                             <TableCell>{row.gender}</TableCell>

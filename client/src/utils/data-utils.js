@@ -127,6 +127,7 @@ function formatCovidData(data) {
 
 	data.forEach(report => {
 		if (stateData[report.state]) {
+			if (!report.link.includes("http")) report.link = "";
 			stateData[report.state].children.push(report);
 		}
 	})
@@ -241,6 +242,7 @@ export function eachState(feature, layer, statesData, currentState, setStateDisp
 		setStateDisplay(STATE_NAME, true);  // true parameter for locking
 
 		lockedLayer = layer;
+		lockedLayerColor = colorHashed;
 	});
 	layer.setStyle({stroke: 1, weight: 1, opacity: 0.75, color: 'white', fillColor: colorHashed, fillOpacity: 0.75});
 }

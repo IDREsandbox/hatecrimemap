@@ -195,10 +195,10 @@ export const getCovidChartData = (data, state) => {
     data = { state: data[state] }
   }
 
-  chartData[0].datasets[0].data = covidRE.map(filt => Object.values(data).filter(val => val instanceof Object).reduce( ((prev, s) => prev+s.children.filter(c => c.ethnicity==filt).length), 0)) // map from data.ethnicity::aggregate
-  chartData[1].datasets[0].data = covidGender.map(filt => Object.values(data).filter(val => val instanceof Object).reduce( ((prev, s) => prev+s.children.filter(c => c.gender==filt).length), 0)) // map from data.gender::aggregate
-  chartData[2].datasets[0].data = covidType.map(filt => Object.values(data).filter(val => val instanceof Object).reduce( ((prev, s) => prev+s.children.filter(c => c.type==filt).length), 0)) // map from data.type::aggregate
-  chartData[3].datasets[0].data = covidOther.map(filt => Object.values(data).filter(val => val instanceof Object).reduce( ((prev, s) => prev+s.children.filter(c => c.other==filt).length), 0)) // map from data.Other::aggregate
+  chartData[0].datasets[0].data = covidRE.map(filt => Object.values(data).filter(val => val instanceof Object).reduce( ((prev, s) => prev+s.children.filter(c => c.ethnicity.includes(filt)).length), 0)) // map from data.ethnicity::aggregate
+  chartData[1].datasets[0].data = covidGender.map(filt => Object.values(data).filter(val => val instanceof Object).reduce( ((prev, s) => prev+s.children.filter(c => c.gender.includes(filt)).length), 0)) // map from data.gender::aggregate
+  chartData[2].datasets[0].data = covidType.map(filt => Object.values(data).filter(val => val instanceof Object).reduce( ((prev, s) => prev+s.children.filter(c => c.type.includes(filt)).length), 0)) // map from data.type::aggregate
+  // chartData[3].datasets[0].data = covidOther.map(filt => Object.values(data).filter(val => val instanceof Object).reduce( ((prev, s) => prev+s.children.filter(c => c.other.includes(filt)).length), 0)) // map from data.Other::aggregate
   
   return chartData
 }
