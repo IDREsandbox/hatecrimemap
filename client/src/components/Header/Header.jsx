@@ -40,6 +40,9 @@ const styles = {
   },
   link: {
     textDecoration: 'none',
+  },
+  titleLink: {
+    color: 'white'
   }
 };
 
@@ -54,12 +57,12 @@ const CovidHeader = ({ classes }) => {
           </IconButton>
         </Link>
         <Typography variant="h6" color="inherit" className={classes.flex}>
-          Mapping COVID Hate Crimes in the US
+          Mapping COVID Hate Crimes in the US (Data from <a href="https://stopaapihate.org/report-incident" className={classes.titleLink}>Stop AAPI Hate</a>)
         </Typography>
         <Link to="/" className={classes.link}>
           <Button className={classes.gotoOriginal} color="inherit">See All Other Hate Crimes</Button>
         </Link>
-        <a href="http://www.asianpacificpolicyandplanningcouncil.org/stop-aapi-hate/" className={classes.link}>
+        <a href="https://stopaapihate.org/report-incident" className={classes.link}>
           <Button className={classes.reportIncidentButton} color="inherit">Report Incident</Button>
         </a>
         <AboutCovidDialog></AboutCovidDialog>

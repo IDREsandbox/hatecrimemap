@@ -25,6 +25,9 @@ const styles = () => ({
   dateRange: {
     'text-align': 'center',
     'margin-bottom': '15px'
+  },
+  footnotes: {
+
   }
 });
 
@@ -148,17 +151,16 @@ class CovidPage extends Component {
                   <div className='sideMenu__info'>
                     <p style={{'text-align': 'center'}}><strong>How to Use</strong></p>
                     <p>Hover over a state to show COVID-related hate crime data.</p>
-                    <p>Click on a state to lock on it to interact with the pie charts at right.</p>
+                    <p>Click on a state to lock on it to interact with the pie charts.</p>
                     <p>Click away from the state to unlock or switch states.</p>
-                    <p><em>* Please note that this data includes reports from witnesses of a different race than the victims.</em></p>
+                    <p>Report incident(s) by visiting Stop AAPI Hate's report page on the top-right</p>
                     <br />
                     <hr />
-                    <br />
-                    <p>Report incident(s) by visiting Stop AAPI Hate's report page on the top-right</p>
                   </div>
                 }
               <div className="sideMenu__chart">
                 <CovidCharts data={this.state.data} currState={this.state.currentDisplay} max={this.state.data.groupMax} />
+                <p className={classes.footnotes}><em>* Please note that this data includes a small number of reports from witnesses of a different race than the victims.</em></p>
               </div>
             </SideMenu>
           </div>

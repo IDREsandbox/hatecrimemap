@@ -4,9 +4,8 @@ import { withStyles } from '@material-ui/core/styles';
 import { CircularProgress, Button, IconButton } from '@material-ui/core';
 
 import { FirstTimeOverlay, MapWrapper, SideMenu, Charts, FilterBar, MapBar } from '../../components';
-import { counties } from '../../res/counties/statecounties.js';
-import { GeoJSON } from 'react-leaflet';
-import { getAllData, eachStatesCounties, storeStateData, resetStateColor } from '../../utils/data-utils';
+import { Rectangle, GeoJSON } from 'react-leaflet';
+import { getAllData, storeStateData, resetStateColor } from '../../utils/data-utils';
 
 import './HomePage.css';
 
@@ -132,10 +131,10 @@ class HomePage extends Component {
       <div className="homePage">
           <FirstTimeOverlay />
           {/* TODO: context for mapdata and data.states? */}
-          <MapWrapper region={this.state.region} updateState={this.updateState}
+          <MapWrapper region={this.state.region} updateState={this.updateState} updateCounty={this.updateCounty}
           statesRef={this.statesRef} mapRef={this.mapRef} alaskaRef={this.alaskaRef} hawaiiRef={this.hawaiiRef}
-          data={data} updateView={this.changeViewRegion}>
-            <MapBar changeRegion={this.changeViewRegion} region={this.state.region}/>
+          data={data} updateView={this.changeViewRegion} updateZoom={this.updateZoom} zoom={this.getZoom}>
+          <MapBar changeRegion={this.changeViewRegion} region={this.state.region}/>
           </MapWrapper>
 
           <div className="side">

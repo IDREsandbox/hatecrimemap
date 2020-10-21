@@ -42,7 +42,7 @@ class AboutCovidDialog extends Component {
           maxWidth="md"
           aria-labelledby="responsive-dialog-title"
         >
-          <DialogTitle id="responsive-dialog-title">Hate Crime Map (COVID)</DialogTitle>
+          <DialogTitle id="responsive-dialog-title">About Mapping COVID Hate Crimes in the US</DialogTitle>
           <DialogContent>
             <DialogContentText>
               <p>The reported incidents appearing at the launch of this separate COVID Hate Crime Map on October 26, 2020 were provided by the Stop AAPI Hate Reporting Center (see more information in “Acknowledgments” below). Incorporating that data into the broader Hate Crime Map enables victims to report COVID-related harassment and violence in detail, and allows for researchers to analyze this data by state.</p>
@@ -53,7 +53,7 @@ class AboutCovidDialog extends Component {
               <hr />
               <br />
               <h3>Acknowledgments</h3>
-              <p>The Stop AAPI Hate Reporting Center was launched on March 19, 2020 in response to alarming reports about the escalation of harassment and violence against Asians and Asian Americans as a result of bigotry and misinformation spread about COVID-19. The center tracks and responds to incidents of hate, violence, harassment, and other forms of harassment against Asian Americans and Pacific Islanders in the United States.</p>
+              <p>The <a href="http://stopaapihate.org/" target="_blank">Stop AAPI Hate Reporting Center</a> was launched on March 19, 2020 in response to alarming reports about the escalation of harassment and violence against Asians and Asian Americans as a result of bigotry and misinformation spread about COVID-19. The center tracks and responds to incidents of hate, violence, harassment, and other forms of harassment against Asian Americans and Pacific Islanders in the United States.</p>
               <em>* Please note that some of the incidents were reported by witnesses of a different race or ethnicity than the victim.</em>
             </DialogContentText>
           </DialogContent>
