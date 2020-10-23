@@ -21,6 +21,10 @@ const styles = {
   root: {
 
   },
+  covidFlex: {
+    flex: 1,
+    color: '#fef900'
+  },
   flex: {
     flex: 1,
   },
@@ -42,7 +46,7 @@ const styles = {
     textDecoration: 'none',
   },
   titleLink: {
-    color: 'white'
+    color: 'inherit'
   }
 };
 
@@ -56,7 +60,7 @@ const CovidHeader = ({ classes }) => {
             <HomeIcon />
           </IconButton>
         </Link>
-        <Typography variant="h6" color="inherit" className={classes.flex}>
+        <Typography variant="h6" color="inherit" className={classes.covidFlex}>
           Mapping COVID Hate Crimes in the US (Data from <a href="https://stopaapihate.org/report-incident" className={classes.titleLink}>Stop AAPI Hate</a>)
         </Typography>
         <Link to="/" className={classes.link}>

@@ -16,7 +16,7 @@ const styles = theme => ({
 
 const FilterBar = (props) => {
 
-  const [published, filterPublished] = useState(true);
+  const [published, filterPublished] = useState(false);
 
   return (
     <div className="filterBar">

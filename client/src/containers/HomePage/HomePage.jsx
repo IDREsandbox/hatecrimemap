@@ -31,7 +31,7 @@ class HomePage extends Component {
       zoom: 4,
       isFetching: true,
       currentDisplay: 'none',
-      filterPublished: true,
+      filterPublished: false,
       locked: false, // lock the sidebar on a state or county
     };
     this.statesRef = React.createRef();
@@ -85,7 +85,7 @@ class HomePage extends Component {
   }
 
   filterIncidents = (flt) => {
-    this.setState({ filterPublished: flt }) // 'all' or 'published'
+    this.setState({ filterPublished: flt }) // true or false
   }
 
   // Return value, success (in our terms, not react's)
@@ -150,16 +150,17 @@ class HomePage extends Component {
                     <hr />
                     <br />
                     <p>Report incident(s) by navigating to the report page on the top-right</p>
+                    <br />
+                    <hr />
+                    <br />
                   </div>
                   ) : (
                 <div className="sideMenu__chart">
                   <Charts data={data[this.state.currentDisplay]} max={data.groupMax} currState={this.state.currentDisplay} />
                 </div>
                 )
-              }
-              <br />
-              <hr />
-              <br />
+            }
+            <br />
               <FilterBar filterfn={this.filterIncidents} />
             </SideMenu>
           </div>

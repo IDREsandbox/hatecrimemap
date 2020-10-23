@@ -19,8 +19,8 @@ class MapBar extends MapControl {
           onChange={props.changeRegion}
           aria-label="region display"
         >
-          <ToggleButton value={1} aria-label="central usa">
-            Center
+          <ToggleButton value={1} aria-label="continental usa">
+            Continental USA
           </ToggleButton>
           <ToggleButton value={2} aria-label="alaska">
             Alaska

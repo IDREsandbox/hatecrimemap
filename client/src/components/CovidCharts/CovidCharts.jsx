@@ -102,29 +102,6 @@ class CovidCharts extends React.Component {
     this.setState({ dialogOpen: true, dialogShow: "other", dialogFilter: covidOther[elems[0]._index]})
   }
 
-  pi = (elems) => {
-    // index into `data` of the bar clicked
-    if (!elems[0]) {
-      return
-    }
-    const dataIdx = elems[0]._index
-    switch(dataIdx) {
-      case 0:
-        this.setState({currentDisplay: dataIdx+1, drilldown: this.props.data["Race/Ethnicity"].children})
-        break
-      case 1:
-        this.setState({currentDisplay: dataIdx+1, drilldown: this.props.data["Religion"].children})
-        break
-      case 2:
-        this.setState({currentDisplay: dataIdx+1, drilldown: this.props.data["Gender/Sexuality"].children})
-        break
-      case 3:
-        this.setState({currentDisplay: dataIdx+1, drilldown: this.props.data["Miscellaneous"].children})
-    }
-
-    
-  }
-
   render() {
     if (this.props.data && this.state.options) {
         const covidData = getCovidChartData(this.props.data, this.props.currState);
@@ -168,16 +145,14 @@ class CovidCharts extends React.Component {
               open={this.state.dialogOpen}
               onClose={() => this.toggleOpen(false)}
               maxWidth="xl"
-              aria-labelledby="responsive-dialog-title"
-            >
+              aria-labelledby="responsive-dialog-title">
               <DialogTitle id="responsive-dialog-title">{this.state.dialogShow.charAt(0).toUpperCase() + this.state.dialogShow.slice(1)}</DialogTitle>
-              <DialogContent>
-                <DialogContentText>
-                  <TableContainer component={Paper}>
-                    <Table className={this.props.classes.table} aria-label="simple table">
+              <DialogContent style={{'display': 'flex', 'overflow-y': 'hidden'}}>
+                  <TableContainer>
+                    <Table stickyHeader className={this.props.classes.table} aria-label="simple table">
                       <TableHead>
                         <TableRow>
-                          <TableCell>Date (Y/M/D)</TableCell>
+                          <TableCell>Date (M/D/YY)</TableCell>
                           <TableCell>City, State</TableCell>
                           <TableCell>Ethnicity</TableCell>
                           <TableCell>Gender</TableCell>
@@ -218,10 +193,9 @@ class CovidCharts extends React.Component {
                       </TableBody>
                     </Table>
                   </TableContainer>
-                </DialogContentText>
               </DialogContent>
               <DialogActions>
-                <Button onClick={() => this.toggleOpen(false)} color="primary" autoFocus>
+                <Button onClick={() => this.toggleOpen(false)} color="primary">
                   Close
                 </Button>
               </DialogActions>

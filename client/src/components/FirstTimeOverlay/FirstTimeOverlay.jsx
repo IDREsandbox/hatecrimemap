@@ -67,8 +67,8 @@ class FirstTimeOverlay extends Component {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button variant="contained" onClick={this.handleClose} color="primary" autoFocus>
-            Close
+          <Button variant="contained" onClick={this.handleClose} color="primary">
+            I Understand
           </Button>
           <FormControlLabel
             control={

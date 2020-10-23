@@ -58,7 +58,7 @@ class AboutCovidDialog extends Component {
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={this.handleClose} color="primary" autoFocus>
+            <Button onClick={this.handleClose} color="primary">
               Close
             </Button>
           </DialogActions>

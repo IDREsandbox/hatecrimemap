@@ -8,6 +8,21 @@ import { Bar, Pie } from 'react-chartjs-2';
 import ChartsText from './ChartText';
 import Grid from '@material-ui/core/Grid';
 
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
+
+
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+
 
 const styles = theme => ({
 
@@ -25,6 +40,7 @@ class Charts extends React.Component {
     
     this.state = {
       currentDisplay: CHARTS.TOP,
+      dialogOpen: false,
       options: {
         scales: {
           yAxes: [{
@@ -44,6 +60,14 @@ class Charts extends React.Component {
 
   barUnClick = () => {
     this.setState({currentDisplay: CHARTS.TOP})
+  }
+
+  pieClick = (elems) => {
+    this.setState({ dialogOpen: true });
+  }
+
+  toggleOpen = (open) => {
+    this.setState({ dialogOpen: open });
   }
 
   barClick = (elems) => {
@@ -84,8 +108,49 @@ class Charts extends React.Component {
               </Grid>
               <Grid item xs={3}>{/* to center the title */}</Grid>
             </Grid>
-            <Pie data={getChartData(this.state.currentDisplay, this.props.data[this.state.drilldown].children)} />
-            <ChartsText data={this.props.data[this.state.drilldown].children} />
+            <Pie data={getChartData(this.state.currentDisplay, this.props.data[this.state.drilldown].children)} 
+                  onElementsClick={this.pieClick}/>
+            {/*<ChartsText data={this.props.data[this.state.drilldown].children} />*/}
+
+            <Dialog
+              open={this.state.dialogOpen}
+              onClose={() => this.toggleOpen(false)}
+              maxWidth="xl"
+              aria-labelledby="responsive-dialog-title"
+            >
+              <DialogTitle id="responsive-dialog-title">Hate Crimes</DialogTitle>
+              <DialogContent>
+                <DialogContentText>
+                    <Table stickyHeader className="hello" aria-label="simple table">
+                      <TableHead>
+                        <TableRow>
+                          <TableCell>Date (Y/M/D)</TableCell>
+                          <TableCell>City, State</TableCell>
+                          <TableCell>Ethnicity</TableCell>
+                          <TableCell>Gender</TableCell>
+                          <TableCell>Type</TableCell>
+                          <TableCell>Description</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                            <TableRow>
+                              <TableCell>_</TableCell>
+                              <TableCell>_</TableCell>
+                              <TableCell>_</TableCell>
+                              <TableCell>_</TableCell>
+                              <TableCell>_</TableCell>
+                              <TableCell>_</TableCell>
+                            </TableRow>
+                      </TableBody>
+                    </Table>
+                </DialogContentText>
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={() => this.toggleOpen(false)} color="primary">
+                  Close
+                </Button>
+              </DialogActions>
+            </Dialog>
           </div>
         )
       }
@@ -94,7 +159,7 @@ class Charts extends React.Component {
         <div className="charts">
           <Bar data={getChartData(CHARTS.TOP, this.props.data)} options={this.state.options}
                onElementsClick={this.barClick} />
-          <ChartsText data={this.props.data} />
+          {/*<ChartsText data={this.props.data} />*/}
         </div>
       )
     }
