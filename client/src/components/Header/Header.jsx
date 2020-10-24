@@ -79,7 +79,6 @@ const Header = ({ classes }) => {
 
   if (location.pathname=="/covid") {
     return CovidHeader({ classes });
-    
   }
 
   return (

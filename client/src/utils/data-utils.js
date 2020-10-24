@@ -178,12 +178,11 @@ export async function getCovidData() {
 	});
 }
 
-
 const colorBins = ["#f2f0f7", "#cbc9e2", "#9e9ac8", "#756bb1", "#54278f"];
 var lockedLayer = null;
 var lockedLayerColor = null;
 
-function hashStateColor(sum, max,colorBins) {
+function hashStateColor(sum, max) {
 	let colorHashed;
 
 	if(sum < max/10) colorHashed = colorBins[0];
@@ -210,8 +209,7 @@ export function resetStateColor(layer, statesData) {
     layer.setStyle({fillColor: colorHashed})
 }
 
-export function eachState(feature, layer, statesData, currentState, setStateDisplay,colorBins) {
-
+export function eachState(feature, layer, statesData, currentState, setStateDisplay) {
 	const STATE_NAME = feature.properties.NAME;
 	const stateData = statesData[STATE_NAME];
 	if(!stateData || stateData.count <= 0) {
@@ -219,7 +217,7 @@ export function eachState(feature, layer, statesData, currentState, setStateDisp
 		return;
 	}
     // const colorHashed = colorBins[Math.floor((5*stateData.total-1)/total)];
-    let colorHashed = hashStateColor(stateData.count, statesData.max,colorBins);
+    let colorHashed = hashStateColor(stateData.count, statesData.max);
     layer.on('mouseover', function(event){
 	    if(!setStateDisplay(STATE_NAME)) return;  // setStateDisplay() will return false if we're locked onto something else
 	    // layer._path.classList.add("show-state");
