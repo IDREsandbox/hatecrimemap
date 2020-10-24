@@ -6,7 +6,7 @@ import { CircularProgress, Button, IconButton } from '@material-ui/core';
 import { FirstTimeOverlay, MapWrapper, SideMenu, CovidCharts, FilterBar, MapBar } from '../../components';
 import { counties } from '../../res/counties/statecounties.js';
 import { GeoJSON } from 'react-leaflet';
-import { getCovidData, eachStatesCounties, storeStateData, resetStateColor } from '../../utils/data-utils';
+import { getCovidData, eachStatesCounties, storeStateData, resetStateColor,covidColors } from '../../utils/data-utils';
 
 import './CovidPage.css';
 
@@ -65,7 +65,7 @@ class CovidPage extends Component {
     Object.values(this.statesRef.current.contextValue.layerContainer._layers).forEach(layer => {
       if(layer.feature) {  // only the states/counties have a feature
         // console.log(layer.feature);
-        resetStateColor(layer, this.state.data);
+        resetStateColor(layer, this.state.data,covidColors);
       }
     })
   }
