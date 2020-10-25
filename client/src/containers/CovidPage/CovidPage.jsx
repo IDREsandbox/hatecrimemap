@@ -150,9 +150,8 @@ class CovidPage extends Component {
                   :
                   <div className='sideMenu__info'>
                     <p style={{'text-align': 'center'}}><strong>How to Use</strong></p>
-                    <p>Hover over a state to show COVID-related hate crime data.</p>
+                    <p>Hover the mouse over the map to show COVID-related hate crime data.</p>
                     <p>Click on a state to lock on it to interact with the pie charts.</p>
-                    <p>Click away from the state to unlock or switch states.</p>
                     <p>Report incident(s) by visiting Stop AAPI Hate's report page on the top-right</p>
                     <br />
                     <hr />

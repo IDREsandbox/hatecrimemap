@@ -16,7 +16,7 @@ const styles = theme => ({
 
 const FilterBar = (props) => {
 
-  const [published, filterPublished] = useState(true);
+  const [published, filterPublished] = useState(false);
 
   return (
     <div className="filterBar">
@@ -29,7 +29,7 @@ const FilterBar = (props) => {
             color="primary"
           />
         }
-        label="Published Sources Only"
+        label="View only incidents that have been published"
       />
       {/*<ToggleButtonGroup
         value={published}

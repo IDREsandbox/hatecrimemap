@@ -26,6 +26,7 @@
 .side {
   grid-area: side;
   position: relative;
+  overflow-y: auto;
 }
 
 .black {

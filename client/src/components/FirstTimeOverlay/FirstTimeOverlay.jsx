@@ -28,7 +28,7 @@ class FirstTimeOverlay extends Component {
 
   async componentDidMount() {
     let hasVisited = (localStorage.getItem('visitedPage')) == 'true';
-    if(false) {
+    if(hasVisited) {
       this.setState({
         open: false,
         dontShow: false
@@ -64,11 +64,14 @@ class FirstTimeOverlay extends Component {
             you can search the data by race, gender, religion and other factors. To see data, hover 
             over a state. To report harassment or assault, click on “Report Incident” on toolbar.” 
             For more details, click on “About Us.”
+            <br />
+            <br />
+            <em>*Pleased be advised that by accessing this site, you may encounter offensive language content, and that self-reported content may also include suspicious links.</em>
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button variant="contained" onClick={this.handleClose} color="primary" autoFocus>
-            Close
+          <Button variant="contained" onClick={this.handleClose} color="primary">
+            I Understand
           </Button>
           <FormControlLabel
             control={

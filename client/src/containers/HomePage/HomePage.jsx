@@ -31,7 +31,7 @@ class HomePage extends Component {
       zoom: 4,
       isFetching: true,
       currentDisplay: 'none',
-      filterPublished: true,
+      filterPublished: false,
       locked: false, // lock the sidebar on a state or county
     };
     this.statesRef = React.createRef();
@@ -86,7 +86,7 @@ class HomePage extends Component {
   }
 
   filterIncidents = (flt) => {
-    this.setState({ filterPublished: flt }) // 'all' or 'published'
+    this.setState({ filterPublished: flt }) // true or false
   }
 
   // Return value, success (in our terms, not react's)
@@ -143,24 +143,20 @@ class HomePage extends Component {
               <h2 className="sideMenu__header">{this.state.currentDisplay == 'none' ? "How to Use" : this.state.currentDisplay }</h2>
               { this.state.currentDisplay == 'none' ? (
                   <div className="sideMenu__info">
-                    <p>Hover over a state to show hate crime data.</p>
+                    <p>Hover the mouse over the map to show hate crime data.</p>
                     <p>Click on a state to lock on it to interact with the chart.</p>
-                    <p>Click away from the state to unlock or switch states.</p>
                     <p>Click on “See COVID Hate Crimes” to navigate to a separate map.</p>
+                    <p>Click on “Report incident” at top right to navigate to the report page.</p>
                     <br />
                     <hr />
-                    <br />
-                    <p>Report incident(s) by navigating to the report page on the top-right</p>
                   </div>
                   ) : (
                 <div className="sideMenu__chart">
                   <Charts data={data[this.state.currentDisplay]} max={data.groupMax} currState={this.state.currentDisplay} />
                 </div>
                 )
-              }
-              <br />
-              <hr />
-              <br />
+            }
+            <br />
               <FilterBar filterfn={this.filterIncidents} />
             </SideMenu>
           </div>

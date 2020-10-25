@@ -13,23 +13,54 @@ import ReportIncidentPage from './containers/ReportIncidentPage/ReportIncidentPa
 import VerifyIncidentsPage from './containers/VerifyIncidentsPage/VerifyIncidentsPage';
 import './App.css';
 
+import { createMuiTheme } from '@material-ui/core/styles';
+import { ThemeProvider } from '@material-ui/core/styles';
+import CssBaseline from '@material-ui/core/CssBaseline';
+
 library.add(faCheckSquare, faChevronRight, faChevronLeft, faChevronDown, faPlusSquare, faMinusSquare)
 
+const theme = createMuiTheme({
+  overrides: {
+    MuiCssBaseline: {
+      '@global': {
+        html: {
+          // WebkitFontSmoothing: 'auto',
+        },
+      },
+    },
+
+    MuiTypography: {
+      colorTextSecondary: {
+        color: '#000000'
+      }
+    },
+
+    MuiDialogContent: {
+      root: {
+        'display': 'flex'
+      }
+    },
+  }
+});
+
 const App = () => (
-  <MuiPickersUtilsProvider utils={DateFnsUtils}>
-  <Router>
-    <div className="app">
-      <Header />
-      <Switch>
-        <Route exact path="/reportincident" component={ReportIncidentPage} />
-        <Route exact path="/verifyincidents" component={VerifyIncidentsPage} />
-        <Route path="/covid" component={CovidPage} />
-        <Route path="/" component={HomePage} />
-      </Switch>
-      <Footer />
-    </div>
-  </Router>
-  </MuiPickersUtilsProvider>
+  <ThemeProvider theme={theme}>
+    <CssBaseline />
+    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+      <Router>
+        <div className="app">
+          <Header />
+          <Switch>
+            <Route exact path="/reportincident" component={ReportIncidentPage} />
+            <Route exact path="/verifyincidents" component={VerifyIncidentsPage} />
+            <Route path="/covid" component={CovidPage} />
+            <Route path="/" component={HomePage} />
+          </Switch>
+          <Footer />
+        </div>
+      </Router>
+    </MuiPickersUtilsProvider>
+  </ThemeProvider>
 );
 
 export default App;

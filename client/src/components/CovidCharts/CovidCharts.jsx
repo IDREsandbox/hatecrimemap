@@ -17,6 +17,8 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 
+import { DataGrid } from '@material-ui/data-grid';
+
 
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -36,16 +38,34 @@ const styles = theme => ({
           <Bar data={getChartData(COVID_CHARTS.OTHER, this.props.data)} options={wholeYAxis} />
 */
 
-const TableDiaglog = (props) => {
-  const [open, toggleOpen] = useState(false);
-
-    return (
-      <div>
-
-      </div>
-    );
-  }
-
+const columns = [
+  { field: 'date', headerName: 'Date of Incident', width: 70 },
+  { field: 'cityState', headerName: 'Location', width: 100,
+    valueGetter: (params) => `${params.getValue('city')}, ${params.getValue('state')}` },
+  {
+    field: 'ethnicity',
+    headerName: 'Ethnicity',
+    width: 90,
+  },
+  {
+    field: 'gender',
+    headerName: 'Gender',
+    width: 90,
+  },
+  {
+    field: 'type',
+    headerName: 'Type',
+    width: 90,
+  },
+  {
+    field: 'description',
+    headerName: 'Description',
+    description: 'These are self-reported descriptions.',
+    sortable: false,
+    width: 160,
+    valueGetter: (params) => `${params.getValue('description')}\n${params.getValue('link') || ''}`
+  },
+]
 
 const covidRE = ["Asian", "Native American/Indigenous", "African American", "Latinx", "White", "Other"]
 const covidGender = ["Male", "Female", "Other"]
@@ -102,32 +122,20 @@ class CovidCharts extends React.Component {
     this.setState({ dialogOpen: true, dialogShow: "other", dialogFilter: covidOther[elems[0]._index]})
   }
 
-  pi = (elems) => {
-    // index into `data` of the bar clicked
-    if (!elems[0]) {
-      return
-    }
-    const dataIdx = elems[0]._index
-    switch(dataIdx) {
-      case 0:
-        this.setState({currentDisplay: dataIdx+1, drilldown: this.props.data["Race/Ethnicity"].children})
-        break
-      case 1:
-        this.setState({currentDisplay: dataIdx+1, drilldown: this.props.data["Religion"].children})
-        break
-      case 2:
-        this.setState({currentDisplay: dataIdx+1, drilldown: this.props.data["Gender/Sexuality"].children})
-        break
-      case 3:
-        this.setState({currentDisplay: dataIdx+1, drilldown: this.props.data["Miscellaneous"].children})
-    }
-
-    
-  }
-
   render() {
     if (this.props.data && this.state.options) {
         const covidData = getCovidChartData(this.props.data, this.props.currState);
+        const rows = this.props.currState == "none" ? 
+                          (
+                            Object.values(this.props.data).filter(val => val instanceof Object).reduce( (prev, next) => (
+                              prev.concat(next.children.filter(el => el[this.state.dialogShow] && el[this.state.dialogShow].includes(this.state.dialogFilter)))
+                              ), [])
+                            )
+                          :
+                          (this.props.data[this.props.currState]
+                          && this.props.data[this.props.currState].children
+                          && this.props.data[this.props.currState].children.filter(el => el[this.state.dialogShow] && el[this.state.dialogShow].includes(this.state.dialogFilter)));
+                            
         return (
           <div className="CovidCharts">
             {/*<Grid container justify="space-between">
@@ -168,16 +176,14 @@ class CovidCharts extends React.Component {
               open={this.state.dialogOpen}
               onClose={() => this.toggleOpen(false)}
               maxWidth="xl"
-              aria-labelledby="responsive-dialog-title"
-            >
+              aria-labelledby="responsive-dialog-title">
               <DialogTitle id="responsive-dialog-title">{this.state.dialogShow.charAt(0).toUpperCase() + this.state.dialogShow.slice(1)}</DialogTitle>
-              <DialogContent>
-                <DialogContentText>
-                  <TableContainer component={Paper}>
-                    <Table className={this.props.classes.table} aria-label="simple table">
+              <DialogContent style={{'display': 'flex', 'overflow-y': 'hidden'}}>
+                  <TableContainer>
+                    <Table stickyHeader className={this.props.classes.table} aria-label="simple table">
                       <TableHead>
                         <TableRow>
-                          <TableCell>Date (Y/M/D)</TableCell>
+                          <TableCell>Date (M/D/YY)</TableCell>
                           <TableCell>City, State</TableCell>
                           <TableCell>Ethnicity</TableCell>
                           <TableCell>Gender</TableCell>
@@ -190,14 +196,14 @@ class CovidCharts extends React.Component {
                           (
                             Object.values(this.props.data).filter(val => val instanceof Object).reduce( (prev, next) => (
                               prev.concat(next.children.filter(el => el[this.state.dialogShow] && el[this.state.dialogShow].includes(this.state.dialogFilter)))
-                              ), []).map((row) => (
+                              ), []).sort((a, b) => (a.date > b.date) ? 1 : -1).map((row) => (
                             <TableRow key={row.id}>
                               <TableCell>{row.date}</TableCell>
                               <TableCell>{row.city + ", " + row.state}</TableCell>
                               <TableCell>{row.ethnicity}</TableCell>
                               <TableCell>{row.gender}</TableCell>
                               <TableCell>{row.type}</TableCell>
-                              <TableCell>{row.description}<br />{row.link && <a href={row.link}>{row.link}</a>}</TableCell>
+                              <TableCell>{row.description}<br />{row.link && row.link.split(' ').map(each => <a target="_blank" href={each}>{each}</a>)}</TableCell>
                             </TableRow>
                           ))
                           )
@@ -218,10 +224,9 @@ class CovidCharts extends React.Component {
                       </TableBody>
                     </Table>
                   </TableContainer>
-                </DialogContentText>
               </DialogContent>
               <DialogActions>
-                <Button onClick={() => this.toggleOpen(false)} color="primary" autoFocus>
+                <Button onClick={() => this.toggleOpen(false)} color="primary">
                   Close
                 </Button>
               </DialogActions>
@@ -235,3 +240,7 @@ class CovidCharts extends React.Component {
 }
 
 export default withStyles(styles)(CovidCharts);
+/*
+Replace with DataGrid later?
+                  <DataGrid rows={rows} columns={columns} />
+*/
