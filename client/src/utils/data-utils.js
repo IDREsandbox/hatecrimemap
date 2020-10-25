@@ -19,6 +19,10 @@ const STATES = ["Alabama", "Alaska", "Arizona", "Arkansas", "California", "Color
 "United States Virgin Islands",
  "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming", "Puerto Rico"]
 
+
+ export const covidColors = ["#fed98e","#fed98e","#fe9929","#d95f0e","#993404"] // made the first two the same since the second bin isnt used ffffd4 was the original
+export const defaultColors = ["#f2f0f7", "#cbc9e2", "#9e9ac8", "#756bb1", "#54278f"]
+
 async function getStateStructure() {
 	let groups = await axios.get('/api/totals/groups')
 	// {key: "", name: "", }
@@ -182,9 +186,8 @@ const colorBins = ["#f2f0f7", "#cbc9e2", "#9e9ac8", "#756bb1", "#54278f"];
 var lockedLayer = null;
 var lockedLayerColor = null;
 
-function hashStateColor(sum, max) {
+function hashStateColor(sum, max,colorBins) {
 	let colorHashed;
-
 	if(sum < max/10) colorHashed = colorBins[0];
     else if(sum < max/8) colorHashed = colorBins[1];
     else if(sum < max/5) colorHashed = colorBins[2];
@@ -194,7 +197,7 @@ function hashStateColor(sum, max) {
 	return colorHashed;
 }
 
-export function resetStateColor(layer, statesData) {
+export function resetStateColor(layer, statesData,colorBins) {
 	const STATE_NAME = layer.feature.properties.NAME;
 	if(!STATE_NAME) return;
 	const stateData = statesData[STATE_NAME];
@@ -204,12 +207,12 @@ export function resetStateColor(layer, statesData) {
 		return;
 	}
 
-	let colorHashed = hashStateColor(stateData.count, statesData.max);
+	let colorHashed = hashStateColor(stateData.count, statesData.max,colorBins);
     
     layer.setStyle({fillColor: colorHashed})
 }
 
-export function eachState(feature, layer, statesData, currentState, setStateDisplay) {
+export function eachState(feature, layer, statesData, currentState, setStateDisplay,colorBins) {
 	const STATE_NAME = feature.properties.NAME;
 	const stateData = statesData[STATE_NAME];
 	if(!stateData || stateData.count <= 0) {
@@ -217,7 +220,7 @@ export function eachState(feature, layer, statesData, currentState, setStateDisp
 		return;
 	}
     // const colorHashed = colorBins[Math.floor((5*stateData.total-1)/total)];
-    let colorHashed = hashStateColor(stateData.count, statesData.max);
+	let colorHashed = hashStateColor(stateData.count, statesData.max,colorBins);
     layer.on('mouseover', function(event){
 	    if(!setStateDisplay(STATE_NAME)) return;  // setStateDisplay() will return false if we're locked onto something else
 	    // layer._path.classList.add("show-state");
@@ -247,7 +250,7 @@ export function eachState(feature, layer, statesData, currentState, setStateDisp
 	layer.setStyle({stroke: 1, weight: 1, opacity: 0.75, color: 'white', fillColor: colorHashed, fillOpacity: 0.75});
 }
 
-export function eachStatesCounties(feature, layer, countytotals, setCountyDisplay, total=33)
+export function eachStatesCounties(feature, layer, countytotals, setCountyDisplay, total=33,colorBins)
 {
 	if(countytotals[feature.properties.County_state] && countytotals[feature.properties.County_state].total > 0) {
     // const colorHashed = colorBins[Math.floor((5*countytotals[feature.properties.County_state].total-1)/total)];

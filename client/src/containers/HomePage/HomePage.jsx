@@ -5,7 +5,7 @@ import { CircularProgress, Button, IconButton } from '@material-ui/core';
 
 import { FirstTimeOverlay, MapWrapper, SideMenu, Charts, FilterBar, MapBar } from '../../components';
 import { Rectangle, GeoJSON } from 'react-leaflet';
-import { getAllData, storeStateData, resetStateColor } from '../../utils/data-utils';
+import { getAllData, storeStateData, resetStateColor,defaultColors,covidColors } from '../../utils/data-utils';
 
 import './HomePage.css';
 
@@ -60,9 +60,10 @@ class HomePage extends Component {
     Object.values(this.statesRef.current.contextValue.layerContainer._layers).forEach(layer => {
       if(layer.feature) {  // only the states/counties have a feature
         // console.log(layer.feature);
-        resetStateColor(layer, this.state.data.states);
+        resetStateColor(layer, this.state.data.states,defaultColors);
       }
     })
+    
   }
 
   changeViewRegion = (event, region) => {
