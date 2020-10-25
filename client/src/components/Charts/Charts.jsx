@@ -104,7 +104,7 @@ class Charts extends React.Component {
                 <Button variant="outlined" color="primary" size="small" aria-label="back" onClick={this.barUnClick} startIcon={<ArrowBack />}>Back</Button>
               </Grid>
               <Grid item xs={6} style={{'textAlign': 'center'}}>
-                <h4>{CHART_STRINGS[this.state.currentDisplay]} ({sumData(this.props.data[this.state.drilldown].children)} total)</h4>
+                <h4>{CHART_STRINGS[this.state.currentDisplay-1]}</h4>
               </Grid>
               <Grid item xs={3}>{/* to center the title */}</Grid>
             </Grid>

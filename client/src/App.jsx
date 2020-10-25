@@ -28,7 +28,6 @@ const theme = createMuiTheme({
         },
       },
     },
-  },
 
     MuiTypography: {
       colorTextSecondary: {
@@ -41,6 +40,7 @@ const theme = createMuiTheme({
         'display': 'flex'
       }
     },
+  }
 });
 
 const App = () => (

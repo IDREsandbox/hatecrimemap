@@ -29,7 +29,7 @@ const FilterBar = (props) => {
             color="primary"
           />
         }
-        label="Published Sources Only"
+        label="View only incidents that have been published"
       />
       {/*<ToggleButtonGroup
         value={published}

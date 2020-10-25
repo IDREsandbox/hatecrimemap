@@ -38,7 +38,7 @@ const styles = {
 const Footer = ({ classes }) => (
   <div className={classes.footer}>
     <Typography variant="caption" color="inherit" className={classes.flex}>
-      This map was created and is maintained by the UCLA American Indian Studies Center under the 
+      This map is maintained by the UCLA American Indian Studies Center under the 
       Institute of American Cultures. To contact us, email <a href="mailto:aisc@ucla.edu">aisc@ucla.edu</a>.
     </Typography>
   </div>
