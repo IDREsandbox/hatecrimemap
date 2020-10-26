@@ -77,16 +77,16 @@ const covidOther = ["Unknown"]
 
 
 const callbacks = {
-  getWordColor: word => word.value > 50 ? "blue" : "red",
+  getWordColor: word => word.value > 20 ? "blue" : "red",
   onWordClick: console.log,
   onWordMouseOver: console.log,
-  getWordTooltip: word => `${word.text} (${word.value}) [${word.value > 50 ? "good" : "bad"}]`,
+  getWordTooltip: word => `${word.text} (${word.value}) [${word.value > 20 ? "good" : "bad"}]`,
 }
 const options = {
   rotations: 1,
   rotationAngles: [0, 0],
 };
-const size = [300, 150];
+const size = [100, 100];
 const words = [
   {
     text: 'told',
@@ -162,8 +162,9 @@ class CovidCharts extends React.Component {
         // const covidWords = covidData[3].reduce((prev,next)=>prev.concat(next),[])
 
 
-        // console.log(this.props.wordCloudData)
+        console.log(this.props.wordCloudData[this.props.currState])
 
+        // need to figure out what to do for wordcloud when nothing is selected....
         const rows = this.props.currState == "none" ? 
                           (
                             Object.values(this.props.data).filter(val => val instanceof Object).reduce( (prev, next) => (
@@ -206,14 +207,14 @@ class CovidCharts extends React.Component {
               </Grid>
               {<Grid container item justify="center" xs={6}>
                 <h4>Word Cloud</h4>
-                {/* console.log(row.description) */}
-                <ReactWordcloud
+                { this.props.wordCloudData[this.props.currState] ? <ReactWordcloud
                     callbacks={callbacks}
                     options={options}
                     size={size}
-                    words={words}
-                    // words={covidWords}                    
-                  />
+                    words={this.props.wordCloudData[this.props.currState]}
+                    // words={wordCloudData}                    
+                  /> : null }
+
               </Grid>}
             </Grid>
 

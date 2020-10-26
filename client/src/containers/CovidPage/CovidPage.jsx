@@ -63,7 +63,7 @@ class CovidPage extends Component {
       //   Object.entries()
       // ).values(values).filter(val => val instanceof Object).map(state => state.children.map(objectValueReport => summarizeWordCloud(objectValueReport)))
 
-      console.log(stateNames);
+      // console.log(stateNames);
       
       // console.log(wordData)
       this.setState({
@@ -71,7 +71,7 @@ class CovidPage extends Component {
         wordCloudData: wordData,
         isFetching: false
       });
-
+      console.log(wordData);
      });
 
   }

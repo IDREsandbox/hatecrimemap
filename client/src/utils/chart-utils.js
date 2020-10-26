@@ -275,13 +275,13 @@ function mergeCounts(arr1, arr2) {
 }
 
 export function takeTop(arr) {
-  return arr.sort((a, b) => b.value - a.value).slice(0, 10);
+  return arr.sort((a, b) => b.value - a.value).slice(0,30);
 }
 
 export function wordCloudReducer(p, c) {
   mergeCounts(p, sortByCount(createWordMap(splitByWords(c.description))));
 
-  console.log(p);
+  // console.log(p);
 
   return p;
 }
@@ -326,6 +326,7 @@ function mergeArrayObjects(arr1,arr2){
 
 export const getCovidChartData = (data, state) => {
   let chartData = covidChartData;
+  // let wordClouddata = 
   if (state != "none")
   {
     // filter by state first
@@ -336,6 +337,7 @@ export const getCovidChartData = (data, state) => {
   chartData[1].datasets[0].data = covidGender.map(filt => Object.values(data).filter(val => val instanceof Object).reduce( ((prev, s) => prev+s.children.filter(c => c.gender.includes(filt)).length), 0)) // map from data.gender::aggregate
   chartData[2].datasets[0].data = covidType.map(filt => Object.values(data).filter(val => val instanceof Object).reduce( ((prev, s) => prev+s.children.filter(c => c.type.includes(filt)).length), 0)) // map from data.type::aggregate
 
+  
   // use objectvaluereport.description
   // chartData[3] = Object.values(data).filter(val => val instanceof Object).map(state => state.children.map(objectValueReport => summarizeWordCloud(objectValueReport)))
   
