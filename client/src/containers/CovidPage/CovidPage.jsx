@@ -33,6 +33,7 @@ const styles = () => ({
 });
 
 let wordData = {}
+let stateNames = {}
 
 
 class CovidPage extends Component {
@@ -53,9 +54,16 @@ class CovidPage extends Component {
  
   async componentDidMount() {
     getCovidData().then((values) => {
+      stateNames = Object.keys(values)
       wordData = Object.values(values).filter(val => val instanceof Object).map(state => state.children.map(objectValueReport => summarizeWordCloud(objectValueReport)))
-      console.log(values);
-      console.log(wordData)
+
+      // wordData = Object.fromEntries(
+      //   Object.entries()
+      // ).values(values).filter(val => val instanceof Object).map(state => state.children.map(objectValueReport => summarizeWordCloud(objectValueReport)))
+
+      console.log(stateNames);
+      
+      // console.log(wordData)
       this.setState({
         data: values,
         wordCloudData: wordData,

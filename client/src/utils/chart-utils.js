@@ -219,34 +219,56 @@ function createWordMap(wordsArray) {
 
 }
 
-function sortByCount (wordsMap) {
+function sortByCount (wordsMap,stateKeys) {
 
   // sort by count in descending order
-  var finalWordsArray = [];
-  finalWordsArray = Object.keys(wordsMap).map(function (key) {
+  var tempWordsArray = [];
+  tempWordsArray = Object.keys((wordsMap)).map(function (key) {
     return {
       name: key,
+      state: stateKeys,
       total: wordsMap[key]
     };
+
   });
 
-  finalWordsArray.sort(function (a, b) {
+  tempWordsArray.sort(function (a, b) {
     return b.total - a.total;
   });
+  const tempWords = tempWordsArray.reduce(((accum, wordobj) => {
+    if(!accum.hasOwnProperty(wordobj.name)) {
+      accum[wordobj.name] = 1;
+    } else {
+      accum[wordobj.name]++;
+    }
+    return accum;
+   }), {})
+
+// I HATE REDUCTIONNNNNNNNNNNNNNNNNNNNNNNNNNN -Albert
+   let finalWordsArray =[]
+   finalWordsArray = Object.keys(tempWords).map(totals => ({name: totals, total: tempWords[totals]}));
+
+  console.log(finalWordsArray);
   
-  // console.log(finalWordsArray);
+  // Object.keys(finalresult).map(totals => ({name: totals, total: finalresult[totals]}));
+  
+  
+  
   
   return finalWordsArray;
+
+
+
 
 }
 
 // function for summarizing word cloud and reducing
 export function summarizeWordCloud(reportWords){
-  // console.log(reportWords.description)  
-  
+  // console.log(reportWords.state)  
+  const stateKeys = reportWords.state
   const wordsArray = splitByWords(reportWords.description)
   const wordsMap = createWordMap(wordsArray);
-  const finalWordsArray = sortByCount(wordsMap);
+  const finalWordsArray = sortByCount(wordsMap,stateKeys);
   // console.log(finalWordsArray)
   return finalWordsArray
 }

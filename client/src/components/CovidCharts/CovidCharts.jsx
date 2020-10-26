@@ -160,7 +160,9 @@ class CovidCharts extends React.Component {
     if (this.props.data && this.state.options) {
         const covidData = getCovidChartData(this.props.data, this.props.currState);
         // const covidWords = covidData[3].reduce((prev,next)=>prev.concat(next),[])
-        console.log(this.props.wordCloudData)
+
+
+        // console.log(this.props.wordCloudData)
 
         const rows = this.props.currState == "none" ? 
                           (
