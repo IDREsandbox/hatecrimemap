@@ -7,6 +7,7 @@ import { FirstTimeOverlay, MapWrapper, SideMenu, CovidCharts, FilterBar, MapBar 
 import { counties } from '../../res/counties/statecounties.js';
 import { GeoJSON } from 'react-leaflet';
 import { getCovidData, eachStatesCounties, storeStateData, resetStateColor,covidColors } from '../../utils/data-utils';
+import {stopWords,splitByWords,createWordMap,sortByCount,summarizeWordCloud,reduceWordCloud} from '../../utils/chart-utils'
 
 import './CovidPage.css';
 
@@ -31,6 +32,9 @@ const styles = () => ({
   }
 });
 
+let wordData = {}
+
+
 class CovidPage extends Component {
   constructor(props) {
     super(props);
@@ -46,16 +50,20 @@ class CovidPage extends Component {
     this.hawaiiRef = React.createRef();
     this.mapRef = React.createRef();
   }
-
+ 
   async componentDidMount() {
-    getCovidData().then(values => {
+    getCovidData().then((values) => {
+      wordData = Object.values(values).filter(val => val instanceof Object).map(state => state.children.map(objectValueReport => summarizeWordCloud(objectValueReport)))
       console.log(values);
+      console.log(wordData)
       this.setState({
         data: values,
+        wordCloudData: wordData,
         isFetching: false
       });
-      
-    });
+
+     });
+
   }
 
   resetMapData = () => {
@@ -158,7 +166,7 @@ class CovidPage extends Component {
                   </div>
                 }
               <div className="sideMenu__chart">
-                <CovidCharts data={this.state.data} currState={this.state.currentDisplay} max={this.state.data.groupMax} />
+                <CovidCharts data={this.state.data} currState={this.state.currentDisplay} max={this.state.data.groupMax} wordCloudData={this.state.wordCloudData} />
                 <p className={classes.footnotes}><em>* Please note that this data includes a small number of reports from witnesses of a different race than the victims.</em></p>
               </div>
             </SideMenu>

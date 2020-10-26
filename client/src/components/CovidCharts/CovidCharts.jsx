@@ -2,7 +2,7 @@ import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import './CovidCharts.css';
 import { Button } from '@material-ui/core';
-import { ArrowBack } from '@material-ui/icons';
+import { ArrowBack, ThreeSixty } from '@material-ui/icons';
 import { COVID_CHARTS, CHART_STRINGS, getCovidChartData, sumData } from '../../utils/chart-utils';
 import { Bar, Pie } from 'react-chartjs-2';
 import Grid from '@material-ui/core/Grid';
@@ -17,7 +17,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 
-import { DataGrid } from '@material-ui/data-grid';
+// import { DataGrid } from '@material-ui/data-grid';
 
 
 import Dialog from '@material-ui/core/Dialog';
@@ -27,7 +27,10 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
 
+import ReactWordcloud from 'react-wordcloud';
 
+import 'tippy.js/dist/tippy.css';
+import 'tippy.js/animations/scale.css';
 const styles = theme => ({
 
 });
@@ -71,6 +74,37 @@ const covidRE = ["Asian", "Native American/Indigenous", "African American", "Lat
 const covidGender = ["Male", "Female", "Other"]
 const covidType = ["Verbal", "Physical", "Coughing/Spitting", "Online", "Other"]
 const covidOther = ["Unknown"]
+
+
+const callbacks = {
+  getWordColor: word => word.value > 50 ? "blue" : "red",
+  onWordClick: console.log,
+  onWordMouseOver: console.log,
+  getWordTooltip: word => `${word.text} (${word.value}) [${word.value > 50 ? "good" : "bad"}]`,
+}
+const options = {
+  rotations: 1,
+  rotationAngles: [0, 0],
+};
+const size = [300, 150];
+const words = [
+  {
+    text: 'told',
+    value: 64,
+  },
+  {
+    text: 'mistake',
+    value: 11,
+  },
+  {
+    text: 'thought',
+    value: 16,
+  },
+  {
+    text: 'bad',
+    value: 17,
+  },
+]
 
 
 class CovidCharts extends React.Component {
@@ -125,6 +159,9 @@ class CovidCharts extends React.Component {
   render() {
     if (this.props.data && this.state.options) {
         const covidData = getCovidChartData(this.props.data, this.props.currState);
+        // const covidWords = covidData[3].reduce((prev,next)=>prev.concat(next),[])
+        console.log(this.props.wordCloudData)
+
         const rows = this.props.currState == "none" ? 
                           (
                             Object.values(this.props.data).filter(val => val instanceof Object).reduce( (prev, next) => (
@@ -150,6 +187,7 @@ class CovidCharts extends React.Component {
             <Grid container justify="space-between">
               <Grid container item justify="center" xs={6}>
                 <h4>Ethnicity</h4>
+                
                 <Pie onElementsClick={this.pieREClick} data={covidData[0]} options={{legend: { display: false } }} />
               </Grid>
               <Grid container item justify="center" xs={6}>
@@ -164,10 +202,17 @@ class CovidCharts extends React.Component {
                 <h4>Type</h4>
                 <Pie onElementsClick={this.pieTypeClick} data={covidData[2]} options={{legend: { display: false } }} />
               </Grid>
-              {/*<Grid container item justify="center" xs={6}>
-                <h4>Other</h4>
-                <Pie onElementsClick={this.pieClick} data={covidData[3]} options={{legend: { display: false } }} />
-              </Grid>*/}
+              {<Grid container item justify="center" xs={6}>
+                <h4>Word Cloud</h4>
+                {/* console.log(row.description) */}
+                <ReactWordcloud
+                    callbacks={callbacks}
+                    options={options}
+                    size={size}
+                    words={words}
+                    // words={covidWords}                    
+                  />
+              </Grid>}
             </Grid>
 
 
