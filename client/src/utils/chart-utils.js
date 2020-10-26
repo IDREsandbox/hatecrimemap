@@ -115,7 +115,6 @@ export function getChartData(chart, allData) {
   //   data = mapData(allData, true);
   // }
 
-  console.log(data);
 
   chartData.datasets[0].data = data.counts; // because we don't want "counts" => undefined
   chartData.labels = data.labels;
@@ -131,10 +130,12 @@ const mapRE = (data) => {
     }
     return p;
   }, {});
-  return ({
-    labels: Object.keys(agg),
-    counts: Object.values(agg)
-  });
+  let ret = {labels: [], counts: []}
+  Object.entries(agg).sort(([k1,], [k2,]) => k1 > k2 ? 1 : -1).forEach(([k, v]) => {
+    ret.labels.push(k);
+    ret.counts.push(v);
+  })
+  return ret;
 }
 
 const mapReligion = (data) => {
@@ -146,10 +147,12 @@ const mapReligion = (data) => {
     }
     return p;
   }, {});
-  return ({
-    labels: Object.keys(agg),
-    counts: Object.values(agg)
-  });
+  let ret = {labels: [], counts: []}
+  Object.entries(agg).sort(([k1,], [k2,]) => k1 > k2 ? 1 : -1).forEach(([k, v]) => {
+    ret.labels.push(k);
+    ret.counts.push(v);
+  })
+  return ret;
 }
 
 const mapGender = (data) => {
@@ -161,10 +164,12 @@ const mapGender = (data) => {
     }
     return p;
   }, {});
-  return ({
-    labels: Object.keys(agg),
-    counts: Object.values(agg)
-  });
+  let ret = {labels: [], counts: []}
+  Object.entries(agg).sort(([k1,], [k2,]) => k1 > k2 ? 1 : -1).forEach(([k, v]) => {
+    ret.labels.push(k);
+    ret.counts.push(v);
+  })
+  return ret;
 }
 
 const mapOther = (data) => {
@@ -176,10 +181,12 @@ const mapOther = (data) => {
     }
     return p;
   }, {});
-  return ({
-    labels: Object.keys(agg),
-    counts: Object.values(agg)
-  });
+  let ret = {labels: [], counts: []}
+  Object.entries(agg).sort(([k1,], [k2,]) => k1 > k2 ? 1 : -1).forEach(([k, v]) => {
+    ret.labels.push(k);
+    ret.counts.push(v);
+  })
+  return ret;
 }
 
 const mapTop = (data) => {
@@ -194,10 +201,12 @@ const mapTop = (data) => {
     }
     return p;
   }, {});
-  return ({
-    labels: Object.keys(agg),
-    counts: Object.values(agg)
-  });
+  let ret = {labels: [], counts: []}
+  CHART_STRINGS.forEach(chart => {
+    ret.labels.push(chart)
+    ret.counts.push(agg[chart])
+  })
+  return ret;
 }
 
 const mapData = (data, sort=false) => {

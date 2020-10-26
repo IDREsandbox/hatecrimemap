@@ -42,7 +42,7 @@ async function getStateStructure() {
 		groupToCounts(groups.data.ret, stateData[state])
 	})
 
-	console.log(stateData)
+
 
 	return stateData
 }
@@ -70,9 +70,27 @@ function storeStateDataReports(data) {
 	})
 	stateData.max = max
 
-	console.log(stateData);
+
 
 	return stateData
+}
+
+export function filterPublishedReports(data) {
+	let newData = {}
+	STATES.forEach(state => {
+		newData[state] = { count: 0, children: [] }
+	})
+
+	let newMax = 0;
+	Object.keys(newData).forEach(state => {
+		if(data[state] instanceof Object) {
+			newData[state].children = data[state].children.filter(e => e.published);
+			newData[state].count = newData[state].children.length;
+			if (newData[state].count > newMax) newMax = newData[state].count;
+		}
+	})
+	newData.max = newMax;
+	return newData;
 }
 
 export function storeStateData(data, start) {
@@ -121,7 +139,7 @@ export function storeCountyData(countyData) {
 
 export function getStateDataReports() {
 	return axios.get('/api/totals/reports')
-	.then(res => { console.log(res); return storeStateDataReports(res.data.result) })
+	.then(res => { return storeStateDataReports(res.data.result) })
 	.catch((err) => {
 		alert(`API call failed: ${err}`);
 		return {};
@@ -130,7 +148,7 @@ export function getStateDataReports() {
 
 function getStateData() {
 	return axios.get('/api/totals/')
-	.then(res => { console.log(res); return res.data })
+	.then(res => {  return res.data })
 	.catch((err) => {
 		alert(`API call failed: ${err}`);
 		return {};
@@ -139,7 +157,7 @@ function getStateData() {
 
 function getPublishedStateData() {
 	return axios.get('/api/totals/published')
-	.then(res => { console.log(res); return res.data })
+	.then(res => {  return res.data })
 	.catch((err) => {
 		alert(`API call failed: ${err}`);
 		return {};
@@ -187,7 +205,7 @@ function formatCovidData(data) {
 
 export async function getCovidData() {
 	return axios.get('/api/totals/covid')
-	.then(res => { console.log(res); return formatCovidData(res.data.result) })
+	.then(res => {  return formatCovidData(res.data.result) })
 	.catch((err) => {
 		alert(`API call failed: ${err}`);
 		return {};

@@ -109,7 +109,6 @@ class CovidCharts extends React.Component {
   }
 
   pieREClick = (elems) => {
-    console.log(elems)
     this.setState({ dialogOpen: true, dialogShow: "ethnicity", dialogFilter: covidRE[elems[0]._index]})
   }
     pieGenderClick = (elems) => {
@@ -178,7 +177,7 @@ class CovidCharts extends React.Component {
               maxWidth="xl"
               aria-labelledby="responsive-dialog-title">
               <DialogTitle id="responsive-dialog-title">{this.state.dialogShow.charAt(0).toUpperCase() + this.state.dialogShow.slice(1)}</DialogTitle>
-              <DialogContent style={{'display': 'flex', 'overflow-y': 'hidden'}}>
+              <DialogContent>
                   <TableContainer>
                     <Table stickyHeader className={this.props.classes.table} aria-label="simple table">
                       <TableHead>
