@@ -38,14 +38,22 @@ class FirstTimeOverlay extends Component {
 
   handleCheck = (e) => {
     this.setState((prev, props) => ({dontShow: !prev.dontShow}))
+    if (document.cookie.split(';').some((item) => item.trim().startsWith('dontshow='))) {
+      console.log('First time visiting')
+  }
+  console.log('you checked dont show')
+
   }
 
   handleClose = () => {
     if(this.state.dontShow) {
         localStorage.setItem('visitedPage', true)
+        document.cookie = "dontshow=do_not_show";
     }
     this.setState({ open: false });
   }
+
+
 
   render() {
     return (
