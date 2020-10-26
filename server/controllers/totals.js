@@ -241,6 +241,28 @@ const statePublishedOnly = `SELECT us_states.name, g2.name as parent, g1.name as
 								join groups g2 on g2.id = t.parent
 							`
 
+const allReports = `SELECT t.id, to_char(t.incidentdate, 'MM/DD/YY') as date, us_states.name as state, g2.name as parent, g1.name as group, t.published, t.sourceurl as link, t.description
+					FROM (SELECT i.id, i.incidentdate, state_id, i.primary_group_id as parent, group_id, published, sourceurl, description
+							FROM incident i
+							JOIN incident_groups ON i.id = incident_id
+					) t JOIN us_states ON us_states.id = t.state_id
+						JOIN groups g1 ON g1.id = t.group_id
+						JOIN groups g2 ON g2.id = t.parent
+						ORDER by date
+					`
+
+router.get('/reports', (req, res) => {
+	db.any(allReports)
+	.then(result => {
+		res.status(200)
+		.json({
+			status: 'success',
+			result
+		});
+	})
+	.catch(err => console.log('ERROR: ', err));
+});
+
 router.get('/', (req, res) => {
 	db.any(stateAllCategories)
 	.then((result) => {

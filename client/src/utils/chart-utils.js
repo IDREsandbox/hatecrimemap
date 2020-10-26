@@ -27,6 +27,11 @@ export const CHART_STRINGS = ["Race/Ethnicity", "Religion", "Gender/Sexuality", 
 
 const CHART_COLORS = ["#003f5c", "#f95d6a", "#665191", "#d45087", "#ffa600", "#a05195", "#ff7c43", "#2f4b7c"]
 
+const RACE_LABELS = ["African American", "Asian", "Latinx", "Native American/Indigenous", "White", "Other Race/Ethnicity"]
+const RELIGION_LABELS = ["Anti-Jewish", "Anti-Christian", "Anti-Muslim", "Other Religion"]
+const GENDER_LABELS = ["Male", "Female", "Transgender", "LGBTQ+", "Non-Binary", "Other Gender/Sexuality"]
+const MISC_LABELS = ["Immigrant", "Disabled", "National Origin", "Unknown", "Other Miscellaneous"]
+
 var raceChartData = {
   datasets: [
   {
@@ -90,25 +95,109 @@ export function getChartData(chart, allData) {
   let data;
   if (chart === CHARTS.RACE_ETHNICITY) {
     chartData = raceChartData;
+    data = mapRE(allData);
   } else if (chart === CHARTS.RELIGION) {
     chartData = religionChartData;
+    data = mapReligion(allData);
   } else if (chart === CHARTS.GENDER_SEXUALITY) {
     chartData = genderChartData;
+    data = mapGender(allData);
   } else if (chart === CHARTS.OTHER) {
     chartData = otherChartData;
+    data = mapOther(allData);
   } else if (chart === CHARTS.TOP) {
     chartData = topChartData;
-    data = mapData(allData);
+    data = mapTop(allData);
   }
 
-  if (chart !== CHARTS.TOP) {
-    // Sort the counts
-    data = mapData(allData, true);
-  }
+  // if (chart !== CHARTS.TOP) {
+  //   // Sort the counts
+  //   data = mapData(allData, true);
+  // }
+
+  console.log(data);
 
   chartData.datasets[0].data = data.counts; // because we don't want "counts" => undefined
   chartData.labels = data.labels;
   return chartData;
+}
+
+const mapRE = (data) => {
+  const agg = data.filter(e => RACE_LABELS.includes(e.group)).reduce((p, c) => {
+    if (!p.hasOwnProperty(c.group)) {
+      p[c.group] = 1;
+    } else {
+      p[c.group]++;
+    }
+    return p;
+  }, {});
+  return ({
+    labels: Object.keys(agg),
+    counts: Object.values(agg)
+  });
+}
+
+const mapReligion = (data) => {
+  const agg = data.filter(e => RELIGION_LABELS.includes(e.group)).reduce((p, c) => {
+    if (!p.hasOwnProperty(c.group)) {
+      p[c.group] = 1;
+    } else {
+      p[c.group]++;
+    }
+    return p;
+  }, {});
+  return ({
+    labels: Object.keys(agg),
+    counts: Object.values(agg)
+  });
+}
+
+const mapGender = (data) => {
+  const agg = data.filter(e => GENDER_LABELS.includes(e.group)).reduce((p, c) => {
+    if (!p.hasOwnProperty(c.group)) {
+      p[c.group] = 1;
+    } else {
+      p[c.group]++;
+    }
+    return p;
+  }, {});
+  return ({
+    labels: Object.keys(agg),
+    counts: Object.values(agg)
+  });
+}
+
+const mapOther = (data) => {
+  const agg = data.filter(e => MISC_LABELS.includes(e.group)).reduce((p, c) => {
+    if (!p.hasOwnProperty(c.group)) {
+      p[c.group] = 1;
+    } else {
+      p[c.group]++;
+    }
+    return p;
+  }, {});
+  return ({
+    labels: Object.keys(agg),
+    counts: Object.values(agg)
+  });
+}
+
+const mapTop = (data) => {
+  const agg = data.filter(e => (e.parent=="Race/Ethnicity" && RACE_LABELS.includes(e.group))
+    || (e.parent=="Gender/Sexuality" && GENDER_LABELS.includes(e.group))
+    || (e.parent=="Religion" && RELIGION_LABELS.includes(e.group))
+    || (e.parent=="Miscellaneous" && MISC_LABELS.includes(e.group))).reduce((p, c) => {
+    if (!p.hasOwnProperty(c.parent)) {
+      p[c.parent] = 1;
+    } else {
+      p[c.parent]++;
+    }
+    return p;
+  }, {});
+  return ({
+    labels: Object.keys(agg),
+    counts: Object.values(agg)
+  });
 }
 
 const mapData = (data, sort=false) => {

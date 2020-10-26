@@ -192,27 +192,8 @@ class CovidCharts extends React.Component {
                         </TableRow>
                       </TableHead>
                       <TableBody>
-                        { this.props.currState == "none" ? 
-                          (
-                            Object.values(this.props.data).filter(val => val instanceof Object).reduce( (prev, next) => (
-                              prev.concat(next.children.filter(el => el[this.state.dialogShow] && el[this.state.dialogShow].includes(this.state.dialogFilter)))
-                              ), []).sort((a, b) => (a.date > b.date) ? 1 : -1).map((row) => (
-                            <TableRow key={row.id}>
-                              <TableCell>{row.date}</TableCell>
-                              <TableCell>{row.city + ", " + row.state}</TableCell>
-                              <TableCell>{row.ethnicity}</TableCell>
-                              <TableCell>{row.gender}</TableCell>
-                              <TableCell>{row.type}</TableCell>
-                              <TableCell>{row.description}<br />{row.link && row.link.split(' ').map(each => <a target="_blank" href={each}>{each}</a>)}</TableCell>
-                            </TableRow>
-                          ))
-                          )
-                          :
-
-                          this.props.data[this.props.currState]
-                          && this.props.data[this.props.currState].children
-                          && this.props.data[this.props.currState].children.filter(el => el[this.state.dialogShow] && el[this.state.dialogShow].includes(this.state.dialogFilter)).map((row) => (
-                            <TableRow key={row.id}>
+                        { rows.map((row) => (
+                          <TableRow key={row.id}>
                             <TableCell>{row.date}</TableCell>
                             <TableCell>{row.city + ", " + row.state}</TableCell>
                             <TableCell>{row.ethnicity}</TableCell>

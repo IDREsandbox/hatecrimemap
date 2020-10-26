@@ -5,7 +5,7 @@ import { CircularProgress, Button, IconButton } from '@material-ui/core';
 
 import { FirstTimeOverlay, MapWrapper, SideMenu, Charts, FilterBar, MapBar } from '../../components';
 import { Rectangle, GeoJSON } from 'react-leaflet';
-import { getAllData, storeStateData, resetStateColor,defaultColors,covidColors } from '../../utils/data-utils';
+import { getAllData, storeStateData, resetStateColor,defaultColors,covidColors, getStateDataReports } from '../../utils/data-utils';
 
 import './HomePage.css';
 
@@ -41,12 +41,9 @@ class HomePage extends Component {
   }
 
   async componentDidMount() {
-    getAllData().then(values => {
+    getStateDataReports().then(values => {
       this.setState({
-        data: { states: storeStateData(values[0].result, values[2]),
-                publishedStates: storeStateData(values[1].result, values[2])
-                // we shouldn't add more api endpoints for filters, it should be dynamic within the front-end
-              },
+        data: values,
         isFetching: false
       });
       
@@ -60,7 +57,7 @@ class HomePage extends Component {
     Object.values(this.statesRef.current.contextValue.layerContainer._layers).forEach(layer => {
       if(layer.feature) {  // only the states/counties have a feature
         // console.log(layer.feature);
-        resetStateColor(layer, this.state.data.states,defaultColors);
+        resetStateColor(layer, this.state.data,defaultColors);
       }
     })
     
@@ -126,7 +123,7 @@ class HomePage extends Component {
       return <CircularProgress className={classes.progress} />;
     }
 
-    const data = this.state.filterPublished ? this.state.data.publishedStates : this.state.data.states
+    const data = this.state.filterPublished ? this.state.data : this.state.data
     
     return (
       <div className="homePage">

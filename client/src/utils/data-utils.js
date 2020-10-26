@@ -47,6 +47,34 @@ async function getStateStructure() {
 	return stateData
 }
 
+function storeStateDataReports(data) {
+	let stateData = {}
+	STATES.forEach(state => {
+		stateData[state] = { count: 0, children: [] }
+	})
+
+	data.forEach(report => {
+		if (stateData[report.state]) {
+			if (!report.link || !report.link.includes("http")) report.link = "";
+			if (!report.date) report.date = "Unknown";
+			stateData[report.state].children.push(report);
+		}
+	})
+
+	let max = 0
+	Object.keys(stateData).forEach(state => {
+		stateData[state].count = stateData[state].children.length
+		if (stateData[state].count > max) {
+			max = stateData[state].count
+		}
+	})
+	stateData.max = max
+
+	console.log(stateData);
+
+	return stateData
+}
+
 export function storeStateData(data, start) {
 	// `/api/totals/` returns: {name, parent, group, count}[]
 
@@ -91,6 +119,15 @@ export function storeCountyData(countyData) {
 	return _countyData;
 }
 
+export function getStateDataReports() {
+	return axios.get('/api/totals/reports')
+	.then(res => { console.log(res); return storeStateDataReports(res.data.result) })
+	.catch((err) => {
+		alert(`API call failed: ${err}`);
+		return {};
+	});
+}
+
 function getStateData() {
 	return axios.get('/api/totals/')
 	.then(res => { console.log(res); return res.data })
@@ -119,7 +156,7 @@ function getCountyData() {  // TODO: Lazy load?
 }
 
 export async function getAllData() {
-	return Promise.all([getStateData(), getPublishedStateData(), getStateStructure()]); // TODO: remove once we get county data working
+	return Promise.all([getStateDataReports(), getPublishedStateData(), getStateStructure()]); // TODO: remove once we get county data working
 	return Promise.all([getStateData(), getCountyData()]);
 }
 
