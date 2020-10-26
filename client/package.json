@@ -36,6 +36,7 @@
     "react-scripts": "^3.4.3",
     "react-tap-event-plugin": "^3.0.3",
     "react-test-renderer": "^16.13.1",
+    "react-wordcloud": "^1.2.7",
     "uuid": "^8.1.0",
     "uuidv4": "^6.1.0"
   },

@@ -225,9 +225,8 @@ function sortByCount (wordsMap,stateKeys) {
   var tempWordsArray = [];
   tempWordsArray = Object.keys((wordsMap)).map(function (key) {
     return {
-      name: key,
-      state: stateKeys,
-      total: wordsMap[key]
+      text: key,
+      value: wordsMap[key]
     };
 
   });
@@ -235,6 +234,8 @@ function sortByCount (wordsMap,stateKeys) {
   tempWordsArray.sort(function (a, b) {
     return b.total - a.total;
   });
+  return tempWordsArray
+
   const tempWords = tempWordsArray.reduce(((accum, wordobj) => {
     if(!accum.hasOwnProperty(wordobj.name)) {
       accum[wordobj.name] = 1;
@@ -243,6 +244,7 @@ function sortByCount (wordsMap,stateKeys) {
     }
     return accum;
    }), {})
+  console.log(tempWordsArray)
 
 // I HATE REDUCTIONNNNNNNNNNNNNNNNNNNNNNNNNNN -Albert
    let finalWordsArray =[]
@@ -260,6 +262,28 @@ function sortByCount (wordsMap,stateKeys) {
 
 
 
+}
+
+function mergeCounts(arr1, arr2) {
+  arr2.forEach(wordobj => {
+    if (arr1.find(e => e.text == wordobj.text)) {
+      arr1.value += wordobj.value
+    } else {
+      arr1.push(wordobj);
+    }
+  })
+}
+
+export function takeTop(arr) {
+  return arr.sort((a, b) => b.value - a.value).slice(0, 10);
+}
+
+export function wordCloudReducer(p, c) {
+  mergeCounts(p, sortByCount(createWordMap(splitByWords(c.description))));
+
+  console.log(p);
+
+  return p;
 }
 
 // function for summarizing word cloud and reducing

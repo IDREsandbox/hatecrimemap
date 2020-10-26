@@ -7,7 +7,7 @@ import { FirstTimeOverlay, MapWrapper, SideMenu, CovidCharts, FilterBar, MapBar 
 import { counties } from '../../res/counties/statecounties.js';
 import { GeoJSON } from 'react-leaflet';
 import { getCovidData, eachStatesCounties, storeStateData, resetStateColor,covidColors } from '../../utils/data-utils';
-import {stopWords,splitByWords,createWordMap,sortByCount,summarizeWordCloud,reduceWordCloud} from '../../utils/chart-utils'
+import {stopWords,splitByWords,createWordMap,sortByCount,summarizeWordCloud,reduceWordCloud, wordCloudReducer, takeTop} from '../../utils/chart-utils'
 
 import './CovidPage.css';
 
@@ -55,7 +55,9 @@ class CovidPage extends Component {
   async componentDidMount() {
     getCovidData().then((values) => {
       stateNames = Object.keys(values)
-      wordData = Object.values(values).filter(val => val instanceof Object).map(state => state.children.map(objectValueReport => summarizeWordCloud(objectValueReport)))
+      wordData = {}
+      Object.keys(values).filter(state => values[state] instanceof Object).forEach(state => wordData[state] = takeTop(values[state].children.reduce(wordCloudReducer, [])));
+      console.log(wordData);
 
       // wordData = Object.fromEntries(
       //   Object.entries()
