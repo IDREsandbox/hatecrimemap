@@ -33,6 +33,13 @@ const styles = theme => ({
           <Bar data={getChartData(CHARTS.GENDER_SEXUALITY, this.props.data)} options={wholeYAxis} />
           <Bar data={getChartData(CHARTS.OTHER, this.props.data)} options={wholeYAxis} />
 */
+
+const RACE_LABELS = ["African American", "Asian", "Latinx", "Native American/Indigenous", "White", "Other Race/Ethnicity"]
+const RELIGION_LABELS = ["Anti-Jewish", "Anti-Christian", "Anti-Muslim", "Other Religion"]
+const GENDER_LABELS = ["Male", "Female", "Transgender", "LGBTQ+", "Non-Binary", "Other Gender/Sexuality"]
+const MISC_LABELS = ["Immigrant", "Disabled", "National Origin", "Unknown", "Other Miscellaneous"]
+const FILTERS = [RACE_LABELS, RELIGION_LABELS, GENDER_LABELS, MISC_LABELS]
+
 class Charts extends React.Component {
 
   constructor(props) {
@@ -54,7 +61,9 @@ class Charts extends React.Component {
           }]
         }
       },
-      drilldown: {}
+      drilldown: {},
+      popup_filter_num: 0,
+      popup_filter: ""
     }
   }
 
@@ -63,7 +72,7 @@ class Charts extends React.Component {
   }
 
   pieClick = (elems) => {
-    this.setState({ dialogOpen: true });
+    this.setState({ dialogOpen: true, popup_filter: FILTERS[this.state.popup_filter_num][elems[0]._index-1] });
   }
 
   toggleOpen = (open) => {
@@ -78,16 +87,16 @@ class Charts extends React.Component {
     const dataIdx = elems[0]._index
     switch(dataIdx) {
       case 0:
-        this.setState({currentDisplay: dataIdx+1, drilldown: "Race/Ethnicity"})
+        this.setState({currentDisplay: dataIdx+1, drilldown: "Race/Ethnicity", popup_filter_num: 0})
         break
       case 1:
-        this.setState({currentDisplay: dataIdx+1, drilldown: "Religion"})
+        this.setState({currentDisplay: dataIdx+1, drilldown: "Religion", popup_filter_num: 1})
         break
       case 2:
-        this.setState({currentDisplay: dataIdx+1, drilldown: "Gender/Sexuality"})
+        this.setState({currentDisplay: dataIdx+1, drilldown: "Gender/Sexuality", popup_filter_num: 2})
         break
       case 3:
-        this.setState({currentDisplay: dataIdx+1, drilldown: "Miscellaneous"})
+        this.setState({currentDisplay: dataIdx+1, drilldown: "Miscellaneous", popup_filter_num: 3})
     }
 
     
@@ -96,6 +105,9 @@ class Charts extends React.Component {
   render() {
     if (this.props.data && this.state.options) {
       if(this.state.currentDisplay != CHARTS.TOP) {
+
+        const rows = this.props.data.children.filter(e => e.parent == this.state.drilldown);
+
         // Pie charts!
         return (
           <div key={this.props.currState} className="charts">
@@ -108,7 +120,7 @@ class Charts extends React.Component {
               </Grid>
               <Grid item xs={3}>{/* to center the title */}</Grid>
             </Grid>
-            <Pie data={getChartData(this.state.currentDisplay, this.props.data[this.state.drilldown].children)} 
+            <Pie data={getChartData(this.state.currentDisplay, this.props.data.children)} 
                   onElementsClick={this.pieClick}/>
             {/*<ChartsText data={this.props.data[this.state.drilldown].children} />*/}
 
@@ -120,30 +132,28 @@ class Charts extends React.Component {
             >
               <DialogTitle id="responsive-dialog-title">Hate Crimes</DialogTitle>
               <DialogContent>
-                <DialogContentText>
-                    <Table stickyHeader className="hello" aria-label="simple table">
-                      <TableHead>
-                        <TableRow>
-                          <TableCell>Date (Y/M/D)</TableCell>
-                          <TableCell>City, State</TableCell>
-                          <TableCell>Ethnicity</TableCell>
-                          <TableCell>Gender</TableCell>
-                          <TableCell>Type</TableCell>
-                          <TableCell>Description</TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                            <TableRow>
-                              <TableCell>_</TableCell>
-                              <TableCell>_</TableCell>
-                              <TableCell>_</TableCell>
-                              <TableCell>_</TableCell>
-                              <TableCell>_</TableCell>
-                              <TableCell>_</TableCell>
-                            </TableRow>
-                      </TableBody>
-                    </Table>
-                </DialogContentText>
+                <Table stickyHeader className="hello" aria-label="simple table">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>Date (M/D/Y)</TableCell>
+                        <TableCell>State</TableCell>
+                        <TableCell>Primary Reason</TableCell>
+                        <TableCell>Source</TableCell>
+                        <TableCell>Description</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {rows.map(row => (
+                          <TableRow>
+                            <TableCell>{row.date}</TableCell>
+                            <TableCell>{row.state}</TableCell>
+                            <TableCell>{row.group}</TableCell>
+                            <TableCell>{row.sourceurl || "N/A"}</TableCell>
+                            <TableCell>{row.description || ""}</TableCell>
+                          </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
               </DialogContent>
               <DialogActions>
                 <Button onClick={() => this.toggleOpen(false)} color="primary">
@@ -157,7 +167,7 @@ class Charts extends React.Component {
 
       return (
         <div className="charts">
-          <Bar data={getChartData(CHARTS.TOP, this.props.data)} options={this.state.options}
+          <Bar data={getChartData(CHARTS.TOP, this.props.data.children)} options={this.state.options}
                onElementsClick={this.barClick} />
           {/*<ChartsText data={this.props.data} />*/}
         </div>

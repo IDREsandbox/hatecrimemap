@@ -59,7 +59,8 @@ class AboutDialog extends Component {
           <DialogTitle id="responsive-dialog-title">Hate Crime Map</DialogTitle>
           <DialogContent>
             <DialogContentText>
-              <p>Hate crime is a global and national human rights problem of significant concern. 
+              <p>According to the latest FBI statistics, hate crimes in the United States have risen almost 22% since 2015, with the vast majority reported as motivated by race, ethnicity or ancestry bias (59.6 percent in 2018). 
+              Hate crime is a global and national human rights problem of significant concern. 
               Incidents are on the rise, but hate crimes statistics are notoriously unreliable. 
               The definition of hate crime varies from jurisdiction to jurisdiction, underreporting 
               is widespread, and law enforcement is reluctant to designate crimes as hate crimes. 

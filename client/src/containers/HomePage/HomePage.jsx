@@ -5,7 +5,7 @@ import { CircularProgress, Button, IconButton } from '@material-ui/core';
 
 import { FirstTimeOverlay, MapWrapper, SideMenu, Charts, FilterBar, MapBar } from '../../components';
 import { Rectangle, GeoJSON } from 'react-leaflet';
-import { getAllData, storeStateData, resetStateColor,defaultColors,covidColors } from '../../utils/data-utils';
+import { getAllData, storeStateData, resetStateColor,defaultColors,covidColors, getStateDataReports, filterPublishedReports } from '../../utils/data-utils';
 
 import './HomePage.css';
 
@@ -41,12 +41,10 @@ class HomePage extends Component {
   }
 
   async componentDidMount() {
-    getAllData().then(values => {
+    getStateDataReports().then(values => {
       this.setState({
-        data: { states: storeStateData(values[0].result, values[2]),
-                publishedStates: storeStateData(values[1].result, values[2])
-                // we shouldn't add more api endpoints for filters, it should be dynamic within the front-end
-              },
+        data: values,
+        publishedData: filterPublishedReports(values),
         isFetching: false
       });
       
@@ -60,7 +58,7 @@ class HomePage extends Component {
     Object.values(this.statesRef.current.contextValue.layerContainer._layers).forEach(layer => {
       if(layer.feature) {  // only the states/counties have a feature
         // console.log(layer.feature);
-        resetStateColor(layer, this.state.data.states,defaultColors);
+        resetStateColor(layer, this.state.data,defaultColors);
       }
     })
     
@@ -78,7 +76,6 @@ class HomePage extends Component {
           } else if (region == MAP_DISPLAY.HAWAII) {
             bounds = this.hawaiiRef.current.leafletElement.getBounds().pad(0.5)
           }
-          console.log(bounds)
           this.mapRef.current.leafletElement.fitBounds(bounds)
         }
       })
@@ -102,7 +99,6 @@ class HomePage extends Component {
   }
 
   updateCounty = (county, lock = false) => {
-    console.log(county);
     if(lock) {
       this.setState({currentDisplay: county, locked: county!=="none"});
       return true;
@@ -126,7 +122,12 @@ class HomePage extends Component {
       return <CircularProgress className={classes.progress} />;
     }
 
-    const data = this.state.filterPublished ? this.state.data.publishedStates : this.state.data.states
+    let data;
+    if (this.state.filterPublished) {
+      data = this.state.publishedData
+    } else {
+      data = this.state.data;
+    }
     
     return (
       <div className="homePage">

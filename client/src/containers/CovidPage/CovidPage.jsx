@@ -49,7 +49,6 @@ class CovidPage extends Component {
 
   async componentDidMount() {
     getCovidData().then(values => {
-      console.log(values);
       this.setState({
         data: values,
         isFetching: false
@@ -87,7 +86,6 @@ class CovidPage extends Component {
   }
 
   updateCounty = (county, lock = false) => {
-    console.log(county);
     if(lock) {
       this.setState({currentDisplay: county, locked: county!=="none"});
       return true;
@@ -110,7 +108,6 @@ class CovidPage extends Component {
           } else if (region == MAP_DISPLAY.HAWAII) {
             bounds = this.hawaiiRef.current.leafletElement.getBounds().pad(0.5)
           }
-          console.log(bounds)
           this.mapRef.current.leafletElement.fitBounds(bounds)
         }
       })
@@ -149,7 +146,7 @@ class CovidPage extends Component {
                   </div>
                   :
                   <div className='sideMenu__info'>
-                    <p style={{'text-align': 'center'}}><strong>How to Use</strong></p>
+                    <p><strong>How to Use</strong></p>
                     <p>Hover the mouse over the map to show COVID-related hate crime data.</p>
                     <p>Click on a state to lock on it to interact with the pie charts.</p>
                     <p>Report incident(s) by visiting Stop AAPI Hate's report page on the top-right</p>
