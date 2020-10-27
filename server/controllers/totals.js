@@ -126,10 +126,10 @@ router.use((req, res, next) => {
 });
 
 
-const covidQuery = `SELECT id, to_char(date_incident, 'MM/DD/YY') as date, Time_Incident, Gender, City_Updated as city, State_Updated as state, Ethnicity_Cleaned as ethnicity, Type_Discrimination_Cleaned as type, Reason_Discrimination_Cleaned, Description, any_supportinglinks as link
-							FROM aapi_covid_data_raw_10_2020
-							WHERE (State_Updated <> 'OTHER' OR (State_Updated = 'Other' AND City_Updated <> 'Online')) AND flag_troll = 0 AND date_incident > '1/1/2020'::date AND date_incident < '12/12/2020'::date
-							ORDER BY date_incident`
+const covidQuery = `SELECT "ID", to_char("Date_Incident", 'MM/DD/YY') as date, "Gender" as gender, "City_Updated" as city, "State_Updated" as state, "Ethnicity_Cleaned" as ethnicity, "Type_Discrimination_Cleaned" as type, "Reason_Discrimination_Cleaned", "Description" as description, "Any_SupportingLinks" as link
+							FROM aapi_covid_data
+							WHERE ("State_Updated" <> 'OTHER' OR ("State_Updated" = 'Other' AND "City_Updated" <> 'Online')) AND "Flag_Troll" = 'false' AND "Date_Incident" > '1/1/2020'::date AND "Date_Incident" < '12/12/2020'::date
+							ORDER BY "Date_Incident"`
 
 router.get('/covid', (req, res) => {
 	db.any(covidQuery)
@@ -240,6 +240,28 @@ const statePublishedOnly = `SELECT us_states.name, g2.name as parent, g1.name as
 								JOIN groups g1 ON g1.id = t.group_id
 								join groups g2 on g2.id = t.parent
 							`
+
+const allReports = `SELECT t.id, to_char(t.incidentdate, 'MM/DD/YY') as date, us_states.name as state, g2.name as parent, g1.name as group, t.published, t.sourceurl as link, t.description
+					FROM (SELECT i.id, i.incidentdate, state_id, i.primary_group_id as parent, group_id, published, sourceurl, description
+							FROM incident i
+							JOIN incident_groups ON i.id = incident_id
+					) t JOIN us_states ON us_states.id = t.state_id
+						JOIN groups g1 ON g1.id = t.group_id
+						JOIN groups g2 ON g2.id = t.parent
+						ORDER by date
+					`
+
+router.get('/reports', (req, res) => {
+	db.any(allReports)
+	.then(result => {
+		res.status(200)
+		.json({
+			status: 'success',
+			result
+		});
+	})
+	.catch(err => console.log('ERROR: ', err));
+});
 
 router.get('/', (req, res) => {
 	db.any(stateAllCategories)

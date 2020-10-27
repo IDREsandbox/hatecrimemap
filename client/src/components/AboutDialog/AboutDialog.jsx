@@ -60,6 +60,7 @@ class AboutDialog extends Component {
           <DialogContent>
             <DialogContentText>
               <p>Hate crime is a global and national human rights problem of significant concern. 
+              According to the latest FBI statistics, hate crimes in the United States have risen almost 22% between 2015 and 2018, with the vast majority reported as motivated by race, ethnicity or ancestry bias (59.6% in 2018). 
               Incidents are on the rise, but hate crimes statistics are notoriously unreliable. 
               The definition of hate crime varies from jurisdiction to jurisdiction, underreporting 
               is widespread, and law enforcement is reluctant to designate crimes as hate crimes. 

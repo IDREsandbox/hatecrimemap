@@ -42,9 +42,55 @@ async function getStateStructure() {
 		groupToCounts(groups.data.ret, stateData[state])
 	})
 
-	console.log(stateData)
+
 
 	return stateData
+}
+
+function storeStateDataReports(data) {
+	let stateData = {}
+	STATES.forEach(state => {
+		stateData[state] = { count: 0, children: [] }
+	})
+
+	data.forEach(report => {
+		if (stateData[report.state]) {
+			if (!report.link || !report.link.includes("http")) report.link = "";
+			if (!report.date) report.date = "Unknown";
+			stateData[report.state].children.push(report);
+		}
+	})
+
+	let max = 0
+	Object.keys(stateData).forEach(state => {
+		stateData[state].count = stateData[state].children.length
+		if (stateData[state].count > max) {
+			max = stateData[state].count
+		}
+	})
+	stateData.max = max
+
+
+
+	return stateData
+}
+
+export function filterPublishedReports(data) {
+	let newData = {}
+	STATES.forEach(state => {
+		newData[state] = { count: 0, children: [] }
+	})
+
+	let newMax = 0;
+	Object.keys(newData).forEach(state => {
+		if(data[state] instanceof Object) {
+			newData[state].children = data[state].children.filter(e => e.published);
+			newData[state].count = newData[state].children.length;
+			if (newData[state].count > newMax) newMax = newData[state].count;
+		}
+	})
+	newData.max = newMax;
+	return newData;
 }
 
 export function storeStateData(data, start) {
@@ -91,9 +137,18 @@ export function storeCountyData(countyData) {
 	return _countyData;
 }
 
+export function getStateDataReports() {
+	return axios.get('/api/totals/reports')
+	.then(res => { return storeStateDataReports(res.data.result) })
+	.catch((err) => {
+		alert(`API call failed: ${err}`);
+		return {};
+	});
+}
+
 function getStateData() {
 	return axios.get('/api/totals/')
-	.then(res => { console.log(res); return res.data })
+	.then(res => {  return res.data })
 	.catch((err) => {
 		alert(`API call failed: ${err}`);
 		return {};
@@ -102,7 +157,7 @@ function getStateData() {
 
 function getPublishedStateData() {
 	return axios.get('/api/totals/published')
-	.then(res => { console.log(res); return res.data })
+	.then(res => {  return res.data })
 	.catch((err) => {
 		alert(`API call failed: ${err}`);
 		return {};
@@ -119,7 +174,7 @@ function getCountyData() {  // TODO: Lazy load?
 }
 
 export async function getAllData() {
-	return Promise.all([getStateData(), getPublishedStateData(), getStateStructure()]); // TODO: remove once we get county data working
+	return Promise.all([getStateDataReports(), getPublishedStateData(), getStateStructure()]); // TODO: remove once we get county data working
 	return Promise.all([getStateData(), getCountyData()]);
 }
 
@@ -161,7 +216,7 @@ function formatCovidData(data) {
 
 export async function getCovidData() {
 	return axios.get('/api/totals/covid')
-	.then(res => { console.log(res); return formatCovidData(res.data.result) })
+	.then(res => {  return formatCovidData(res.data.result) })
 	.catch((err) => {
 		alert(`API call failed: ${err}`);
 		return {};
