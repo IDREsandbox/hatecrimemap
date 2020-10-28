@@ -339,14 +339,12 @@ class ReportIncidentPage extends Component {
   reportIncident = () => {
     const dataToSubmit = createDataToSubmit(this.state);
     
-    // console.log(dataToSubmit)
-    this.setState({ snackOpen: true })
-    // axios.post('/api/maps/incident', dataToSubmit)
-    //   .then(res => {
-    //     alert("Incident reported!");
-    //     this.resetState();
-    //   })
-    //   .catch(err => console.log(err));
+    axios.post('/api/maps/incident', dataToSubmit)
+      .then(res => {
+        this.setState({ snackOpen: true })
+        this.resetState();
+      })
+      .catch(err => console.log(err));
   }
 
   resetState = () => this.setState(getInitialState());
