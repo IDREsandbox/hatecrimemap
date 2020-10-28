@@ -72,7 +72,8 @@ class Charts extends React.Component {
   }
 
   pieClick = (elems) => {
-    this.setState({ dialogOpen: true, popup_filter: FILTERS[this.state.popup_filter_num][elems[0]._index-1] });
+    if (!elems[0] || !elems[0]._chart) return;
+    this.setState({ dialogOpen: true, popup_filter: elems[0]._chart.config.data.labels[elems[0]._index] });
   }
 
   toggleOpen = (open) => {
@@ -106,7 +107,7 @@ class Charts extends React.Component {
     if (this.props.data && this.state.options) {
       if(this.state.currentDisplay != CHARTS.TOP) {
 
-        const rows = this.props.data.children.filter(e => e.parent == this.state.drilldown);
+        const rows = this.props.data.children.filter(e => e.group == this.state.popup_filter);
 
         // Pie charts!
         return (
@@ -148,7 +149,7 @@ class Charts extends React.Component {
                             <TableCell>{row.date}</TableCell>
                             <TableCell>{row.state}</TableCell>
                             <TableCell>{row.group}</TableCell>
-                            <TableCell>{row.sourceurl || "N/A"}</TableCell>
+                            <TableCell>{row.link || "N/A"}</TableCell>
                             <TableCell>{row.description || ""}</TableCell>
                           </TableRow>
                       ))}
