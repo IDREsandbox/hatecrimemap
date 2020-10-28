@@ -211,30 +211,27 @@ class CovidCharts extends React.Component {
               <Grid item xs={3}>* to center the title *</Grid>
             </Grid>*/}
             <Grid container justify="space-between">
-            
-                
-
-                
-                { this.props.wordCloudData[this.props.currState] ? <Grid container item justify="center" xs={6}>
+            {<Grid container item justify="center" xs={6}>
                 <h4>Word Cloud</h4>
-                  <Resizable
-                  defaultSize={{
-                    width: 200,
-                    height: 200
-                  }}
-                  style={resizeStyle}
-                >                                
-                <div style={{ height: "100%", width: "100%" }}> <ReactWordcloud
+                <Resizable
+        defaultSize={{
+          width: 200,
+          height: 200
+        }}
+        style={resizeStyle}
+      >                
+                <div style={{ height: "100%", width: "100%" }}>
+                { this.props.wordCloudData[this.props.currState] ? <ReactWordcloud
                     callbacks={callbacks}
                     options={options}
                     // size={size}
                     words={this.props.wordCloudData[this.props.currState]}
                     // words={wordCloudData}                    
-                    /> </div></Resizable></Grid>: null }
+                    /> : null }
 
-                    
-                    
-                                
+                    </div>
+                    </Resizable>
+              </Grid>}                   
               <Grid container item justify="center" xs={6}>
                 <h4>Ethnicity</h4>
                 
