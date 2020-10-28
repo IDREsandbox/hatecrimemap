@@ -71,7 +71,7 @@ class CovidPage extends Component {
         wordCloudData: wordData,
         isFetching: false
       });
-      console.log(wordData);
+      // console.log(wordData);
      });
 
   }
@@ -168,6 +168,7 @@ class CovidPage extends Component {
                     <p><strong>How to Use</strong></p>
                     <p>Hover the mouse over the map to show COVID-related hate crime data.</p>
                     <p>Click on a state to lock on it to interact with the pie charts.</p>
+                    <p>Click on the slice of the pie chart to open the data table.</p>
                     <p>Report incident(s) by visiting Stop AAPI Hate's report page on the top-right</p>
                     <br />
                     <hr />
