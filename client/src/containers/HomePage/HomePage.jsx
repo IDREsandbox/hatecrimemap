@@ -47,6 +47,7 @@ class HomePage extends Component {
       run: false,
       disableBeacon: true,
       isFixed: true,
+
       steps: [
 
         {
@@ -78,33 +79,39 @@ class HomePage extends Component {
           target: '.side',
           content: 'Click on a bar in the chart to see details, and then click "Next".',
           spotlightClicks: true,
+          disableBeacon: true,
           overlayColor: 'rgba(5, 5, 10, 0.1)',
         },
         {
           target: '#hatecrimePieChart',
           content: 'Click on a pie chart slice to open the data table for that state, and then click "Next". ',
           spotlightClicks: true,
-            overlayColor: 'rgba(5, 5, 10, 0.3)',
-            zIndex: 1000,
+          overlayColor: 'rgba(5, 5, 10, 0.3)',
+          disableBeacon: true,
+          disableOverlay:true,
         },
         {
           target: '#hateCrimeDataTable',
           content: 'View data about individual incident reports, then click "Next".',
+          disableOverlay:true,
+          disableBeacon: true,
           spotlightClicks: true,
         },
         {
           target: '#closeDataTable',
           content: 'Click "Close" the table, then click "Next".',
+          disableOverlay:true,
           spotlightClicks: true,
         },
-
         {
+          disableBeacon: false,
           target: '#covidButton',
           content: 'Asian American hate crimes related to COVID-19 discrimination can be found here.',
         },      
         {
           target: '#reportIncidentButton',
           content: 'Report an incident by clicking on "Report Incident".',
+          disableBeacon: false,
         },      
         {
           target: '#hateCrimeTutorial',
@@ -212,12 +219,6 @@ class HomePage extends Component {
       // Need to set our running state to false, so we can restart if we click start again.
       this.setState({ run: false });
     }
-
-
-
-    // console.groupCollapsed(type);
-    // console.log(data); //eslint-disable-line no-console
-    // console.groupEnd();
   };
   
   getZoom = () => {
@@ -257,11 +258,12 @@ class HomePage extends Component {
               showProgress={true}
               continuous={true}
               showSkipButton={true}
-              showProgress={true}
+              showProgress={false}
               callback={this.handleJoyrideCallback}
               stepIndex={stepIndex}
               // spotlightClicks={true}
-              steps={steps} 
+              steps={steps}
+              locale={{back: 'Back', close: 'Close', last: 'Finish', next: 'Next', skip: 'Skip' }}
               styles={{
                 options: {
                   arrowColor: 'rgb(236, 242, 255)',
@@ -269,7 +271,7 @@ class HomePage extends Component {
                   overlayColor: 'rgba(5, 5, 10, 0.7)',
                   primaryColor: 'rgb(0, 100, 255)',
                   textColor: 'black',
-                  width: 900,
+                  width: 800,
                   zIndex: 9000,
                 }
         }}
@@ -278,7 +280,10 @@ class HomePage extends Component {
  
           <div className="side">
             <SideMenu>
-              <h2 className="sideMenu__header">Hate Crimes in {this.state.currentDisplay == 'none' ? "the US" : this.state.currentDisplay }</h2>
+              <h2 className="sideMenu__header">Hate Crimes in {this.state.currentDisplay == 'none' ? "the US" : this.state.currentDisplay }               
+                          <IconButton  onClick={this.runTutorial} className={classes.menuButton} color="gray" aria-label="Menu">
+                          <HelpIcon id="hateCrimeTutorial" />
+                      </IconButton></h2>
               
                 <div className="sideMenu__chart">
                   <Charts data={data} max={data.groupMax} currState={this.state.currentDisplay} />
@@ -286,7 +291,7 @@ class HomePage extends Component {
             <br />
               <FilterBar filterfn={this.filterIncidents} />
 
-              <Button onClick={this.runTutorial} color="inherit"><HelpIcon id="hateCrimeTutorial" /></Button>
+
             
             </SideMenu>
           </div>
