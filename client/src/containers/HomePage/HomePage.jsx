@@ -219,12 +219,6 @@ class HomePage extends Component {
       // Need to set our running state to false, so we can restart if we click start again.
       this.setState({ run: false });
     }
-
-
-
-    // console.groupCollapsed(type);
-    // console.log(data); //eslint-disable-line no-console
-    // console.groupEnd();
   };
   
   getZoom = () => {
@@ -286,7 +280,10 @@ class HomePage extends Component {
  
           <div className="side">
             <SideMenu>
-              <h2 className="sideMenu__header">Hate Crimes in {this.state.currentDisplay == 'none' ? "the US" : this.state.currentDisplay }</h2>
+              <h2 className="sideMenu__header">Hate Crimes in {this.state.currentDisplay == 'none' ? "the US" : this.state.currentDisplay }               
+                          <IconButton  onClick={this.runTutorial} className={classes.menuButton} color="gray" aria-label="Menu">
+                          <HelpIcon id="hateCrimeTutorial" />
+                      </IconButton></h2>
               
                 <div className="sideMenu__chart">
                   <Charts data={data} max={data.groupMax} currState={this.state.currentDisplay} />
@@ -294,7 +291,7 @@ class HomePage extends Component {
             <br />
               <FilterBar filterfn={this.filterIncidents} />
 
-              <Button onClick={this.runTutorial} color="inherit"><HelpIcon id="hateCrimeTutorial" /></Button>
+
             
             </SideMenu>
           </div>
