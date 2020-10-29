@@ -2,7 +2,7 @@ import peewee
 import psycopg2
 
 import sys
-from . import files
+# import config
 
 print('Arguments:', len(sys.argv))
 print('sutff:', sys.argv)
