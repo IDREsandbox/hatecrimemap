@@ -88,8 +88,8 @@ class HomePage extends Component {
           }
         },
         {
-          target: '#closeDataTable',
-          content: 'Click here to close the table, then click "Next".',
+          target: '.MuiDialog-paper',
+          content: 'View data about individual incident reports, and close the table at the bottom right, then click "Next".',
           disableBeacon: false,
           spotlightClicks: true,
         },
@@ -201,14 +201,21 @@ class HomePage extends Component {
       // Update state to advance the tour
       this.setState({ stepIndex: index + (action === ACTIONS.PREV ? -1 : 1) });
     }
-    else if ([STATUS.FINISHED, STATUS.SKIPPED].includes(status)) {
+    
+    if (action == ACTIONS.CLOSE || action == ACTIONS.SKIP) {
+      this.setState({ stepIndex: 0, run: false })
+    }
+    
+    if ([STATUS.FINISHED, STATUS.SKIPPED].includes(status)) {
       // Need to set our running state to false, so we can restart if we click start again.
       this.setState({ run: false });
     }
 
-    console.groupCollapsed(type);
-    console.log(data); //eslint-disable-line no-console
-    console.groupEnd();
+
+
+    // console.groupCollapsed(type);
+    // console.log(data); //eslint-disable-line no-console
+    // console.groupEnd();
   };
   
   getZoom = () => {

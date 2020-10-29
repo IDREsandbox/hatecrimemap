@@ -34,6 +34,9 @@ import ReactWordcloud from 'react-wordcloud';
 
 import 'tippy.js/dist/tippy.css';
 import 'tippy.js/animations/scale.css';
+
+import { takeTop } from '../../utils/chart-utils'
+
 const styles = theme => ({
 
 });
@@ -183,7 +186,7 @@ class CovidCharts extends React.Component {
         // const covidWords = covidData[3].reduce((prev,next)=>prev.concat(next),[])
 
 
-        console.log(this.props.wordCloudData[this.props.currState])
+        // console.log(this.props.wordCloudData[this.props.currState])
 
         // need to figure out what to do for wordcloud when nothing is selected....
         const rows = this.props.currState == "none" ? 
@@ -221,16 +224,17 @@ class CovidCharts extends React.Component {
         style={resizeStyle}
       >                
                 <div style={{ height: "100%", width: "100%" }}>
-                { this.props.wordCloudData[this.props.currState] ? <ReactWordcloud
+                  <ReactWordcloud
                     callbacks={callbacks}
                     options={options}
                     // size={size}
-                    words={this.props.wordCloudData[this.props.currState]}
+                    words={this.props.currState != 'none' ? this.props.wordCloudData[this.props.currState]
+                          : takeTop(Object.values(this.props.wordCloudData).flat()) }
                     // words={wordCloudData}                    
-                    /> : null }
+                    />
 
-                    </div>
-                    </Resizable>
+                  </div>
+                </Resizable>
               </Grid>}                   
               <Grid container item justify="center" xs={6}>
                 <h4>Ethnicity</h4>
