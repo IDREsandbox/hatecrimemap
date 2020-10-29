@@ -51,6 +51,7 @@ class FirstTimeOverlay extends Component {
         document.cookie = "dontshow=do_not_show";
     }
     this.setState({ open: false });
+    this.props.onClose()
   }
 
 

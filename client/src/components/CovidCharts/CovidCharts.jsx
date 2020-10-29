@@ -288,7 +288,7 @@ class CovidCharts extends React.Component {
                   </TableContainer>
               </DialogContent>
               <DialogActions>
-                <Button onClick={() => this.toggleOpen(false)} color="primary">
+                <Button id="closeDataTable" onClick={() => this.toggleOpen(false)} color="primary">
                   Close
                 </Button>
               </DialogActions>

@@ -7,7 +7,10 @@ import { FirstTimeOverlay, MapWrapper, SideMenu, Charts, FilterBar, MapBar } fro
 import { Rectangle, GeoJSON } from 'react-leaflet';
 import { getAllData, storeStateData, resetStateColor,defaultColors,covidColors, getStateDataReports, filterPublishedReports } from '../../utils/data-utils';
 
-import Joyride from 'react-joyride';
+import HelpIcon from '@material-ui/icons/Help';
+
+import Joyride, { ACTIONS, EVENTS, STATUS } from 'react-joyride';
+
 
 import './HomePage.css';
 
@@ -41,20 +44,67 @@ class HomePage extends Component {
       filterPublished: false,
       spotlightClicks: true,  
       locked: false, // lock the sidebar on a state or county
-      run: true,
+      run: false,
+      isFixed: true,
       steps: [
+
+        {
+          target: '#hateCrimeTutorial',
+          content: 'Welcome to the Hate Crime Map tutorial! Follow the instructions and then hit "Next" to proceed',
+          spotlightClicks: true,
+          disableBeacon: true,
+          disableOverlay:true,
+        },
+
         {
           target: '#USA',
-          content: 'This is the map panel!',
+          content: 'This is the map panel, hover over states to see their charts. Hover outside the United States to show all of the data again, then click "Next".',
+          spotlightClicks: true,
+          backgroundColor: 'rgba(236, 242, 255,0.3)',
+          overlayColor: 'rgba(5, 5, 10, 0.3)',
         },
+
         {
           target: '.leaflet-interactive:nth-child(5)',
-          content: 'Hover a State to see deets!',
+          content: 'You can click on a states to lock it. Click on California to lock it and then click "Next"',
+          spotlightClicks: true,
+          overlayColor: 'rgba(5, 5, 10, 0.8)',
         },
         {
           target: '.side',
-          content: 'Click a pie chart to be l33ts',
-        }]
+          content: 'Click on a bar in the chart to see details, and then click "Next".',
+          spotlightClicks: true,
+          disableBeacon: false,
+        },
+        {
+          target: '.chartjs-render-monitor',
+          content: 'Click on a pie chart slice to open the data table for that state, and then click "Next". ',
+          spotlightClicks: true,
+          disableBeacon: false,
+          style:{
+            overlayColor: 'rgba(5, 5, 10, 0.3)',
+            zIndex: 1000,
+          }
+        },
+        {
+          target: '#closeDataTable',
+          content: 'Click here to close the table, then click "Next".',
+          disableBeacon: false,
+          spotlightClicks: true,
+        },
+        {
+          target: '.Header-gotoCovid-7',
+          content: 'You can see Asian American hate crimes stemming from COVID-19 here.',
+        },      
+        {
+          target: '#reportIncidentButton',
+          content: 'Report an incident by clicking on "Report Incident".',
+        },      
+        {
+          target: '#hateCrimeTutorial',
+          content: 'You can view this tutorial again by clicking this button.',
+        },      
+      ]
     };
     this.statesRef = React.createRef();
     this.alaskaRef = React.createRef();
@@ -132,13 +182,37 @@ class HomePage extends Component {
     }
     return false;
   }
+  showTutorial = () => {
+    this.setState({run:true})
+  }
 
+  runTutorial = () => {
+    this.setState({run:true})
+  }
+
+  handleJoyrideCallback = data => {
+    const { action, index, status, type } = data;
+
+    if ([EVENTS.STEP_AFTER, EVENTS.TARGET_NOT_FOUND].includes(type)) {
+      // Update state to advance the tour
+      this.setState({ stepIndex: index + (action === ACTIONS.PREV ? -1 : 1) });
+    }
+    else if ([STATUS.FINISHED, STATUS.SKIPPED].includes(status)) {
+      // Need to set our running state to false, so we can restart if we click start again.
+      this.setState({ run: false });
+    }
+
+    console.groupCollapsed(type);
+    console.log(data); //eslint-disable-line no-console
+    console.groupEnd();
+  };
+  
   getZoom = () => {
     return this.state.zoom;
   }
 
   render() {
-    const { isFetching, currentDisplay,run, steps } = this.state;
+    const { isFetching, currentDisplay,run, steps,stepIndex } = this.state;
     const { classes } = this.props;
 
 
@@ -157,7 +231,7 @@ class HomePage extends Component {
 
       <div className="homePage">
 
-          <FirstTimeOverlay />
+          <FirstTimeOverlay onClose={this.showTutorial}/>
 
           {/* TODO: context for mapdata and data.states? */}
           <MapWrapper region={this.state.region} updateState={this.updateState} updateCounty={this.updateCounty}
@@ -171,17 +245,19 @@ class HomePage extends Component {
               continuous={true}
               showSkipButton={true}
               showProgress={true}
-              
+              callback={this.handleJoyrideCallback}
+              stepIndex={stepIndex}
+              // spotlightClicks={true}
               steps={steps} 
               styles={{
                 options: {
-                  arrowColor: '#e3ffeb',
-                  backgroundColor: '#e3ffeb',
-                  overlayColor: 'rgba(79, 26, 0, 0.4)',
-                  primaryColor: '#000',
-                  textColor: '#004a14',
+                  arrowColor: 'rgb(236, 242, 255)',
+                  backgroundColor: 'rgb(236, 242, 255)',
+                  overlayColor: 'rgba(5, 5, 10, 0.7)',
+                  primaryColor: 'rgb(0, 100, 255)',
+                  textColor: 'black',
                   width: 900,
-                  zIndex: 1000,
+                  zIndex: 9000,
                 }
         }}
       />
@@ -207,6 +283,9 @@ class HomePage extends Component {
             }
             <br />
               <FilterBar filterfn={this.filterIncidents} />
+
+              <Button onClick={this.runTutorial} color="inherit"><HelpIcon id="hateCrimeTutorial" /></Button>
+            
             </SideMenu>
           </div>
       </div>

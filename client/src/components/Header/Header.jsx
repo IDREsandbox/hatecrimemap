@@ -13,7 +13,7 @@ import {
 
 import AboutDialog from '../AboutDialog/AboutDialog';
 import AboutCovidDialog from '../AboutDialog/AboutCovidDialog';
-import HelpIcon from '@material-ui/icons/Help';
+
 
 import { useLocation } from 'react-router-dom'; // change color... 
 
@@ -102,11 +102,11 @@ const Header = ({ classes }) => {
           <Button className={classes.gotoCovid} color="inherit">See COVID Hate Crimes</Button>
         </Link>
         <Link to="/reportincident" className={classes.link}>
-          <Button className={classes.reportIncidentButton} color="inherit">Report Incident</Button>
+          <Button className={classes.reportIncidentButton} color="inherit" id="reportIncidentButton">Report Incident</Button>
         </Link>
         <AboutDialog></AboutDialog>
         {/* add function to start the tour here */}
-        <Button onClick={classes.handleClickStart} color="inherit"><HelpIcon /></Button>
+
         
 
       </Toolbar>
