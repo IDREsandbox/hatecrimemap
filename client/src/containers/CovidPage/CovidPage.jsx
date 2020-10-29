@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { CircularProgress, Button, IconButton } from '@material-ui/core';
+import Joyride from 'react-joyride';
 
 import { FirstTimeOverlay, MapWrapper, SideMenu, CovidCharts, FilterBar, MapBar } from '../../components';
 import { counties } from '../../res/counties/statecounties.js';
@@ -10,6 +11,8 @@ import { getCovidData, eachStatesCounties, storeStateData, resetStateColor,covid
 import {stopWords,splitByWords,createWordMap,sortByCount,summarizeWordCloud,reduceWordCloud, wordCloudReducer, takeTop} from '../../utils/chart-utils'
 
 import './CovidPage.css';
+
+
 
 export const MAP_DISPLAY = {
   USA: 1,

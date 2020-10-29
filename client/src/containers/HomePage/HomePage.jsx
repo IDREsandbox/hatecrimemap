@@ -7,6 +7,8 @@ import { FirstTimeOverlay, MapWrapper, SideMenu, Charts, FilterBar, MapBar } fro
 import { Rectangle, GeoJSON } from 'react-leaflet';
 import { getAllData, storeStateData, resetStateColor,defaultColors,covidColors, getStateDataReports, filterPublishedReports } from '../../utils/data-utils';
 
+import Joyride from 'react-joyride';
+
 import './HomePage.css';
 
 export const MAP_DISPLAY = {
@@ -23,7 +25,12 @@ const styles = () => ({
   },
 });
 
+
 class HomePage extends Component {
+
+// begin joy ride
+
+
   constructor(props) {
     super(props);
     this.state = {
@@ -32,12 +39,29 @@ class HomePage extends Component {
       isFetching: true,
       currentDisplay: 'none',
       filterPublished: false,
+      spotlightClicks: true,  
       locked: false, // lock the sidebar on a state or county
+      run: true,
+      steps: [
+        {
+          target: '#USA',
+          content: 'This is the map panel!',
+        },
+        {
+          target: '.leaflet-interactive:nth-child(5)',
+          content: 'Hover a State to see deets!',
+        },
+        {
+          target: '.side',
+          content: 'Click a pie chart to be l33ts',
+        }]
     };
     this.statesRef = React.createRef();
     this.alaskaRef = React.createRef();
     this.hawaiiRef = React.createRef();
     this.mapRef = React.createRef();
+
+    
   }
 
   async componentDidMount() {
@@ -114,7 +138,7 @@ class HomePage extends Component {
   }
 
   render() {
-    const { isFetching, currentDisplay } = this.state;
+    const { isFetching, currentDisplay,run, steps } = this.state;
     const { classes } = this.props;
 
 
@@ -128,17 +152,41 @@ class HomePage extends Component {
     } else {
       data = this.state.data;
     }
-    
+
     return (
+
       <div className="homePage">
+
           <FirstTimeOverlay />
+
           {/* TODO: context for mapdata and data.states? */}
           <MapWrapper region={this.state.region} updateState={this.updateState} updateCounty={this.updateCounty}
           statesRef={this.statesRef} mapRef={this.mapRef} alaskaRef={this.alaskaRef} hawaiiRef={this.hawaiiRef}
           data={data} updateView={this.changeViewRegion} updateZoom={this.updateZoom} zoom={this.getZoom}>
           <MapBar changeRegion={this.changeViewRegion} region={this.state.region}/>
+          <Joyride
+              run={run}
+              scrollToFirstStep={true}
+              showProgress={true}
+              continuous={true}
+              showSkipButton={true}
+              showProgress={true}
+              
+              steps={steps} 
+              styles={{
+                options: {
+                  arrowColor: '#e3ffeb',
+                  backgroundColor: '#e3ffeb',
+                  overlayColor: 'rgba(79, 26, 0, 0.4)',
+                  primaryColor: '#000',
+                  textColor: '#004a14',
+                  width: 900,
+                  zIndex: 1000,
+                }
+        }}
+      />
           </MapWrapper>
-
+ 
           <div className="side">
             <SideMenu>
               <h2 className="sideMenu__header">{this.state.currentDisplay == 'none' ? "How to Use" : this.state.currentDisplay }</h2>
