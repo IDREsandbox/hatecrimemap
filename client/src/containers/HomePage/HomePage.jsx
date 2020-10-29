@@ -45,6 +45,7 @@ class HomePage extends Component {
       spotlightClicks: true,  
       locked: false, // lock the sidebar on a state or county
       run: false,
+      disableBeacon: true,
       isFixed: true,
       steps: [
 
@@ -74,7 +75,7 @@ class HomePage extends Component {
           target: '.side',
           content: 'Click on a bar in the chart to see details, and then click "Next".',
           spotlightClicks: true,
-          disableBeacon: false,
+          disableBeacon: true,
         },
         {
           target: '.chartjs-render-monitor',
@@ -95,14 +96,17 @@ class HomePage extends Component {
         {
           target: '.Header-gotoCovid-7',
           content: 'You can see Asian American hate crimes stemming from COVID-19 here.',
+          disableBeacon: true,
         },      
         {
           target: '#reportIncidentButton',
           content: 'Report an incident by clicking on "Report Incident".',
+          disableBeacon: true,
         },      
         {
           target: '#hateCrimeTutorial',
           content: 'You can view this tutorial again by clicking this button.',
+          disableBeacon: true,
         },      
       ]
     };
