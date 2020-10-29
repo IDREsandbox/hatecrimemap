@@ -52,9 +52,12 @@ class HomePage extends Component {
         {
           target: '#hateCrimeTutorial',
           content: 'Welcome to the Hate Crime Map tutorial! Follow the instructions and then hit "Next" to proceed',
-          spotlightClicks: true,
+          spotlightClicks: true,          
+          disableOverlayClose: true,
           disableBeacon: true,
           disableOverlay:true,
+          hideCloseButton: true,
+          placement: 'top',
         },
 
         {
@@ -75,43 +78,37 @@ class HomePage extends Component {
           target: '.side',
           content: 'Click on a bar in the chart to see details, and then click "Next".',
           spotlightClicks: true,
-          disableBeacon: true,
+          overlayColor: 'rgba(5, 5, 10, 0.1)',
         },
         {
           target: '#hatecrimePieChart',
           content: 'Click on a pie chart slice to open the data table for that state, and then click "Next". ',
           spotlightClicks: true,
-          disableBeacon: false,
             overlayColor: 'rgba(5, 5, 10, 0.3)',
             zIndex: 1000,
         },
         {
           target: '#hateCrimeDataTable',
           content: 'View data about individual incident reports, then click "Next".',
-          disableBeacon: false,
           spotlightClicks: true,
         },
         {
           target: '#closeDataTable',
           content: 'Click "Close" the table, then click "Next".',
-          disableBeacon: false,
           spotlightClicks: true,
         },
 
         {
-          target: '.Header-gotoCovid-7',
+          target: '#covidButton',
           content: 'Asian American hate crimes related to COVID-19 discrimination can be found here.',
-          disableBeacon: true,
         },      
         {
           target: '#reportIncidentButton',
           content: 'Report an incident by clicking on "Report Incident".',
-          disableBeacon: true,
         },      
         {
           target: '#hateCrimeTutorial',
           content: 'You can view this tutorial again by clicking this button.',
-          disableBeacon: true,
         },      
       ]
     };
