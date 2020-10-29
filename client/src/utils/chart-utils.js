@@ -14,7 +14,7 @@ export const COVID_CHARTS = {
   OTHER: 4
 }
 
-export const CHART_STRINGS = ["Race/Ethnicity", "Religion", "Gender/Sexuality", "Other"]
+export const CHART_STRINGS = ["Race/Ethnicity", "Religion", "Gender/Sexuality", "Miscellaneous"]
 
 // var raceData = 
 // // ( ({ african_american, arab, asian_american, latinx, native_american, pacific_islander, immigrants, white }) => ({ african_american, arab, asian_american, latinx, native_american, pacific_islander, immigrants, white }) )(statetotals[currentState]);
@@ -90,7 +90,16 @@ var topChartData = {
 }
 
 // Could make a single function, but this should allow us to customize chart colors more easily in the future
-export function getChartData(chart, allData) {
+export function getChartData(chart, allData, state) {
+
+  if (state == 'none') {
+    // All of USA
+    allData = Object.values(allData).reduce(((p, c) => c instanceof Object ? p.concat(c.children) : p), [])
+  } else {
+    allData = allData[state].children;
+  }
+  console.log(state,allData)
+
   let chartData;
   let data;
   if (chart === CHARTS.RACE_ETHNICITY) {
