@@ -72,7 +72,7 @@ class FirstTimeOverlay extends Component {
             information about the causes and locations of hate crimes. In addition to reporting crimes, 
             you can search the data by race, gender, religion and other factors. To see data, hover 
             over a state. To report harassment or assault, click on “Report Incident” on toolbar.” 
-            For more details, click on “About”. For an accessible data table, please click "Show Data" in the menu.
+            For more details, click on “About”.
             <br />
             <br />
             <em>*Please be advised that by accessing this site, you may encounter offensive language content, and that self-reported content may also include suspicious links.</em>
