@@ -56,7 +56,7 @@ class Charts extends React.Component {
               // beginAtZero:true,
               // callback: function(value) {if(value % 1 ===0) {return value;}},
               min: 0,
-              max: parseInt(props.max) || 90
+              max: 90,
               // stepSize: 1
             }
           }]
@@ -106,9 +106,12 @@ class Charts extends React.Component {
 
   render() {
     if (this.props.data && this.state.options) {
+
       if(this.state.currentDisplay != CHARTS.TOP) {
 
-        const rows = this.props.data.children.filter(e => e.group == this.state.popup_filter);
+        const rows = this.props.currState == 'none' ? 
+          Object.values(this.props.data).reduce(((p, c) => c instanceof Object ? p.concat(c.children.filter(e => e.group == this.state.popup_filter)) : p), [])
+          : this.props.data[this.props.currState].children.filter(e => e.group == this.state.popup_filter);
 
         // Pie charts!
         return (
@@ -122,7 +125,7 @@ class Charts extends React.Component {
               </Grid>
               <Grid item xs={3}>{/* to center the title */}</Grid>
             </Grid>
-            <Pie data={getChartData(this.state.currentDisplay, this.props.data.children)} 
+            <Pie data={getChartData(this.state.currentDisplay, this.props.data, this.props.currState)} 
                   onElementsClick={this.pieClick}/>
             {/*<ChartsText data={this.props.data[this.state.drilldown].children} />*/}
 
@@ -146,11 +149,11 @@ class Charts extends React.Component {
                     </TableHead>
                     <TableBody>
                       {rows.map(row => (
-                          <TableRow>
+                          <TableRow key={row.id}>
                             <TableCell>{row.date}</TableCell>
                             <TableCell>{row.state}</TableCell>
                             <TableCell>{row.group}</TableCell>
-                            <TableCell>{row.link || "N/A"}</TableCell>
+                            <TableCell>{row.link ? <a href={row.link} target="_blank">{row.link}</a> : "N/A"}</TableCell>
                             <TableCell>{row.description || ""}</TableCell>
                           </TableRow>
                       ))}
@@ -167,9 +170,13 @@ class Charts extends React.Component {
         )
       }
 
+      let { options } = this.state;
+      if (options && this.props.currState == 'none') options.scales.yAxes[0].ticks.max = 700;
+      else options.scales.yAxes[0].ticks.max = 90;
+
       return (
         <div className="charts">
-          <Bar data={getChartData(CHARTS.TOP, this.props.data.children)} options={this.state.options}
+          <Bar data={getChartData(CHARTS.TOP, this.props.data, this.props.currState)} options={options}
                onElementsClick={this.barClick} />
           {/*<ChartsText data={this.props.data} />*/}
         </div>

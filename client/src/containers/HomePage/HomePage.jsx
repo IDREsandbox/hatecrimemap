@@ -269,22 +269,11 @@ class HomePage extends Component {
  
           <div className="side">
             <SideMenu>
-              <h2 className="sideMenu__header">{this.state.currentDisplay == 'none' ? "How to Use" : this.state.currentDisplay }</h2>
-              { this.state.currentDisplay == 'none' ? (
-                  <div className="sideMenu__info">
-                    <p>Hover the mouse over the map to show hate crime data.</p>
-                    <p>Click on a state to lock on it to interact with the chart.</p>
-                    <p>Click on “See COVID Hate Crimes” to navigate to a separate map.</p>
-                    <p>Click on “Report incident” at top right to navigate to the report page.</p>
-                    <br />
-                    <hr />
-                  </div>
-                  ) : (
+              <h2 className="sideMenu__header">Hate Crimes in {this.state.currentDisplay == 'none' ? "the US" : this.state.currentDisplay }</h2>
+              
                 <div className="sideMenu__chart">
-                  <Charts data={data[this.state.currentDisplay]} max={data.groupMax} currState={this.state.currentDisplay} />
+                  <Charts data={data} max={data.groupMax} currState={this.state.currentDisplay} />
                 </div>
-                )
-            }
             <br />
               <FilterBar filterfn={this.filterIncidents} />
 
