@@ -188,7 +188,13 @@ function formatCovidData(data) {
 		if (stateData[report.state]) {
 			if (!report.link.includes("http")) report.link = "";
 			stateData[report.state].children.push(report);
+			if (report.description){
+				const description = report.description 
+				// console.log(description)
+				
+			}
 		}
+
 	})
 
 	let max = 0
@@ -198,8 +204,13 @@ function formatCovidData(data) {
 			max = stateData[state].count
 		}
 	})
-	stateData.max = max
 
+
+
+	stateData.max = max
+	// const wordData = ['test']
+	// const stateData = stateData
+	console.log(stateData)
 	return stateData
 }
 

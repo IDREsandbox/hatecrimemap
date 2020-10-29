@@ -24,6 +24,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
 
+
 const styles = theme => ({
 
 });
@@ -55,7 +56,7 @@ class Charts extends React.Component {
               // beginAtZero:true,
               // callback: function(value) {if(value % 1 ===0) {return value;}},
               min: 0,
-              max: parseInt(props.max) || 85
+              max: parseInt(props.max) || 90
               // stepSize: 1
             }
           }]
@@ -157,7 +158,7 @@ class Charts extends React.Component {
                   </Table>
               </DialogContent>
               <DialogActions>
-                <Button onClick={() => this.toggleOpen(false)} color="primary">
+                <Button id="closeDataTable" onClick={() => this.toggleOpen(false)} color="primary">
                   Close
                 </Button>
               </DialogActions>

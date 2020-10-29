@@ -69,6 +69,7 @@ const CovidHeader = ({ classes }) => {
         <a href="https://stopaapihate.org/reportincident/" className={classes.link}>
           <Button className={classes.reportIncidentButton} color="inherit">Report Incident</Button>
         </a>
+        
         <AboutCovidDialog></AboutCovidDialog>
       </Toolbar>
     </AppBar>
@@ -101,9 +102,13 @@ const Header = ({ classes }) => {
           <Button className={classes.gotoCovid} color="inherit">See COVID Hate Crimes</Button>
         </Link>
         <Link to="/reportincident" className={classes.link}>
-          <Button className={classes.reportIncidentButton} color="inherit">Report Incident</Button>
+          <Button className={classes.reportIncidentButton} color="inherit" id="reportIncidentButton">Report Incident</Button>
         </Link>
         <AboutDialog></AboutDialog>
+        {/* add function to start the tour here */}
+
+        
+
       </Toolbar>
     </AppBar>
   </div>

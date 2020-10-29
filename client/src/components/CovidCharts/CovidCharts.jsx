@@ -2,10 +2,13 @@ import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import './CovidCharts.css';
 import { Button } from '@material-ui/core';
-import { ArrowBack } from '@material-ui/icons';
+import { ArrowBack, ThreeSixty } from '@material-ui/icons';
 import { COVID_CHARTS, CHART_STRINGS, getCovidChartData, sumData } from '../../utils/chart-utils';
 import { Bar, Pie } from 'react-chartjs-2';
 import Grid from '@material-ui/core/Grid';
+import { Resizable } from "re-resizable";
+
+
 
 import { useState } from 'react';
 
@@ -17,7 +20,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 
-import { DataGrid } from '@material-ui/data-grid';
+// import { DataGrid } from '@material-ui/data-grid';
 
 
 import Dialog from '@material-ui/core/Dialog';
@@ -27,7 +30,10 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
 
+import ReactWordcloud from 'react-wordcloud';
 
+import 'tippy.js/dist/tippy.css';
+import 'tippy.js/animations/scale.css';
 const styles = theme => ({
 
 });
@@ -37,6 +43,13 @@ const styles = theme => ({
           <Bar data={getChartData(COVID_CHARTS.GENDER_SEXUALITY, this.props.data)} options={wholeYAxis} />
           <Bar data={getChartData(COVID_CHARTS.OTHER, this.props.data)} options={wholeYAxis} />
 */
+
+
+const resizeStyle = {
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+};
 
 const columns = [
   { field: 'date', headerName: 'Date of Incident', width: 70 },
@@ -71,6 +84,49 @@ const covidRE = ["Asian", "Native American/Indigenous", "African American", "Lat
 const covidGender = ["Male", "Female", "Other"]
 const covidType = ["Verbal", "Physical", "Coughing/Spitting", "Online", "Other"]
 const covidOther = ["Unknown"]
+
+
+const callbacks = {
+  // getWordColor: word => word.value > 20 ? "blue" : "red",
+  // onWordClick: console.log,
+  // onWordMouseOver: console.log,
+  // getWordTooltip: word => `${word.text} (${word.value}) [${word.value > 20 ? "good" : "bad"}]`,
+}
+const options = {
+  colors: ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b"],
+  enableTooltip: true,
+  deterministic: false,
+  fontFamily: "impact",
+  fontSizes: [12, 30],
+  fontStyle: "normal",
+  fontWeight: "normal",
+  padding: 1,
+  rotations: 3,
+  rotationAngles: [0, 0],
+  scale: "sqrt",
+  spiral: "archimedean",
+  transitionDuration: 1000
+};
+
+const size = [200, 200];
+const words = [
+  {
+    text: 'told',
+    value: 64,
+  },
+  {
+    text: 'mistake',
+    value: 11,
+  },
+  {
+    text: 'thought',
+    value: 16,
+  },
+  {
+    text: 'bad',
+    value: 17,
+  },
+]
 
 
 class CovidCharts extends React.Component {
@@ -124,6 +180,12 @@ class CovidCharts extends React.Component {
   render() {
     if (this.props.data && this.state.options) {
         const covidData = getCovidChartData(this.props.data, this.props.currState);
+        // const covidWords = covidData[3].reduce((prev,next)=>prev.concat(next),[])
+
+
+        console.log(this.props.wordCloudData[this.props.currState])
+
+        // need to figure out what to do for wordcloud when nothing is selected....
         const rows = this.props.currState == "none" ? 
                           (
                             Object.values(this.props.data).filter(val => val instanceof Object).reduce( (prev, next) => (
@@ -136,7 +198,9 @@ class CovidCharts extends React.Component {
                           && this.props.data[this.props.currState].children.filter(el => el[this.state.dialogShow] && el[this.state.dialogShow].includes(this.state.dialogFilter)));
                             
         return (
-          <div className="CovidCharts">
+
+        <div className="CovidCharts">
+
             {/*<Grid container justify="space-between">
               <Grid item xs={3}>
                 <Button variant="outlined" color="primary" size="small" aria-label="back" onClick={this.barUnClick} startIcon={<ArrowBack />}>Back</Button>
@@ -147,26 +211,44 @@ class CovidCharts extends React.Component {
               <Grid item xs={3}>* to center the title *</Grid>
             </Grid>*/}
             <Grid container justify="space-between">
+            {<Grid container item justify="center" xs={6}>
+                <h4>Word Cloud</h4>
+                <Resizable
+        defaultSize={{
+          width: 200,
+          height: 200
+        }}
+        style={resizeStyle}
+      >                
+                <div style={{ height: "100%", width: "100%" }}>
+                { this.props.wordCloudData[this.props.currState] ? <ReactWordcloud
+                    callbacks={callbacks}
+                    options={options}
+                    // size={size}
+                    words={this.props.wordCloudData[this.props.currState]}
+                    // words={wordCloudData}                    
+                    /> : null }
+
+                    </div>
+                    </Resizable>
+              </Grid>}                   
               <Grid container item justify="center" xs={6}>
                 <h4>Ethnicity</h4>
+                
                 <Pie onElementsClick={this.pieREClick} data={covidData[0]} options={{legend: { display: false } }} />
               </Grid>
               <Grid container item justify="center" xs={6}>
                 <h4>Gender</h4>
                 <Pie onElementsClick={this.pieGenderClick} data={covidData[1]} options={{legend: { display: false } }} />
-              </Grid>
             </Grid>
             <br/>
             <br/>
-            <Grid container justify="space-between">
+
               <Grid container item justify="center" xs={6}>
                 <h4>Type</h4>
                 <Pie onElementsClick={this.pieTypeClick} data={covidData[2]} options={{legend: { display: false } }} />
               </Grid>
-              {/*<Grid container item justify="center" xs={6}>
-                <h4>Other</h4>
-                <Pie onElementsClick={this.pieClick} data={covidData[3]} options={{legend: { display: false } }} />
-              </Grid>*/}
+
             </Grid>
 
 
@@ -206,7 +288,7 @@ class CovidCharts extends React.Component {
                   </TableContainer>
               </DialogContent>
               <DialogActions>
-                <Button onClick={() => this.toggleOpen(false)} color="primary">
+                <Button id="closeDataTable" onClick={() => this.toggleOpen(false)} color="primary">
                   Close
                 </Button>
               </DialogActions>

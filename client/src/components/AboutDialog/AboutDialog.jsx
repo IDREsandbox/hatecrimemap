@@ -71,7 +71,7 @@ class AboutDialog extends Component {
               enables victims to report hate-based incidents in detail, and researchers to study the data. 
               In addition to self-reported incidents, reports are culled from newspapers, and ProPublica 
               and the Stop AAPI Hate Reporting Center have shared their data. For the reasons listed above, 
-              the data included herein represents only a fraction of the true number.</p>
+              the data included herein represents only a fraction of the true number. For an accessible data table, please click "Show Data" in the menu.</p>
               <br />
               <p>Any questions? Email us at <a href="mailto:aisc@ucla.edu?Subject=Hate%20Crime%20Map%20Inquiry">aisc@ucla.edu</a></p>
               <br />

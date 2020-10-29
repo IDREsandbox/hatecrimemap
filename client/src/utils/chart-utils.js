@@ -1,3 +1,5 @@
+import { func } from "prop-types";
+
 export const CHARTS = {
   RACE_ETHNICITY: 1,
   RELIGION: 2,
@@ -232,6 +234,7 @@ const covidRE = ["Asian", "Native American/Indigenous", "African American", "Lat
 const covidGender = ["Male", "Female", "Other"]
 const covidType = ["Verbal", "Physical", "Coughing/Spitting", "Online", "Other"]
 const covidOther = ["Unknown"]
+const covidDescription = ["Description"]
 
 
 var covidChartData = [
@@ -285,8 +288,145 @@ var covidChartData = [
 },
 ]
 
+
+const stopWords = ['i', 'me', 'my', 'myself', 'we', 'our', 'ours', 'ourselves', 'you', "you're", "you've", "you'll", "you'd", 'your', 'yours', 'yourself', 'yourselves', 'he', 'him', 'his', 'himself', 'she', "she's", 'her', 'hers', 'herself', 'it', "it's", 'its', 'itself', 'they', 'them', 'their', 'theirs', 'themselves', 'what', 'which', 'who', 'whom', 'this', 'that', "that'll", 'these', 'those', 'am', 'is', 'are', 'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had', 'having', 'do', 'does', 'did', 'doing', 'a', 'an', 'the', 'and', 'but', 'if', 'or', 'because', 'as', 'until', 'while', 'of', 'at', 'by', 'for', 'with', 'about', 'against', 'between', 'into', 'through', 'during', 'before', 'after', 'above', 'below', 'to', 'from', 'up', 'down', 'in', 'out', 'on', 'off', 'over', 'under', 'again', 'further', 'then', 'once', 'here', 'there', 'when', 'where', 'why', 'how', 'all', 'any', 'both', 'each', 'few', 'more', 'most', 'other', 'some', 'such', 'no', 'nor', 'not', 'only', 'own', 'same', 'so', 'than', 'too', 'very', 's', 't', 'can', 'will', 'just', 'don', "don't", 'should', "should've", 'now', 'd', 'll', 'm', 'o', 're', 've', 'y', 'ain', 'aren', "aren't", 'couldn', "couldn't", 'didn', "didn't", 'doesn', "doesn't", 'hadn', "hadn't", 'hasn', "hasn't", 'haven', "haven't", 'isn', "isn't", 'ma', 'mightn', "mightn't", 'mustn', "mustn't", 'needn', "needn't", 'shan', "shan't", 'shouldn', "shouldn't", 'wasn', "wasn't", 'weren', "weren't", 'won', "won't", 'wouldn', "wouldn't"]
+
+
+
+function splitByWords(words) {
+  // split string by spaces (including spaces, tabs, and newlines)
+  const lowerWords = words.toLowerCase()
+  const wordsArray = lowerWords.replace(/[^A-Za-z ]/g, '').split(/\s+/);
+  const condensedArray = wordsArray.filter((word)=> word.length > 3).filter((word)=> !stopWords.includes(word))
+  // console.log(condensedArray)
+
+  return condensedArray;
+}
+
+function createWordMap(wordsArray) {
+
+  // create map for word counts
+  const wordsMap = {};
+  wordsArray.forEach(function (key) {
+    if (wordsMap.hasOwnProperty(key)) {
+      wordsMap[key]++;
+    } else {
+      wordsMap[key] = 1;
+    }
+  });
+
+  return wordsMap;
+
+}
+
+function sortByCount (wordsMap,stateKeys) {
+
+  // sort by count in descending order
+  var tempWordsArray = [];
+  tempWordsArray = Object.keys((wordsMap)).map(function (key) {
+    return {
+      text: key,
+      value: wordsMap[key]
+    };
+
+  });
+
+  tempWordsArray.sort(function (a, b) {
+    return b.total - a.total;
+  });
+  return tempWordsArray
+
+  const tempWords = tempWordsArray.reduce(((accum, wordobj) => {
+    if(!accum.hasOwnProperty(wordobj.name)) {
+      accum[wordobj.name] = 1;
+    } else {
+      accum[wordobj.name]++;
+    }
+    return accum;
+   }), {})
+  console.log(tempWordsArray)
+
+// I HATE REDUCTIONNNNNNNNNNNNNNNNNNNNNNNNNNN -Albert
+   let finalWordsArray =[]
+   finalWordsArray = Object.keys(tempWords).map(totals => ({name: totals, total: tempWords[totals]}));
+
+  console.log(finalWordsArray);
+  
+  // Object.keys(finalresult).map(totals => ({name: totals, total: finalresult[totals]}));
+  
+  
+  
+  
+  return finalWordsArray;
+
+
+
+
+}
+
+function mergeCounts(arr1, arr2) {
+  arr2.forEach(wordobj => {
+    if (arr1.find(e => e.text == wordobj.text)) {
+      arr1.value += wordobj.value
+    } else {
+      arr1.push(wordobj);
+    }
+  })
+}
+
+export function takeTop(arr) {
+  return arr.sort((a, b) => b.value - a.value).slice(0,30);
+}
+
+export function wordCloudReducer(p, c) {
+  mergeCounts(p, sortByCount(createWordMap(splitByWords(c.description))));
+
+  // console.log(p);
+
+  return p;
+}
+
+// function for summarizing word cloud and reducing
+export function summarizeWordCloud(reportWords){
+  // console.log(reportWords.state)  
+  const stateKeys = reportWords.state
+  const wordsArray = splitByWords(reportWords.description)
+  const wordsMap = createWordMap(wordsArray);
+  const finalWordsArray = sortByCount(wordsMap,stateKeys);
+  // console.log(finalWordsArray)
+  return finalWordsArray
+}
+
+function reduceWordCloud(item){
+  // console.log(item)
+  return item
+  // let currentWords = currTopWords
+
+    // // const finalWordsArray = sortByCount();
+    // console.log(finalWordsArray)
+    // return finalWordsArray
+  }
+  
+  //   finalWordsArray.concat(s).slice(0,10)
+  //   console.log(finalWordsArray)
+  //   return finalWordsArray
+  // }
+
+// end function for word cloud
+
+function mergeArrayObjects(arr1,arr2){
+  return arr1.map((item,i)=>{
+     if(item.id === arr2[i].id){
+         //merging two objects
+       return Object.assign({},item,arr2[i])
+     }
+  })
+}
+
+
 export const getCovidChartData = (data, state) => {
   let chartData = covidChartData;
+  // let wordClouddata = 
   if (state != "none")
   {
     // filter by state first
@@ -296,6 +436,30 @@ export const getCovidChartData = (data, state) => {
   chartData[0].datasets[0].data = covidRE.map(filt => Object.values(data).filter(val => val instanceof Object).reduce( ((prev, s) => prev+s.children.filter(c => c.ethnicity.includes(filt)).length), 0)) // map from data.ethnicity::aggregate
   chartData[1].datasets[0].data = covidGender.map(filt => Object.values(data).filter(val => val instanceof Object).reduce( ((prev, s) => prev+s.children.filter(c => c.gender.includes(filt)).length), 0)) // map from data.gender::aggregate
   chartData[2].datasets[0].data = covidType.map(filt => Object.values(data).filter(val => val instanceof Object).reduce( ((prev, s) => prev+s.children.filter(c => c.type.includes(filt)).length), 0)) // map from data.type::aggregate
+
+  
+  // use objectvaluereport.description
+  // chartData[3] = Object.values(data).filter(val => val instanceof Object).map(state => state.children.map(objectValueReport => summarizeWordCloud(objectValueReport)))
+  
+  // produces an array of each state, each state is referred to as children
+  
+  
+  // console.log(chartData[3])
+  // chartData[3] = wordCloudData.map(item => {
+  //   const container = {};
+
+  //   container[item.name] = item.name;
+  //   container.total = item.total;
+
+  //   return container;
+  // })
+
+
+// need to reduce 
+  // .reduce( (reduceWordCloud(current,s)), 0);
+
+  // .map(objectValueReport => summarizeWordCloud(objectValueReport)).reduce( (reduceWordCloud(current,s)), 0);
+  
   // chartData[3].datasets[0].data = covidOther.map(filt => Object.values(data).filter(val => val instanceof Object).reduce( ((prev, s) => prev+s.children.filter(c => c.other.includes(filt)).length), 0)) // map from data.Other::aggregate
   
   return chartData
