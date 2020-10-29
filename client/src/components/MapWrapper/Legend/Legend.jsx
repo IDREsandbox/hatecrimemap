@@ -50,7 +50,7 @@ class Legend extends MapControl {
 				// BEGIN: Temporary fix for the legend categories being less than 5 for COVID    
 				if (props.covid ==1){
 					// covid only has 4 categories, so reducing them to 4
-					grades = [0, rangeValue2, rangeValue3, rangeValue4, rangeValue5];
+					grades = [1, rangeValue2, rangeValue3, rangeValue4, rangeValue5];
 				}
 				else{
 					grades = [0,rangeValue1, rangeValue2, rangeValue3, rangeValue4, rangeValue5];
@@ -61,11 +61,15 @@ class Legend extends MapControl {
 				let labels = [];
 				let from;
 				let to;
-
+				if (props.covid == 1){
+					labels.push(
+						'<i style="background:"#cccccc"' +
+						'"></i> None');	
+					   
+						}
 				for (let i = 0; i < grades.length-1; i++) {
 				  from = grades[i];
 				  to = grades[i + 1];
-
 				  labels.push(
 				    '<i style="background:' +
 				      getColor(from + 1) +

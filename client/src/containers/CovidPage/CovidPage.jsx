@@ -2,13 +2,17 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { CircularProgress, Button, IconButton } from '@material-ui/core';
+import Joyride from 'react-joyride';
 
 import { FirstTimeOverlay, MapWrapper, SideMenu, CovidCharts, FilterBar, MapBar } from '../../components';
 import { counties } from '../../res/counties/statecounties.js';
 import { GeoJSON } from 'react-leaflet';
 import { getCovidData, eachStatesCounties, storeStateData, resetStateColor,covidColors } from '../../utils/data-utils';
+import {stopWords,splitByWords,createWordMap,sortByCount,summarizeWordCloud,reduceWordCloud, wordCloudReducer, takeTop} from '../../utils/chart-utils'
 
 import './CovidPage.css';
+
+
 
 export const MAP_DISPLAY = {
   USA: 1,
@@ -31,6 +35,10 @@ const styles = () => ({
   }
 });
 
+let wordData = {}
+let stateNames = {}
+
+
 class CovidPage extends Component {
   constructor(props) {
     super(props);
@@ -46,15 +54,29 @@ class CovidPage extends Component {
     this.hawaiiRef = React.createRef();
     this.mapRef = React.createRef();
   }
-
+ 
   async componentDidMount() {
-    getCovidData().then(values => {
+    getCovidData().then((values) => {
+      stateNames = Object.keys(values)
+      wordData = {}
+      Object.keys(values).filter(state => values[state] instanceof Object).forEach(state => wordData[state] = takeTop(values[state].children.reduce(wordCloudReducer, [])));
+      console.log(wordData);
+
+      // wordData = Object.fromEntries(
+      //   Object.entries()
+      // ).values(values).filter(val => val instanceof Object).map(state => state.children.map(objectValueReport => summarizeWordCloud(objectValueReport)))
+
+      // console.log(stateNames);
+      
+      // console.log(wordData)
       this.setState({
         data: values,
+        wordCloudData: wordData,
         isFetching: false
       });
-      
-    });
+      // console.log(wordData);
+     });
+
   }
 
   resetMapData = () => {
@@ -149,13 +171,14 @@ class CovidPage extends Component {
                     <p><strong>How to Use</strong></p>
                     <p>Hover the mouse over the map to show COVID-related hate crime data.</p>
                     <p>Click on a state to lock on it to interact with the pie charts.</p>
+                    <p>Click on the slice of the pie chart to open the data table.</p>
                     <p>Report incident(s) by visiting Stop AAPI Hate's report page on the top-right</p>
                     <br />
                     <hr />
                   </div>
                 }
               <div className="sideMenu__chart">
-                <CovidCharts data={this.state.data} currState={this.state.currentDisplay} max={this.state.data.groupMax} />
+                <CovidCharts data={this.state.data} currState={this.state.currentDisplay} max={this.state.data.groupMax} wordCloudData={this.state.wordCloudData} />
                 <p className={classes.footnotes}><em>* Please note that this data includes a small number of reports from witnesses of a different race than the victims.</em></p>
               </div>
             </SideMenu>

@@ -24,6 +24,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
 
+
 const styles = theme => ({
 
 });
@@ -160,7 +161,7 @@ class Charts extends React.Component {
                   </Table>
               </DialogContent>
               <DialogActions>
-                <Button onClick={() => this.toggleOpen(false)} color="primary">
+                <Button id="closeDataTable" onClick={() => this.toggleOpen(false)} color="primary">
                   Close
                 </Button>
               </DialogActions>
