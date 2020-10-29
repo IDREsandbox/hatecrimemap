@@ -27,6 +27,10 @@ import 'react-checkbox-tree/lib/react-checkbox-tree.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import CheckboxTree from 'react-checkbox-tree';
 
+import Snackbar from '@material-ui/core/Snackbar';
+import Alert from '@material-ui/lab/Alert';
+
+
 /*
 nodes = [
   {value: id_of_group, label: Name, children: [grab all whose parent is id_of_group]},
@@ -40,6 +44,7 @@ nodes = [
 
 const styles = ({ spacing }) => ({
   root: {
+    flex: 1,
     margin: '0 auto',
     marginTop: spacing.unit * 2,
     width: '45%',
@@ -94,7 +99,11 @@ class ReportIncidentPage extends Component {
   constructor(props) {
     super(props)
     this.state = getInitialState();
-    this.setState({ groups: {} })
+    this.setState({ groups: {}, snackOpen: false })
+  }
+
+  onHandleClose = () => {
+    this.setState({ snackOpen: false });
   }
 
   groupToNodes = (groups) => {
@@ -330,9 +339,11 @@ class ReportIncidentPage extends Component {
   reportIncident = () => {
     const dataToSubmit = createDataToSubmit(this.state);
     
-    console.log(dataToSubmit)
     axios.post('/api/maps/incident', dataToSubmit)
-      .then(res => this.resetState())
+      .then(res => {
+        this.setState({ snackOpen: true })
+        this.resetState();
+      })
       .catch(err => console.log(err));
   }
 
@@ -377,6 +388,11 @@ class ReportIncidentPage extends Component {
             </Step>
           ))}
         </Stepper>
+        <Snackbar open={this.state.snackOpen} autoHideDuration={5000} onClose={this.onHandleClose}>
+          <Alert severity="success">
+            Incident Reported!
+          </Alert>
+        </Snackbar>
       </Paper>
     );
   }
