@@ -67,7 +67,7 @@ class HomePage extends Component {
 
         {
           target: '.leaflet-interactive:nth-child(5)',
-          content: 'You can click on a states to lock it. Click on California to lock it and then click "Next"',
+          content: 'You can click on a state to lock/unlock it. Click on California to lock it and then click "Next"',
           spotlightClicks: true,
           overlayColor: 'rgba(5, 5, 10, 0.8)',
         },
@@ -78,24 +78,29 @@ class HomePage extends Component {
           disableBeacon: true,
         },
         {
-          target: '.chartjs-render-monitor',
+          target: '#hatecrimePieChart',
           content: 'Click on a pie chart slice to open the data table for that state, and then click "Next". ',
           spotlightClicks: true,
           disableBeacon: false,
-          style:{
             overlayColor: 'rgba(5, 5, 10, 0.3)',
             zIndex: 1000,
-          }
         },
         {
-          target: '.MuiDialog-paper',
-          content: 'View data about individual incident reports, and close the table at the bottom right, then click "Next".',
+          target: '#hateCrimeDataTable',
+          content: 'View data about individual incident reports, then click "Next".',
           disableBeacon: false,
           spotlightClicks: true,
         },
         {
+          target: '#closeDataTable',
+          content: 'Click "Close" the table, then click "Next".',
+          disableBeacon: false,
+          spotlightClicks: true,
+        },
+
+        {
           target: '.Header-gotoCovid-7',
-          content: 'You can see Asian American hate crimes stemming from COVID-19 here.',
+          content: 'Asian American hate crimes related to COVID-19 discrimination can be found here.',
           disableBeacon: true,
         },      
         {

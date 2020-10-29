@@ -125,7 +125,7 @@ class Charts extends React.Component {
               </Grid>
               <Grid item xs={3}>{/* to center the title */}</Grid>
             </Grid>
-            <Pie data={getChartData(this.state.currentDisplay, this.props.data, this.props.currState)} 
+            <Pie id="hatecrimePieChart" data={getChartData(this.state.currentDisplay, this.props.data, this.props.currState)} 
                   onElementsClick={this.pieClick}/>
             {/*<ChartsText data={this.props.data[this.state.drilldown].children} />*/}
 
@@ -136,7 +136,7 @@ class Charts extends React.Component {
               aria-labelledby="responsive-dialog-title"
             >
               <DialogTitle id="responsive-dialog-title">Hate Crimes</DialogTitle>
-              <DialogContent>
+              <DialogContent id="hateCrimeDataTable">
                 <Table stickyHeader className="hello" aria-label="simple table">
                     <TableHead>
                       <TableRow>
