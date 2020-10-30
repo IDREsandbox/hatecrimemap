@@ -107,7 +107,7 @@ class HomePage extends Component {
         },
         {
           disableBeacon: false,
-          target: '#covidHatecrimesButton',
+          target: '#covidButton',
           content: 'View and report Asian American/Pacific Islander hate crimes from COVID-19 discrimination here.',
         },      
         {

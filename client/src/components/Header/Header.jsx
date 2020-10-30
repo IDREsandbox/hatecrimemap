@@ -99,7 +99,7 @@ const Header = ({ classes }) => {
           Mapping Hate Crimes in the US
         </Typography>
         <Link to="/covid" className={classes.link}>
-          <Button className={classes.gotoCovid} id="covidHatecrimesButton" color="inherit">See COVID Hate Crimes</Button>
+          <Button id="covidButton" className={classes.gotoCovid} color="inherit">See COVID Hate Crimes</Button>
         </Link>
         <Link to="/reportincident" className={classes.link}>
           <Button className={classes.reportIncidentButton} color="inherit" id="reportIncidentButton">Report Incident</Button>
