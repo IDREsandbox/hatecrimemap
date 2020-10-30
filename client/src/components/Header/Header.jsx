@@ -55,7 +55,7 @@ const CovidHeader = ({ classes }) => {
   <div className={classes.root}>
     <AppBar position="static" style={ {background: '#000000'} }>
       <Toolbar>
-        <Link to="/">
+        <Link to="./" target="_self">
           <IconButton className={classes.menuButton} color="inherit" aria-label="Menu">
             <HomeIcon />
           </IconButton>
@@ -99,7 +99,7 @@ const Header = ({ classes }) => {
           Mapping Hate Crimes in the US
         </Typography>
         <Link to="/covid" className={classes.link}>
-          <Button className={classes.gotoCovid} color="inherit">See COVID Hate Crimes</Button>
+          <Button className={classes.gotoCovid} id="covidHatecrimesButton" color="inherit">See COVID Hate Crimes</Button>
         </Link>
         <Link to="/reportincident" className={classes.link}>
           <Button className={classes.reportIncidentButton} color="inherit" id="reportIncidentButton">Report Incident</Button>
