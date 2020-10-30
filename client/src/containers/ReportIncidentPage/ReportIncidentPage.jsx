@@ -187,17 +187,6 @@ class ReportIncidentPage extends Component {
       case 3:
         return (
           <div className={classes.checkboxWrapper}>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={this.state.tag==1}
-                  onChange={this.handleTagChange}
-                  name="iscovid"
-                  color="primary"
-                />
-              }
-              label="Is this a COVID incident?"
-            />
             <CheckboxTree
               nodes={this.state.groups}
               checked={this.state.groupsChecked}
@@ -358,6 +347,7 @@ class ReportIncidentPage extends Component {
 
     return (
       <Paper className={classes.root}>
+        <p style={{padding: '24px 24px 0 24px'}}><em>If this is a COVID-related incident, consider navigating to the COVID page through the menu and reporting there.</em></p>
         <Stepper className={classes.stepper} activeStep={activeStep} orientation="vertical">
           {steps.map((label, i) => (
             <Step key={label}>
