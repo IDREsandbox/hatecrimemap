@@ -115,10 +115,10 @@ class Charts extends React.Component {
 
         // Pie charts!
         return (
-          <div key={this.props.currState} className="charts">
+          <div key={this.props.currState} className="charts" >
             <Grid container justify="space-between">
               <Grid item xs={3}>
-                <Button variant="outlined" color="primary" size="small" aria-label="back" onClick={this.barUnClick} startIcon={<ArrowBack />}>Back</Button>
+                <Button variant="outlined" color="primary" size="small" aria-label="back" id="chartbackButton" onClick={this.barUnClick} startIcon={<ArrowBack />}>Back</Button>
               </Grid>
               <Grid item xs={6} style={{'textAlign': 'center'}}>
                 <h4>{CHART_STRINGS[this.state.currentDisplay-1]}</h4>
@@ -133,10 +133,10 @@ class Charts extends React.Component {
               open={this.state.dialogOpen}
               onClose={() => this.toggleOpen(false)}
               maxWidth="xl"
-              aria-labelledby="responsive-dialog-title"
+              aria-labelledby="responsive-dialog-title" id="hateCrimeDataTable"
             >
               <DialogTitle id="responsive-dialog-title">Hate Crimes</DialogTitle>
-              <DialogContent id="hateCrimeDataTable">
+              <DialogContent>
                 <Table stickyHeader className="hello" aria-label="simple table">
                     <TableHead>
                       <TableRow>
@@ -160,8 +160,8 @@ class Charts extends React.Component {
                     </TableBody>
                   </Table>
               </DialogContent>
-              <DialogActions>
-                <Button id="closeDataTable" onClick={() => this.toggleOpen(false)} color="primary">
+              <DialogActions  id="closeDataTable">
+                <Button onClick={() => this.toggleOpen(false)} color="primary">
                   Close
                 </Button>
               </DialogActions>
@@ -175,7 +175,7 @@ class Charts extends React.Component {
       else options.scales.yAxes[0].ticks.max = 90;
 
       return (
-        <div className="charts">
+        <div className="charts" id="theChartsState">
           <Bar data={getChartData(CHARTS.TOP, this.props.data, this.props.currState)} options={options}
                onElementsClick={this.barClick} />
           {/*<ChartsText data={this.props.data} />*/}

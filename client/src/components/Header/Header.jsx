@@ -55,7 +55,7 @@ const CovidHeader = ({ classes }) => {
   <div className={classes.root}>
     <AppBar position="static" style={ {background: '#000000'} }>
       <Toolbar>
-        <Link to="/">
+        <Link to="./" target="_self">
           <IconButton className={classes.menuButton} color="inherit" aria-label="Menu">
             <HomeIcon />
           </IconButton>
