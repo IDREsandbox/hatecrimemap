@@ -52,7 +52,7 @@ class HomePage extends Component {
 
         {
           target: '#hateCrimeTutorial',
-          content: 'Welcome to the Hate Crime Map tutorial! Follow the instructions and then hit "Next" to proceed',
+          content: 'Welcome to the Hate Crime Map tutorial. Follow the instructions and then hit "Next" to proceed',
           spotlightClicks: true,          
           disableOverlayClose: true,
           disableBeacon: true,
