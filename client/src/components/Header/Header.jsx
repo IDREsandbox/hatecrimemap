@@ -96,7 +96,7 @@ const Header = ({ classes }) => {
           </IconButton>
         </Link>
         <Typography variant="h6" color="inherit" className={classes.flex}>
-          Mapping Hate Crimes in the US
+          Mapping Hate Crimes in the US #OneHateCrimeIsTooMany
         </Typography>
         <Link to="/covid" className={classes.link}>
           <Button id="covidButton" className={classes.gotoCovid} color="inherit">See COVID Hate Crimes</Button>
