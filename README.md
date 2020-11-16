@@ -4,7 +4,7 @@ A project maintained by UCLA AISC that aims to map self-reported hate crimes aro
 
 For any suggestions/issues, please click the "Issues" tab at the top of this page and provide as much details as possible, including but not limited to: how to reproduce a bug and what the intended behavior is, or why a suggestion is needed/useful.
 
-![hatecrimemap banner](https://raw.githubusercontent.com/IDREsandbox/hatecrimemap/master/assets/banner.png)
+![hatecrimemap banner](https://raw.githubusercontent.com/IDREsandbox/hatecrimemap/master/assets/hcm_banner.jpg)
 
 ### Table of Contents
 * [About Hate Crimes](#about)
