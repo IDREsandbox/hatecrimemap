@@ -1,26 +1,17 @@
-/*
-Is a utilities the best place for this?
-*/
 import axios from 'axios';
 
-
+// TODO get rid of state
 var _stateData = {};
 var _countyData = {};
 
-// a better place for truth of states?
 const STATES = ["Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware",
-"District of Columbia", "Florida", "Georgia",
-"Guam",
-"Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky",
+"District of Columbia", "Florida", "Georgia", "Guam", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky",
 "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana",
 "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota",
 "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee",
-"Texas", "Utah",
-"United States Virgin Islands",
- "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming", "Puerto Rico"]
+"Texas", "Utah", "United States Virgin Islands", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming", "Puerto Rico"]
 
-
- export const covidColors = ["#fed98e","#fed98e","#fe9929","#d95f0e","#993404"] // made the first two the same since the second bin isnt used ffffd4 was the original
+export const covidColors = ["#fed98e","#fed98e","#fe9929","#d95f0e","#993404"] // made the first two the same since the second bin isnt used ffffd4 was the original
 export const defaultColors = ["#f2f0f7", "#cbc9e2", "#9e9ac8", "#756bb1", "#54278f"]
 
 async function getStateStructure() {
@@ -220,31 +211,6 @@ export async function getCovidData() {
 	.catch((err) => {
 		alert(`API call failed: ${err}`);
 		return {};
-	});
-	return new Promise((resolve, reject) => {
-		resolve(
-			{ "California" : {
-					"count": 5,
-					children: [
-						{ name: "test", gender: "Male", ethnicity: "Asian", type: "Online", date: "", description: "A description here"},
-						{ name: "test2", gender: "Male", ethnicity: "African American", type: "Online", date: "", description: "Something happened" },
-						{ name: "test3", gender: "Male", ethnicity: "Asian", type: "Online", date: "" },
-						{ name: "test4", gender: "Female", ethnicity: "African American", type: "Verbal", date: "" },
-						{ name: "test5", gender: "Female", ethnicity: "Asian", type: "Verbal", date: "" },
-					]
-				},
-				"Alaska" : {
-					"count": 5,
-					children: [
-						{ name: "test", gender: "Female", ethnicity: "Asian", type: "Physical", date: "" },
-						{ name: "test2", gender: "Male", ethnicity: "Asian", type: "Online", date: "" },
-						{ name: "test3", gender: "Male", ethnicity: "Asian", type: "Verbal", date: "" },
-						{ name: "test4", gender: "Female", ethnicity: "Native American/Indigenous", type: "Verbal", date: "" },
-						{ name: "test5", gender: "Female", ethnicity: "White", type: "Online", date: "" },
-					]
-				}	
-			}
-		);
 	});
 }
 

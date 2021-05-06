@@ -14,7 +14,7 @@
 
 #MapWrapper {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: repeat(4, 1fr);
     grid-template-rows: 1fr 1fr 1fr;
     height: 100%;
     overflow: auto;
@@ -23,11 +23,18 @@
 
 #USA {
 	height: 100%;
-    grid-column: 1 / 4;
+    grid-column: 1 / 5;
     grid-row: 1 / 4;
 }
 
 #Alaska {
 	position: relative;
     grid-area: 3 / 1 / auto / auto;
+}
+
+#timeslider {
+    grid-column: 2 / 4;
+    grid-row: 1;
+    margin-top: 32px;
+    z-index: 401;
 }

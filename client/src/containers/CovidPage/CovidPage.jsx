@@ -4,11 +4,11 @@ import { withStyles } from '@material-ui/core/styles';
 import { CircularProgress, Button, IconButton } from '@material-ui/core';
 import Joyride from 'react-joyride';
 
-import { FirstTimeOverlay, MapWrapper, SideMenu, CovidCharts, FilterBar, MapBar } from '../../components';
-import { counties } from '../../res/counties/statecounties.js';
+import { FirstTimeOverlay, MapWrapper, SideMenu, CovidCharts, FilterBar, MapBar } from 'components';
+import { counties } from 'res/geography/counties/statecounties.js';
 import { GeoJSON } from 'react-leaflet';
-import { getCovidData, eachStatesCounties, storeStateData, resetStateColor,covidColors } from '../../utils/data-utils';
-import {stopWords,splitByWords,createWordMap,sortByCount,summarizeWordCloud,reduceWordCloud, wordCloudReducer, takeTop} from '../../utils/chart-utils'
+import { getCovidData, eachStatesCounties, storeStateData, resetStateColor,covidColors } from 'utils/data-utils';
+import {stopWords,splitByWords,createWordMap,sortByCount,summarizeWordCloud,reduceWordCloud, wordCloudReducer, takeTop} from 'utils/chart-utils'
 
 import './CovidPage.css';
 
@@ -161,7 +161,7 @@ class CovidPage extends Component {
 
           <div className="side">
             <SideMenu>
-            <h2 className="sideMenu__header">{"COVID Hate Crimes in " + (this.state.currentDisplay == 'none' ? "US" : this.state.currentDisplay) }</h2>
+            <h2 className="sideMenu__header">{"COVID Hate Incidents in " + (this.state.currentDisplay == 'none' ? "US" : this.state.currentDisplay) }</h2>
                 { this.state.currentDisplay != "none" ?
                   <div className={ `sideMenu__info ${classes.dateRange}` }>
                     <p>{this.state.data[this.state.currentDisplay].children[0].date} - {this.state.data[this.state.currentDisplay].children[this.state.data[this.state.currentDisplay].children.length - 1].date}</p>

@@ -3,7 +3,9 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { CircularProgress, Button, IconButton } from '@material-ui/core';
 
-import { FirstTimeOverlay, MapWrapper, SideMenu, Charts, FilterBar, MapBar } from '../../components';
+import { FirstTimeOverlay, MapWrapper, SideMenu, Charts, FilterBar, MapBar } from 'components';
+import { JOYRIDE_STEPS } from 'res/values/joyride';
+import { MAP_DISPLAY } from 'res/values/map';
 import { Rectangle, GeoJSON } from 'react-leaflet';
 import { getAllData, storeStateData, resetStateColor,defaultColors,covidColors, getStateDataReports, filterPublishedReports } from '../../utils/data-utils';
 
@@ -13,12 +15,6 @@ import Joyride, { ACTIONS, EVENTS, STATUS } from 'react-joyride';
 
 
 import './HomePage.css';
-
-export const MAP_DISPLAY = {
-  USA: 1,
-  ALASKA: 2,
-  HAWAII: 3
-}
 
 const styles = () => ({
   progress: {
@@ -30,10 +26,6 @@ const styles = () => ({
 
 
 class HomePage extends Component {
-
-// begin joy ride
-
-
   constructor(props) {
     super(props);
     this.state = {
@@ -42,91 +34,19 @@ class HomePage extends Component {
       isFetching: true,
       currentDisplay: 'none',
       filterPublished: false,
+      filterTimeRange: [2015, 2021],
       spotlightClicks: true,  
       locked: false, // lock the sidebar on a state or county
       run: false,
       disableBeacon: true,
       isFixed: true,
-
-      steps: [
-
-        {
-          target: '#hateCrimeTutorial',
-          content: 'Welcome to the Hate Crime Map tutorial. Follow the instructions and then hit "Next" to proceed',
-          spotlightClicks: true,          
-          disableOverlayClose: true,
-          disableBeacon: true,
-          hideCloseButton: true,
-          placement: 'center',
-        },
-
-        {
-          target: '#USA',
-          content: 'This is the map panel, hover over states to see their charts. Hover outside the United States to show all of the data again, then click "Next".',
-          spotlightClicks: true,
-        },
-
-        {
-          target: '.leaflet-interactive:nth-child(5)',
-          content: 'You can click on a state to lock/unlock it. Click on California to lock it and then click "Next"',
-          spotlightClicks: true,
-        },
-        {
-          target: '.sideMenu__chart',
-          content: 'Click on a bar in the chart to see details, and then click "Next".',
-          spotlightClicks: true,
-          disableBeacon: true,
-        },
-        {
-          target: '#hatecrimePieChart',
-          content: 'Click on a pie chart slice to open the data table for that state, and then click "Next". ',
-          spotlightClicks: true,
-          disableBeacon: true,
-          disableOverlay:true,
-          
-        },
-        {
-          target: '#hateCrimeDataTable',
-          content: 'This is the individual incident reports. Click "Close" to exit and then click "Next".',
-          disableOverlay:true,
-          disableBeacon: true,
-          spotlightClicks: true,
-          placement: 'center',
-        },
-        {
-          disableBeacon: false,
-          target: '#chartbackButton',
-          spotlightClicks: true,
-          disableOverlay:true,
-          content: 'Click on the "Back" button return to the previous chart, then click "Next".',
-        },      
-        {
-          target: '.leaflet-interactive:nth-child(5)',
-          content: 'Click on California to unlock it and then click "Next"',
-          spotlightClicks: true,
-        },
-        {
-          disableBeacon: false,
-          target: '#covidButton',
-          content: 'View and report Asian American/Pacific Islander hate crimes from COVID-19 discrimination here.',
-        },      
-        {
-          target: '#reportIncidentButton',
-          content: 'Anonymously report a hate crime if you yourself have experienced or have witnessed one.',
-          disableBeacon: false,
-        },      
-        {
-          target: '#hateCrimeTutorial',
-          content: 'You can view this tutorial again by clicking this button.',
-        },      
-      ]
+      steps: JOYRIDE_STEPS,
     };
+
     this.statesRef = React.createRef();
     this.alaskaRef = React.createRef();
     this.hawaiiRef = React.createRef();
     this.mapRef = React.createRef();
-
-    
   }
 
   async componentDidMount() {
@@ -150,7 +70,6 @@ class HomePage extends Component {
         resetStateColor(layer, this.state.data,defaultColors);
       }
     })
-    
   }
 
   changeViewRegion = (event, region) => {
@@ -173,6 +92,10 @@ class HomePage extends Component {
 
   filterIncidents = (flt) => {
     this.setState({ filterPublished: flt }) // true or false
+  }
+
+  filterTime = (time) => {
+    this.setState({ filterTimeRange: time })
   }
 
   // Return value, success (in our terms, not react's)
@@ -228,7 +151,7 @@ class HomePage extends Component {
   }
 
   render() {
-    const { isFetching, currentDisplay,run, steps,stepIndex } = this.state;
+    const { isFetching, currentDisplay, run, steps,stepIndex } = this.state;
     const { classes } = this.props;
 
 
@@ -236,13 +159,26 @@ class HomePage extends Component {
       return <CircularProgress className={classes.progress} />;
     }
 
-    let data;
+    let data, dataPtr;
     if (this.state.filterPublished) {
-      data = this.state.publishedData
+      dataPtr = this.state.publishedData
     } else {
-      data = this.state.data;
+      dataPtr = this.state.data;
     }
-
+    // timeslider filter. TODO: make a generic state data filter/callback that handles pointer and closures
+    // TODO: sort by date and binary search
+    data = {}
+    for (var state in dataPtr) {
+      if (!dataPtr[state].children) continue;
+      data[state] = {children: dataPtr[state].children.filter(incident => {
+          let yr = (new Date(incident.date)).getFullYear();
+          return yr >= this.state.filterTimeRange[0] && yr <= this.state.filterTimeRange[1]
+        }),
+      count: dataPtr[state].count
+      }
+    }
+    data.max = dataPtr.max;
+    
     return (
 
       <div className="homePage">
@@ -252,7 +188,7 @@ class HomePage extends Component {
           {/* TODO: context for mapdata and data.states? */}
           <MapWrapper region={this.state.region} updateState={this.updateState} updateCounty={this.updateCounty}
           statesRef={this.statesRef} mapRef={this.mapRef} alaskaRef={this.alaskaRef} hawaiiRef={this.hawaiiRef}
-          data={data} updateView={this.changeViewRegion} updateZoom={this.updateZoom} zoom={this.getZoom}>
+          data={data} updateView={this.changeViewRegion} updateZoom={this.updateZoom} zoom={this.getZoom} filterTime={this.filterTime} >
           <MapBar changeRegion={this.changeViewRegion} region={this.state.region}/>
           <Joyride
               run={run}
@@ -282,19 +218,21 @@ class HomePage extends Component {
  
           <div className="side">
             <SideMenu>
-              <h2 className="sideMenu__header">Hate Crimes in {this.state.currentDisplay == 'none' ? "the US" : this.state.currentDisplay }               
-                          <IconButton  onClick={this.runTutorial} className={classes.menuButton} color="gray" aria-label="Menu">
-                          <HelpIcon id="hateCrimeTutorial" />
-                      </IconButton></h2>
-              
-                <div className="sideMenu__chart">
-                  <Charts data={data} max={data.groupMax} currState={this.state.currentDisplay} />
-                </div>
+              <div className="sideMenu__header">
+                <h2>Hate Crimes in {this.state.currentDisplay == 'none' ? "the US" : this.state.currentDisplay }               
+                  <IconButton  onClick={this.runTutorial} className={classes.menuButton} color="gray" aria-label="Menu">
+                    <HelpIcon id="hateCrimeTutorial" />
+                  </IconButton>
+                </h2>
+
+                <h4>In {this.state.filterTimeRange.join('-')}</h4>
+              </div>
+
+              <div className="sideMenu__chart">
+                <Charts data={data} max={data.groupMax} currState={this.state.currentDisplay} />
+              </div>
             <br />
               <FilterBar filterfn={this.filterIncidents} />
-
-
-            
             </SideMenu>
           </div>
       </div>

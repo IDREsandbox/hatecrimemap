@@ -26,6 +26,7 @@
     "leaflet": "^1.6.0",
     "material-ui-pickers": "^2.2.4",
     "moment": "^2.29.1",
+    "nouislider-react": "^3.3.9",
     "prop-types": "^15.7.2",
     "re-resizable": "^6.7.0",
     "react": "^16.13.1",

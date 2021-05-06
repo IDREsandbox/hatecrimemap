@@ -100,7 +100,6 @@ export function getChartData(chart, allData, state) {
   } else {
     allData = allData[state].children;
   }
-  console.log(state,allData)
 
   let chartData;
   let data;

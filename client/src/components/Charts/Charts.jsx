@@ -3,9 +3,8 @@ import { withStyles } from '@material-ui/core/styles';
 import './Charts.css';
 import { Button } from '@material-ui/core';
 import { ArrowBack } from '@material-ui/icons';
-import { CHARTS, CHART_STRINGS, getChartData, sumData } from '../../utils/chart-utils';
+import { CHARTS, CHART_STRINGS, getChartData, sumData } from 'utils/chart-utils';
 import { Bar, Pie } from 'react-chartjs-2';
-import ChartsText from './ChartText';
 import Grid from '@material-ui/core/Grid';
 
 import Table from '@material-ui/core/Table';
@@ -28,12 +27,6 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 const styles = theme => ({
 
 });
-/*
-          <Bar data={getChartData(CHARTS.RACE_ETHNICITY, this.props.data)} options={wholeYAxis} />
-          <Bar data={getChartData(CHARTS.RELIGION, this.props.data)} options={wholeYAxis} />
-          <Bar data={getChartData(CHARTS.GENDER_SEXUALITY, this.props.data)} options={wholeYAxis} />
-          <Bar data={getChartData(CHARTS.OTHER, this.props.data)} options={wholeYAxis} />
-*/
 
 const RACE_LABELS = ["African American", "Asian", "Latinx", "Native American/Indigenous", "White", "Other Race/Ethnicity"]
 const RELIGION_LABELS = ["Anti-Jewish", "Anti-Christian", "Anti-Muslim", "Other Religion"]

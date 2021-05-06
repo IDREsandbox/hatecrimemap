@@ -3,8 +3,6 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { FormGroup, FormControlLabel, Checkbox } from '@material-ui/core';
 
-import ghFilters from '../../globals/ghFilters';
-import groupsHarassed from '../../globals/groupsHarassed';
 import './GHCheckboxList.css';
 import axios from 'axios';
 

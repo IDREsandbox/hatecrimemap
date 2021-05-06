@@ -11,7 +11,9 @@ import {
   IconButton
 } from '@material-ui/core';
 
-import AboutDialog from '../AboutDialog/AboutDialog';
+import { FOOTER } from 'res/values/string';
+
+import AboutDialog from 'components/AboutDialog/AboutDialog';
 
 const styles = {
   footer: {
@@ -38,8 +40,7 @@ const styles = {
 const Footer = ({ classes }) => (
   <div className={classes.footer}>
     <Typography variant="caption" color="inherit" className={classes.flex}>
-      This map is maintained by the UCLA American Indian Studies Center under the 
-      Institute of American Cultures. To contact us, email <a href="mailto:aisc@ucla.edu">aisc@ucla.edu</a>.
+      {FOOTER.TEXT} <a href="mailto:aisc@ucla.edu">{FOOTER.EMAIL}</a>.
     </Typography>
   </div>
 );

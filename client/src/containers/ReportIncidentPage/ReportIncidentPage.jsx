@@ -251,10 +251,9 @@ class ReportIncidentPage extends Component {
               <TextField
                 name="description"
                 onChange={this.handleChange}
-                helperText="If no associated link, provide a description of the incident"
+                helperText="Provide a description of the incident"
                 defaultValue={description}
                 fullWidth
-                disabled={associatedLink}
               />
             </Tooltip>
           </div>

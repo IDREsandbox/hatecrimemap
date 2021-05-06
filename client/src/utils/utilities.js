@@ -1,8 +1,6 @@
 import axios from 'axios';
 import React from 'react';
 
-import groupsHarassed from '../globals/groupsHarassed';
-
 export function arrToObject(arr) {
   const obj = arr.reduce((acc, elem) => {
     acc[elem.name] = Object.assign({}, elem);
@@ -27,19 +25,6 @@ function printUnique(mapdata) {
   console.log(noDupes);
 }
 /* eslint-enable */
-
-export function createGroupsHarassed(groups) {
-  const filtered = [];
-  groups.forEach((group) => {
-    Object.values(groupsHarassed).flat().forEach((filter) => {
-      if (group == filter.name) filtered.push(filter.label);
-      else if (filter.sub_groups) {
-        filter.sub_groups.forEach(sub => { if(group == sub.name) filtered.push(sub.label)})
-      }
-    });
-  });
-  return filtered.join(',');
-}
 
 export function createDataToSubmit(formData) {
   const { targetCategory, groups, primaryGroup, groupsChecked, groupsExpanded,

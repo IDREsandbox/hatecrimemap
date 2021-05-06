@@ -3,12 +3,10 @@ import { withStyles } from '@material-ui/core/styles';
 import './CovidCharts.css';
 import { Button } from '@material-ui/core';
 import { ArrowBack, ThreeSixty } from '@material-ui/icons';
-import { COVID_CHARTS, CHART_STRINGS, getCovidChartData, sumData } from '../../utils/chart-utils';
+import { COVID_CHARTS, CHART_STRINGS, getCovidChartData, sumData, takeTop } from 'utils/chart-utils';
 import { Bar, Pie } from 'react-chartjs-2';
 import Grid from '@material-ui/core/Grid';
 import { Resizable } from "re-resizable";
-
-
 
 import { useState } from 'react';
 
@@ -20,8 +18,6 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 
-// import { DataGrid } from '@material-ui/data-grid';
-
 
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -29,13 +25,11 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-
-import ReactWordcloud from 'react-wordcloud';
+import WordCloud from '../Charts/elements/WordCloud/WordCloud';
 
 import 'tippy.js/dist/tippy.css';
 import 'tippy.js/animations/scale.css';
 
-import { takeTop } from '../../utils/chart-utils'
 
 const styles = theme => ({
 
@@ -89,12 +83,6 @@ const covidType = ["Verbal", "Physical", "Coughing/Spitting", "Online", "Other"]
 const covidOther = ["Unknown"]
 
 
-const callbacks = {
-  // getWordColor: word => word.value > 20 ? "blue" : "red",
-  // onWordClick: console.log,
-  // onWordMouseOver: console.log,
-  // getWordTooltip: word => `${word.text} (${word.value}) [${word.value > 20 ? "good" : "bad"}]`,
-}
 const options = {
   colors: ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b"],
   enableTooltip: true,
@@ -131,6 +119,7 @@ const words = [
   },
 ]
 
+const callbacks = {}
 
 class CovidCharts extends React.Component {
 
@@ -214,28 +203,8 @@ class CovidCharts extends React.Component {
               <Grid item xs={3}>* to center the title *</Grid>
             </Grid>*/}
             <Grid container justify="space-between">
-            {<Grid container item justify="center" xs={6}>
-                <h4>Word Cloud</h4>
-                <Resizable
-        defaultSize={{
-          width: 200,
-          height: 200
-        }}
-        style={resizeStyle}
-      >                
-                <div style={{ height: "100%", width: "100%" }}>
-                  <ReactWordcloud
-                    callbacks={callbacks}
-                    options={options}
-                    // size={size}
-                    words={this.props.currState != 'none' ? this.props.wordCloudData[this.props.currState]
-                          : takeTop(Object.values(this.props.wordCloudData).flat()) }
-                    // words={wordCloudData}                    
-                    />
-
-                  </div>
-                </Resizable>
-              </Grid>}                   
+              <WordCloud words={this.props.currState != 'none' ? this.props.wordCloudData[this.props.currState]
+                          : takeTop(Object.values(this.props.wordCloudData).flat())} />        
               <Grid container item justify="center" xs={6}>
                 <h4>Ethnicity</h4>
                 

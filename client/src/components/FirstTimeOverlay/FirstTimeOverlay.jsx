@@ -6,6 +6,7 @@ import {
   Checkbox,
   FormControlLabel
 } from '@material-ui/core';
+import { FIRST_OVERLAY } from 'res/values/string';
 
 
 import Dialog from '@material-ui/core/Dialog';
@@ -39,11 +40,8 @@ class FirstTimeOverlay extends Component {
   handleCheck = (e) => {
     this.setState((prev, props) => ({dontShow: !prev.dontShow}))
     if (document.cookie.split(';').some((item) => item.trim().startsWith('dontshow='))) {
-      console.log('First time visiting')
   }
-  console.log('you checked dont show')
-
-  }
+}
 
   handleClose = () => {
     if(this.state.dontShow) {
@@ -54,8 +52,6 @@ class FirstTimeOverlay extends Component {
     this.props.onClose()
   }
 
-
-
   render() {
     return (
       <Dialog
@@ -64,18 +60,13 @@ class FirstTimeOverlay extends Component {
         maxWidth="md"
         aria-labelledby="responsive-dialog-title"
       >
-        <DialogTitle id="responsive-dialog-title">Welcome to the Hate Crime Map!</DialogTitle>
+        <DialogTitle id="responsive-dialog-title">{FIRST_OVERLAY.TITLE}</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            The Hate Crime Map offers an anonymous platform for victims of hate-based assault and 
-            crime to record their experiences so that researchers and policy makers have accurate 
-            information about the causes and locations of hate crimes. In addition to reporting crimes, 
-            you can search the data by race, gender, religion and other factors. To see data, hover 
-            over a state. To report harassment or assault, click on “Report Incident” on toolbar.” 
-            For more details, click on “About”.
+            {FIRST_OVERLAY.TEXT}
             <br />
             <br />
-            <em>*Please be advised that by accessing this site, you may encounter offensive language content, and that self-reported content may also include suspicious links.</em>
+            <em>{FIRST_OVERLAY.SUB_TEXT}</em>
           </DialogContentText>
         </DialogContent>
         <DialogActions>
@@ -86,7 +77,7 @@ class FirstTimeOverlay extends Component {
             control={
               <Checkbox className={this.props.classes.dontShowBox} checked={this.state.dontShow} onChange={this.handleCheck} />
             }
-            label="Don't show again"
+            label={FIRST_OVERLAY.CLOSE_LABEL}
           />
         </DialogActions>
       </Dialog>

@@ -11,8 +11,8 @@ import {
   IconButton
 } from '@material-ui/core';
 
-import AboutDialog from '../AboutDialog/AboutDialog';
-import AboutCovidDialog from '../AboutDialog/AboutCovidDialog';
+import AboutDialog from 'components/AboutDialog/AboutDialog';
+import AboutCovidDialog from 'components/AboutDialog/AboutCovidDialog';
 
 
 import { useLocation } from 'react-router-dom'; // change color... 
@@ -61,7 +61,7 @@ const CovidHeader = ({ classes }) => {
           </IconButton>
         </Link>
         <Typography variant="h6" color="inherit" className={classes.covidFlex}>
-          Mapping COVID Hate Crimes in the US (Data from <a target="_blank" href="https://stopaapihate.org/reportincident/" className={classes.titleLink}>Stop AAPI Hate</a>)
+          Mapping COVID Hate Incidents in the US (Data from <a target="_blank" href="https://stopaapihate.org/reportincident/" className={classes.titleLink}>Stop AAPI Hate</a>)
         </Typography>
         <Link to="/" className={classes.link}>
           <Button className={classes.gotoOriginal} color="inherit">See All Other Hate Crimes</Button>
@@ -99,7 +99,7 @@ const Header = ({ classes }) => {
           Mapping Hate Crimes in the US #OneHateCrimeIsTooMany
         </Typography>
         <Link to="/covid" className={classes.link}>
-          <Button id="covidButton" className={classes.gotoCovid} color="inherit">See COVID Hate Crimes</Button>
+          <Button id="covidButton" className={classes.gotoCovid} color="inherit">See COVID Hate Incidents</Button>
         </Link>
         <Link to="/reportincident" className={classes.link}>
           <Button className={classes.reportIncidentButton} color="inherit" id="reportIncidentButton">Report Incident</Button>
