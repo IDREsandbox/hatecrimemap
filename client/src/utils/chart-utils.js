@@ -1,4 +1,4 @@
-import { func } from "prop-types";
+import { counts_aggregateByAll } from 'utils/data-utils';
 
 export const CHARTS = {
   RACE_ETHNICITY: 1,
@@ -92,32 +92,54 @@ var topChartData = {
 }
 
 // Could make a single function, but this should allow us to customize chart colors more easily in the future
-export function getChartData(chart, allData, state) {
+export function getChartData(chart, allData, filters) {
 
-  if (state == 'none') {
-    // All of USA
-    allData = Object.values(allData).reduce(((p, c) => c instanceof Object ? p.concat(c.children) : p), [])
-  } else {
-    allData = allData[state].children;
-  }
+  // if (state == 'none') {
+  //   // All of USA
+  //   allData = Object.values(allData).reduce(((p, c) => c instanceof Object ? p.concat(c.children) : p), [])
+  // } else {
+  //   allData = allData[state].children;
+  // }
+
+
 
   let chartData;
-  let data;
+  let data = {labels: [], counts: []};
   if (chart === CHARTS.RACE_ETHNICITY) {
     chartData = raceChartData;
-    data = mapRE(allData);
+    // data = mapRE(allData);
+    RACE_LABELS.forEach(label => {
+      data.labels.push(label);
+      data.counts.push(counts_aggregateByAll(allData, [...filters, ["group", label]]))
+    })
   } else if (chart === CHARTS.RELIGION) {
     chartData = religionChartData;
-    data = mapReligion(allData);
+    // data = mapReligion(allData);
+    RELIGION_LABELS.forEach(label => {
+      data.labels.push(label);
+      data.counts.push(counts_aggregateByAll(allData, [...filters, ["group", label]]))
+    })
   } else if (chart === CHARTS.GENDER_SEXUALITY) {
     chartData = genderChartData;
-    data = mapGender(allData);
+    // data = mapGender(allData);
+    GENDER_LABELS.forEach(label => {
+      data.labels.push(label);
+      data.counts.push(counts_aggregateByAll(allData, [...filters, ["group", label]]))
+    })
   } else if (chart === CHARTS.OTHER) {
     chartData = otherChartData;
-    data = mapOther(allData);
+    // data = mapOther(allData);
+    MISC_LABELS.forEach(label => {
+      data.labels.push(label);
+      data.counts.push(counts_aggregateByAll(allData, [...filters, ["group", label]]))
+    })
   } else if (chart === CHARTS.TOP) {
     chartData = topChartData;
-    data = mapTop(allData);
+    // data = mapTop(allData);
+    CHART_STRINGS.forEach(label => {
+      data.labels.push(label);
+      data.counts.push(counts_aggregateByAll(allData, [...filters, ["primary_reason", label]]))
+    })
   }
 
   // if (chart !== CHARTS.TOP) {

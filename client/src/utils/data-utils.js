@@ -128,6 +128,42 @@ export function storeCountyData(countyData) {
 	return _countyData;
 }
 
+export function counts_total(data) {
+	return data.reduce((a,b) => a+b.count, 0);
+}
+
+// Issue with these "max" is we need all the values to iterate over, so we can't generalize easily
+export function counts_maxPrimary(data) {
+	let fields = ["Race/Ethnicity", "Religion", "Gender/Sexuality", "Miscellaneous"];
+	return Math.max(...fields.map(field => counts_aggregateBy(data, 'primary_reason', field)))
+}
+
+export function counts_maxState(data) {
+	let fields = STATES;
+	return Math.max(...fields.map(field => counts_aggregateBy(data, 'state', field)))
+}
+
+export function counts_aggregateBy(data, field, value) {
+	return data.filter(part => part[field]==value).reduce((a,b) => a+b.count, 0);
+}
+
+export function counts_aggregateByAll(data, fieldValues) {
+	return data.filter(part => fieldValues.every(fv => part[fv[0]]==fv[1])).reduce((a,b) => a+b.count, 0);
+}
+
+export function counts_aggregateRange(data, field, low, high) {
+	return data.filter(part => part[field] >= low && part[field] <= high).reduce((a,b) => a+b.count, 0);
+}
+
+export function getDataCounts() {
+	return axios.get('/api/totals/')
+	.then(res => res.data.result)
+	.catch((err) => {
+		alert(`API call failed: ${err}`);
+		return {};
+	});
+}
+
 export function getStateDataReports() {
 	return axios.get('/api/totals/reports')
 	.then(res => { return storeStateDataReports(res.data.result) })
@@ -244,15 +280,15 @@ export function resetStateColor(layer, statesData,colorBins) {
     layer.setStyle({fillColor: colorHashed})
 }
 
-export function eachState(feature, layer, statesData, currentState, setStateDisplay,colorBins) {
+export function eachState(feature, layer, data, max, setStateDisplay, colorBins) {
 	const STATE_NAME = feature.properties.NAME;
-	const stateData = statesData[STATE_NAME];
-	if(!stateData || stateData.count <= 0) {
+	const stateCount = counts_aggregateBy(data, 'state', STATE_NAME);
+	if(stateCount <= 0) {
 		layer.setStyle({color: 'rgba(0, 0, 0, 0)'});
 		return;
 	}
     // const colorHashed = colorBins[Math.floor((5*stateData.total-1)/total)];
-	let colorHashed = hashStateColor(stateData.count, statesData.max,colorBins);
+	let colorHashed = hashStateColor(stateCount, max, colorBins);
     layer.on('mouseover', function(event){
 	    if(!setStateDisplay(STATE_NAME)) return;  // setStateDisplay() will return false if we're locked onto something else
 	    // layer._path.classList.add("show-state");
@@ -282,44 +318,47 @@ export function eachState(feature, layer, statesData, currentState, setStateDisp
 	layer.setStyle({stroke: 1, weight: 1, opacity: 0.75, color: 'white', fillColor: colorHashed, fillOpacity: 0.75});
 }
 
-export function eachStatesCounties(feature, layer, countytotals, setCountyDisplay, total=33,colorBins)
+export function eachStatesCounties(feature, layer, data, max, setCountyDisplay, colorBins)
 {
-	if(countytotals[feature.properties.County_state] && countytotals[feature.properties.County_state].total > 0) {
+	const COUNTY_NAME = feature.properties.NAME;
+	const STATE_FP = feature.properties.STATEFP;
+	const countyCount = counts_aggregateBy(data, 'county', COUNTY_NAME + ',' + STATE_FP);
+	if(countyCount <= 0) {
+		layer.setStyle({color: 'rgba(0, 0, 0, 0)'});
+		return;
+	}
     // const colorHashed = colorBins[Math.floor((5*countytotals[feature.properties.County_state].total-1)/total)];
     let colorHashed = 0;
-    // if(countytotals[feature.properties.County_state].total < total/10) colorHashed = colorBins[0];
-    // else if(countytotals[feature.properties.County_state].total < total/8) colorHashed = colorBins[1];
-    // else if(countytotals[feature.properties.County_state].total < total/6) colorHashed = colorBins[2];
-    // else if(countytotals[feature.properties.County_state].total < total/4) colorHashed = colorBins[3];
-    // else if(countytotals[feature.properties.County_state].total < total + 1) colorHashed = colorBins[4];
-    colorHashed = colorBins[0];
+    if(countyCount < max/10) colorHashed = colorBins[0];
+    else if(countyCount < max/8) colorHashed = colorBins[1];
+    else if(countyCount < max/6) colorHashed = colorBins[2];
+    else if(countyCount < max/4) colorHashed = colorBins[3];
+    else if(countyCount < max + 1) colorHashed = colorBins[4];
+    //colorHashed = colorBins[0];
     layer.on('mouseover', function(event){
-      if(!setCountyDisplay(feature.properties.County_state)) return;  // setCountyDisplay() will return false if we're locked onto something else
-      // layer._path.classList.add("show-state");
-      layer.setStyle({fillColor: 'rgb(200, 200, 200)'});
-  });
-    layer.on('mouseout', function(event){
-    	if(!setCountyDisplay("none")) return;
-      // layer._path.classList.remove("show-state");
-      layer.setStyle({fillColor: colorHashed});
-  });
-    layer.on('click', function(event) {
-    	layer.setStyle({fillColor: `rgb(100, 100, 100)`});
-    	if(lockedLayer) {
-    		lockedLayer.setStyle({fillColor: lockedLayerColor});
-    		if(lockedLayer === layer) {
-    			setCountyDisplay("none", true);
-    			lockedLayer = null;
-    			lockedLayerColor = null;
-    			return;
-    		}
-    	}
-      setCountyDisplay(feature.properties.County_state, true);  // true parameter for locking
+	      if(!setCountyDisplay(feature.properties.County_state)) return;  // setCountyDisplay() will return false if we're locked onto something else
+	      // layer._path.classList.add("show-state");
+	      layer.setStyle({fillColor: 'rgb(200, 200, 200)'});
+	  });
+	    layer.on('mouseout', function(event){
+	    	if(!setCountyDisplay("none")) return;
+	      // layer._path.classList.remove("show-state");
+	      layer.setStyle({fillColor: colorHashed});
+	  });
+	    layer.on('click', function(event) {
+	    	layer.setStyle({fillColor: `rgb(100, 100, 100)`});
+	    	if(lockedLayer) {
+	    		lockedLayer.setStyle({fillColor: lockedLayerColor});
+	    		if(lockedLayer === layer) {
+	    			setCountyDisplay("none", true);
+	    			lockedLayer = null;
+	    			lockedLayerColor = null;
+	    			return;
+	    		}
+	    	}
+	      setCountyDisplay(feature.properties.County_state, true);  // true parameter for locking
 
-      lockedLayer = layer;
-  });
-    layer.setStyle({stroke: 1, weight: 1, opacity: 0.75, color: 'white', fillColor: colorHashed, fillOpacity: 0.75});
-} else {
-	layer.setStyle({color: 'rgba(0, 0, 0, 0)'});
-}
+	      lockedLayer = layer;
+	  });
+    layer.setStyle({stroke: 0.1, weight: 1, opacity: 0.75, color: 'black', fillColor: colorHashed, fillOpacity: 0.75});
 }

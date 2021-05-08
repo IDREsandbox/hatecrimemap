@@ -8,6 +8,7 @@ import { JOYRIDE_STEPS } from 'res/values/joyride';
 import { MAP_DISPLAY } from 'res/values/map';
 import { Rectangle, GeoJSON } from 'react-leaflet';
 import { getAllData, storeStateData, resetStateColor,defaultColors,covidColors, getStateDataReports, filterPublishedReports } from '../../utils/data-utils';
+import { getDataCounts, counts_aggregateBy, counts_getState, counts_total, counts_maxPrimary, counts_maxState } from 'utils/data-utils';
 
 import HelpIcon from '@material-ui/icons/Help';
 
@@ -50,17 +51,24 @@ class HomePage extends Component {
   }
 
   async componentDidMount() {
-    getStateDataReports().then(values => {
+    // getStateDataReports().then(values => {
+    //   this.setState({
+    //     data: values,
+    //     publishedData: filterPublishedReports(values),
+    //     isFetching: false
+    //   });
+      
+    // });
+
+    getDataCounts().then(values => {
+      let max = counts_total(values);
+      console.log(values.filter(f => f.state=="California"))
       this.setState({
         data: values,
-        publishedData: filterPublishedReports(values),
+        dataMax: max,
         isFetching: false
       });
-      
     });
-  }
-
-  resetMapData = () => {
   }
 
   resetStateColors() {
@@ -71,7 +79,16 @@ class HomePage extends Component {
       }
     })
   }
-
+/*const map = useMapEvents({
+    click: () => {
+      map.locate()
+    },
+    locationfound: (location) => {
+      console.log('location found:', location)
+    },
+  })
+  return null
+*/
   changeViewRegion = (event, region) => {
     if (region !== null) {
       this.setState({region: region}, () => {
@@ -146,6 +163,10 @@ class HomePage extends Component {
     }
   };
   
+  updateZoom = (z) => {
+    this.setState({zoom: z.target._zoom});
+  }
+
   getZoom = () => {
     return this.state.zoom;
   }
@@ -160,24 +181,45 @@ class HomePage extends Component {
     }
 
     let data, dataPtr;
-    if (this.state.filterPublished) {
-      dataPtr = this.state.publishedData
-    } else {
-      dataPtr = this.state.data;
-    }
+    // if (this.state.filterPublished) {
+    //   dataPtr = this.state.publishedData
+    // } else {
+    //   dataPtr = this.state.data;
+    // }
     // timeslider filter. TODO: make a generic state data filter/callback that handles pointer and closures
     // TODO: sort by date and binary search
-    data = {}
-    for (var state in dataPtr) {
-      if (!dataPtr[state].children) continue;
-      data[state] = {children: dataPtr[state].children.filter(incident => {
-          let yr = (new Date(incident.date)).getFullYear();
-          return yr >= this.state.filterTimeRange[0] && yr <= this.state.filterTimeRange[1]
-        }),
-      count: dataPtr[state].count
+    // data = {}
+    // for (var state in dataPtr) {
+    //   if (!dataPtr[state].children) continue;
+    //   data[state] = {children: dataPtr[state].children.filter(incident => {
+    //       let yr = (new Date(incident.date)).getFullYear();
+    //       return yr >= this.state.filterTimeRange[0] && yr <= this.state.filterTimeRange[1]
+    //     }),
+    //   count: dataPtr[state].count
+    //   }
+    // }
+    // data.max = dataPtr.max;
+    dataPtr = this.state.data;
+    data = dataPtr.filter(row => row.yyyy >= this.state.filterTimeRange[0] &&
+                                 row.yyyy <= this.state.filterTimeRange[1]);
+    let dataMapMax = this.state.zoom >= 6 ? 30 : counts_maxState(data);
+    let dataMax = counts_maxPrimary(data);
+    let currTotal = 0;
+
+    let filters = [];
+    if (this.state.currentDisplay != 'none') {
+      if (this.state.zoom >= 6) {
+        filters.push(['county', this.state.currentDisplay]);
+        currTotal = counts_aggregateBy(data, 'county', this.state.currentDisplay);
       }
+      else {
+        filters.push(['state', this.state.currentDisplay]);
+        currTotal = counts_aggregateBy(data, 'state', this.state.currentDisplay);
+      }
+    } else {
+      currTotal = counts_total(data);
     }
-    data.max = dataPtr.max;
+    if (this.state.filterPublished) filters.push(['published', true]);
     
     return (
 
@@ -188,7 +230,7 @@ class HomePage extends Component {
           {/* TODO: context for mapdata and data.states? */}
           <MapWrapper region={this.state.region} updateState={this.updateState} updateCounty={this.updateCounty}
           statesRef={this.statesRef} mapRef={this.mapRef} alaskaRef={this.alaskaRef} hawaiiRef={this.hawaiiRef}
-          data={data} updateView={this.changeViewRegion} updateZoom={this.updateZoom} zoom={this.getZoom} filterTime={this.filterTime} >
+          data={data} max={dataMapMax} updateView={this.changeViewRegion} updateZoom={this.updateZoom} zoom={this.getZoom} filterTime={this.filterTime} >
           <MapBar changeRegion={this.changeViewRegion} region={this.state.region}/>
           <Joyride
               run={run}
@@ -220,16 +262,16 @@ class HomePage extends Component {
             <SideMenu>
               <div className="sideMenu__header">
                 <h2>Hate Crimes in {this.state.currentDisplay == 'none' ? "the US" : this.state.currentDisplay }               
-                  <IconButton  onClick={this.runTutorial} className={classes.menuButton} color="gray" aria-label="Menu">
+                  <IconButton  onClick={this.runTutorial} className={classes.menuButton} aria-label="Menu">
                     <HelpIcon id="hateCrimeTutorial" />
                   </IconButton>
                 </h2>
 
-                <h4>In {this.state.filterTimeRange.join('-')}</h4>
+                <h4>{currTotal} in {this.state.filterTimeRange.join('-')}</h4>
               </div>
 
               <div className="sideMenu__chart">
-                <Charts data={data} max={data.groupMax} currState={this.state.currentDisplay} />
+                <Charts data={data} max={dataMax} filters={filters} />
               </div>
             <br />
               <FilterBar filterfn={this.filterIncidents} />

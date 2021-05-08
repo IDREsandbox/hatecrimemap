@@ -240,7 +240,6 @@ const statePublishedOnly = `SELECT us_states.name, g2.name as parent, g1.name as
 								JOIN groups g1 ON g1.id = t.group_id
 								join groups g2 on g2.id = t.parent
 							`
-
 const allReports = `SELECT t.id, to_char(t.incidentdate, 'MM/DD/YY') as date, us_states.name as state, g2.name as parent, g1.name as group, t.published, t.sourceurl as link, t.description
 					FROM (SELECT i.id, i.incidentdate, state_id, i.primary_group_id as parent, group_id, published, sourceurl, description
 							FROM incident i
@@ -250,6 +249,16 @@ const allReports = `SELECT t.id, to_char(t.incidentdate, 'MM/DD/YY') as date, us
 						JOIN groups g2 ON g2.id = t.parent
 						ORDER by date
 					`
+
+const partitionedCounts =  `select us.name as state, (uc.name||','||uc.statefp) as county, g2.name as primary_reason, g.name as group, published, extract(year from incidentdate) as yyyy, COUNT(*)::int
+							from groups g -- include all groups, even if aggregate of one is 0
+							join incident_groups ig on g.id = ig.group_id -- attach the name to all reports
+							join incident i on ig.incident_id = i.id
+							join groups g2 on i.primary_group_id = g2.id -- attach parent group name. NOTE, ideally we could map 'group' to its primary, but some have a different primary than group
+							join us_states us on us.id = i.state_id -- attach the state name
+							join us_counties uc on uc.id = i.county_id -- attach the county name
+							where incidentdate IS NOT NULL AND incidentdate < now()::date
+							group by us.name, (uc.name||','||uc.statefp), g2.name, g.name, published, extract(year from incidentdate)`
 
 router.get('/reports', (req, res) => {
 	db.any(allReports)
@@ -264,7 +273,7 @@ router.get('/reports', (req, res) => {
 });
 
 router.get('/', (req, res) => {
-	db.any(stateAllCategories)
+	db.any(partitionedCounts)
 	.then((result) => {
 		res.status(200)
 		.json({

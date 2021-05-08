@@ -53,7 +53,14 @@ class Charts extends React.Component {
               // stepSize: 1
             }
           }]
-        }
+        },
+        tooltips: {
+          intersect: false,
+          mode: 'index'
+        },
+        onClick: (event, elements) => {
+          console.log(event, elements);
+        },
       },
       drilldown: {},
       popup_filter_num: 0,
@@ -102,9 +109,9 @@ class Charts extends React.Component {
 
       if(this.state.currentDisplay != CHARTS.TOP) {
 
-        const rows = this.props.currState == 'none' ? 
-          Object.values(this.props.data).reduce(((p, c) => c instanceof Object ? p.concat(c.children.filter(e => e.group == this.state.popup_filter)) : p), [])
-          : this.props.data[this.props.currState].children.filter(e => e.group == this.state.popup_filter);
+        // const rows = this.props.currState == 'none' ? 
+        //   Object.values(this.props.data).reduce(((p, c) => c instanceof Object ? p.concat(c.children.filter(e => e.group == this.state.popup_filter)) : p), [])
+        //   : this.props.data[this.props.currState].children.filter(e => e.group == this.state.popup_filter);
 
         // Pie charts!
         return (
@@ -118,7 +125,7 @@ class Charts extends React.Component {
               </Grid>
               <Grid item xs={3}>{/* to center the title */}</Grid>
             </Grid>
-            <Pie id="hatecrimePieChart" data={getChartData(this.state.currentDisplay, this.props.data, this.props.currState)} 
+            <Pie id="hatecrimePieChart" data={getChartData(this.state.currentDisplay, this.props.data, this.props.filters)} 
                   onElementsClick={this.pieClick}/>
             {/*<ChartsText data={this.props.data[this.state.drilldown].children} />*/}
 
@@ -130,6 +137,8 @@ class Charts extends React.Component {
             >
               <DialogTitle id="responsive-dialog-title">Hate Crimes</DialogTitle>
               <DialogContent>
+                <h1>TBD</h1>
+                {/*
                 <Table stickyHeader className="hello" aria-label="simple table">
                     <TableHead>
                       <TableRow>
@@ -152,6 +161,7 @@ class Charts extends React.Component {
                       ))}
                     </TableBody>
                   </Table>
+                */}
               </DialogContent>
               <DialogActions  id="closeDataTable">
                 <Button onClick={() => this.toggleOpen(false)} color="primary">
@@ -164,12 +174,11 @@ class Charts extends React.Component {
       }
 
       let { options } = this.state;
-      if (options && this.props.currState == 'none') options.scales.yAxes[0].ticks.max = 700;
-      else options.scales.yAxes[0].ticks.max = 90;
+      if (options) options.scales.yAxes[0].ticks.max = this.props.max;
 
       return (
         <div className="charts" id="theChartsState">
-          <Bar data={getChartData(CHARTS.TOP, this.props.data, this.props.currState)} options={options}
+          <Bar data={getChartData(CHARTS.TOP, this.props.data, this.props.filters)} options={options}
                onElementsClick={this.barClick} />
           {/*<ChartsText data={this.props.data} />*/}
         </div>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Map, TileLayer, MapControl } from 'react-leaflet';
-import { Rectangle, GeoJSON } from 'react-leaflet';
+import { Rectangle, GeoJSON, Pane } from 'react-leaflet';
 import Legend from './Legend/Legend';
 import './MapWrapper.css';
 import { MAP_LOCATIONS as ML } from 'res/values/map';
@@ -66,15 +66,19 @@ const MapWrapper = (props) => {
                     onUpdate={(render, handle, value, un, percent) => setTimeFlt(value) }
                     />
       </div>
-      <Map id="USA" ref={props.mapRef} maxBounds={ML.worldBounds} minZoom={2} zoomSnap={0.25} center={ML.usaCenter} zoom={4.5} zoomEnd={props.updateZoom}>
+      <Map id="USA" ref={props.mapRef} maxBounds={ML.worldBounds} minZoom={2} zoomSnap={0.25} center={ML.usaCenter} zoom={4.5} onZoomend={props.updateZoom}>
         <TileLayer bounds={ML.worldBounds} attribution="&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
         url="https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png" />
           <Rectangle bounds={ML.worldBounds} stroke={false} fillOpacity="0" onClick={() => props.updateState("none", true)} />
-          { props.zoom >= 6 && counties.map((state, index) => <GeoJSON key={index} data={state} onEahFeature={(feature, layer) => eachStatesCounties(feature, layer, props.data.counties, props.updateCounty,theColors)} /> ) }     
-          <GeoJSON ref={props.statesRef} data={states_usa} onAdd={() => props.updateView(0, 1)} onEachFeature={(feature, layer) => eachState(feature, layer, props.data, 100, props.updateState,theColors)} />
-          <GeoJSON ref={props.alaskaRef} data={states_alaska} onEachFeature={(feature, layer) => eachState(feature, layer, props.data, 100, props.updateState,theColors)} />
-          <GeoJSON ref={props.hawaiiRef} data={states_hawaii} onEachFeature={(feature, layer) => eachState(feature, layer, props.data, 100, props.updateState,theColors)} />
-          <GeoJSON data={usa} onEachFeature={(feature, layer) => { layer.setStyle({stroke: 0.3, color: '#777777'})}} />
+          <Pane name="counties" style={{ zIndex: 500, display: (props.zoom() >= 6 ? 'block': 'none') }}>
+            { counties.map((state, index) => <GeoJSON key={index} data={state} onEachFeature={(feature, layer) => eachStatesCounties(feature, layer, props.data, 69, props.updateCounty, theColors)} /> ) }
+          </Pane> 
+          <Pane name="states" style={{ zIndex: 500, display: (props.zoom() >= 6 ? 'none': 'block') }}>
+            <GeoJSON ref={props.statesRef} data={states_usa} onAdd={() => props.updateView(0, 1)} onEachFeature={(feature, layer) => eachState(feature, layer, props.data, props.max, props.updateState, theColors)} />
+            <GeoJSON ref={props.alaskaRef} data={states_alaska} onEachFeature={(feature, layer) => eachState(feature, layer, props.data, props.max, props.updateState,theColors)} />
+            <GeoJSON ref={props.hawaiiRef} data={states_hawaii} onEachFeature={(feature, layer) => eachState(feature, layer, props.data, props.max, props.updateState,theColors)} />
+          </Pane>
+          <GeoJSON data={usa} onEachFeature={(feature, layer) => { layer.setStyle({stroke: 0.3, color: '#777777', backgroundColor: '#aaaaaa'})}} />
         <Legend colors={theColors} covid={covidFlag} />
         
         {props.children}
