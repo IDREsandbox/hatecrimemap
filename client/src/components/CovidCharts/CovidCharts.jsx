@@ -188,7 +188,7 @@ class CovidCharts extends React.Component {
                           (this.props.data[this.props.currState]
                           && this.props.data[this.props.currState].children
                           && this.props.data[this.props.currState].children.filter(el => el[this.state.dialogShow] && el[this.state.dialogShow].includes(this.state.dialogFilter)));
-                            
+
         return (
 
         <div className="CovidCharts">
@@ -247,7 +247,7 @@ class CovidCharts extends React.Component {
                       </TableHead>
                       <TableBody>
                         { rows.map((row) => (
-                          <TableRow key={row.id}>
+                          <TableRow key={row.ID}>
                             <TableCell>{row.date}</TableCell>
                             <TableCell>{row.city + ", " + row.state}</TableCell>
                             <TableCell>{row.ethnicity}</TableCell>

@@ -9,7 +9,7 @@ import { counties } from 'res/geography/counties/statecounties.js';
 import { states_usa } from 'res/geography/states.js';
 import { states_alaska } from 'res/geography/alaska.js';
 import { states_hawaii } from 'res/geography/hawaii.js';
-import { eachState, eachStatesCounties,defaultColors,covidColors } from 'utils/data-utils';
+import { eachState, eachStatesCounties,defaultColors,covidColors, eachCovidState } from 'utils/data-utils';
 import { useLocation } from 'react-router-dom';
 
 import Nouislider from "nouislider-react";
@@ -70,13 +70,13 @@ const MapWrapper = (props) => {
         <TileLayer bounds={ML.worldBounds} attribution="&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
         url="https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png" />
           <Rectangle bounds={ML.worldBounds} stroke={false} fillOpacity="0" onClick={() => props.updateState("none", true)} />
-          <Pane name="counties" style={{ zIndex: 500, display: (props.zoom() >= 6 ? 'block': 'none') }}>
+          {!props.covid && <Pane name="counties" style={{ zIndex: 500, display: (props.zoom() >= 6 ? 'block': 'none') }}>
             { counties.map((state, index) => <GeoJSON key={index} data={state} onEachFeature={(feature, layer) => eachStatesCounties(feature, layer, props.data, 69, props.updateCounty, theColors)} /> ) }
-          </Pane> 
+          </Pane>}
           <Pane name="states" style={{ zIndex: 500, display: (props.zoom() >= 6 ? 'none': 'block') }}>
-            <GeoJSON ref={props.statesRef} data={states_usa} onAdd={() => props.updateView(0, 1)} onEachFeature={(feature, layer) => eachState(feature, layer, props.data, props.max, props.updateState, theColors)} />
-            <GeoJSON ref={props.alaskaRef} data={states_alaska} onEachFeature={(feature, layer) => eachState(feature, layer, props.data, props.max, props.updateState,theColors)} />
-            <GeoJSON ref={props.hawaiiRef} data={states_hawaii} onEachFeature={(feature, layer) => eachState(feature, layer, props.data, props.max, props.updateState,theColors)} />
+            <GeoJSON ref={props.statesRef} data={states_usa} onAdd={() => props.updateView(0, 1)} onEachFeature={(feature, layer) => props.covid ? eachCovidState(feature, layer, props.data, props.updateState, theColors) : eachState(feature, layer, props.data, props.max, props.updateState, theColors)} />
+            <GeoJSON ref={props.alaskaRef} data={states_alaska} onEachFeature={(feature, layer) => props.covid ? eachCovidState(feature, layer, props.data, props.updateState, theColors) : eachState(feature, layer, props.data, props.max, props.updateState, theColors)} />
+            <GeoJSON ref={props.hawaiiRef} data={states_hawaii} onEachFeature={(feature, layer) => props.covid ? eachCovidState(feature, layer, props.data, props.updateState, theColors) : eachState(feature, layer, props.data, props.max, props.updateState, theColors)} />
           </Pane>
           <GeoJSON data={usa} onEachFeature={(feature, layer) => { layer.setStyle({stroke: 0.3, color: '#777777', backgroundColor: '#aaaaaa'})}} />
         <Legend colors={theColors} covid={covidFlag} />

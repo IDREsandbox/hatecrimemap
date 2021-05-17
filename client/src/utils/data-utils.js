@@ -237,7 +237,7 @@ function formatCovidData(data) {
 	stateData.max = max
 	// const wordData = ['test']
 	// const stateData = stateData
-	console.log(stateData)
+	// console.log(stateData)
 	return stateData
 }
 
@@ -278,6 +278,44 @@ export function resetStateColor(layer, statesData,colorBins) {
 	let colorHashed = hashStateColor(stateData.count, statesData.max,colorBins);
     
     layer.setStyle({fillColor: colorHashed})
+}
+
+export function eachCovidState(feature, layer, statesData, setStateDisplay, colorBins) {
+	const STATE_NAME = feature.properties.NAME;
+	const stateData = statesData[STATE_NAME];
+	if(!stateData || stateData.count <= 0) {
+		layer.setStyle({color: 'rgba(0, 0, 0, 0)'});
+		return;
+	}
+    // const colorHashed = colorBins[Math.floor((5*stateData.total-1)/total)];
+	let colorHashed = hashStateColor(stateData.count, statesData.max,colorBins);
+    layer.on('mouseover', function(event){
+	    if(!setStateDisplay(STATE_NAME)) return;  // setStateDisplay() will return false if we're locked onto something else
+	    // layer._path.classList.add("show-state");
+	    layer.setStyle({fillColor: 'rgb(200, 200, 200)'});
+	});
+    layer.on('mouseout', function(event){
+    	if(!setStateDisplay("none")) return;
+    	// layer._path.classList.remove("show-state");
+    	layer.setStyle({fillColor: colorHashed});
+	});
+	layer.on('click', function(event) {
+		layer.setStyle({fillColor: `rgb(100, 100, 100)`});
+		if(lockedLayer) {
+			lockedLayer.setStyle({fillColor: lockedLayerColor});
+			if(lockedLayer === layer) {
+				setStateDisplay("none", true);
+				lockedLayer = null;
+				lockedLayerColor = null;
+				return;
+			}
+		}
+		setStateDisplay(STATE_NAME, true);  // true parameter for locking
+
+		lockedLayer = layer;
+		lockedLayerColor = colorHashed;
+	});
+	layer.setStyle({stroke: 1, weight: 1, opacity: 0.75, color: 'white', fillColor: colorHashed, fillOpacity: 0.75});
 }
 
 export function eachState(feature, layer, data, max, setStateDisplay, colorBins) {

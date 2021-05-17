@@ -125,10 +125,9 @@ router.use((req, res, next) => {
 	next();
 });
 
-
 const covidQuery = `SELECT "ID", to_char("Date_Incident", 'MM/DD/YY') as date, "Gender" as gender, "City_Updated" as city, "State_Updated" as state, "Ethnicity_Cleaned" as ethnicity, "Type_Discrimination_Cleaned" as type, "Reason_Discrimination_Cleaned", "Description" as description, "Any_SupportingLinks" as link
 							FROM aapi_covid_data
-							WHERE ("State_Updated" <> 'OTHER' OR ("State_Updated" = 'Other' AND "City_Updated" <> 'Online')) AND "Flag_Troll" = 'false' AND "Date_Incident" > '1/1/2020'::date AND "Date_Incident" < '12/12/2020'::date
+							WHERE ("State_Updated" <> 'OTHER' OR ("State_Updated" = 'Other' AND "City_Updated" <> 'Online')) AND "Flag_Troll" = 'false' AND "Date_Incident" > '1/1/2020'::date AND "Date_Incident" < now()::date
 							ORDER BY "Date_Incident"`
 
 router.get('/covid', (req, res) => {

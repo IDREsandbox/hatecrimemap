@@ -58,9 +58,6 @@ class Charts extends React.Component {
           intersect: false,
           mode: 'index'
         },
-        onClick: (event, elements) => {
-          console.log(event, elements);
-        },
       },
       drilldown: {},
       popup_filter_num: 0,

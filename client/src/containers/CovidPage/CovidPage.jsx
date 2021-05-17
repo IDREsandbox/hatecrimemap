@@ -60,7 +60,7 @@ class CovidPage extends Component {
       stateNames = Object.keys(values)
       wordData = {}
       Object.keys(values).filter(state => values[state] instanceof Object).forEach(state => wordData[state] = takeTop(values[state].children.reduce(wordCloudReducer, [])));
-      console.log(wordData);
+      // console.log(wordData);
 
       // wordData = Object.fromEntries(
       //   Object.entries()
@@ -136,8 +136,15 @@ class CovidPage extends Component {
     }
   }
 
+  updateZoom = (z) => {
+    this.setState({zoom: z.target._zoom});
+  }
+
   getZoom = () => {
     return this.state.zoom;
+  }
+
+  filterTime = (time) => {
   }
 
   render() {
@@ -153,9 +160,9 @@ class CovidPage extends Component {
       <div className="CovidPage">
           {/*<FirstTimeOverlay />*/}
           {/* TODO: context for mapdata and data.states? */}
-          <MapWrapper region={this.state.region} updateState={this.updateState}
+          <MapWrapper region={this.state.region} updateState={this.updateState} zoom={this.getZoom} updateZoom={this.updateZoom} filterTime={this.filterTime}
           statesRef={this.statesRef} mapRef={this.mapRef} alaskaRef={this.alaskaRef} hawaiiRef={this.hawaiiRef}
-          data={this.state.data} updateView={this.changeViewRegion}>
+          data={this.state.data} updateView={this.changeViewRegion} covid={true}>
             <MapBar changeRegion={this.changeViewRegion} region={this.state.region}/>
           </MapWrapper>
 

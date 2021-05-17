@@ -62,7 +62,7 @@ class HomePage extends Component {
 
     getDataCounts().then(values => {
       let max = counts_total(values);
-      console.log(values.filter(f => f.state=="California"))
+      // console.log(values.filter(f => f.state=="California"))
       this.setState({
         data: values,
         dataMax: max,
