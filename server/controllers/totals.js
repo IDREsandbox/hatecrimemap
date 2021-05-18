@@ -271,6 +271,41 @@ router.get('/reports', (req, res) => {
 	.catch(err => console.log('ERROR: ', err));
 });
 
+// TODO: rename/does not belong here
+// NOTE: removed the `WHERE clause g2.name ILIKE $1`, decide whether we want to constrain on the primary reason (parent_group), because the totals # currently does not
+router.get('/filtered', (req, res) => {
+	let query = `SELECT t.id, to_char(t.incidentdate, 'MM/DD/YY') as date, us_states.name as state, g2.name as parent, g1.name as group, t.published, t.sourceurl as link, t.description
+				FROM (SELECT i.id, i.incidentdate, state_id, i.primary_group_id as parent, group_id, published, sourceurl, description
+						FROM incident i
+						JOIN incident_groups ON i.id = incident_id
+				) t JOIN us_states ON us_states.id = t.state_id
+						JOIN groups g1 ON g1.id = t.group_id
+						JOIN groups g2 ON g2.id = t.parent `;
+	({ group, state, published } = req.query);
+	if (state == 'all') {
+		if (published) {
+			(`WHERE g1.name ILIKE $1 AND published=true`);
+		} else {
+			query += (`WHERE g1.name ILIKE $1`);
+		}
+	} else {
+		if (published) {
+			(`WHERE g1.name ILIKE $1 AND published=true AND us_states.name ILIKE $2`);
+		} else {
+			query += (`WHERE g1.name ILIKE $1 AND us_states.name ILIKE $2`);
+		}
+	}
+	db.any(query, [group, state])
+	.then((result) => {
+		res.status(200)
+		.json({
+			status: 'success',
+			result
+		});
+	})
+	.catch(err => console.log('ERROR: ', err));
+});
+
 router.get('/', (req, res) => {
 	db.any(partitionedCounts)
 	.then((result) => {

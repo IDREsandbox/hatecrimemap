@@ -1,7 +1,7 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import './Charts.css';
-import { Button } from '@material-ui/core';
+import { Button, LinearProgress } from '@material-ui/core';
 import { ArrowBack } from '@material-ui/icons';
 import { CHARTS, CHART_STRINGS, getChartData, sumData } from 'utils/chart-utils';
 import { Bar, Pie } from 'react-chartjs-2';
@@ -15,6 +15,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 
+import axios from 'axios';
 
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -61,7 +62,8 @@ class Charts extends React.Component {
       },
       drilldown: {},
       popup_filter_num: 0,
-      popup_filter: ""
+      popup_data: "",
+      tableRows: {} // cache indexed by state: { group: [{ID, date, state, group, link, description}]}}
     }
   }
 
@@ -71,7 +73,43 @@ class Charts extends React.Component {
 
   pieClick = (elems) => {
     if (!elems[0] || !elems[0]._chart) return;
-    this.setState({ dialogOpen: true, popup_filter: elems[0]._chart.config.data.labels[elems[0]._index] });
+    this.setState({ dialogOpen: true, popup_data: null });
+    let params = {
+        parent_group: this.state.drilldown, // see: note in totals.js regarding ignoring this property
+        group: elems[0]._chart.config.data.labels[elems[0]._index],
+        // time: this.props.time
+        state: 'all' // default, overriden if state appears
+        // published: false //default
+    }
+    this.props.filters.forEach(f => params[f[0]] = f[1])
+
+    // check cache
+    if (this.state.tableRows[params.state] && this.state.tableRows[params.state][params.group]) {
+      this.setState(prevState => ({
+        popup_data: prevState.tableRows[params.state][params.group].filter(each =>  (new Date(each.date).getFullYear() >= this.props.time[0] && new Date(each.date).getFullYear() <= this.props.time[1] && (!params.published || (params.published && each.published)) ))
+      }))
+      return;
+    }
+
+    axios.get("/api/totals/filtered", {
+      params: params
+    })
+    .then(({ data }) => {
+      if(data.status == "success") {
+        this.setState(prevState => ({
+          tableRows: {
+            ...prevState.tableRows,
+            [params.state]: {
+              ...prevState[params.state],
+              [params.group]: data.result
+            }
+          },
+          popup_data: data.result.filter(each =>  (new Date(each.date).getFullYear() >= this.props.time[0] && new Date(each.date).getFullYear() <= this.props.time[1] && (!params.published || (params.published && each.published)) ))
+        }))
+      } else {
+
+      }
+    })
   }
 
   toggleOpen = (open) => {
@@ -130,35 +168,35 @@ class Charts extends React.Component {
               open={this.state.dialogOpen}
               onClose={() => this.toggleOpen(false)}
               maxWidth="xl"
+              fullWidth
               aria-labelledby="responsive-dialog-title" id="hateCrimeDataTable"
             >
               <DialogTitle id="responsive-dialog-title">Hate Crimes</DialogTitle>
               <DialogContent>
-                <h1>TBD</h1>
-                {/*
-                <Table stickyHeader className="hello" aria-label="simple table">
+                { !this.state.popup_data ? <LinearProgress style={{width: '100%'}} /> :
+                <Table stickyHeader className="hello" aria-label="simple table" width="100%">
                     <TableHead>
                       <TableRow>
-                        <TableCell>Date (M/D/Y)</TableCell>
-                        <TableCell>State</TableCell>
-                        <TableCell>Primary Reason</TableCell>
-                        <TableCell>Source</TableCell>
-                        <TableCell>Description</TableCell>
+                        <TableCell width="10%">Date (M/D/Y)</TableCell>
+                        <TableCell width="10%">State</TableCell>
+                        <TableCell width="15%">Primary Reason</TableCell>
+                        <TableCell width="20%">Source</TableCell>
+                        <TableCell width="45%">Description</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {rows.map(row => (
+                      {this.state.popup_data.map(row => (
                           <TableRow key={row.id}>
-                            <TableCell>{row.date}</TableCell>
-                            <TableCell>{row.state}</TableCell>
-                            <TableCell>{row.group}</TableCell>
-                            <TableCell>{row.link ? <a href={row.link} target="_blank">{row.link}</a> : "N/A"}</TableCell>
-                            <TableCell>{row.description || ""}</TableCell>
+                            <TableCell width="10%">{row.date}</TableCell>
+                            <TableCell width="10%">{row.state}</TableCell>
+                            <TableCell width="15%">{row.group}</TableCell>
+                            <TableCell width="20%">{row.link ? <a href={row.link} target="_blank">{row.link}</a> : "N/A"}</TableCell>
+                            <TableCell width="45%">{row.description || "--"}</TableCell>
                           </TableRow>
                       ))}
                     </TableBody>
                   </Table>
-                */}
+                }
               </DialogContent>
               <DialogActions  id="closeDataTable">
                 <Button onClick={() => this.toggleOpen(false)} color="primary">

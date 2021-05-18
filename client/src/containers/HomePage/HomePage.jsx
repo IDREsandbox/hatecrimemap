@@ -271,7 +271,7 @@ class HomePage extends Component {
               </div>
 
               <div className="sideMenu__chart">
-                <Charts data={data} max={dataMax} filters={filters} />
+                <Charts data={data} max={dataMax} filters={filters} time={this.state.filterTimeRange} />
               </div>
             <br />
               <FilterBar filterfn={this.filterIncidents} />
