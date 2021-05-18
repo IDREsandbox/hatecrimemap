@@ -168,12 +168,13 @@ class Charts extends React.Component {
               open={this.state.dialogOpen}
               onClose={() => this.toggleOpen(false)}
               maxWidth="xl"
-              fullWidth
+              
               aria-labelledby="responsive-dialog-title" id="hateCrimeDataTable"
             >
               <DialogTitle id="responsive-dialog-title">Hate Crimes</DialogTitle>
               <DialogContent>
-                { !this.state.popup_data ? <LinearProgress style={{width: '100%'}} /> :
+                { this.props.filters.some(e => e[0]=="county") ? <h2>WIP</h2> :
+                  !this.state.popup_data ? <LinearProgress style={{width: '100%'}} /> :
                 <Table stickyHeader className="hello" aria-label="simple table" width="100%">
                     <TableHead>
                       <TableRow>
