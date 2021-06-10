@@ -14,6 +14,8 @@ import HelpIcon from '@material-ui/icons/Help';
 
 import Joyride, { ACTIONS, EVENTS, STATUS } from 'react-joyride';
 
+import Nouislider from "nouislider-react";
+import "nouislider/distribute/nouislider.css";
 
 import './HomePage.css';
 
@@ -24,7 +26,6 @@ const styles = () => ({
     left: '50%',
   },
 });
-
 
 class HomePage extends Component {
   constructor(props) {
@@ -49,7 +50,7 @@ class HomePage extends Component {
     this.hawaiiRef = React.createRef();
     this.mapRef = React.createRef();
   }
-
+  
   async componentDidMount() {
     // getStateDataReports().then(values => {
     //   this.setState({
@@ -171,6 +172,23 @@ class HomePage extends Component {
     return this.state.zoom;
   }
 
+  timeSlider = (<div id="timeslider">
+    <Nouislider behaviour='tap-drag'
+            connect
+            range={{
+                min: 2015,
+                max: 2021
+            }}
+            direction='ltr'
+            pips={{mode: "count", values: 7}}
+            clickablePips
+            step={1}
+            start={[2015, 2021]}
+            onUpdate={(render, handle, value, un, percent) => this.filterTime(value) }
+            />
+  </div>);
+
+
   render() {
     const { isFetching, currentDisplay, run, steps,stepIndex } = this.state;
     const { classes } = this.props;
@@ -230,7 +248,7 @@ class HomePage extends Component {
           {/* TODO: context for mapdata and data.states? */}
           <MapWrapper region={this.state.region} updateState={this.updateState} updateCounty={this.updateCounty}
           statesRef={this.statesRef} mapRef={this.mapRef} alaskaRef={this.alaskaRef} hawaiiRef={this.hawaiiRef}
-          data={data} max={dataMapMax} updateView={this.changeViewRegion} updateZoom={this.updateZoom} zoom={this.getZoom} filterTime={this.filterTime} >
+          data={data} max={dataMapMax} updateView={this.changeViewRegion} updateZoom={this.updateZoom} zoom={this.getZoom} filterTime={this.filterTime} timeSlider={this.timeSlider} >
           <MapBar changeRegion={this.changeViewRegion} region={this.state.region}/>
           <Joyride
               run={run}

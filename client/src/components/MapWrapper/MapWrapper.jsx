@@ -12,8 +12,7 @@ import { states_hawaii } from 'res/geography/hawaii.js';
 import { eachState, eachStatesCounties,defaultColors,covidColors, eachCovidState } from 'utils/data-utils';
 import { useLocation } from 'react-router-dom';
 
-import Nouislider from "nouislider-react";
-import "nouislider/distribute/nouislider.css";
+
 
 function timestamp(str) {
     return new Date(str).getTime();
@@ -44,28 +43,9 @@ const MapWrapper = (props) => {
     covidFlag = 0
   }
 
-  const [timeFlt, setTimeFlt] = useState([2015, 2021]);
-  useEffect(() => {
-    props.filterTime(timeFlt);
-  }, [timeFlt])
-
   return (
     <div id="MapWrapper">
-      <div id="timeslider">
-        <Nouislider behaviour='tap-drag'
-                    connect
-                    range={{
-                        min: 2015,
-                        max: 2021
-                    }}
-                    direction='ltr'
-                    pips={{mode: "count", values: 7}}
-                    clickablePips
-                    step={1}
-                    start={[2015, 2021]}
-                    onUpdate={(render, handle, value, un, percent) => setTimeFlt(value) }
-                    />
-      </div>
+      {props.timeSlider && props.timeSlider}
       <Map id="USA" ref={props.mapRef} maxBounds={ML.worldBounds} minZoom={2} zoomSnap={0.25} center={ML.usaCenter} zoom={4.5} onZoomend={props.updateZoom}>
         <TileLayer bounds={ML.worldBounds} attribution="&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
         url="https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png" />
@@ -80,9 +60,8 @@ const MapWrapper = (props) => {
           </Pane>
           <GeoJSON data={usa} onEachFeature={(feature, layer) => { layer.setStyle({stroke: 0.3, color: '#777777', backgroundColor: '#aaaaaa'})}} />
         <Legend colors={theColors} covid={covidFlag} />
-        
-        {props.children}
-      </Map>
+       {props.children}
+      </Map> 
     </div>
   );
 };
