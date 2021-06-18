@@ -16,7 +16,7 @@ export const JOYRIDE_STEPS = [
         },
 
         {
-          target: '.leaflet-interactive:nth-child(5)',
+          target: '.leaflet-states-pane .leaflet-interactive:nth-child(4)',
           content: 'You can click on a state to lock/unlock it. Click on California to lock it and then click "Next"',
           spotlightClicks: true,
         },
@@ -50,7 +50,7 @@ export const JOYRIDE_STEPS = [
           content: 'Click on the "Back" button return to the previous chart, then click "Next".',
         },      
         {
-          target: '.leaflet-interactive:nth-child(5)',
+          target: '.leaflet-states-pane .leaflet-interactive:nth-child(4)',
           content: 'Click on California to unlock it and then click "Next"',
           spotlightClicks: true,
         },
