@@ -2,11 +2,11 @@
 	pointer-events: none;
 }
 
-.leaflet-interactive {
+#leaflet-interactive {
 	/*opacity: 0.5;*/
 }
 
-.show-state {
+.show-staRte {
 	/*stroke: rgb(227, 255, 255);*/
 	/*z-index: 1;*/
 	/*opacity: 1;*/
@@ -37,4 +37,9 @@
     grid-row: 1;
     margin-top: 32px;
     z-index: 401;
-}
+  }
+  
+.noUi-base {
+    pointer-events: all;
+  }
+   

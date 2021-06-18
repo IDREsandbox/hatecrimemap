@@ -1,5 +1,6 @@
 .homePage {
   display: grid;
+  pointer-events: none;
   flex: 0 1 auto;
   /* The above is shorthand for:
   flex-grow: 0,
@@ -59,3 +60,4 @@
   transform: translate(-50%, -50%);
   text-align: center;
 }
+
