@@ -43,6 +43,7 @@ class HomePage extends Component {
       disableBeacon: true,
       isFixed: true,
       steps: JOYRIDE_STEPS,
+      stepIndex: 0,
     };
 
     this.statesRef = React.createRef();
@@ -147,23 +148,25 @@ class HomePage extends Component {
   }
 
   handleJoyrideCallback = data => {
-    const { action, index, status, type } = data;
+    const { action, index, status, type  } = data;
 
-    if ([EVENTS.STEP_AFTER, EVENTS.TARGET_NOT_FOUND].includes(type)) {
+    if ([EVENTS.TARGET_NOT_FOUND].includes(type)) {
+      this.setState({stepIndex: index - 1});
+    } else if ([EVENTS.STEP_AFTER, EVENTS.TARGET_NOT_FOUND].includes(type)) {
       // Update state to advance the tour
       this.setState({ stepIndex: index + (action === ACTIONS.PREV ? -1 : 1) });
+    }
+    else if ([STATUS.FINISHED, STATUS.SKIPPED].includes(status)) {
+      // Need to set our running state to false, so we can restart if we click start again.
+      this.setState({ run: false });
     }
     
     if (action == ACTIONS.CLOSE || action == ACTIONS.SKIP) {
       this.setState({ stepIndex: 0, run: false })
     }
     
-    if ([STATUS.FINISHED, STATUS.SKIPPED].includes(status)) {
-      // Need to set our running state to false, so we can restart if we click start again.
-      this.setState({ run: false });
-    }
   };
-  
+
   updateZoom = (z) => {
     this.setState({zoom: z.target._zoom});
   }

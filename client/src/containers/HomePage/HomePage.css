@@ -1,6 +1,5 @@
 .homePage {
   display: grid;
-  pointer-events: none;
   flex: 0 1 auto;
   /* The above is shorthand for:
   flex-grow: 0,
