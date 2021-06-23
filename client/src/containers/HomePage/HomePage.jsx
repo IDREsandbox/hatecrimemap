@@ -149,30 +149,31 @@ class HomePage extends Component {
     this.setState({run:true})
   }
 
+  JOYRIDE_LOCK_STATE = 'California';
+
+  isNotReadyToStep = (index, type) => {
+    // Logic for each indiviudal step on whether the joyride should move forward or not
+    if ((index == 3 &&  this.state.currentDisplay !== this.JOYRIDE_LOCK_STATE) ||
+    (index == 4 && [EVENTS.TARGET_NOT_FOUND].includes(type)) || 
+    (index == 6 && this.chartsRef.current.state.dialogOpen) ||
+    (index == 7 && this.chartsRef.current.state.currentDisplay != 5) ||
+    (index == 8 && this.state.currentDisplay === this.JOYRIDE_LOCK_STATE)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   handleJoyrideCallback = data => {
     const { action, index, status, type } = data;
-   /*
-   The issue -> how to manage it so that at the beginning of step 5, it will send you back to the pie charts when you click "next" without the table being open
-   -> but, at the end, it is able to mount and skip to the next step when the table is closed 
-   -> I could make it so that clicking next automatically closes the table and skips to the next step
-   
-   */
-
-    console.log(this.state.currentDisplay);
-
-    // if the index == 4 and you're at step after and 
-    // special cases -> if ladder?
-
-    if (this.state.skipStep && type == EVENTS.STEP_BEFORE) {
+  
+    // First 4 options are special cases
+    if (this.state.skipStep && type == EVENTS.STEP_BEFORE) { 
       this.setState({stepIndex: 4, skipStep: false});
     }
-    else if (index == 4 && [EVENTS.STEP_AFTER].includes(type) && !this.chartsRef.current.state.dialogOpen) {
+    else if (index == 4 && [EVENTS.STEP_AFTER].includes(type) && !this.chartsRef.current.state.dialogOpen) {// Progressing from step 4 before the chart is open needs to be caught in the step after part of step 4, otherwise it will cause errors with skipping backwards steps
         this.setState({stepIndex: index - 1, skipStep: true});
-    } else if ((index == 3 &&  this.state.currentDisplay !== 'California') || 
-    (index == 6 && this.chartsRef.current.state.dialogOpen) ||
-    (index == 4 && [EVENTS.TARGET_NOT_FOUND].includes(type)) ||
-    (index == 7 && this.chartsRef.current.state.currentDisplay != 5) ||
-    (index == 8 && this.state.currentDisplay === 'California')/* need to add logic to not let them go forward until california is unlocked*/) { 
+    } else if (this.isNotReadyToStep(index, type)) { 
       this.setState({stepIndex: index - 1});
     } else if (index == 5 && [EVENTS.TARGET_NOT_FOUND].includes(type) && !this.chartsRef.current.state.dialogOpen) {
       // once you click "next" when the table is open, it will throw an error because the current target (reports) is technically closed
