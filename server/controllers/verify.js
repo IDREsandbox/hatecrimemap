@@ -63,27 +63,28 @@ router.get('/unreviewed', (req, res) => {
 
 router.post('/reviewedincident', (req, res) => {
   const { id, verified } = req.body;
-  const updateUnreviewedIncident = new PQ('UPDATE incident SET verified = $2 WHERE id = $1', [id, verified]);
+  console.log(id);
+  //const updateUnreviewedIncident = new PQ();
 
-  db.none(updateUnreviewedIncident)
+  db.none('UPDATE incident SET verified = $2 WHERE id = $1', [id, verified])
     .then(() => res.send('Incident report reviewed'))
     .catch(err => console.log('ERROR:', err));
 });
 
 router.post('/validateincident', (req, res) => {
-  const { id, urvalid } = req.body;
-  const updateUnreviewedIncident = new PQ('UPDATE incident SET issourceurlvalid = $2 WHERE id = $1', [id, urvalid]);
+  const { id, urlvalid } = req.body;
+  //const updateUnreviewedIncident = new PQ();
 
-  db.none(updateUnreviewedIncident)
+  db.none('UPDATE incident SET issourceurlvalid = $2 WHERE id = $1', [id, urlvalid])
     .then(() => res.send('Incident url validated'))
     .catch(err => console.log('ERROR:', err));
 });
 
 router.post('/publishedincident', (req, res) => {
   const { id, published } = req.body;
-  const updateUnreviewedIncident = new PQ('UPDATE incident SET published = $2 WHERE id = $1', [id, published]);
+  //const updateUnreviewedIncident = new PQ();
 
-  db.none(updateUnreviewedIncident)
+  db.none('UPDATE incident SET published = $2 WHERE id = $1', [id, published])
     .then(() => res.send('Incident report marked published'))
     .catch(err => console.log('ERROR:', err));
 });

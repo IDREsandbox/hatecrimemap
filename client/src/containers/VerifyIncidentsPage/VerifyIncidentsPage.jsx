@@ -227,14 +227,14 @@ class VerifyIncidentsPage extends Component {
                 {!this.state.verified ?
                   <ListItem
                     button
-                    onClick={reviewIncidentReport(activeReport, 1, this.handleCloseDialog)}
+                    onClick={reviewIncidentReport(activeReport, true, this.handleCloseDialog)}
                   >
                     <ListItemText primary="Mark Verified" />
                   </ListItem>
                   :
                   <ListItem
                     button
-                    onClick={reviewIncidentReport(activeReport, 0, this.handleCloseDialog)}
+                    onClick={reviewIncidentReport(activeReport, false, this.handleCloseDialog)}
                   >
                     <ListItemText primary="Mark Unverified" />
                   </ListItem>
@@ -242,14 +242,14 @@ class VerifyIncidentsPage extends Component {
                 {!this.state.urlvalid ?
                   <ListItem
                     button
-                    onClick={validateIncidentReport(activeReport, 1, this.handleCloseDialog)}
+                    onClick={validateIncidentReport(activeReport, true, this.handleCloseDialog)}
                   >
                     <ListItemText primary="Mark Valid URL" />
                   </ListItem>
                   :
                   <ListItem
                     button
-                    onClick={validateIncidentReport(activeReport, 0, this.handleCloseDialog)}
+                    onClick={validateIncidentReport(activeReport, false, this.handleCloseDialog)}
                   >
                     <ListItemText primary="Mark Invalid URL" />
                   </ListItem>
@@ -257,14 +257,14 @@ class VerifyIncidentsPage extends Component {
                 {!this.state.published ?
                   <ListItem
                     button
-                    onClick={publishedIncidentReport(activeReport, 1, this.handleCloseDialog)}
+                    onClick={publishedIncidentReport(activeReport, true, this.handleCloseDialog)}
                   >
                     <ListItemText primary="Mark Published Source" />
                   </ListItem>
                   :
                   <ListItem
                     button
-                    onClick={publishedIncidentReport(activeReport, 0, this.handleCloseDialog)}
+                    onClick={publishedIncidentReport(activeReport, false, this.handleCloseDialog)}
                   >
                     <ListItemText primary="Mark Unpublished Source" />
                   </ListItem>
