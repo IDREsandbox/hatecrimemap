@@ -332,7 +332,10 @@ class ReportIncidentPage extends Component {
         this.setState({ snackOpen: true })
         this.resetState();
       })
-      .catch(err => console.log(err));
+      .catch(err => {
+        alert("Failed to submit the report");
+        console.log(err)
+      });
   }
 
   resetState = () => this.setState(getInitialState());

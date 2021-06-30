@@ -40,18 +40,8 @@ class SimpleTable extends Component {
     this.state = {
       rowsPerPage: 10,
       page: 0,
-      total: -1
+      total: this.props.counts,
     }
-  }
-
-  componentWillMount() {
-    axios.get('/api/verify/unreviewedcount')
-      .then((res) => {
-        if(res.data.counts) {
-          this.setState({total: parseInt(res.data.counts)});
-        }
-      })
-      .catch((err) => alert(err))
   }
 
   handlePageChange = (e, page) => {

@@ -38,15 +38,28 @@ router.get('/unreviewedcount', (req, res) => {
     })
 })
 
-router.get('/unreviewed/:per/:page', (req, res) => {
-  db.any(`SELECT * FROM paginate_by_offset(${req.params.page}, ${req.params.per})`)
+router.get('/unreviewedcount/:verified', (req, res) => {
+  db.one(`SELECT COUNT(*) FROM incident WHERE verified=any($1::boolean[]) and issourceurlvalid=TRUE`, [req.params.verified])
+    .then((counts) => {
+      res.status(200)
+        .json({
+          status: 'success',
+          counts: counts.count
+        })
+    })
+})
+
+router.get('/unreviewed/:per/:page/:verified', (req, res) => {
+  db.any(`SELECT * FROM paginate_by_offset($1, $2, $3::boolean[])`, [req.params.page, req.params.per, req.params.verified])
     .then((incidents) => {
       res.status(200)
         .json({
           status: 'success',
           incidents
         })
-    })
+    }).catch(err =>
+      console.log(err.message)
+    )
 })
 
 router.get('/unreviewed', (req, res) => {

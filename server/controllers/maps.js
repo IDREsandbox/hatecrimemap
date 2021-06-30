@@ -111,8 +111,7 @@ router.post('/incident', (req, res) => {
       res.status(500).send('Could not insert incident');
   })
   .catch(err => {
-    console.log(err);
-    res.status(500);
+    res.status(500).send();
   });
 });
 
