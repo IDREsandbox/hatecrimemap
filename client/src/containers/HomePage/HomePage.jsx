@@ -44,12 +44,14 @@ class HomePage extends Component {
       isFixed: true,
       steps: JOYRIDE_STEPS,
       stepIndex: 0,
+      skipStep: false,
     };
 
     this.statesRef = React.createRef();
     this.alaskaRef = React.createRef();
     this.hawaiiRef = React.createRef();
     this.mapRef = React.createRef();
+    this.chartsRef = React.createRef();
   }
   
   async componentDidMount() {
@@ -147,17 +149,42 @@ class HomePage extends Component {
     this.setState({run:true})
   }
 
-  handleJoyrideCallback = data => {
-    const { action, index, status, type  } = data;
+  JOYRIDE_LOCK_STATE = 'California';
 
-    if ([EVENTS.TARGET_NOT_FOUND].includes(type)) {
+  isNotReadyToStep = (index, type) => {
+    // Logic for each indiviudal step on whether the joyride should move forward or not
+    if ((index == 3 &&  this.state.currentDisplay !== this.JOYRIDE_LOCK_STATE) ||
+    (index == 4 && [EVENTS.TARGET_NOT_FOUND].includes(type)) || 
+    (index == 6 && this.chartsRef.current.state.dialogOpen) ||
+    (index == 7 && this.chartsRef.current.state.currentDisplay != 5) ||
+    (index == 8 && this.state.currentDisplay === this.JOYRIDE_LOCK_STATE)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  handleJoyrideCallback = data => {
+    const { action, index, status, type } = data;
+  
+    // First 4 options are special cases
+    if (this.state.skipStep && type == EVENTS.STEP_BEFORE) { 
+      this.setState({stepIndex: 4, skipStep: false});
+    }
+    else if (index == 4 && [EVENTS.STEP_AFTER].includes(type) && !this.chartsRef.current.state.dialogOpen) {// Progressing from step 4 before the chart is open needs to be caught in the step after part of step 4, otherwise it will cause errors with skipping backwards steps
+        this.setState({stepIndex: index - 1, skipStep: true});
+    } else if (this.isNotReadyToStep(index, type)) { 
       this.setState({stepIndex: index - 1});
-    } else if ([EVENTS.STEP_AFTER, EVENTS.TARGET_NOT_FOUND].includes(type)) {
+    } else if (index == 5 && [EVENTS.TARGET_NOT_FOUND].includes(type) && !this.chartsRef.current.state.dialogOpen) {
+      // once you click "next" when the table is open, it will throw an error because the current target (reports) is technically closed
+      // the "step-after" part of the event can't mount because the target isn't found -> need to make it so that it manually skips over?
+      this.setState({stepIndex: index + 1});
+    } else if ([EVENTS.STEP_AFTER, EVENTS.TARGET_NOT_FOUND].includes(type) && index != 5) {
       // Update state to advance the tour
       this.setState({ stepIndex: index + (action === ACTIONS.PREV ? -1 : 1) });
-    }
-    else if ([STATUS.FINISHED, STATUS.SKIPPED].includes(status)) {
+    } else if ([STATUS.FINISHED, STATUS.SKIPPED].includes(status)) {
       // Need to set our running state to false, so we can restart if we click start again.
+      this.setState({stepIndex: 0}); // added this to make sure the tutorial can be ran again
       this.setState({ run: false });
     }
     
@@ -292,7 +319,7 @@ class HomePage extends Component {
               </div>
 
               <div className="sideMenu__chart">
-                <Charts data={data} max={dataMax} filters={filters} time={this.state.filterTimeRange} />
+                <Charts ref={this.chartsRef} data={data} max={dataMax} filters={filters} time={this.state.filterTimeRange} />
               </div>
             <br />
               <FilterBar filterfn={this.filterIncidents} />
