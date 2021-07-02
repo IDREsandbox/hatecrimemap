@@ -65,7 +65,7 @@ const getInitialState = () => ({
   password: '',
   openDialog: false,
   activeReport: null,
-  verified: '{ true }', // note -> must change to '{ true, false }' to consider both
+  verified: '{ false }', // note -> must change to '{ true, false }' to consider both
   counts: 0,
 });
 

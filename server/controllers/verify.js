@@ -27,7 +27,7 @@ const findUnreviewedPoints = `SELECT ${columns}
                                 WHERE i.verified = false AND i.issourceurlvalid = true
                                 ORDER BY i.submittedon`
 
-router.get('/unreviewedcount', (req, res) => {
+router.get('/unreviewedcount', (req, res) => { // to remove
   db.one('SELECT COUNT(*) FROM incident WHERE verified=FALSE and issourceurlvalid=TRUE')
     .then((counts) => {
       res.status(200)
@@ -39,7 +39,7 @@ router.get('/unreviewedcount', (req, res) => {
 })
 
 router.get('/unreviewedcount/:verified', (req, res) => {
-  db.one(`SELECT COUNT(*) FROM incident WHERE verified=any($1::boolean[]) and issourceurlvalid=TRUE`, [req.params.verified])
+  db.one(`SELECT COUNT(*) FROM incident WHERE verified=any($1::boolean[])`, [req.params.verified]) // removed isurlvalidcheck
     .then((counts) => {
       res.status(200)
         .json({
@@ -101,5 +101,21 @@ router.post('/publishedincident', (req, res) => {
     .then(() => res.send('Incident report marked published'))
     .catch(err => console.log('ERROR:', err));
 });
+
+
+// adding a function router/verify/incidentreport here, called in utilities.js and from verifyincidentspage
+
+router.delete('/incidentreport/:id', (req, res) => {
+ 
+  db.tx(db => {
+    const del1 = db.result('DELETE FROM incident_groups where incident_id = $1', [req.params.id]);
+    const del2 =  db.result('DELETE FROM incident where id = $1', [req.params.id]);
+
+    return db.batch([del1, del2]);
+  }).then(response => res.status(200).send('deleted'))
+    .catch(err => console.log('ERROR:', err))
+});
+
+
 
 module.exports = router;
