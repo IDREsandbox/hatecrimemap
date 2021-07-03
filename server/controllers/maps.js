@@ -22,7 +22,7 @@ router.use((req, res, next) => {
   next();
 });
 
-router.get('/', (req, res) => {
+router.get('/', (req, res) => { // IS THIS NEEDED?
   res.send('Maps home route');
 });
 
@@ -34,60 +34,12 @@ router.get('/statedata', (req, res) => {
     .catch(error => console.log('ERROR: ', error));
 });
 
-// router.get('/usedata', (req, res) => {  // We could just aggregate the data on the front-end...
-//   db.any(getUSATotals)
-//     .then(data => {
-//       res.status(200).json({status: 'success', data})
-//     });
-//     .catch(error => console.log('ERROR: ', error));
-// });
-
-router.get('/countydata', (req,res) => {
+router.get('/countydata', (req,res) => { // remove this query? it's called in data-utils but never stored
   db.any(`SELECT ${totalsColumns}, county_state from us_counties`)
     .then(data => {
       res.status(200).json({status: 'success', data});
     })
     .catch(error => console.log('ERROR: ', error));
-});
-
-router.get('/countydata/:state', (req, res) => {
-  db.any(`SELECT ${totalsColumns}, county_state FROM us_counties WHERE state_name='${req.params.state}'`)
-    .then(data => {
-      res.status(200).json({status: 'success', data});
-    })
-    .catch(error => console.log('ERROR: ', error));
-});
-
-router.get('/usapoints', (req, res) => {
-  db.any(findPointsInUS)
-    .then((mapdata) => {
-      res.status(200)
-        .json({
-          status: 'success',
-          mapdata,
-        });
-    })
-    .catch(err => console.log('ERROR:', err));
-});
-
-router.post('/incidentreport', (req, res) => {
-  const values = [...Object.values(req.body), false, false];
-  const addUnreviewedIncident = new PQ(
-    'INSERT INTO hcmdata(date, datesubmitted, groupsharassed, lat, locationname, lon, sourceurl,\
-     validsourceurl, verified, reviewedbystudent, reporttype, attemptedwaybackurl, validwaybackurl)\
-     VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)', values);
-
-  db.none(addUnreviewedIncident)
-    .then(() => res.send('Incident report added'))
-    .catch(err => console.log('ERROR:', err));
-});
-
-router.delete('/incidentreport', (req, res) => {
-  const deleteUnreviewedIncident = new PQ('DELETE FROM hcmdata WHERE id = $1', Object.values(req.body));
-
-  db.result(deleteUnreviewedIncident)
-    .then(() => res.send('Incident report deleted'))
-    .catch(err => console.log('ERROR:', err));
 });
 
 // "Let it cache": https://stackoverflow.com/questions/37300997/multi-row-insert-with-pg-promise

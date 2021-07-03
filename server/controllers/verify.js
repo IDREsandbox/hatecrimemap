@@ -27,16 +27,6 @@ const findUnreviewedPoints = `SELECT ${columns}
                                 WHERE i.verified = false AND i.issourceurlvalid = true
                                 ORDER BY i.submittedon`
 
-router.get('/unreviewedcount', (req, res) => { // to remove
-  db.one('SELECT COUNT(*) FROM incident WHERE verified=FALSE and issourceurlvalid=TRUE')
-    .then((counts) => {
-      res.status(200)
-        .json({
-          status: 'success',
-          counts: counts.count
-        })
-    })
-})
 
 router.get('/unreviewedcount/:verified', (req, res) => {
   db.one(`SELECT COUNT(*) FROM incident WHERE verified=any($1::boolean[])`, [req.params.verified]) // removed isurlvalidcheck
@@ -62,22 +52,8 @@ router.get('/unreviewed/:per/:page/:verified', (req, res) => {
     )
 })
 
-router.get('/unreviewed', (req, res) => {
-  db.any(findUnreviewedPoints)
-    .then((incidents) => {
-      res.status(200)
-        .json({
-          status: 'success',
-          incidents,
-        });
-    })
-    .catch(err => console.log('ERROR:', err));
-});
-
 router.post('/reviewedincident', (req, res) => {
   const { id, verified } = req.body;
-  console.log(id);
-  //const updateUnreviewedIncident = new PQ();
 
   db.none('UPDATE incident SET verified = $2 WHERE id = $1', [id, verified])
     .then(() => res.send('Incident report reviewed'))
@@ -86,7 +62,6 @@ router.post('/reviewedincident', (req, res) => {
 
 router.post('/validateincident', (req, res) => {
   const { id, urlvalid } = req.body;
-  //const updateUnreviewedIncident = new PQ();
 
   db.none('UPDATE incident SET issourceurlvalid = $2 WHERE id = $1', [id, urlvalid])
     .then(() => res.send('Incident url validated'))
@@ -95,18 +70,15 @@ router.post('/validateincident', (req, res) => {
 
 router.post('/publishedincident', (req, res) => {
   const { id, published } = req.body;
-  //const updateUnreviewedIncident = new PQ();
 
   db.none('UPDATE incident SET published = $2 WHERE id = $1', [id, published])
     .then(() => res.send('Incident report marked published'))
     .catch(err => console.log('ERROR:', err));
 });
 
-
 // adding a function router/verify/incidentreport here, called in utilities.js and from verifyincidentspage
 
 router.delete('/incidentreport/:id', (req, res) => {
- 
   db.tx(db => {
     const del1 = db.result('DELETE FROM incident_groups where incident_id = $1', [req.params.id]);
     const del2 =  db.result('DELETE FROM incident where id = $1', [req.params.id]);
@@ -115,7 +87,6 @@ router.delete('/incidentreport/:id', (req, res) => {
   }).then(response => res.status(200).send('deleted'))
     .catch(err => console.log('ERROR:', err))
 });
-
 
 
 module.exports = router;
