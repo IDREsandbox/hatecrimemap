@@ -14,30 +14,6 @@ const STATES = ["Alabama", "Alaska", "Arizona", "Arkansas", "California", "Color
 export const covidColors = ["#fed98e","#fed98e","#fe9929","#d95f0e","#993404"] // made the first two the same since the second bin isnt used ffffd4 was the original
 export const defaultColors = ["#f2f0f7", "#cbc9e2", "#9e9ac8", "#756bb1", "#54278f"]
 
-async function getStateStructure() {
-	let groups = await axios.get('/api/totals/groups')
-	// {key: "", name: "", }
-
-	let stateData = {}
-	STATES.forEach(state => {
-		stateData[state] = { count: 0 }
-		function groupToCounts(groups, arr){
-			return groups.map(eachGroup => {
-	      	  arr[eachGroup.name] = { count: 0 }
-		      if(eachGroup.children.length > 0) {
-		      	arr[eachGroup.name].children = {}
-		        groupToCounts(eachGroup.children, arr[eachGroup.name].children);
-		      }
-		    });
-		};
-		groupToCounts(groups.data.ret, stateData[state])
-	})
-
-
-
-	return stateData
-}
-
 function storeStateDataReports(data) {
 	let stateData = {}
 	STATES.forEach(state => {
@@ -66,7 +42,7 @@ function storeStateDataReports(data) {
 	return stateData
 }
 
-export function filterPublishedReports(data) {
+export function filterPublishedReports(data) { // Outdated -> still called in homepage but commented out
 	let newData = {}
 	STATES.forEach(state => {
 		newData[state] = { count: 0, children: [] }
@@ -118,15 +94,6 @@ export function storeStateData(data, start) {
 	return JSON.parse(JSON.stringify(stateData));  // return copy of object
 }
 
-export function storeCountyData(countyData) {
-	let max = 0;
-	countyData.forEach(county => {
-		max = max < county.county_total ? county.county_total : max;
-		_countyData[county.county_state] = {... county };
-	});
-	_countyData.max = max;
-	return _countyData;
-}
 
 export function counts_total(data) {
 	return data.reduce((a,b) => a+b.count, 0);
@@ -173,37 +140,6 @@ export function getStateDataReports() {
 	});
 }
 
-function getStateData() {
-	return axios.get('/api/totals/')
-	.then(res => {  return res.data })
-	.catch((err) => {
-		alert(`API call failed: ${err}`);
-		return {};
-	});
-}
-
-function getPublishedStateData() {
-	return axios.get('/api/totals/published')
-	.then(res => {  return res.data })
-	.catch((err) => {
-		alert(`API call failed: ${err}`);
-		return {};
-	});
-}
-
-function getCountyData() {  // TODO: Lazy load?
-	return axios.get('/api/maps/countydata')
-	.then(res => { return res.data })
-	.catch((err) => {
-		alert(`API call failed: ${err}`);
-		return {};
-	});
-}
-
-export async function getAllData() {
-	return Promise.all([getStateDataReports(), getPublishedStateData(), getStateStructure()]); // TODO: remove once we get county data working
-	return Promise.all([getStateData(), getCountyData()]);
-}
 
 function formatCovidData(data) {
 	let stateData = {}
