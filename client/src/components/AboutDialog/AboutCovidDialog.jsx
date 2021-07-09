@@ -42,10 +42,10 @@ class AboutCovidDialog extends Component {
           maxWidth="md"
           aria-labelledby="responsive-dialog-title"
         >
-          <DialogTitle id="responsive-dialog-title">About Mapping COVID Hate Crimes in the US</DialogTitle>
+          <DialogTitle id="responsive-dialog-title">About Mapping COVID Hate Incidents in the US</DialogTitle>
           <DialogContent>
             <DialogContentText>
-              <p>The reported incidents appearing at the launch of this separate COVID Hate Crime Map on October 26, 2020 were provided by the Stop AAPI Hate Reporting Center (see more information in “Acknowledgments” below). Incorporating that data into the broader Hate Crime Map enables victims to report COVID-related harassment and violence in detail, and allows for researchers to analyze this data by state.</p>
+              <p>The reported incidents appearing at the launch of this separate COVID Hate Incidents Map on October 26, 2020 were provided by the Stop AAPI Hate Reporting Center (see more information in “Acknowledgments” below). Incorporating that data into the broader Hate Crime Map enables victims to report COVID-related harassment and violence in detail, and allows for researchers to analyze this data by state.</p>
               <br />
               <p>The data is presented from various perspectives, by location (the map), ethnicity of the reporter/victim, their gender, and the type of harassment encountered. Users can view the data for the entire United States, as well as scroll over the map to see the data by state. The pie charts at right list the data according to the location marked on the map. Click on the wedges in the pie chart to pull up a table listing each report's self-reported date, location, ethnicity, gender, harassment type, and description.</p>
               <br />

@@ -65,6 +65,8 @@ const getInitialState = () => ({
   password: '',
   openDialog: false,
   activeReport: null,
+  verified: '{ false }', // note -> must change to '{ true, false }' to consider both
+  counts: 0,
 });
 
 class VerifyIncidentsPage extends Component {
@@ -72,6 +74,16 @@ class VerifyIncidentsPage extends Component {
 
   componentDidMount() {
     this.checkLoggedIn()
+  }
+
+  componentWillMount() {
+    axios.get(`/api/verify/unreviewedcount/${this.state.verified}`)
+      .then((res) => {
+        if(res.data.counts) {
+          this.setState({counts: parseInt(res.data.counts)});
+        }
+      })
+      .catch((err) => alert(err))
   }
 
   checkLoggedIn = () => {
@@ -131,6 +143,11 @@ class VerifyIncidentsPage extends Component {
         incidentdate = new Date(incidentdate).toDateString();
       }
 
+
+      if (!groupsharassed) {
+        groupsharassed = []
+      }
+
       return [
         id,
         location,
@@ -144,12 +161,11 @@ class VerifyIncidentsPage extends Component {
         actionButton,
       ];
     });
-    console.log(displayableData)
     return displayableData;
   }
 
   fetchData = (perPage=10, page=0) => {
-    axios.get(`/api/verify/unreviewed/${perPage}/${page}`)
+    axios.get(`/api/verify/unreviewed/${perPage}/${page}/${this.state.verified}`)
       .then( (res) => {
         if(!res.data.incidents) {
           this.setState({ loggedIn: false });  // TODO: it could be a server error, not authentication? Add a check
@@ -218,6 +234,7 @@ class VerifyIncidentsPage extends Component {
           tableData={incidentReports}
           key="incidenttable"
           fetchData={this.fetchData}
+          counts={this.state.counts}
         />
         {openDialog &&
           <Dialog onClose={this.handleCloseDialog} open={openDialog}>
@@ -227,14 +244,14 @@ class VerifyIncidentsPage extends Component {
                 {!this.state.verified ?
                   <ListItem
                     button
-                    onClick={reviewIncidentReport(activeReport, 1, this.handleCloseDialog)}
+                    onClick={reviewIncidentReport(activeReport, true, this.handleCloseDialog)}
                   >
                     <ListItemText primary="Mark Verified" />
                   </ListItem>
                   :
                   <ListItem
                     button
-                    onClick={reviewIncidentReport(activeReport, 0, this.handleCloseDialog)}
+                    onClick={reviewIncidentReport(activeReport, false, this.handleCloseDialog)}
                   >
                     <ListItemText primary="Mark Unverified" />
                   </ListItem>
@@ -242,14 +259,14 @@ class VerifyIncidentsPage extends Component {
                 {!this.state.urlvalid ?
                   <ListItem
                     button
-                    onClick={validateIncidentReport(activeReport, 1, this.handleCloseDialog)}
+                    onClick={validateIncidentReport(activeReport, true, this.handleCloseDialog)}
                   >
                     <ListItemText primary="Mark Valid URL" />
                   </ListItem>
                   :
                   <ListItem
                     button
-                    onClick={validateIncidentReport(activeReport, 0, this.handleCloseDialog)}
+                    onClick={validateIncidentReport(activeReport, false, this.handleCloseDialog)}
                   >
                     <ListItemText primary="Mark Invalid URL" />
                   </ListItem>
@@ -257,14 +274,14 @@ class VerifyIncidentsPage extends Component {
                 {!this.state.published ?
                   <ListItem
                     button
-                    onClick={publishedIncidentReport(activeReport, 1, this.handleCloseDialog)}
+                    onClick={publishedIncidentReport(activeReport, true, this.handleCloseDialog)}
                   >
                     <ListItemText primary="Mark Published Source" />
                   </ListItem>
                   :
                   <ListItem
                     button
-                    onClick={publishedIncidentReport(activeReport, 0, this.handleCloseDialog)}
+                    onClick={publishedIncidentReport(activeReport, false, this.handleCloseDialog)}
                   >
                     <ListItemText primary="Mark Unpublished Source" />
                   </ListItem>

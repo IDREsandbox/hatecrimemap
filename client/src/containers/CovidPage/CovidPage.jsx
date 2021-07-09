@@ -4,11 +4,11 @@ import { withStyles } from '@material-ui/core/styles';
 import { CircularProgress, Button, IconButton } from '@material-ui/core';
 import Joyride from 'react-joyride';
 
-import { FirstTimeOverlay, MapWrapper, SideMenu, CovidCharts, FilterBar, MapBar } from '../../components';
-import { counties } from '../../res/counties/statecounties.js';
+import { FirstTimeOverlay, MapWrapper, SideMenu, CovidCharts, FilterBar, MapBar } from 'components';
+import { counties } from 'res/geography/counties/statecounties.js';
 import { GeoJSON } from 'react-leaflet';
-import { getCovidData, eachStatesCounties, storeStateData, resetStateColor,covidColors } from '../../utils/data-utils';
-import {stopWords,splitByWords,createWordMap,sortByCount,summarizeWordCloud,reduceWordCloud, wordCloudReducer, takeTop} from '../../utils/chart-utils'
+import { getCovidData, eachStatesCounties, storeStateData, resetStateColor,covidColors } from 'utils/data-utils';
+import {stopWords,splitByWords,createWordMap,sortByCount,summarizeWordCloud,reduceWordCloud, wordCloudReducer, takeTop} from 'utils/chart-utils'
 
 import './CovidPage.css';
 
@@ -60,7 +60,7 @@ class CovidPage extends Component {
       stateNames = Object.keys(values)
       wordData = {}
       Object.keys(values).filter(state => values[state] instanceof Object).forEach(state => wordData[state] = takeTop(values[state].children.reduce(wordCloudReducer, [])));
-      console.log(wordData);
+      // console.log(wordData);
 
       // wordData = Object.fromEntries(
       //   Object.entries()
@@ -136,8 +136,15 @@ class CovidPage extends Component {
     }
   }
 
+  updateZoom = (z) => {
+    this.setState({zoom: z.target._zoom});
+  }
+
   getZoom = () => {
     return this.state.zoom;
+  }
+
+  filterTime = (time) => {
   }
 
   render() {
@@ -153,15 +160,15 @@ class CovidPage extends Component {
       <div className="CovidPage">
           {/*<FirstTimeOverlay />*/}
           {/* TODO: context for mapdata and data.states? */}
-          <MapWrapper region={this.state.region} updateState={this.updateState}
+          <MapWrapper region={this.state.region} updateState={this.updateState} zoom={this.getZoom} updateZoom={this.updateZoom} filterTime={this.filterTime}
           statesRef={this.statesRef} mapRef={this.mapRef} alaskaRef={this.alaskaRef} hawaiiRef={this.hawaiiRef}
-          data={this.state.data} updateView={this.changeViewRegion}>
+          data={this.state.data} updateView={this.changeViewRegion} covid={true}>
             <MapBar changeRegion={this.changeViewRegion} region={this.state.region}/>
           </MapWrapper>
 
           <div className="side">
             <SideMenu>
-            <h2 className="sideMenu__header">{"COVID Hate Crimes in " + (this.state.currentDisplay == 'none' ? "US" : this.state.currentDisplay) }</h2>
+            <h2 className="sideMenu__header">{"COVID Hate Incidents in " + (this.state.currentDisplay == 'none' ? "US" : this.state.currentDisplay) }</h2>
                 { this.state.currentDisplay != "none" ?
                   <div className={ `sideMenu__info ${classes.dateRange}` }>
                     <p>{this.state.data[this.state.currentDisplay].children[0].date} - {this.state.data[this.state.currentDisplay].children[this.state.data[this.state.currentDisplay].children.length - 1].date}</p>

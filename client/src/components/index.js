@@ -1,6 +1,5 @@
 export { default as AboutDialog } from './AboutDialog/AboutDialog.jsx';
 export { default as Charts } from './Charts/Charts.jsx';
-export { default as ChartText } from './Charts/ChartText.jsx';
 export { default as CovidCharts } from './CovidCharts/CovidCharts.jsx';
 export { default as MapBar } from './MapBar/MapBar.jsx';
 export { default as FilterBar } from './FilterBar/FilterBar.jsx';

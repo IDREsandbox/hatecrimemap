@@ -20,7 +20,6 @@ import {
 import { CheckBox, CheckBoxOutlineBlank } from '@material-ui/icons';
 
 import LocationSearchInput from '../../components/LocationSearchInput/LocationSearchInput';
-import GHCheckboxList from '../../components/GHCheckboxList/GHCheckboxList';
 import { createDataToSubmit } from '../../utils/utilities';
 
 import 'react-checkbox-tree/lib/react-checkbox-tree.css';
@@ -251,10 +250,9 @@ class ReportIncidentPage extends Component {
               <TextField
                 name="description"
                 onChange={this.handleChange}
-                helperText="If no associated link, provide a description of the incident"
+                helperText="Provide a description of the incident"
                 defaultValue={description}
                 fullWidth
-                disabled={associatedLink}
               />
             </Tooltip>
           </div>
@@ -327,13 +325,15 @@ class ReportIncidentPage extends Component {
 
   reportIncident = () => {
     const dataToSubmit = createDataToSubmit(this.state);
-    
-    axios.post('/api/maps/incident', dataToSubmit)
+    axios.post('/api/report/incident', dataToSubmit)
       .then(res => {
         this.setState({ snackOpen: true })
         this.resetState();
       })
-      .catch(err => console.log(err));
+      .catch(err => {
+        alert("Failed to submit the report");
+        console.log(err)
+      });
   }
 
   resetState = () => this.setState(getInitialState());
