@@ -23,6 +23,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 
 const styles = theme => ({
@@ -44,6 +45,20 @@ class Charts extends React.Component {
       currentDisplay: CHARTS.TOP,
       dialogOpen: false,
       options: {
+        plugins: {
+          datalabels: {
+            anchor: 'end',
+            align: function(context) {
+              var index = context.dataIndex;
+              var value = context.dataset.data[index];
+              if (value < 300) {
+                return 'top';
+              } else {
+                return 'bottom';
+              }
+            } 
+          },
+        },
         scales: {
           yAxes: [{
             ticks: {
@@ -215,7 +230,7 @@ class Charts extends React.Component {
       return (
         <div className="charts" id="theChartsState">
           <Bar data={getChartData(CHARTS.TOP, this.props.data, this.props.filters)} options={options}
-               onElementsClick={this.barClick} />
+               onElementsClick={this.barClick} plugins={[ChartDataLabels]}/>
           {/*<ChartsText data={this.props.data} />*/}
         </div>
       )
