@@ -7,7 +7,7 @@ import { FirstTimeOverlay, MapWrapper, SideMenu, Charts, FilterBar, MapBar } fro
 import { JOYRIDE_STEPS } from 'res/values/joyride';
 import { MAP_DISPLAY } from 'res/values/map';
 import { Rectangle, GeoJSON } from 'react-leaflet';
-import { getAllData, storeStateData, resetStateColor,defaultColors,covidColors, getStateDataReports, filterPublishedReports } from '../../utils/data-utils';
+import { storeStateData, resetStateColor,defaultColors,covidColors, getStateDataReports, filterPublishedReports } from '../../utils/data-utils';
 import { getDataCounts, counts_aggregateBy, counts_getState, counts_total, counts_maxPrimary, counts_maxState } from 'utils/data-utils';
 
 import HelpIcon from '@material-ui/icons/Help';
