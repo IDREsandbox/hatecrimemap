@@ -20,7 +20,6 @@ import {
 import { CheckBox, CheckBoxOutlineBlank } from '@material-ui/icons';
 
 import LocationSearchInput from '../../components/LocationSearchInput/LocationSearchInput';
-import GHCheckboxList from '../../components/GHCheckboxList/GHCheckboxList';
 import { createDataToSubmit } from '../../utils/utilities';
 
 import 'react-checkbox-tree/lib/react-checkbox-tree.css';
@@ -326,8 +325,7 @@ class ReportIncidentPage extends Component {
 
   reportIncident = () => {
     const dataToSubmit = createDataToSubmit(this.state);
-    
-    axios.post('/api/maps/incident', dataToSubmit)
+    axios.post('/api/report/incident', dataToSubmit)
       .then(res => {
         this.setState({ snackOpen: true })
         this.resetState();
