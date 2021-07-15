@@ -16,16 +16,11 @@ import { MoreVert } from '@material-ui/icons';
 
 import SimpleTable from '../../components/SimpleTable/SimpleTable';
 import Login from '../../components/Login/Login';
-import { addGroupsHarassedSplit } from '../../utils/filtering';
 import {
   reviewIncidentReport,
   validateIncidentReport,
   publishedIncidentReport,
   deleteIncidentReport,
-  addRowNumProperty,
-  checkLoggedInCookie,
-  setCookie,
-  sortByDateSubmitted,
 } from '../../utils/utilities';
 
 const styles = () => ({
