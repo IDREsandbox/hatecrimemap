@@ -175,7 +175,7 @@ class Charts extends React.Component {
               </Grid>
               <Grid item xs={3}>{/* to center the title */}</Grid>
             </Grid>
-            <Pie id="hatecrimePieChart" data={getChartData(this.state.currentDisplay, this.props.data, this.props.filters)} 
+            <Pie id="hatecrimePieChart" options={{plugins: {datalabels: {anchor: 'end'}}}} plugins={[ChartDataLabels]} data={getChartData(this.state.currentDisplay, this.props.data, this.props.filters)} 
                   onElementsClick={this.pieClick}/>
             {/*<ChartsText data={this.props.data[this.state.drilldown].children} />*/}
 
