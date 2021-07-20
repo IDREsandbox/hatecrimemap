@@ -4,11 +4,8 @@ import L from 'leaflet';
 import ReactDOM from 'react-dom';
 import './MapBar.css';
 
-import FormGroup from '@material-ui/core/FormGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
-
 
 class MapBar extends MapControl {
   createLeafletElement(props) {
@@ -30,20 +27,18 @@ class MapBar extends MapControl {
           </ToggleButton>
         </ToggleButtonGroup>
       </div>
-    )
+    );
 
     const mapbar = L.Control.extend({
       onAdd: (map) => {
-        const div = L.DomUtil.create("div", '');
+        const div = L.DomUtil.create('div', '');
         ReactDOM.render(jsx, div);
         return div;
-      }
-    })
+      },
+    });
 
-    return new mapbar({ position: "bottomleft" });
+    return new mapbar({ position: 'bottomleft' });
   }
-
-   
 }
 
 // MapBar.propTypes = {

@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import './SideMenu.css';
-import { Bar } from 'react-chartjs-2';
 
 function getShowReportsValue(layers) {
   if (layers.has('verified')) return 'verified';
@@ -10,7 +9,7 @@ function getShowReportsValue(layers) {
   return 'all';
 }
 
-const styles = theme => ({
+const styles = (theme) => ({
   button: {
     margin: theme.spacing(1),
   },
@@ -19,13 +18,11 @@ const styles = theme => ({
   },
 });
 
-const SideMenu = (props) => {
-    return (
-      <div className="sideMenu">
-        {props.children}
-      </div>
+const SideMenu = (props) => (
+  <div className="sideMenu">
+    {props.children}
+  </div>
     );
-};
 
 SideMenu.propTypes = {
   // updateMapData: PropTypes.func.isRequired,

@@ -32,6 +32,8 @@
     "nodemailer": "^6.4.10",
     "nouislider-react": "^3.4.0",
     "pg-promise": "^10.5.6",
+    "prettier": "^1.9.1",
+    "prettier-eslint": "^10.1.0",
     "re-resizable": "^6.7.0",
     "react-checkbox-tree": "^1.6.0",
     "react-joyride": "^2.2.1",

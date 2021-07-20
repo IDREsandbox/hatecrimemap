@@ -15,7 +15,7 @@ import {
   Checkbox,
 } from '@material-ui/core';
 
-const styles = theme => ({
+const styles = (theme) => ({
   root: {
     width: '100%',
     marginTop: theme.spacing(1),
@@ -34,7 +34,6 @@ const styles = theme => ({
   },
 });
 
-
 /**
  * A paginated table that operates on the following configurable props:
  *   columnHeaders - array of column headers
@@ -44,45 +43,48 @@ const styles = theme => ({
  *   idsChecked - array of ids (corresponding to the first element of every row array) to track checkbox status
  *   fetchData - function(int #rows, int page#) to update table data whenever pagination values are updated
  *   counts - max number of rows, for pagination purposes
- * 
- **/
+ *
+ * */
 class SimpleTable extends Component {
-
   constructor(props) {
     super(props);
     this.state = {
       rowsPerPage: 10,
       page: 0,
       total: this.props.counts,
-    }
+    };
   }
 
   handlePageChange = (e, page) => {
     console.log(page);
-    this.setState({page: page});
+    this.setState({ page });
     this.props.fetchData(this.state.rowsPerPage, page);
   }
 
   handleRowChange = (e) => {
-    this.setState({rowsPerPage: e.target.value}, () => {
+    this.setState({ rowsPerPage: e.target.value }, () => {
       this.props.fetchData(e.target.value, this.state.page);
-    })
+    });
   }
 
   render() {
-    const { classes, columnHeaders, tableData, idsChecked, onCheckIncident, onCheckAll } = this.props;
+    const {
+ classes, columnHeaders, tableData, idsChecked, onCheckIncident, onCheckAll,
+} = this.props;
     return (
       <Paper className={classes.root}>
         <Table className={classes.table}>
           <TableHead>
             <TableRow>
               <TableCell className={classes.cell} key="select">
-                <Checkbox checked={tableData.every(row => idsChecked.includes(row[0]))}
-                  onChange={(e) => onCheckAll(tableData.map(row => row[0]))} />
+                <Checkbox
+                  checked={tableData.every((row) => idsChecked.includes(row[0]))}
+                  onChange={(e) => onCheckAll(tableData.map((row) => row[0]))}
+                />
               </TableCell>
               <TableCell className={classes.cell} key="id">ID</TableCell>
               {/* Generate rest of table HEADERS */}
-              {columnHeaders.map(header => <TableCell className={classes.cell} key={header}>{header}</TableCell>)}
+              {columnHeaders.map((header) => <TableCell className={classes.cell} key={header}>{header}</TableCell>)}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -90,11 +92,14 @@ class SimpleTable extends Component {
             {tableData.map((row, i) => (
               <TableRow className={classes.row} key={row[0]}>
                 <TableCell className={classes.cell} key={`select${row[0]}`}>
-                  <Checkbox key={`select${row[0]}`} checked={idsChecked.includes(row[0])}
-                            onChange={(e) => onCheckIncident(e, row[0])} />
+                  <Checkbox
+                    key={`select${row[0]}`}
+                    checked={idsChecked.includes(row[0])}
+                    onChange={(e) => onCheckIncident(e, row[0])}
+                  />
                 </TableCell>
                 {/* Generate rest of column's for individual row */}
-                {row.map(cell => <TableCell className={classes.cell} key={uuid()}>{cell}</TableCell>)}
+                {row.map((cell) => <TableCell className={classes.cell} key={uuid()}>{cell}</TableCell>)}
               </TableRow>
             ))}
           </TableBody>
@@ -106,16 +111,15 @@ class SimpleTable extends Component {
                 page={this.state.page}
                 onChangePage={this.handlePageChange}
                 onChangeRowsPerPage={this.handleRowChange}
-                count={this.state.total}>
-              </TablePagination>
+                count={this.state.total}
+              />
             </TableRow>
           </TableFooter>
         </Table>
       </Paper>
-     )
+     );
   }
 }
-
 
 SimpleTable.propTypes = {
   columnHeaders: PropTypes.array.isRequired,
