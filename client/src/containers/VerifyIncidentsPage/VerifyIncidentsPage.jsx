@@ -155,6 +155,10 @@ class VerifyIncidentsPage extends Component {
       .catch((err) => alert(err));
   }
 
+  componentDidMount() {
+    this.checkLoggedIn();
+  }
+
   checkLoggedIn = () => {
     axios
       .get('/api/auth/check')
@@ -168,10 +172,6 @@ class VerifyIncidentsPage extends Component {
       })
       .catch((err) => alert(err));
   };
-
-  componentDidMount() {
-    this.checkLoggedIn();
-  }
 
   openActions = (id, v, s, p) => () => {
     console.log(`Opening ${id}`);

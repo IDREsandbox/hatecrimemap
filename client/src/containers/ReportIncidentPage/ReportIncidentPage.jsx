@@ -10,12 +10,14 @@ import {
   FormControlLabel,
   Checkbox,
   Stepper,
-  Step, StepLabel,
+  Step,
+  StepLabel,
   Button,
   Paper,
   StepContent,
   Tooltip,
-  Select, MenuItem,
+  Select,
+  MenuItem,
 } from '@material-ui/core';
 import { CheckBox, CheckBoxOutlineBlank } from '@material-ui/icons';
 
@@ -27,17 +29,6 @@ import Snackbar from '@material-ui/core/Snackbar';
 import Alert from '@material-ui/lab/Alert';
 import { createDataToSubmit } from '../../utils/utilities';
 import LocationSearchInput from '../../components/LocationSearchInput/LocationSearchInput';
-
-/*
-nodes = [
-  {value: id_of_group, label: Name, children: [grab all whose parent is id_of_group]},
-];
-
-    state = {
-        checked: [node values],
-        expanded: [node values],
-    };
-*/
 
 const styles = ({ spacing }) => ({
   root: {
@@ -100,7 +91,7 @@ class ReportIncidentPage extends Component {
 
   onHandleClose = () => {
     this.setState({ snackOpen: false });
-  }
+  };
 
   groupToNodes = (groups) => groups.map((eachGroup) => {
       eachGroup.value = eachGroup.key;
@@ -111,7 +102,8 @@ class ReportIncidentPage extends Component {
         eachGroup.children = this.groupToNodes(eachGroup.children);
       }
 
-      if (eachGroup.level == 0) { // disable toplevel categories, they're just for grouping
+      if (eachGroup.level == 0) {
+        // disable toplevel categories, they're just for grouping
         eachGroup.showCheckbox = false;
         // this.setState((prevState) => prevState.groupsExpanded.push(eachGroup['value']));
       }
@@ -119,10 +111,11 @@ class ReportIncidentPage extends Component {
       // Do other node customizations, e.g. custom icons or class
 
       return eachGroup;
-    })
+    });
 
   async componentDidMount() {
-    axios.get('/api/totals/groups')
+    axios
+      .get('/api/totals/groups')
       .then((res) => this.setState({ groups: this.groupToNodes(res.data.ret) }))
       .catch((err) => {
         alert(`API call failed: ${err}`);
@@ -132,8 +125,13 @@ class ReportIncidentPage extends Component {
 
   getStepContent = (index) => {
     const {
- location, sourceurl, groups, date, associatedLink, description,
-} = this.state;
+      location,
+      sourceurl,
+      groups,
+      date,
+      associatedLink,
+      description,
+    } = this.state;
     const { classes } = this.props;
 
     switch (index) {
@@ -153,7 +151,7 @@ class ReportIncidentPage extends Component {
             id="date-picker-dialog"
             label="Date of Incident"
             format="MM/dd/yyyy"
-            value={this.state.date}
+            value={date}
             onChange={this.handleDateChange}
             showTodayButton
             maxDate={new Date()}
@@ -171,16 +169,18 @@ class ReportIncidentPage extends Component {
             onChange={this.handleTargetChange}
             displayEmpty
           >
-            <MenuItem value="" disabled>Please Select One</MenuItem>
-            {
-              groups && Object.keys(groups).map((category) => (
+            <MenuItem value="" disabled>
+              Please Select One
+            </MenuItem>
+            {groups
+              && Object.keys(groups).map((category) => (
                 <MenuItem
                   key={groups[category].value}
                   value={groups[category].value}
                 >
                   {groups[category].label}
                 </MenuItem>
-)) // Top level
+              )) // Top level
             }
           </Select>
         );
@@ -195,48 +195,98 @@ class ReportIncidentPage extends Component {
               onExpand={(groupsExpanded) => this.setState({ groupsExpanded })}
               icons={{
                 check: <CheckBox style={{ color: '#f50057' }} />,
-                uncheck: <CheckBoxOutlineBlank style={{ color: 'rgba(0, 0, 0, 0.54)' }} />,
-                halfCheck: <FontAwesomeIcon className="rct-icon rct-icon-half-check" icon="check-square" />,
-                expandClose: <div style={{ fontSize: '14px' }}><FontAwesomeIcon className="rct-icon rct-icon-expand-close" icon="chevron-right" /></div>,
-                expandOpen: <div style={{ fontSize: '14px' }}><FontAwesomeIcon className="rct-icon rct-icon-expand-close" icon="chevron-down" /></div>,
-                expandAll: <div style={{ fontSize: '14px' }}><FontAwesomeIcon className="rct-icon rct-icon-expand-close" icon="plus-square" /></div>,
-                collapseAll: <FontAwesomeIcon className="rct-icon rct-icon-expand-close" icon="minus-square" />,
+                uncheck: (
+                  <CheckBoxOutlineBlank
+                    style={{ color: 'rgba(0, 0, 0, 0.54)' }}
+                  />
+                ),
+                halfCheck: (
+                  <FontAwesomeIcon
+                    className="rct-icon rct-icon-half-check"
+                    icon="check-square"
+                  />
+                ),
+                expandClose: (
+                  <div style={{ fontSize: '14px' }}>
+                    <FontAwesomeIcon
+                      className="rct-icon rct-icon-expand-close"
+                      icon="chevron-right"
+                    />
+                  </div>
+                ),
+                expandOpen: (
+                  <div style={{ fontSize: '14px' }}>
+                    <FontAwesomeIcon
+                      className="rct-icon rct-icon-expand-close"
+                      icon="chevron-down"
+                    />
+                  </div>
+                ),
+                expandAll: (
+                  <div style={{ fontSize: '14px' }}>
+                    <FontAwesomeIcon
+                      className="rct-icon rct-icon-expand-close"
+                      icon="plus-square"
+                    />
+                  </div>
+                ),
+                collapseAll: (
+                  <FontAwesomeIcon
+                    className="rct-icon rct-icon-expand-close"
+                    icon="minus-square"
+                  />
+                ),
                 parentClose: null,
                 parentOpen: null,
                 leaf: null,
               }}
               noCascade // Should "Asian American" automatically select everything under?
             />
-            { this.state.groupsChecked.includes('40')
-                  && (
-                  <div>
-                    <TextField name="other_race" onChange={this.handleChange} helperText="Other (Race/Ethnicity)" />
-                  </div>
-)}
-            { this.state.groupsChecked.includes('41')
-                  && (
-                  <div>
-                    <TextField name="other_religion" onChange={this.handleChange} helperText="Other (Religion)" />
-                  </div>
-)}
-            { this.state.groupsChecked.includes('42')
-                  && (
-                  <div>
-                    <TextField name="other_gender" onChange={this.handleChange} helperText="Other (Gender/Sexuality)" />
-                  </div>
-)}
-            { this.state.groupsChecked.includes('43')
-                  && (
-                  <div>
-                    <TextField name="other_misc" onChange={this.handleChange} helperText="Other (Miscellaneous)" />
-                  </div>
-)}
+            {this.state.groupsChecked.includes('40') && (
+              <div>
+                <TextField
+                  name="other_race"
+                  onChange={this.handleChange}
+                  helperText="Other (Race/Ethnicity)"
+                />
+              </div>
+            )}
+            {this.state.groupsChecked.includes('41') && (
+              <div>
+                <TextField
+                  name="other_religion"
+                  onChange={this.handleChange}
+                  helperText="Other (Religion)"
+                />
+              </div>
+            )}
+            {this.state.groupsChecked.includes('42') && (
+              <div>
+                <TextField
+                  name="other_gender"
+                  onChange={this.handleChange}
+                  helperText="Other (Gender/Sexuality)"
+                />
+              </div>
+            )}
+            {this.state.groupsChecked.includes('43') && (
+              <div>
+                <TextField
+                  name="other_misc"
+                  onChange={this.handleChange}
+                  helperText="Other (Miscellaneous)"
+                />
+              </div>
+            )}
           </div>
         );
       case 4:
         return (
           <div>
-            <Tooltip title="Please include http:// in any links" placement="left">
+            <Tooltip
+              title="Please include http:// in any links"
+              placement="left"
+            >
               <TextField
                 name="sourceurl"
                 onChange={this.handleChange}
@@ -255,7 +305,10 @@ class ReportIncidentPage extends Component {
               )}
               label="No associated link"
             />
-            <Tooltip title="Include the demographic(s) of the group(s) harassed" placement="left">
+            <Tooltip
+              title="Include the demographic(s) of the group(s) harassed"
+              placement="left"
+            >
               <TextField
                 name="description"
                 onChange={this.handleChange}
@@ -269,7 +322,7 @@ class ReportIncidentPage extends Component {
       default:
         return 'error';
     }
-  }
+  };
 
   isFormFilledOut = () => {
     const {
@@ -293,11 +346,14 @@ class ReportIncidentPage extends Component {
       case 3:
         return groupsChecked.length > 0;
       case 4:
-        return (isUrl(sourceurl) && associatedLink) || (sourceurl === '' && !associatedLink && description != '');
+        return (
+          (isUrl(sourceurl) && associatedLink)
+          || (sourceurl === '' && !associatedLink && description != '')
+        );
       default:
         return true;
     }
-  }
+  };
 
   selectLocation = (location) => {
     this.handleLocationChange(location);
@@ -305,7 +361,7 @@ class ReportIncidentPage extends Component {
       .then((results) => getLatLng(results[0]))
       .then((latLng) => this.setState({ latLng }))
       .catch(() => alert('Oops! There was an error. Please try again.'));
-  }
+  };
 
   handleLocationChange = (location) => this.setState({ location, latLng: {} });
 
@@ -317,7 +373,7 @@ class ReportIncidentPage extends Component {
     if (event.target.name == 'iscovid') {
       this.setState({ tag: event.target.checked ? 1 : 0 });
     }
-  }
+  };
 
   handleChange = ({ target: { name, value } }) => this.setState({ [name]: value });
 
@@ -330,11 +386,12 @@ class ReportIncidentPage extends Component {
   handleReset = () => {
     this.setState({ activeStep: 0 });
     this.reportIncident();
-  }
+  };
 
   reportIncident = () => {
     const dataToSubmit = createDataToSubmit(this.state);
-    axios.post('/api/report/incident', dataToSubmit)
+    axios
+      .post('/api/report/incident', dataToSubmit)
       .then((res) => {
         this.setState({ snackOpen: true });
         this.resetState();
@@ -343,7 +400,7 @@ class ReportIncidentPage extends Component {
         alert('Failed to submit the report');
         console.log(err);
       });
-  }
+  };
 
   resetState = () => this.setState(getInitialState());
 
@@ -355,8 +412,17 @@ class ReportIncidentPage extends Component {
 
     return (
       <Paper className={classes.root}>
-        <p style={{ padding: '24px 24px 0 24px' }}><em>If this is a COVID-related incident, consider navigating to the COVID page through the menu and reporting there.</em></p>
-        <Stepper className={classes.stepper} activeStep={activeStep} orientation="vertical">
+        <p style={{ padding: '24px 24px 0 24px' }}>
+          <em>
+            If this is a COVID-related incident, consider navigating to the
+            COVID page through the menu and reporting there.
+          </em>
+        </p>
+        <Stepper
+          className={classes.stepper}
+          activeStep={activeStep}
+          orientation="vertical"
+        >
           {steps.map((label, i) => (
             <Step key={label}>
               <StepLabel>{label}</StepLabel>
@@ -386,10 +452,12 @@ class ReportIncidentPage extends Component {
             </Step>
           ))}
         </Stepper>
-        <Snackbar open={this.state.snackOpen} autoHideDuration={5000} onClose={this.onHandleClose}>
-          <Alert severity="success">
-            Incident Reported!
-          </Alert>
+        <Snackbar
+          open={this.state.snackOpen}
+          autoHideDuration={5000}
+          onClose={this.onHandleClose}
+        >
+          <Alert severity="success">Incident Reported!</Alert>
         </Snackbar>
       </Paper>
     );

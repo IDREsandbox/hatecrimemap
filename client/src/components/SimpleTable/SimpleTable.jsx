@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { uuid } from 'uuidv4';
-import axios from 'axios';
 import {
   Table,
   TableBody,
@@ -59,18 +58,23 @@ class SimpleTable extends Component {
     console.log(page);
     this.setState({ page });
     this.props.fetchData(this.state.rowsPerPage, page);
-  }
+  };
 
   handleRowChange = (e) => {
     this.setState({ rowsPerPage: e.target.value }, () => {
       this.props.fetchData(e.target.value, this.state.page);
     });
-  }
+  };
 
   render() {
     const {
- classes, columnHeaders, tableData, idsChecked, onCheckIncident, onCheckAll,
-} = this.props;
+      classes,
+      columnHeaders,
+      tableData,
+      idsChecked,
+      onCheckIncident,
+      onCheckAll,
+    } = this.props;
     return (
       <Paper className={classes.root}>
         <Table className={classes.table}>
@@ -82,9 +86,15 @@ class SimpleTable extends Component {
                   onChange={(e) => onCheckAll(tableData.map((row) => row[0]))}
                 />
               </TableCell>
-              <TableCell className={classes.cell} key="id">ID</TableCell>
+              <TableCell className={classes.cell} key="id">
+                ID
+              </TableCell>
               {/* Generate rest of table HEADERS */}
-              {columnHeaders.map((header) => <TableCell className={classes.cell} key={header}>{header}</TableCell>)}
+              {columnHeaders.map((header) => (
+                <TableCell className={classes.cell} key={header}>
+                  {header}
+                </TableCell>
+              ))}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -99,7 +109,11 @@ class SimpleTable extends Component {
                   />
                 </TableCell>
                 {/* Generate rest of column's for individual row */}
-                {row.map((cell) => <TableCell className={classes.cell} key={uuid()}>{cell}</TableCell>)}
+                {row.map((cell) => (
+                  <TableCell className={classes.cell} key={uuid()}>
+                    {cell}
+                  </TableCell>
+                ))}
               </TableRow>
             ))}
           </TableBody>
@@ -117,7 +131,7 @@ class SimpleTable extends Component {
           </TableFooter>
         </Table>
       </Paper>
-     );
+    );
   }
 }
 
