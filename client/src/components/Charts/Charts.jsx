@@ -163,6 +163,25 @@ class Charts extends React.Component {
         //   Object.values(this.props.data).reduce(((p, c) => c instanceof Object ? p.concat(c.children.filter(e => e.group == this.state.popup_filter)) : p), [])
         //   : this.props.data[this.props.currState].children.filter(e => e.group == this.state.popup_filter);
 
+        /* Need to adjust styling of chart labels for pie charts */ 
+
+        let pieOptions = {
+          plugins: {
+          datalabels: {
+            anchor: 'center',
+            display: function(context) {
+              var index = context.dataIndex;
+              var value = context.dataset.data[index];
+              if (value > 0) {
+                return true;
+              } else {
+                return false;
+              }
+            }
+          },
+        }
+        }
+
         // Pie charts!
         return (
           <div key={this.props.currState} className="charts" >
@@ -175,7 +194,7 @@ class Charts extends React.Component {
               </Grid>
               <Grid item xs={3}>{/* to center the title */}</Grid>
             </Grid>
-            <Pie id="hatecrimePieChart" options={{plugins: {datalabels: {anchor: 'end'}}}} plugins={[ChartDataLabels]} data={getChartData(this.state.currentDisplay, this.props.data, this.props.filters)} 
+            <Pie id="hatecrimePieChart" options={pieOptions} plugins={[ChartDataLabels]} data={getChartData(this.state.currentDisplay, this.props.data, this.props.filters)} 
                   onElementsClick={this.pieClick}/>
             {/*<ChartsText data={this.props.data[this.state.drilldown].children} />*/}
 
