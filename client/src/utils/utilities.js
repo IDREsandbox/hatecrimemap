@@ -21,7 +21,7 @@ export function createDataToSubmit(formData) { // NEEDED
   });
 }
 
-export const reviewIncidentReport = (id, verified, callback = null) => () => {
+export const reviewIncidentReport = (id, verified, callback = ()=>{}) => {
   axios.post('/api/verify/reviewedincident', { id, verified })
     .then(res => {
       console.log(res.data)
@@ -31,7 +31,7 @@ export const reviewIncidentReport = (id, verified, callback = null) => () => {
     .catch(err => console.log(err));
 };
 
-export const validateIncidentReport = (id, urlvalid, callback = null) => () => {
+export const validateIncidentReport = (id, urlvalid, callback = ()=>{}) => {
   axios.post('/api/verify/validateincident', { id, urlvalid })
     .then(res => {
       console.log(res.data)
@@ -41,7 +41,7 @@ export const validateIncidentReport = (id, urlvalid, callback = null) => () => {
     .catch(err => console.log(err));
 };
 
-export const publishedIncidentReport = (id, published, callback = null) => () => {
+export const publishedIncidentReport = (id, published, callback = ()=>{}) => {
   axios.post('/api/verify/publishedincident', { id, published })
     .then(res => {
       console.log(res.data)
@@ -51,7 +51,7 @@ export const publishedIncidentReport = (id, published, callback = null) => () =>
     .catch(err => console.log(err));
 };
 
-export const deleteIncidentReport = (id, callback = null) => () => {
+export const deleteIncidentReport = (id, callback = ()=>{}) => {
   console.log(id);
   axios.delete(`/api/verify/incidentreport/${id}`)
     .then(res => console.log(res.data))

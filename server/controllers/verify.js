@@ -55,7 +55,7 @@ router.get('/unreviewed/:per/:page/:verified', (req, res) => {
 router.post('/reviewedincident', (req, res) => {
   const { id, verified } = req.body;
 
-  db.none('UPDATE incident SET verified = $2 WHERE id = $1', [id, verified])
+  db.none('UPDATE incident SET verified = $2 WHERE id = ANY($1)', [id, verified])
     .then(() => res.send('Incident report reviewed'))
     .catch(err => console.log('ERROR:', err));
 });
@@ -63,7 +63,7 @@ router.post('/reviewedincident', (req, res) => {
 router.post('/validateincident', (req, res) => {
   const { id, urlvalid } = req.body;
 
-  db.none('UPDATE incident SET issourceurlvalid = $2 WHERE id = $1', [id, urlvalid])
+  db.none('UPDATE incident SET issourceurlvalid = $2 WHERE id = ANY($1)', [id, urlvalid])
     .then(() => res.send('Incident url validated'))
     .catch(err => console.log('ERROR:', err));
 });
@@ -71,7 +71,7 @@ router.post('/validateincident', (req, res) => {
 router.post('/publishedincident', (req, res) => {
   const { id, published } = req.body;
 
-  db.none('UPDATE incident SET published = $2 WHERE id = $1', [id, published])
+  db.none('UPDATE incident SET published = $2 WHERE id = ANY($1)', [id, published])
     .then(() => res.send('Incident report marked published'))
     .catch(err => console.log('ERROR:', err));
 });
