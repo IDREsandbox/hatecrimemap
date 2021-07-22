@@ -297,8 +297,6 @@ export function takeTop(arr) { //use
 export function wordCloudReducer(p, c) { // used, all of the functions above are used with it as well
   mergeCounts(p, sortByCount(createWordMap(splitByWords(c.description))));
 
-  // console.log(p);
-
   return p;
 }
 

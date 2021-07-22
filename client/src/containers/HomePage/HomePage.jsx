@@ -346,9 +346,10 @@ class HomePage extends Component {
             <div className="sideMenu__header">
               <h2>
                 Hate Crimes in
-                {this.state.currentDisplay == 'none'
+                {' ' +
+                (this.state.currentDisplay == 'none'
                   ? 'the US'
-                  : this.state.currentDisplay}
+                  : this.state.currentDisplay)}
                 <IconButton
                   onClick={this.runTutorial}
                   className={classes.menuButton}
@@ -359,10 +360,7 @@ class HomePage extends Component {
               </h2>
 
               <h4>
-                {currTotal}
-                {' '}
-                in
-                {this.state.filterTimeRange.join('-')}
+                {currTotal} in {this.state.filterTimeRange.join('-')}
               </h4>
             </div>
 
