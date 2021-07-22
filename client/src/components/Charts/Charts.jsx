@@ -33,11 +33,9 @@ class Charts extends React.Component {
     super(props);
 
     this.state = {
-    
       currentDisplay: CHARTS.TOP,
       dialogOpen: false,
-      options: {//this.onBarClick,
-        // onClick: this.barClick,
+      options: {
         plugins: {
           datalabels: {
             anchor: 'end',
@@ -72,29 +70,6 @@ class Charts extends React.Component {
       popup_data: '',
       tableRows: {}, // cache indexed by state: { group: [{ID, date, state, group, link, description}]}}
     };
-  }
-
-
-
-  onBarClick = (event) => {
-    if (this.state.currentDisplay == CHARTS.TOP) {
-      const points = this.chartReference.current.chartInstance.getElementsAtXAxis(event);
-      console.log('updated bar click');
-      console.log(points);
-      
-      // this.chartReference.current.chartInstance.destroy();
-      
-      this.barClick(points);
-
-      /*
-        Note=> before it crashes, the pie already starts to render? is it an issue with the bar chart still existing or the pie chart not correctly loading
-        * fully clearing the 
-
-
-      */
-    } else {
-      return;
-    }
   }
 
   barUnClick = () => {
@@ -146,8 +121,7 @@ class Charts extends React.Component {
 
   barClick = (elems, event=null) => {
     // index into `data` of the bar clicked
-    //let dataIdx;
-    console.log(elems, event)
+    // TODO -> add requirements that click can only be inside the chart itself, not outside borders?
     if (!elems[0]) {
       if (this.state.currentDisplay == CHARTS.TOP) {
         const points = this.chartReference.current.chartInstance.getElementsAtXAxis(event);
@@ -173,7 +147,6 @@ class Charts extends React.Component {
   }
 
   render() {
-    console.log("rendering");
     if (this.props.data && this.state.options) {
       if (this.state.currentDisplay != CHARTS.TOP) {
         // const rows = this.props.currState == 'none' ?
