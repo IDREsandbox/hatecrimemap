@@ -37,7 +37,7 @@ class Charts extends React.Component {
       currentDisplay: CHARTS.TOP,
       dialogOpen: false,
       options: {//this.onBarClick,
-        onClick: this.onBarClick,
+        // onClick: this.barClick,
         plugins: {
           datalabels: {
             anchor: 'end',
@@ -82,7 +82,7 @@ class Charts extends React.Component {
       console.log('updated bar click');
       console.log(points);
       
-      this.chartReference.current.chartInstance.destroy();
+      // this.chartReference.current.chartInstance.destroy();
       
       this.barClick(points);
 
@@ -144,10 +144,15 @@ class Charts extends React.Component {
     this.setState({ dialogOpen: open });
   }
 
-  barClick = (elems) => {
+  barClick = (elems, event=null) => {
     // index into `data` of the bar clicked
     //let dataIdx;
+    console.log(elems, event)
     if (!elems[0]) {
+      if (this.state.currentDisplay == CHARTS.TOP) {
+        const points = this.chartReference.current.chartInstance.getElementsAtXAxis(event);
+        this.barClick(points);
+      }
       return;
     }
 
@@ -168,6 +173,7 @@ class Charts extends React.Component {
   }
 
   render() {
+    console.log("rendering");
     if (this.props.data && this.state.options) {
       if (this.state.currentDisplay != CHARTS.TOP) {
         // const rows = this.props.currState == 'none' ?
@@ -267,7 +273,7 @@ class Charts extends React.Component {
           <Bar
             data={getChartData(CHARTS.TOP, this.props.data, this.props.filters)}
             options={options}
-            //onElementsClick={this.barClick}
+            onElementsClick={this.barClick}
             plugins={[ChartDataLabels]}
             ref={this.chartReference}
           />
