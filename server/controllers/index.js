@@ -11,5 +11,6 @@ router.use('/maps', require('./maps'));
 router.use('/totals', require('./totals'));
 router.use('/auth', require('./auth'));
 router.use('/verify', require('./verify'));
+router.use('/report', require('./report'))
 
 module.exports = router;

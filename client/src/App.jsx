@@ -21,23 +21,14 @@ library.add(faCheckSquare, faChevronRight, faChevronLeft, faChevronDown, faPlusS
 
 const theme = createMuiTheme({
   overrides: {
-    MuiCssBaseline: {
-      '@global': {
-        html: {
-          // WebkitFontSmoothing: 'auto',
-        },
-      },
-    },
-
     MuiTypography: {
       colorTextSecondary: {
         color: '#000000'
       }
     },
-
     MuiDialogContent: {
       root: {
-        'display': 'flex'
+        'padding-top': 0
       }
     },
   }
@@ -53,7 +44,7 @@ const App = () => (
           <Switch>
             <Route exact path="/reportincident" component={ReportIncidentPage} />
             <Route exact path="/verifyincidents" component={VerifyIncidentsPage} />
-            <Route path="/covid" component={CovidPage} />
+            <Route exact path="/covid" component={CovidPage} />
             <Route path="/" component={HomePage} />
           </Switch>
           <Footer />

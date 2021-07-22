@@ -1,22 +1,14 @@
-import React, {Component} from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
 import { withStyles } from '@material-ui/core/styles';
-import HomeIcon from '@material-ui/icons/Home';
-import {
-  AppBar,
-  Toolbar,
-  Typography,
-  Button,
-  IconButton
-} from '@material-ui/core';
+import { Typography } from '@material-ui/core';
 
-import AboutDialog from '../AboutDialog/AboutDialog';
+import { FOOTER } from 'res/values/string';
 
 const styles = {
   footer: {
     textAlign: 'center',
-    backgroundColor: '#cccccc'
+    backgroundColor: '#cccccc',
   },
   flex: {
     flex: 1,
@@ -31,15 +23,16 @@ const styles = {
   },
   link: {
     textDecoration: 'none',
-  }
+  },
 };
-
 
 const Footer = ({ classes }) => (
   <div className={classes.footer}>
     <Typography variant="caption" color="inherit" className={classes.flex}>
-      This map is maintained by the UCLA American Indian Studies Center under the 
-      Institute of American Cultures. To contact us, email <a href="mailto:aisc@ucla.edu">aisc@ucla.edu</a>.
+      {FOOTER.TEXT}
+      {' '}
+      <a href="mailto:aisc@ucla.edu">{FOOTER.EMAIL}</a>
+      .
     </Typography>
   </div>
 );

@@ -1,4 +1,4 @@
-import { func } from "prop-types";
+import { counts_aggregateByAll } from 'utils/data-utils';
 
 export const CHARTS = {
   RACE_ETHNICITY: 1,
@@ -92,33 +92,52 @@ var topChartData = {
 }
 
 // Could make a single function, but this should allow us to customize chart colors more easily in the future
-export function getChartData(chart, allData, state) {
+export function getChartData(chart, allData, filters) {
 
-  if (state == 'none') {
-    // All of USA
-    allData = Object.values(allData).reduce(((p, c) => c instanceof Object ? p.concat(c.children) : p), [])
-  } else {
-    allData = allData[state].children;
-  }
-  console.log(state,allData)
+  // if (state == 'none') {
+  //   // All of USA
+  //   allData = Object.values(allData).reduce(((p, c) => c instanceof Object ? p.concat(c.children) : p), [])
+  // } else {
+  //   allData = allData[state].children;
+  // }
 
   let chartData;
-  let data;
+  let data = {labels: [], counts: []};
   if (chart === CHARTS.RACE_ETHNICITY) {
     chartData = raceChartData;
-    data = mapRE(allData);
+    // data = mapRE(allData);
+    RACE_LABELS.forEach(label => {
+      data.labels.push(label);
+      data.counts.push(counts_aggregateByAll(allData, [...filters, ["group", label]]))
+    })
   } else if (chart === CHARTS.RELIGION) {
     chartData = religionChartData;
-    data = mapReligion(allData);
+    // data = mapReligion(allData);
+    RELIGION_LABELS.forEach(label => {
+      data.labels.push(label);
+      data.counts.push(counts_aggregateByAll(allData, [...filters, ["group", label]]))
+    })
   } else if (chart === CHARTS.GENDER_SEXUALITY) {
     chartData = genderChartData;
-    data = mapGender(allData);
+    // data = mapGender(allData);
+    GENDER_LABELS.forEach(label => {
+      data.labels.push(label);
+      data.counts.push(counts_aggregateByAll(allData, [...filters, ["group", label]]))
+    })
   } else if (chart === CHARTS.OTHER) {
     chartData = otherChartData;
-    data = mapOther(allData);
+    // data = mapOther(allData);
+    MISC_LABELS.forEach(label => {
+      data.labels.push(label);
+      data.counts.push(counts_aggregateByAll(allData, [...filters, ["group", label]]))
+    })
   } else if (chart === CHARTS.TOP) {
     chartData = topChartData;
-    data = mapTop(allData);
+    // data = mapTop(allData);
+    CHART_STRINGS.forEach(label => {
+      data.labels.push(label);
+      data.counts.push(counts_aggregateByAll(allData, [...filters, ["primary_reason", label]]))
+    })
   }
 
   // if (chart !== CHARTS.TOP) {
@@ -132,119 +151,16 @@ export function getChartData(chart, allData, state) {
   return chartData;
 }
 
-const mapRE = (data) => {
-  const agg = data.filter(e => RACE_LABELS.includes(e.group)).reduce((p, c) => {
-    if (!p.hasOwnProperty(c.group)) {
-      p[c.group] = 1;
-    } else {
-      p[c.group]++;
-    }
-    return p;
-  }, {});
-  let ret = {labels: [], counts: []}
-  Object.entries(agg).sort(([k1,], [k2,]) => k1 > k2 ? 1 : -1).forEach(([k, v]) => {
-    ret.labels.push(k);
-    ret.counts.push(v);
-  })
-  return ret;
-}
-
-const mapReligion = (data) => {
-  const agg = data.filter(e => RELIGION_LABELS.includes(e.group)).reduce((p, c) => {
-    if (!p.hasOwnProperty(c.group)) {
-      p[c.group] = 1;
-    } else {
-      p[c.group]++;
-    }
-    return p;
-  }, {});
-  let ret = {labels: [], counts: []}
-  Object.entries(agg).sort(([k1,], [k2,]) => k1 > k2 ? 1 : -1).forEach(([k, v]) => {
-    ret.labels.push(k);
-    ret.counts.push(v);
-  })
-  return ret;
-}
-
-const mapGender = (data) => {
-  const agg = data.filter(e => GENDER_LABELS.includes(e.group)).reduce((p, c) => {
-    if (!p.hasOwnProperty(c.group)) {
-      p[c.group] = 1;
-    } else {
-      p[c.group]++;
-    }
-    return p;
-  }, {});
-  let ret = {labels: [], counts: []}
-  Object.entries(agg).sort(([k1,], [k2,]) => k1 > k2 ? 1 : -1).forEach(([k, v]) => {
-    ret.labels.push(k);
-    ret.counts.push(v);
-  })
-  return ret;
-}
-
-const mapOther = (data) => {
-  const agg = data.filter(e => MISC_LABELS.includes(e.group)).reduce((p, c) => {
-    if (!p.hasOwnProperty(c.group)) {
-      p[c.group] = 1;
-    } else {
-      p[c.group]++;
-    }
-    return p;
-  }, {});
-  let ret = {labels: [], counts: []}
-  Object.entries(agg).sort(([k1,], [k2,]) => k1 > k2 ? 1 : -1).forEach(([k, v]) => {
-    ret.labels.push(k);
-    ret.counts.push(v);
-  })
-  return ret;
-}
-
-const mapTop = (data) => {
-  const agg = data.filter(e => (e.parent=="Race/Ethnicity" && RACE_LABELS.includes(e.group))
-    || (e.parent=="Gender/Sexuality" && GENDER_LABELS.includes(e.group))
-    || (e.parent=="Religion" && RELIGION_LABELS.includes(e.group))
-    || (e.parent=="Miscellaneous" && MISC_LABELS.includes(e.group))).reduce((p, c) => {
-    if (!p.hasOwnProperty(c.parent)) {
-      p[c.parent] = 1;
-    } else {
-      p[c.parent]++;
-    }
-    return p;
-  }, {});
-  let ret = {labels: [], counts: []}
-  CHART_STRINGS.forEach(chart => {
-    ret.labels.push(chart)
-    ret.counts.push(agg[chart])
-  })
-  return ret;
-}
-
-const mapData = (data, sort=false) => {
-  // [[label, {count: 0}], [label, {count: 1}]]
-  data = Object.entries(data).filter(([key, obj]) => obj && (obj.count || obj.count===0))
-  if (sort) {
-    data.sort((a, b) => {
-      return (a[1].count < b[1].count) ? -1 : ((a[1].count==b[1].count) ? 0 : 1)
-    })
-  }
-  return ({
-            labels: data.map(([label, x]) => label),
-            counts: data.map(([parent, counts]) => counts.count)
-          })
-};
 
 export const sumData = (data) => {
   return Object.entries(data).filter(([key, obj]) => obj && (obj.count || obj.count===0)).map(([key, obj]) => obj.count).reduce((a, b) => a+b)
 }
-
 
 const covidRE = ["Asian", "Native American/Indigenous", "African American", "Latinx", "White", "Other"]
 const covidGender = ["Male", "Female", "Other"]
 const covidType = ["Verbal", "Physical", "Coughing/Spitting", "Online", "Other"]
 const covidOther = ["Unknown"]
 const covidDescription = ["Description"]
-
 
 var covidChartData = [
 {
@@ -300,9 +216,7 @@ var covidChartData = [
 
 const stopWords = ['i', 'me', 'my', 'myself', 'we', 'our', 'ours', 'ourselves', 'you', "you're", "you've", "you'll", "you'd", 'your', 'yours', 'yourself', 'yourselves', 'he', 'him', 'his', 'himself', 'she', "she's", 'her', 'hers', 'herself', 'it', "it's", 'its', 'itself', 'they', 'them', 'their', 'theirs', 'themselves', 'what', 'which', 'who', 'whom', 'this', 'that', "that'll", 'these', 'those', 'am', 'is', 'are', 'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had', 'having', 'do', 'does', 'did', 'doing', 'a', 'an', 'the', 'and', 'but', 'if', 'or', 'because', 'as', 'until', 'while', 'of', 'at', 'by', 'for', 'with', 'about', 'against', 'between', 'into', 'through', 'during', 'before', 'after', 'above', 'below', 'to', 'from', 'up', 'down', 'in', 'out', 'on', 'off', 'over', 'under', 'again', 'further', 'then', 'once', 'here', 'there', 'when', 'where', 'why', 'how', 'all', 'any', 'both', 'each', 'few', 'more', 'most', 'other', 'some', 'such', 'no', 'nor', 'not', 'only', 'own', 'same', 'so', 'than', 'too', 'very', 's', 't', 'can', 'will', 'just', 'don', "don't", 'should', "should've", 'now', 'd', 'll', 'm', 'o', 're', 've', 'y', 'ain', 'aren', "aren't", 'couldn', "couldn't", 'didn', "didn't", 'doesn', "doesn't", 'hadn', "hadn't", 'hasn', "hasn't", 'haven', "haven't", 'isn', "isn't", 'ma', 'mightn', "mightn't", 'mustn', "mustn't", 'needn', "needn't", 'shan', "shan't", 'shouldn', "shouldn't", 'wasn', "wasn't", 'weren', "weren't", 'won', "won't", 'wouldn', "wouldn't"]
 
-
-
-function splitByWords(words) {
+function splitByWords(words) { // USED
   // split string by spaces (including spaces, tabs, and newlines)
   const lowerWords = words.toLowerCase()
   const wordsArray = lowerWords.replace(/[^A-Za-z ]/g, '').split(/\s+/);
@@ -312,7 +226,7 @@ function splitByWords(words) {
   return condensedArray;
 }
 
-function createWordMap(wordsArray) {
+function createWordMap(wordsArray) { // USED
 
   // create map for word counts
   const wordsMap = {};
@@ -363,14 +277,7 @@ function sortByCount (wordsMap,stateKeys) {
   
   // Object.keys(finalresult).map(totals => ({name: totals, total: finalresult[totals]}));
   
-  
-  
-  
   return finalWordsArray;
-
-
-
-
 }
 
 function mergeCounts(arr1, arr2) {
@@ -383,14 +290,12 @@ function mergeCounts(arr1, arr2) {
   })
 }
 
-export function takeTop(arr) {
+export function takeTop(arr) { //use
   return arr.sort((a, b) => b.value - a.value).slice(0,30);
 }
 
-export function wordCloudReducer(p, c) {
+export function wordCloudReducer(p, c) { // used, all of the functions above are used with it as well
   mergeCounts(p, sortByCount(createWordMap(splitByWords(c.description))));
-
-  // console.log(p);
 
   return p;
 }
@@ -405,33 +310,6 @@ export function summarizeWordCloud(reportWords){
   // console.log(finalWordsArray)
   return finalWordsArray
 }
-
-function reduceWordCloud(item){
-  // console.log(item)
-  return item
-  // let currentWords = currTopWords
-
-    // // const finalWordsArray = sortByCount();
-    // console.log(finalWordsArray)
-    // return finalWordsArray
-  }
-  
-  //   finalWordsArray.concat(s).slice(0,10)
-  //   console.log(finalWordsArray)
-  //   return finalWordsArray
-  // }
-
-// end function for word cloud
-
-function mergeArrayObjects(arr1,arr2){
-  return arr1.map((item,i)=>{
-     if(item.id === arr2[i].id){
-         //merging two objects
-       return Object.assign({},item,arr2[i])
-     }
-  })
-}
-
 
 export const getCovidChartData = (data, state) => {
   let chartData = covidChartData;

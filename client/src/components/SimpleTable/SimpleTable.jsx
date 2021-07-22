@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { uuid } from 'uuidv4';
-import axios from 'axios';
 import {
   Table,
   TableBody,
@@ -12,12 +11,13 @@ import {
   TableFooter,
   TablePagination,
   Paper,
+  Checkbox,
 } from '@material-ui/core';
 
-const styles = theme => ({
+const styles = (theme) => ({
   root: {
     width: '100%',
-    marginTop: theme.spacing.unit * 3,
+    marginTop: theme.spacing(1),
     overflowX: 'auto',
   },
   table: {
@@ -33,54 +33,87 @@ const styles = theme => ({
   },
 });
 
+/**
+ * A paginated table that operates on the following configurable props:
+ *   columnHeaders - array of column headers
+ *   tableData - data in the form of an array of arrays, with each array element being a row (should be length == columnHeaders)
+ *   onCheckIncident - function(int, any action) to call when a row checkbox is pressed
+ *   onCheckAll - function(int[]) to call when the header checkbox is pressed
+ *   idsChecked - array of ids (corresponding to the first element of every row array) to track checkbox status
+ *   fetchData - function(int #rows, int page#) to update table data whenever pagination values are updated
+ *   counts - max number of rows, for pagination purposes
+ *
+ * */
 class SimpleTable extends Component {
-
   constructor(props) {
     super(props);
     this.state = {
       rowsPerPage: 10,
       page: 0,
-      total: -1
-    }
-  }
-
-  componentWillMount() {
-    axios.get('/api/verify/unreviewedcount')
-      .then((res) => {
-        if(res.data.counts) {
-          this.setState({total: parseInt(res.data.counts)});
-        }
-      })
-      .catch((err) => alert(err))
+      total: this.props.counts,
+    };
   }
 
   handlePageChange = (e, page) => {
     console.log(page);
-    this.setState({page: page});
+    this.setState({ page });
     this.props.fetchData(this.state.rowsPerPage, page);
-  }
+  };
 
   handleRowChange = (e) => {
-    this.setState({rowsPerPage: e.target.value}, () => {
+    this.setState({ rowsPerPage: e.target.value }, () => {
       this.props.fetchData(e.target.value, this.state.page);
-    })
-  }
+    });
+  };
 
   render() {
-    const { classes, columnHeaders, tableData } = this.props;
+    const {
+      classes,
+      columnHeaders,
+      tableData,
+      idsChecked,
+      onCheckIncident,
+      onCheckAll,
+    } = this.props;
     return (
       <Paper className={classes.root}>
         <Table className={classes.table}>
           <TableHead>
             <TableRow>
-              <TableCell className={classes.cell} key="id">ID</TableCell>
-              {columnHeaders.map(header => <TableCell className={classes.cell} key={header}>{header}</TableCell>)}
+              <TableCell className={classes.cell} key="select">
+                <Checkbox
+                  checked={tableData.every((row) => idsChecked.includes(row[0]))}
+                  onChange={(e) => onCheckAll(tableData.map((row) => row[0]))}
+                />
+              </TableCell>
+              <TableCell className={classes.cell} key="id">
+                ID
+              </TableCell>
+              {/* Generate rest of table HEADERS */}
+              {columnHeaders.map((header) => (
+                <TableCell className={classes.cell} key={header}>
+                  {header}
+                </TableCell>
+              ))}
             </TableRow>
           </TableHead>
           <TableBody>
+            {/* Row FOR EACH incident fetched */}
             {tableData.map((row, i) => (
               <TableRow className={classes.row} key={row[0]}>
-                {row.map(cell => <TableCell className={classes.cell} key={uuid()}>{cell}</TableCell>)}
+                <TableCell className={classes.cell} key={`select${row[0]}`}>
+                  <Checkbox
+                    key={`select${row[0]}`}
+                    checked={idsChecked.includes(row[0])}
+                    onChange={(e) => onCheckIncident(e, row[0])}
+                  />
+                </TableCell>
+                {/* Generate rest of column's for individual row */}
+                {row.map((cell) => (
+                  <TableCell className={classes.cell} key={uuid()}>
+                    {cell}
+                  </TableCell>
+                ))}
               </TableRow>
             ))}
           </TableBody>
@@ -92,16 +125,15 @@ class SimpleTable extends Component {
                 page={this.state.page}
                 onChangePage={this.handlePageChange}
                 onChangeRowsPerPage={this.handleRowChange}
-                count={this.state.total}>
-              </TablePagination>
+                count={this.state.total}
+              />
             </TableRow>
           </TableFooter>
         </Table>
       </Paper>
-     )
+    );
   }
 }
-
 
 SimpleTable.propTypes = {
   columnHeaders: PropTypes.array.isRequired,

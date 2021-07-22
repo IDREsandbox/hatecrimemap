@@ -15,7 +15,7 @@ import {
 } from '@material-ui/core';
 import { Visibility, VisibilityOff } from '@material-ui/icons';
 
-const styles = theme => ({
+const styles = (theme) => ({
   root: {
     top: 0,
     bottom: 0,
@@ -40,17 +40,23 @@ const styles = theme => ({
 });
 
 class Login extends Component {
-  state = {
-    showPassword: false,
-  };
+  constructor(props) {
+    super(props);
 
-  handleMouseDownPassword = e => e.preventDefault();
+    this.state = {
+      showPassword: false,
+    };
+  }
+
+  handleMouseDownPassword = (e) => e.preventDefault();
 
   handleClickShowPassword = () => this.setState({ showPassword: !this.state.showPassword });
 
   render() {
     const { showPassword } = this.state;
-    const { email, password, onChange, onSubmit, classes } = this.props;
+    const {
+      email, password, onChange, onSubmit, classes,
+    } = this.props;
 
     return (
       <div>
@@ -76,7 +82,7 @@ class Login extends Component {
                 type={showPassword ? 'text' : 'password'}
                 value={password}
                 onChange={onChange}
-                endAdornment={
+                endAdornment={(
                   <InputAdornment position="end">
                     <IconButton
                       aria-label="Toggle password visibility"
@@ -86,10 +92,15 @@ class Login extends Component {
                       {showPassword ? <VisibilityOff /> : <Visibility />}
                     </IconButton>
                   </InputAdornment>
-                }
+                )}
               />
             </FormControl>
-            <Button type="submit" variant="contained" color="primary" className={classes.button}>
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              className={classes.button}
+            >
               Login
             </Button>
           </form>
