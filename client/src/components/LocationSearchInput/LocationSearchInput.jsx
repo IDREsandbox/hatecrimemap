@@ -8,7 +8,7 @@ import './LocationSearchInput.css';
 
 const styles = theme => ({
   textField: {
-    margin: theme.spacing.unit,
+    margin: theme.spacing(1),
     width: 200,
   },
 });

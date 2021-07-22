@@ -1,8 +1,8 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import {
-  Button
+  Button,
 } from '@material-ui/core';
 
 import Dialog from '@material-ui/core/Dialog';
@@ -20,23 +20,27 @@ const styles = {
   images: {
     display: 'table',
     'border-collapse': 'collapse',
-    width: '100%'
+    width: '100%',
   },
   inline: {
     display: 'table-cell',
     'vertical-align': 'middle',
-    "& img": {
+    '& img': {
       display: 'block',
       width: '100%',
-      height: 'auto'
-    }
-  }
+      height: 'auto',
+    },
+  },
 };
 
 class AboutDialog extends Component {
-  state = {
-    open: false,
-  };
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      open: false,
+    };
+  }
 
   handleClickOpen = () => {
     this.setState({ open: true });
@@ -47,9 +51,15 @@ class AboutDialog extends Component {
   };
 
   render() {
+    const {
+      classes,
+    } = this.props;
+
+    console.log(classes);
+
     return (
       <div>
-        <Button className={this.props.classes.aboutButton} onClick={this.handleClickOpen}>
+        <Button className={classes.aboutButton} onClick={this.handleClickOpen}>
           About
         </Button>
         <Dialog
@@ -65,24 +75,27 @@ class AboutDialog extends Component {
               <br />
               <p>{ABOUT_DIALOGS.HCM.PARAGRAPH2}</p>
               <br />
-              <p>Any questions? Email us at <a href={`mailto:${ABOUT_DIALOGS.HCM.EMAIL}?Subject=Hate%20Crime%20Map%20Inquiry`}>{ABOUT_DIALOGS.HCM.EMAIL}</a></p>
+              <p>
+                Any questions? Email us at
+                <a href={`mailto:${ABOUT_DIALOGS.HCM.EMAIL}?Subject=Hate%20Crime%20Map%20Inquiry`}>{ABOUT_DIALOGS.HCM.EMAIL}</a>
+              </p>
               <br />
               <hr />
               <br />
               <h3>Acknowledgments</h3>
               <p>{ABOUT_DIALOGS.HCM.ACKNOWLEDGEMENTS}</p>
-              <div className={this.props.classes.images}>
-                <div className={this.props.classes.inline}>
-                  <img src={require("res/img/AISC_logo.png")} />
+              <div className={classes.images}>
+                <div className={classes.inline}>
+                  <img src={require('res/img/AISC_logo.png')} />
                 </div>
-                <div className={this.props.classes.inline}>
-                  <img src={require("res/img/idre-logo.png")} />
+                <div className={classes.inline}>
+                  <img src={require('res/img/idre-logo.png')} />
                 </div>
-                <div className={this.props.classes.inline}>
-                  <img src={require("res/img/InstAmerCultures_A.png")} />
+                <div className={classes.inline}>
+                  <img src={require('res/img/InstAmerCultures_A.png')} />
                 </div>
-                <div className={this.props.classes.inline}>
-                  <img src={require("res/img/social-sciences-logo.png")} />
+                <div className={classes.inline}>
+                  <img src={require('res/img/social-sciences-logo.png')} />
                 </div>
               </div>
             </DialogContentText>

@@ -28,7 +28,7 @@ const theme = createMuiTheme({
     },
     MuiDialogContent: {
       root: {
-        'display': 'flex'
+        'padding-top': 0
       }
     },
   }

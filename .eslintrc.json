@@ -2,6 +2,9 @@
     "extends": "airbnb",
     "parser": "babel-eslint",
     "rules": {
+        "react/destructuring-assignment": 0, // Ask Chris about destructuring props/prop types check. Don't know if its worth it to go all the way back through and fix all these
+        "react/prop-types": 0,
+        "no-underscore-dangle": 0,
         "no-undef": 0,
         "react/jsx-filename-extension": [
             1,
@@ -22,7 +25,6 @@
         "jsx-a11y/anchor-is-valid": 0,
         "max-len": 0,
         "react/no-did-mount-set-state": 0,
-        "object-curly-newline": 0,
         "react/forbid-prop-types": 0
     }
 }
