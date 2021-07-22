@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { createRef } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import './Charts.css';
 import { Button, LinearProgress } from '@material-ui/core';
@@ -27,13 +27,17 @@ const styles = (theme) => ({
 });
 
 class Charts extends React.Component {
+  chartReference = createRef();
+
   constructor(props) {
     super(props);
 
     this.state = {
+    
       currentDisplay: CHARTS.TOP,
       dialogOpen: false,
-      options: {
+      options: {//this.onBarClick,
+        // onClick: this.barClick,
         plugins: {
           datalabels: {
             anchor: 'end',
@@ -43,7 +47,7 @@ class Charts extends React.Component {
               if (value < 300) {
                 return 'top';
               }
-                return 'bottom';
+              return 'bottom';
             },
           },
         },
@@ -70,6 +74,29 @@ class Charts extends React.Component {
     };
   }
 
+
+
+  onBarClick = (event) => {
+    if (this.state.currentDisplay == CHARTS.TOP) {
+      const points = this.chartReference.current.chartInstance.getElementsAtXAxis(event);
+      console.log('updated bar click');
+      console.log(points);
+      
+      // this.chartReference.current.chartInstance.destroy();
+      
+      this.barClick(points);
+
+      /*
+        Note=> before it crashes, the pie already starts to render? is it an issue with the bar chart still existing or the pie chart not correctly loading
+        * fully clearing the 
+
+
+      */
+    } else {
+      return;
+    }
+  }
+
   barUnClick = () => {
     this.setState({ currentDisplay: CHARTS.TOP });
   }
@@ -78,11 +105,11 @@ class Charts extends React.Component {
     if (!elems[0] || !elems[0]._chart) return;
     this.setState({ dialogOpen: true, popup_data: null });
     const params = {
-        parent_group: this.state.drilldown, // see: note in totals.js regarding ignoring this property
-        group: elems[0]._chart.config.data.labels[elems[0]._index],
-        // time: this.props.time
-        state: 'all', // default, overriden if state appears
-        // published: false //default
+      parent_group: this.state.drilldown, // see: note in totals.js regarding ignoring this property
+      group: elems[0]._chart.config.data.labels[elems[0]._index],
+      // time: this.props.time
+      state: 'all', // default, overriden if state appears
+      // published: false //default
     };
     this.props.filters.forEach((f) => params[f[0]] = f[1]);
 
@@ -97,31 +124,38 @@ class Charts extends React.Component {
     axios.get('/api/totals/filtered', {
       params,
     })
-    .then(({ data }) => {
-      if (data.status == 'success') {
-        this.setState((prevState) => ({
-          tableRows: {
-            ...prevState.tableRows,
-            [params.state]: {
-              ...prevState[params.state],
-              [params.group]: data.result,
+      .then(({ data }) => {
+        if (data.status == 'success') {
+          this.setState((prevState) => ({
+            tableRows: {
+              ...prevState.tableRows,
+              [params.state]: {
+                ...prevState[params.state],
+                [params.group]: data.result,
+              },
             },
-          },
-          popup_data: data.result.filter((each) => (new Date(each.date).getFullYear() >= this.props.time[0] && new Date(each.date).getFullYear() <= this.props.time[1] && (!params.published || (params.published && each.published)))),
-        }));
-      }
-    });
+            popup_data: data.result.filter((each) => (new Date(each.date).getFullYear() >= this.props.time[0] && new Date(each.date).getFullYear() <= this.props.time[1] && (!params.published || (params.published && each.published)))),
+          }));
+        }
+      });
   }
 
   toggleOpen = (open) => {
     this.setState({ dialogOpen: open });
   }
 
-  barClick = (elems) => {
+  barClick = (elems, event=null) => {
     // index into `data` of the bar clicked
+    //let dataIdx;
+    console.log(elems, event)
     if (!elems[0]) {
+      if (this.state.currentDisplay == CHARTS.TOP) {
+        const points = this.chartReference.current.chartInstance.getElementsAtXAxis(event);
+        this.barClick(points);
+      }
       return;
     }
+
     const dataIdx = elems[0]._index;
     switch (dataIdx) {
       case 0:
@@ -139,6 +173,7 @@ class Charts extends React.Component {
   }
 
   render() {
+    console.log("rendering");
     if (this.props.data && this.state.options) {
       if (this.state.currentDisplay != CHARTS.TOP) {
         // const rows = this.props.currState == 'none' ?
@@ -149,18 +184,18 @@ class Charts extends React.Component {
 
         const pieOptions = {
           plugins: {
-          datalabels: {
-            anchor: 'center',
-            display(context) {
-              const index = context.dataIndex;
-              const value = context.dataset.data[index];
-              if (value > 0) {
-                return true;
-              }
+            datalabels: {
+              anchor: 'center',
+              display(context) {
+                const index = context.dataIndex;
+                const value = context.dataset.data[index];
+                if (value > 0) {
+                  return true;
+                }
                 return false;
+              },
             },
           },
-        },
         };
 
         // Pie charts!
@@ -193,32 +228,32 @@ class Charts extends React.Component {
             >
               <DialogTitle id="responsive-dialog-title">Hate Crimes</DialogTitle>
               <DialogContent>
-                { this.props.filters.some((e) => e[0] == 'county') ? <h2>WIP</h2> // nested ternary -> change once counties are implemented?
+                {this.props.filters.some((e) => e[0] == 'county') ? <h2>WIP</h2> // nested ternary -> change once counties are implemented?
                   : !this.state.popup_data ? <LinearProgress style={{ width: '100%' }} />
-                : (
-                  <Table stickyHeader className="hello" aria-label="simple table" width="100%">
-                    <TableHead>
-                      <TableRow>
-                        <TableCell width="10%">Date (M/D/Y)</TableCell>
-                        <TableCell width="10%">State</TableCell>
-                        <TableCell width="15%">Primary Reason</TableCell>
-                        <TableCell width="20%">Source</TableCell>
-                        <TableCell width="45%">Description</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {this.state.popup_data.map((row) => (
-                        <TableRow key={row.id}>
-                          <TableCell width="10%">{row.date}</TableCell>
-                          <TableCell width="10%">{row.state}</TableCell>
-                          <TableCell width="15%">{row.group}</TableCell>
-                          <TableCell width="20%">{row.link ? <a href={row.link} target="_blank" rel="noreferrrer noopener">{row.link}</a> : 'N/A'}</TableCell>
-                          <TableCell width="45%">{row.description || '--'}</TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-)}
+                    : (
+                      <Table stickyHeader className="hello" aria-label="simple table" width="100%">
+                        <TableHead>
+                          <TableRow>
+                            <TableCell width="10%">Date (M/D/Y)</TableCell>
+                            <TableCell width="10%">State</TableCell>
+                            <TableCell width="15%">Primary Reason</TableCell>
+                            <TableCell width="20%">Source</TableCell>
+                            <TableCell width="45%">Description</TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {this.state.popup_data.map((row) => (
+                            <TableRow key={row.id}>
+                              <TableCell width="10%">{row.date}</TableCell>
+                              <TableCell width="10%">{row.state}</TableCell>
+                              <TableCell width="15%">{row.group}</TableCell>
+                              <TableCell width="20%">{row.link ? <a href={row.link} target="_blank" rel="noreferrrer noopener">{row.link}</a> : 'N/A'}</TableCell>
+                              <TableCell width="45%">{row.description || '--'}</TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    )}
               </DialogContent>
               <DialogActions id="closeDataTable">
                 <Button onClick={() => this.toggleOpen(false)} color="primary">
@@ -240,6 +275,7 @@ class Charts extends React.Component {
             options={options}
             onElementsClick={this.barClick}
             plugins={[ChartDataLabels]}
+            ref={this.chartReference}
           />
           {/* <ChartsText data={this.props.data} /> */}
         </div>
