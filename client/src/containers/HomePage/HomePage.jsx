@@ -30,6 +30,7 @@ import { resetStateColor, defaultColors } from '../../utils/data-utils';
 import 'nouislider/distribute/nouislider.css';
 
 import './HomePage.css';
+import { ControlPointSharp } from '@material-ui/icons';
 
 const styles = () => ({
   progress: {
@@ -175,9 +176,7 @@ class HomePage extends Component {
   };
 
   handleJoyrideCallback = (data) => {
-    const {
- action, index, status, type,
-} = data;
+    const { action, index, status, type } = data;
 
     // First 4 options are special cases
     if (this.state.skipStep && type == EVENTS.STEP_BEFORE) {
@@ -349,7 +348,7 @@ class HomePage extends Component {
                 {' ' +
                 (this.state.currentDisplay == 'none'
                   ? 'the US'
-                  : this.state.currentDisplay)}
+                  : isNaN(this.state.currentDisplay.at(this.state.currentDisplay.length - 1)) ? this.state.currentDisplay: (this.state.currentDisplay.substr(0, this.state.currentDisplay.length - 3) + ` County`))}
                 <IconButton
                   onClick={this.runTutorial}
                   className={classes.menuButton}
