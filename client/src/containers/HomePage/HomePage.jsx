@@ -40,8 +40,9 @@ const styles = () => ({
   },
 });
 
+const JOYRIDE_LOCK_STATE = 'California';
+
 class HomePage extends Component {
-  JOYRIDE_LOCK_STATE = 'California';
 
   constructor(props) {
     super(props);
@@ -165,20 +166,20 @@ class HomePage extends Component {
 
   isNotReadyToStep = (index, type) => {
     // Logic for each indiviudal step on whether the joyride should move forward or not
-    if (
-      (index == 3 && this.state.currentDisplay !== this.JOYRIDE_LOCK_STATE)
+    return (index == 3 && this.state.currentDisplay !== JOYRIDE_LOCK_STATE)
       || (index == 4 && [EVENTS.TARGET_NOT_FOUND].includes(type))
       || (index == 6 && this.chartsRef.current.state.dialogOpen)
       || (index == 7 && this.chartsRef.current.state.currentDisplay != 5)
-      || (index == 8 && this.state.currentDisplay === this.JOYRIDE_LOCK_STATE)
-    ) {
-      return true;
-    }
-    return false;
+      || (index == 8 && this.state.currentDisplay === JOYRIDE_LOCK_STATE)
   };
 
   handleJoyrideCallback = (data) => {
     const { action, index, status, type } = data;
+
+    if (action == ACTIONS.CLOSE || action == ACTIONS.SKIP) {
+      this.setState({ stepIndex: 0, run: false });
+      return; // avoid pathways that could all setState [to the same fields], this leads to race conditions
+    }
 
     // First 4 options are special cases
     if (this.state.skipStep && type == EVENTS.STEP_BEFORE) {
@@ -210,10 +211,6 @@ class HomePage extends Component {
       // Need to set our running state to false, so we can restart if we click start again.
       this.setState({ stepIndex: 0 }); // added this to make sure the tutorial can be ran again
       this.setState({ run: false });
-    }
-
-    if (action == ACTIONS.CLOSE || action == ACTIONS.SKIP) {
-      this.setState({ stepIndex: 0, run: false });
     }
   };
 
@@ -350,7 +347,9 @@ class HomePage extends Component {
                 {' ' +
                 (this.state.currentDisplay == 'none'
                   ? 'the US'
-                  : isNaN(this.state.currentDisplay.at(this.state.currentDisplay.length - 1)) ? this.state.currentDisplay: (this.state.currentDisplay.substr(0, this.state.currentDisplay.length - 3) + ` County`))}
+                  : isNaN(this.state.currentDisplay[this.state.currentDisplay.length - 1])
+                    ? this.state.currentDisplay
+                    : (this.state.currentDisplay.substr(0, this.state.currentDisplay.length - 3) + ` County`))}
                 <IconButton
                   onClick={this.runTutorial}
                   className={classes.menuButton}
