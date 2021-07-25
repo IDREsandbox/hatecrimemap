@@ -264,21 +264,12 @@ class HomePage extends Component {
 
     const filters = [];
     if (this.state.currentDisplay != 'none') {
-      if (this.state.zoom >= 6) {
-        filters.push(['county', this.state.currentDisplay]);
+      filters.push([this.state.lockType, this.state.currentDisplay]);
         currTotal = counts_aggregateBy(
           data,
-          'county',
+          this.state.lockType,
           this.state.currentDisplay,
         );
-      } else {
-        filters.push(['state', this.state.currentDisplay]);
-        currTotal = counts_aggregateBy(
-          data,
-          'state',
-          this.state.currentDisplay,
-        );
-      }
     } else {
       currTotal = counts_total(data);
     }
