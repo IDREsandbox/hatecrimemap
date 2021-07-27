@@ -89,7 +89,7 @@ class Charts extends React.Component {
       parent_group: this.state.drilldown, // see: note in totals.js regarding ignoring this property
       group: elems[0]._chart.config.data.labels[elems[0]._index],
       // time: this.props.time
-      state: null, // one of the following will be changed and then filled into lockItem
+      state: null, 
       county: null,
       // published: false // filled in by filters, used to filter data once retrieved from backend
     };
@@ -97,12 +97,16 @@ class Charts extends React.Component {
   
     /*
     if both state and county are null, don't trigger any change on backend
-
     */
     // check cache
-    if (this.state.tableRows[params.lockItem] && this.state.tableRows[params.lockItem][params.group]) {
+    if (this.state.tableRows[params.state] && this.state.tableRows[params.state][params.group]) {
       this.setState((prevState) => ({
-        popup_data: prevState.tableRows[params.lockItem][params.group].filter((each) => (new Date(each.date).getFullYear() >= this.props.time[0] && new Date(each.date).getFullYear() <= this.props.time[1] && (!params.published || (params.published && each.published)))),
+        popup_data: prevState.tableRows[params.state][params.group].filter((each) => (new Date(each.date).getFullYear() >= this.props.time[0] && new Date(each.date).getFullYear() <= this.props.time[1] && (!params.published || (params.published && each.published)))),
+      }));
+      return;
+    }  else if (this.state.tableRows[params.county] && this.state.tableRows[params.county][params.group]) {
+      this.setState((prevState) => ({
+        popup_data: prevState.tableRows[params.county][params.group].filter((each) => (new Date(each.date).getFullYear() >= this.props.time[0] && new Date(each.date).getFullYear() <= this.props.time[1] && (!params.published || (params.published && each.published)))),
       }));
       return;
     }
@@ -115,8 +119,8 @@ class Charts extends React.Component {
           this.setState((prevState) => ({
             tableRows: {
               ...prevState.tableRows,
-              [params.lockItem]: {
-                ...prevState[params.lockItem],
+              [data.filter_item]: {
+                ...prevState[data.filter_item],
                 [params.group]: data.result,
               },
             },

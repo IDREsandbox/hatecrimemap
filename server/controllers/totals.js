@@ -140,6 +140,7 @@ router.get('/filtered', (req, res) => {
 		.then((result) => {
 			res.status(200)
 				.json({
+					filter_item,
 					status: 'success',
 					result
 				});
