@@ -118,20 +118,25 @@ router.get('/filtered', (req, res) => {
 			JOIN groups g2 ON g2.id = t.parent `;
 	({
 		group,
-		lockItem,
-		filterLevel,
+		state,
+		county,
 	} = req.query);
 
-	if (lockItem === 'all') {		
+	let filter_item;
+
+	if (!state && !county) {
 		query += (`WHERE g1.name ILIKE $1`);	
 	} else {
-		if (filterLevel === 'state') {			
-			query += (`WHERE g1.name ILIKE $1 AND us_states.name ILIKE $2`);			
-		} else {			
-			query += (`WHERE g1.name ILIKE $1 AND uc.county_state ILIKE $2`);			
+		if(!county) {
+			filter_item = state;
+			query += (`WHERE g1.name ILIKE $1 AND us_states.name ILIKE $2`);	
+		} else {
+			filter_item = county;
+			query += (`WHERE g1.name ILIKE $1 AND uc.county_state ILIKE $2`);
 		}
 	}
-	db.any(query, [group, lockItem])
+
+	db.any(query, [group, filter_item])
 		.then((result) => {
 			res.status(200)
 				.json({

@@ -92,19 +92,13 @@ class Charts extends React.Component {
       state: null, // one of the following will be changed and then filled into lockItem
       county: null,
       // published: false // filled in by filters, used to filter data once retrieved from backend
-      lockItem: null,
-      filterLevel: this.props.lockType,
     };
     this.props.filters.forEach((f) => params[f[0]] = f[1]); 
   
-    if  (!params.state && !params.county) {
-      params.lockItem = 'all';
-    } else if (!params.state) {
-      params.lockItem = params.county;
-    } else if (!params.county) {
-      params.lockItem = params.state;
-    }
-  
+    /*
+    if both state and county are null, don't trigger any change on backend
+
+    */
     // check cache
     if (this.state.tableRows[params.lockItem] && this.state.tableRows[params.lockItem][params.group]) {
       this.setState((prevState) => ({
