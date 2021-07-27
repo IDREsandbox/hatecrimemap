@@ -4,6 +4,7 @@ import './Charts.css';
 import { Button, LinearProgress } from '@material-ui/core';
 import { ArrowBack } from '@material-ui/icons';
 import { CHARTS, CHART_STRINGS, getChartData } from 'utils/chart-utils';
+import { countyDisplayName } from 'utils/data-utils'
 import { Bar, Pie } from 'react-chartjs-2';
 import Grid from '@material-ui/core/Grid';
 
@@ -25,6 +26,11 @@ import ChartDataLabels from 'chartjs-plugin-datalabels';
 const styles = (theme) => ({
 
 });
+
+const LOCK_TYPE = {
+  COUNTY: 'county',
+  STATE: 'state',
+}
 
 class Charts extends React.Component {
   chartReference = createRef();
@@ -83,15 +89,20 @@ class Charts extends React.Component {
       parent_group: this.state.drilldown, // see: note in totals.js regarding ignoring this property
       group: elems[0]._chart.config.data.labels[elems[0]._index],
       // time: this.props.time
-      state: 'all', // default, overriden if state appears
-      // published: false //default
+      state: null, // one of the following will be changed and then filled into lockItem
+      county: null,
+      // published: false // filled in by filters, used to filter data once retrieved from backend
     };
-    this.props.filters.forEach((f) => params[f[0]] = f[1]);
+    this.props.filters.forEach((f) => params[f[0]] = f[1]); 
+  
+    /*
+    if both state and county are null, don't trigger any change on backend
 
+    */
     // check cache
-    if (this.state.tableRows[params.state] && this.state.tableRows[params.state][params.group]) {
+    if (this.state.tableRows[params.lockItem] && this.state.tableRows[params.lockItem][params.group]) {
       this.setState((prevState) => ({
-        popup_data: prevState.tableRows[params.state][params.group].filter((each) => (new Date(each.date).getFullYear() >= this.props.time[0] && new Date(each.date).getFullYear() <= this.props.time[1] && (!params.published || (params.published && each.published)))),
+        popup_data: prevState.tableRows[params.lockItem][params.group].filter((each) => (new Date(each.date).getFullYear() >= this.props.time[0] && new Date(each.date).getFullYear() <= this.props.time[1] && (!params.published || (params.published && each.published)))),
       }));
       return;
     }
@@ -104,8 +115,8 @@ class Charts extends React.Component {
           this.setState((prevState) => ({
             tableRows: {
               ...prevState.tableRows,
-              [params.state]: {
-                ...prevState[params.state],
+              [params.lockItem]: {
+                ...prevState[params.lockItem],
                 [params.group]: data.result,
               },
             },
@@ -201,14 +212,13 @@ class Charts extends React.Component {
             >
               <DialogTitle id="responsive-dialog-title">Hate Crimes</DialogTitle>
               <DialogContent>
-                {this.props.filters.some((e) => e[0] == 'county') ? <h2>WIP</h2> // nested ternary -> change once counties are implemented?
-                  : !this.state.popup_data ? <LinearProgress style={{ width: '100%' }} />
+                {!this.state.popup_data ? <LinearProgress style={{ width: '100%' }} />
                     : (
                       <Table stickyHeader className="hello" aria-label="simple table" width="100%">
                         <TableHead>
                           <TableRow>
                             <TableCell width="10%">Date (M/D/Y)</TableCell>
-                            <TableCell width="10%">State</TableCell>
+                            <TableCell width="10%">{this.props.lockType === LOCK_TYPE.COUNTY ? 'County' : 'State' }</TableCell>
                             <TableCell width="15%">Primary Reason</TableCell>
                             <TableCell width="20%">Source</TableCell>
                             <TableCell width="45%">Description</TableCell>
@@ -218,7 +228,8 @@ class Charts extends React.Component {
                           {this.state.popup_data.map((row) => (
                             <TableRow key={row.id}>
                               <TableCell width="10%">{row.date}</TableCell>
-                              <TableCell width="10%">{row.state}</TableCell>
+                              {/* Change the following below to include {___} County, {state}?*/}
+                              <TableCell width="10%">{this.props.lockType === LOCK_TYPE.COUNTY ? countyDisplayName(row.county, row.state) : row.state}</TableCell>
                               <TableCell width="15%">{row.group}</TableCell>
                               <TableCell width="20%">{row.link ? <a href={row.link} target="_blank" rel="noreferrrer noopener">{row.link}</a> : 'N/A'}</TableCell>
                               <TableCell width="45%">{row.description || '--'}</TableCell>

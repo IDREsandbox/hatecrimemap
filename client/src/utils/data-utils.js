@@ -336,3 +336,9 @@ export function eachStatesCounties(feature, layer, data, max, setCountyDisplay, 
 	  });
     layer.setStyle({stroke: 0.1, weight: 1, opacity: 0.75, color: 'black', fillColor: colorHashed, fillOpacity: 0.75});
 }
+
+export const countyDisplayName = (county, state) => {
+	if (state) { // plan to implement a version for the main sidebar title
+    return county.substr(0, county.length - 3) + ` County, ` + state
+	}
+}
