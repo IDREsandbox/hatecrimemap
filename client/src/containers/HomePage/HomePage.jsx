@@ -363,6 +363,7 @@ class HomePage extends Component {
                 filters={filters}
                 time={this.state.filterTimeRange}
                 lockType={this.state.lockType}
+                lockItem={this.state.currentDisplay}
               />
             </div>
             <br />

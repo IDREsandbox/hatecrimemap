@@ -118,31 +118,16 @@ router.get('/filtered', (req, res) => {
 			JOIN groups g2 ON g2.id = t.parent `;
 	({
 		group,
-		state,
-		published,
 		lockItem,
-		lockType
 	} = req.query);
-	
-	if (lockItem == 'all') {
-		if (published) {
-			(`WHERE g1.name ILIKE $1 AND published=true`);
-		} else {
-			query += (`WHERE g1.name ILIKE $1`);
-		}
+
+	if (lockItem === 'all') {		
+		query += (`WHERE g1.name ILIKE $1`);	
 	} else {
-		if (lockType == 'state') {
-			if (published) {
-				(`WHERE g1.name ILIKE $1 AND published=true AND us_states.name ILIKE $2`);
-			} else {
-				query += (`WHERE g1.name ILIKE $1 AND us_states.name ILIKE $2`);
-			}
-		} else {
-			if (published) {
-				(`WHERE g1.name ILIKE $1 AND published=true AND us_states.name ILIKE $2`);
-			} else {
-				query += (`WHERE g1.name ILIKE $1 AND uc.county_state ILIKE $2`);
-			}
+		if (lockType === 'state') {			
+			query += (`WHERE g1.name ILIKE $1 AND us_states.name ILIKE $2`);			
+		} else {			
+			query += (`WHERE g1.name ILIKE $1 AND uc.county_state ILIKE $2`);			
 		}
 	}
 	db.any(query, [group, lockItem])
