@@ -119,12 +119,13 @@ router.get('/filtered', (req, res) => {
 	({
 		group,
 		lockItem,
+		filterLevel,
 	} = req.query);
 
 	if (lockItem === 'all') {		
 		query += (`WHERE g1.name ILIKE $1`);	
 	} else {
-		if (lockType === 'state') {			
+		if (filterLevel === 'state') {			
 			query += (`WHERE g1.name ILIKE $1 AND us_states.name ILIKE $2`);			
 		} else {			
 			query += (`WHERE g1.name ILIKE $1 AND uc.county_state ILIKE $2`);			

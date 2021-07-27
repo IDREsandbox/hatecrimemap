@@ -93,6 +93,7 @@ class Charts extends React.Component {
       county: null,
       // published: false // filled in by filters, used to filter data once retrieved from backend
       lockItem: null,
+      filterLevel: this.props.lockType,
     };
     this.props.filters.forEach((f) => params[f[0]] = f[1]); 
   
@@ -103,7 +104,7 @@ class Charts extends React.Component {
     } else if (!params.county) {
       params.lockItem = params.state;
     }
-   
+  
     // check cache
     if (this.state.tableRows[params.lockItem] && this.state.tableRows[params.lockItem][params.group]) {
       this.setState((prevState) => ({
@@ -234,7 +235,7 @@ class Charts extends React.Component {
                             <TableRow key={row.id}>
                               <TableCell width="10%">{row.date}</TableCell>
                               {/* Change the following below to include {___} County, {state}?*/}
-                              <TableCell width="10%">{this.props.lockType === LOCK_TYPE.COUNTY ? this.getCountyAndStateDisplay(row.county, row.state) : row.state}</TableCell>
+                              <TableCell width="10%">{this.props.lockType === LOCK_TYPE.COUNTY ? countyDisplayName(row.county, row.state) : row.state}</TableCell>
                               <TableCell width="15%">{row.group}</TableCell>
                               <TableCell width="20%">{row.link ? <a href={row.link} target="_blank" rel="noreferrrer noopener">{row.link}</a> : 'N/A'}</TableCell>
                               <TableCell width="45%">{row.description || '--'}</TableCell>
