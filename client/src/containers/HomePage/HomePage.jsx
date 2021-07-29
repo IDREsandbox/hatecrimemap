@@ -12,7 +12,7 @@ import {
   MapBar,
 } from 'components';
 import { JOYRIDE_STEPS } from 'res/values/joyride';
-import { MAP_DISPLAY } from 'res/values/map';
+import { MAP_DISPLAY, MAP_LOCATIONS } from 'res/values/map';
 import {
   getDataCounts,
   counts_aggregateBy,
@@ -62,6 +62,7 @@ class HomePage extends Component {
     };
 
     this.statesRef = React.createRef();
+    this.countiesRef = React.createRef();
     this.alaskaRef = React.createRef();
     this.hawaiiRef = React.createRef();
     this.mapRef = React.createRef();
@@ -199,9 +200,18 @@ class HomePage extends Component {
       && !this.chartsRef.current.state.dialogOpen
     ) {
       // once you click "next" when the table is open, it will throw an error because the current target (reports) is technically closed
-      // the "step-after" part of the event can't mount because the target isn't found -> need to make it so that it manually skips over?
       this.setState({ stepIndex: index + 1 });
-    } else if (
+    } else if (index == 7 && [EVENTS.STEP_AFTER].includes(type)) {
+      const { current = {} } = this.mapRef;
+      const { leafletElement: map } = current;
+      map.flyTo(MAP_LOCATIONS.losAngelesCountyCenter, 6 /* ZOOM */, {
+        duration: 0.5,
+      });
+      setTimeout(() => { // Wait for map to pan + zoom to la county then move to next step so target can lock
+        this.setState({ stepIndex: index + (action === ACTIONS.PREV ? -1 : 1) });
+      }, 500);
+    }
+    else if (
       [EVENTS.STEP_AFTER, EVENTS.TARGET_NOT_FOUND].includes(type)
       && index != 5
     ) {
@@ -209,6 +219,11 @@ class HomePage extends Component {
       this.setState({ stepIndex: index + (action === ACTIONS.PREV ? -1 : 1) });
     } else if ([STATUS.FINISHED, STATUS.SKIPPED].includes(status)) {
       // Need to set our running state to false, so we can restart if we click start again.
+      const { current = {} } = this.mapRef;
+      const { leafletElement: map } = current;
+      map.flyTo(MAP_LOCATIONS.usaCenter, 4, { // pan + zoom out back to usa center when tutorial is done
+        duration: 0.5,
+      });
       this.setState({ stepIndex: 0 }); // added this to make sure the tutorial can be ran again
       this.setState({ run: false });
     }

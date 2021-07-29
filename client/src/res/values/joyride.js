@@ -20,7 +20,7 @@ export const JOYRIDE_STEPS = [
         },
         {// 3
           target: '.sideMenu__chart',
-          content: 'Click on a bar in the chart to see details, and then click "Next".',
+          content: 'Click anywhere within a bar section in the chart to see details, and then click "Next".',
           spotlightClicks: true,
           disableBeacon: true,
         },
@@ -50,18 +50,30 @@ export const JOYRIDE_STEPS = [
           target: '.leaflet-states-pane .leaflet-interactive:nth-child(4)',
           content: 'Click on California to unlock it and then click "Next"',
           spotlightClicks: true,
+          disableBeacon:true,
+        },// At the end of step 7, need to jump zoom to la county
+        { //8
+          target: '.leaflet-counties-pane .leaflet-interactive:nth-child(240)',
+          content: 'Incidents can also be viewed at a county level with the same functionality as states. Zoom in to see data for individual counties.',
+          spotlightClicks: true,
+          disableBeacon: true,
         },
-        {// 8
+        {// 9
+          target: '.MuiToggleButtonGroup-root',
+          content: 'Use this location switcher to jump to view incidents within Alaska and Hawaii',
+          spotlightClicks: true,
+        },
+        {// 10
           disableBeacon: false,
           target: '#covidButton',
           content: 'View and report Asian American/Pacific Islander hate crimes from COVID-19 discrimination here.',
         },      
-        {// 9 
+        {// 11 
           target: '#reportIncidentButton',
           content: 'Anonymously report a hate crime if you yourself have experienced or have witnessed one.',
           disableBeacon: false,
         },      
-        {// 10
+        {// 12
           target: '#hateCrimeTutorial',
           content: 'You can view this tutorial again by clicking this button.',
         },      
