@@ -333,6 +333,7 @@ export function eachStatesCounties(feature, layer, data, max, setCountyDisplay, 
 	      setCountyDisplay(feature.properties.County_state, true);  // true parameter for locking
 
 	      lockedLayer = layer;
+		  lockedLayerColor = colorHashed;
 	  });
     layer.setStyle({stroke: 0.1, weight: 1, opacity: 0.75, color: 'black', fillColor: colorHashed, fillOpacity: 0.75});
 }
