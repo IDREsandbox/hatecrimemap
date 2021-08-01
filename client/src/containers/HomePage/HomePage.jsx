@@ -90,15 +90,51 @@ class HomePage extends Component {
   }
 
   resetStateColors() {
+
+    let data = this.state.data.filter(
+      (row) => row.yyyy >= this.state.filterTimeRange[0]
+        && row.yyyy <= this.state.filterTimeRange[1],
+    );
+
+
+    // how do I account for different maxes?
+    let max = this.state.zoom >= 6 ? 30 : counts_maxState(data); 
+
+    //console.log(this.state.currentDisplay);
     Object.values(
       this.statesRef.current.contextValue.layerContainer._layers,
     ).forEach((layer) => {
       if (layer.feature) {
         // only the states/counties have a feature
         // console.log(layer.feature);
-        resetStateColor(layer, this.state.data, defaultColors);
+        if (layer.feature.properties.NAME === this.state.currentDisplay) {
+          console.log('current found');
+        } 
+        resetStateColor(layer, data, defaultColors, max);
+
       }
     });
+
+    // clicking in the united states does not actually "unlock" the state
+
+    /* let layersToReset = Object.values( // guaranteed to find one, layer is already locked onto
+      this.statesRef.current.contextValue.layerContainer._layers,
+    ).filter((layer) => {
+      if (layer.feature) {
+        if (layer.feature.properties.NAME === this.state.currentDisplay) {
+          return layer;
+        }
+      }
+    })
+
+    console.log(layersToReset);
+
+    layersToReset.forEach((layer) => resetStateColor(layer, data, defaultColors, max)); */
+
+  }
+
+  resetCountyColors() {
+
   }
 
   changeViewRegion = (event, region) => {
@@ -145,6 +181,13 @@ class HomePage extends Component {
   };
 
   updateCounty = (county, lock = false) => {
+    // LOGIC
+    /*
+    if lock is passed in as true, automatically lock. That's when a new county is passed in to be locked
+    When unclicking off an old one, 
+
+    */
+    console.log(county, lock);
     if (lock) {
       this.setState({ currentDisplay: county, locked: county !== 'none', lockType: 'county' });
       return true;

@@ -201,18 +201,35 @@ function hashStateColor(sum, max,colorBins) {
 	return colorHashed;
 }
 
-export function resetStateColor(layer, statesData,colorBins) {
+export function resetStateColor(layer, statesData,colorBins, max) {
 	const STATE_NAME = layer.feature.properties.NAME;
 	if(!STATE_NAME) return;
 	const stateData = statesData[STATE_NAME];
 
-	if(!stateData || stateData.total <= 0) {
+	//console.log(statesData);
+
+
+	const count = counts_aggregateBy(statesData, 'state', STATE_NAME);
+
+	if (STATE_NAME == 'Texas') {
+	console.log(count);
+	}
+
+	if(!count || count <= 0) {
 		layer.setStyle({color: 'rgba(0, 0, 0, 0)'});
 		return;
 	}
 
-	let colorHashed = hashStateColor(stateData.count, statesData.max,colorBins);
-    
+	let colorHashed = hashStateColor(count, max, colorBins);
+    if (STATE_NAME == 'Texas') {
+		console.log(`resetting texas to ` + colorHashed);
+	}
+
+	if (lockedLayer == STATE_NAME) {
+		lockedLayer = null;
+		lockedLayerColor = null;
+	}
+
     layer.setStyle({fillColor: colorHashed})
 }
 
@@ -274,6 +291,14 @@ export function eachState(feature, layer, data, max, setStateDisplay, colorBins)
     	layer.setStyle({fillColor: colorHashed});
 	});
 	layer.on('click', function(event) {
+		/*
+
+
+
+		*/
+
+		console.log(data);
+
 		layer.setStyle({fillColor: `rgb(100, 100, 100)`});
 		if(lockedLayer) {
 			lockedLayer.setStyle({fillColor: lockedLayerColor});
@@ -315,11 +340,12 @@ export function eachStatesCounties(feature, layer, data, max, setCountyDisplay, 
 	      layer.setStyle({fillColor: 'rgb(200, 200, 200)'});
 	  });
 	    layer.on('mouseout', function(event){
-	    	if(!setCountyDisplay("none")) return;
+	    	if(!setCountyDisplay("none")) return; // setCountyDisplay (updateCounty  in HomePage) will return false? if locked onto something else
 	      // layer._path.classList.remove("show-state");
 	      layer.setStyle({fillColor: colorHashed});
 	  });
 	    layer.on('click', function(event) {
+			// on click of a layer, set the current layer color to gray
 	    	layer.setStyle({fillColor: `rgb(100, 100, 100)`});
 	    	if(lockedLayer) {
 	    		lockedLayer.setStyle({fillColor: lockedLayerColor});
@@ -333,6 +359,7 @@ export function eachStatesCounties(feature, layer, data, max, setCountyDisplay, 
 	      setCountyDisplay(feature.properties.County_state, true);  // true parameter for locking
 
 	      lockedLayer = layer;
+		  lockedLayerColor = colorHashed;
 	  });
     layer.setStyle({stroke: 0.1, weight: 1, opacity: 0.75, color: 'black', fillColor: colorHashed, fillOpacity: 0.75});
 }

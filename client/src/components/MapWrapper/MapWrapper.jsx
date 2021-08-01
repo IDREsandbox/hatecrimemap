@@ -80,6 +80,8 @@ const MapWrapper = (props) => {
           stroke={false}
           fillOpacity="0"
           onClick={() => props.updateState('none', true)}
+          // when clicking on rectangle, sets updateState to none without truly ever unlocking the state!
+          //
         />
         {!props.covid && (
           <Pane
