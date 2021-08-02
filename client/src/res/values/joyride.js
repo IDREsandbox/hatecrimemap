@@ -19,7 +19,7 @@ export const JOYRIDE_STEPS = [
           spotlightClicks: true,
         },
         {// 3
-          target: '.sideMenu__chart',
+          target: '#hatecrimeBarChart',
           content: 'Click anywhere within a bar section in the chart to see details, and then click "Next".',
           spotlightClicks: true,
           disableBeacon: true,
@@ -30,6 +30,7 @@ export const JOYRIDE_STEPS = [
           spotlightClicks: true,
           disableBeacon: true,
           disableOverlay:true,
+          hideBackButton: true,
         },
         {// 5
           target: '#hateCrimeDataTable',
@@ -37,6 +38,7 @@ export const JOYRIDE_STEPS = [
           disableOverlay:true,
           disableBeacon: true,
           spotlightClicks: true,
+          hideBackButton: true,
           placement: 'center',
         },
         {// 6
@@ -45,84 +47,75 @@ export const JOYRIDE_STEPS = [
           spotlightClicks: true,
           disableOverlay:true,
           content: 'Click on the "Back" button return to the previous chart, then click "Next".',
+          hideBackButton: true,
         },      
         {// 7
           target: '.leaflet-states-pane .leaflet-interactive:nth-child(4)',
           content: 'Click on California to unlock it and then click "Next"',
           spotlightClicks: true,
           disableBeacon:true,
-        },// At the end of step 7, need to jump zoom to la county
-        { //8
-          target: '.leaflet-counties-pane .leaflet-interactive:nth-child(240)',
-          content: 'Incidents can also be viewed at a county level with the same functionality as states. Zoom in to see data for individual counties.',
+          disableScrolling: true,
+          hideBackButton: true,
+        },
+        { // 8 (new step -> force the user to zoom in onto counties instead of manually doing it )
+          target: '.leaflet-container',
+          content: 'Zoom in on the map to view incidents within individual counties.',
+          disableOverlay: true,
+          spotlightClicks: true,
+          disableBeacon:true,
+          hideBackButton: true,
+        },
+        { //9
+          target: '.leaflet-container',
+          content: 'Incidents can also be viewed at a county level on the map with the same functionality as states.',
           spotlightClicks: true,
           disableBeacon: true,
         },
-        {// 9
-          target: '.MuiToggleButtonGroup-root',
+        { // 10 
+          target: '.leaflet-container',
+          content: 'Zoom out on the map to view incidents at a state level again.',
+          disableOverlay: true,
+          spotlightClicks: true,
+          disableBeacon:true,
+        },
+        {// 11
+          target: '.map-bar',
           content: 'Use this location switcher to jump to view incidents within Alaska and Hawaii',
           spotlightClicks: true,
+          hideBackButton: true,
         },
-        {// 10
+        {// 12 
+          /* NOTE
+          * add functionality here that the user can actually click on the covid section to explore it and then return back to the homepage
+          */
           disableBeacon: false,
+          disableOverlay: true,
           target: '#covidButton',
           content: 'View and report Asian American/Pacific Islander hate crimes from COVID-19 discrimination here.',
         },      
-        {// 11 
+        {// 13 
           target: '#reportIncidentButton',
           content: 'Anonymously report a hate crime if you yourself have experienced or have witnessed one.',
           disableBeacon: false,
+          hideBackButton: true,
         },      
-        {// 12
+        {// 14
           target: '#hateCrimeTutorial',
           content: 'You can view this tutorial again by clicking this button.',
         },      
       ]
 
 
-
-
-      /*
-      Data objects passed in when you click "next" from the pie charts 
-
-(first one-> should be step:before)
-action: "next"
-controlled: true
-index: 5
-lifecycle: "init"
-size: 11
-status: "running"
-step: {showProgress: false, showSkipButton: true, locale: {…}, styles: {…}, disableCloseOnEsc: false, …}
-type: "error:target_not_found"
-__proto__: Object
-
-(second one-> should be the actual lifecycle step)
-action: "update"
-controlled: true
-index: 5
-lifecycle: "ready"
-size: 11
-status: "running"
-step: {showProgress: false, showSkipButton: true, locale: {…}, styles: {…}, disableCloseOnEsc: false, …}
-type: "error:target_not_found"
-__proto__: Object
-
-(third one -> seems that the normal cycle continues, goes on to step:after without worrying whether the target actually mounted)
-action: "next"
-controlled: true
-index: 5
-lifecycle: "complete"
-size: 11
-status: "running"
-step: {showProgress: false, showSkipButton: true, locale: {…}, styles: {…}, disableCloseOnEsc: false, …}
-type: "step:after"
-__proto__: Object
-
-
-
-Data objects passed in when you click next after actually closing the data table?
-confused -> when you close the data table and then click next, what I wrote actually funcitons correctly 
-seems like at any point during the step index "5", if the target cannot be found it restarts the step and goes through whole lifecycle to 
-      */
-
-
+export const COVID_JOYRIDE_STEPS = [
+  {// 0
+          disableBeacon: true,
+          showSkipButton: false,
+          disableOverlay: true,
+          target: '#homepage-button',
+          content: 'This is the page to view covid related incidents. Click "See all hate crimes" to continue the tutorial on the home page or close to end the tutorial here.',
+  },
+  { // dummy step, so as not not show a finish button
+    target: '.leaflet-container',
+    content: 'dummy step',
+  }
+]

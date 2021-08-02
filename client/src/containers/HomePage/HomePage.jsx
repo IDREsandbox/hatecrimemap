@@ -32,6 +32,8 @@ import 'nouislider/distribute/nouislider.css';
 import './HomePage.css';
 import { ControlPointSharp } from '@material-ui/icons';
 
+import { MainContext } from 'containers/context/joyrideContext';
+
 const styles = () => ({
   progress: {
     position: 'fixed',
@@ -43,6 +45,9 @@ const styles = () => ({
 const JOYRIDE_LOCK_STATE = 'California';
 
 class HomePage extends Component {
+
+
+  static contextType = MainContext;
 
   constructor(props) {
     super(props);
@@ -59,6 +64,7 @@ class HomePage extends Component {
       stepIndex: 0,
       skipStep: false,
       lockType: 'none',
+      context: this.context,
     };
 
     this.statesRef = React.createRef();
@@ -78,6 +84,11 @@ class HomePage extends Component {
     //   });
 
     // });
+    const context = this.context;
+    console.log(context);
+
+    this.state.run = context.run;
+    this.state.stepIndex = context.stepIndex;
 
     getDataCounts().then((values) => {
       const max = counts_total(values);
@@ -172,6 +183,8 @@ class HomePage extends Component {
       || (index == 6 && this.chartsRef.current.state.dialogOpen)
       || (index == 7 && this.chartsRef.current.state.currentDisplay != 5)
       || (index == 8 && this.state.currentDisplay === JOYRIDE_LOCK_STATE)
+      || (index == 9 && this.state.zoom < 6)
+      || (index == 11 && this.state.zoom >= 6)
   };
 
   handleJoyrideCallback = (data) => {
@@ -201,29 +214,28 @@ class HomePage extends Component {
     ) {
       // once you click "next" when the table is open, it will throw an error because the current target (reports) is technically closed
       this.setState({ stepIndex: index + 1 });
-    } else if (index == 7 && [EVENTS.STEP_AFTER].includes(type)) {
-      const { current = {} } = this.mapRef;
-      const { leafletElement: map } = current;
-      map.flyTo(MAP_LOCATIONS.losAngelesCountyCenter, 6 /* ZOOM */, {
-        duration: 0.5,
-      });
-      setTimeout(() => { // Wait for map to pan + zoom to la county then move to next step so target can lock
-        this.setState({ stepIndex: index + (action === ACTIONS.PREV ? -1 : 1) });
-      }, 500);
-    }
+    } // removed the step that automatically zooms onto the map
     else if (
       [EVENTS.STEP_AFTER, EVENTS.TARGET_NOT_FOUND].includes(type)
       && index != 5
     ) {
       // Update state to advance the tour
       this.setState({ stepIndex: index + (action === ACTIONS.PREV ? -1 : 1) });
+    } else if (index == 12) {
+      const context = this.context;
+      if ([EVENTS.TOOLTIP].includes(type)) { // upon mounting of step 12 tooltip, set this context  
+        context.enabled = true;
+        context.stepIndex = 13;
+        context.run = true;
+        console.log(context);
+      }
+    } else if (index == 13) {
+      const context = this.context;
+      context.enabled = false;
+      context.stepIndex = 0;
+      context.run = false;
     } else if ([STATUS.FINISHED, STATUS.SKIPPED].includes(status)) {
       // Need to set our running state to false, so we can restart if we click start again.
-      const { current = {} } = this.mapRef;
-      const { leafletElement: map } = current;
-      map.flyTo(MAP_LOCATIONS.usaCenter, 4, { // pan + zoom out back to usa center when tutorial is done
-        duration: 0.5,
-      });
       this.setState({ stepIndex: 0 }); // added this to make sure the tutorial can be ran again
       this.setState({ run: false });
     }
