@@ -62,6 +62,7 @@ class HomePage extends Component {
     };
 
     this.statesRef = React.createRef();
+    this.countiesRef = React.createRef();
     this.alaskaRef = React.createRef();
     this.hawaiiRef = React.createRef();
     this.mapRef = React.createRef();
@@ -87,54 +88,6 @@ class HomePage extends Component {
         isFetching: false,
       });
     });
-  }
-
-  resetStateColors() {
-
-    let data = this.state.data.filter(
-      (row) => row.yyyy >= this.state.filterTimeRange[0]
-        && row.yyyy <= this.state.filterTimeRange[1],
-    );
-
-
-    // how do I account for different maxes?
-    let max = this.state.zoom >= 6 ? 30 : counts_maxState(data); 
-
-    //console.log(this.state.currentDisplay);
-    Object.values(
-      this.statesRef.current.contextValue.layerContainer._layers,
-    ).forEach((layer) => {
-      if (layer.feature) {
-        // only the states/counties have a feature
-        // console.log(layer.feature);
-        if (layer.feature.properties.NAME === this.state.currentDisplay) {
-          console.log('current found');
-        } 
-        resetStateColor(layer, data, defaultColors, max);
-
-      }
-    });
-
-    // clicking in the united states does not actually "unlock" the state
-
-    /* let layersToReset = Object.values( // guaranteed to find one, layer is already locked onto
-      this.statesRef.current.contextValue.layerContainer._layers,
-    ).filter((layer) => {
-      if (layer.feature) {
-        if (layer.feature.properties.NAME === this.state.currentDisplay) {
-          return layer;
-        }
-      }
-    })
-
-    console.log(layersToReset);
-
-    layersToReset.forEach((layer) => resetStateColor(layer, data, defaultColors, max)); */
-
-  }
-
-  resetCountyColors() {
-
   }
 
   changeViewRegion = (event, region) => {
@@ -163,37 +116,61 @@ class HomePage extends Component {
     this.setState({ filterTimeRange: time });
   };
 
+  // only called by mapwrapper on a rectangle click?
+
+  // Don't need a 'resetStateColor' or 'resetCountyColors' at all. clicking outside the map will call this,
+  // which manually resets the 'lockedLayer' color and value.
+  // This will then call updateState and updateCounty which sets the lock parameters on home page
+  updateMap = () => {
+    console.log('locked', this.state.locked);
+    console.log('loccktype', this.state.lockType);
+    if (this.state.locked) {
+      if (this.state.lockType === 'county') {
+        this.updateCounty('none', true);
+      } else if (this.state.lockType === 'state') {
+        this.updateState('none', true)
+      }
+    }
+  }
+
+
   // Return value, success (in our terms, not react's)
   updateState = (state, lock = false) => {
     if (lock || !this.state.locked) {
       // lock parameter overrides current lock
-      if (this.state.locked && state === 'none') this.resetStateColors(); // would like color-setting to be more declarative
+      //if (this.state.locked && state === 'none') this.resetStateColors(); // would like color-setting to be more declarative
       // but onEachFeature only executes to initialize, so color handling is all done within events (mouseon, mouseout, click)
-
       this.setState({
         currentDisplay: state,
         locked: lock && state !== 'none',
         lockType: 'state',
       }); // we never want to lock onto None
+      // setting lock type parameters correctly for future use?
+      if (this.state.locked === false) {
+        this.state.lockType = 'none';
+      }
+
       return true;
     }
     return false;
   };
 
   updateCounty = (county, lock = false) => {
-    // LOGIC
-    /*
-    if lock is passed in as true, automatically lock. That's when a new county is passed in to be locked
-    When unclicking off an old one, 
+    if (lock || !this.state.locked) {
+      // lock parameter overrides current lock
+      //if (this.state.locked && county === 'none') this.resetStateColors(); // would like color-setting to be more declarative
+      // but onEachFeature only executes to initialize, so color handling is all done within events (mouseon, mouseout, click)
+      this.setState({
+        currentDisplay: county,
+        locked: lock && county !== 'none',
+        lockType: 'county',
+      }); // we never want to lock onto None
 
-    */
-    console.log(county, lock);
-    if (lock) {
-      this.setState({ currentDisplay: county, locked: county !== 'none', lockType: 'county' });
-      return true;
-    }
-    if (!this.state.locked) {
-      this.setState({ currentDisplay: county });
+      // setting lock type parameters correctly for future use?
+      if (this.state.locked === false) {
+        this.state.lockType = 'none';
+      }
+
       return true;
     }
     return false;
@@ -308,11 +285,11 @@ class HomePage extends Component {
     const filters = [];
     if (this.state.currentDisplay != 'none') {
       filters.push([this.state.lockType, this.state.currentDisplay]);
-        currTotal = counts_aggregateBy(
-          data,
-          this.state.lockType,
-          this.state.currentDisplay,
-        );
+      currTotal = counts_aggregateBy(
+        data,
+        this.state.lockType,
+        this.state.currentDisplay,
+      );
     } else {
       currTotal = counts_total(data);
     }
@@ -328,9 +305,11 @@ class HomePage extends Component {
           updateState={this.updateState}
           updateCounty={this.updateCounty}
           statesRef={this.statesRef}
+          countiesRef={this.countiesRef}
           mapRef={this.mapRef}
           alaskaRef={this.alaskaRef}
           hawaiiRef={this.hawaiiRef}
+          outsideClick={this.updateMap}
           data={data}
           max={dataMapMax}
           updateView={this.changeViewRegion}
@@ -379,11 +358,11 @@ class HomePage extends Component {
               <h2>
                 Hate Crimes in
                 {' ' +
-                (this.state.currentDisplay == 'none'
-                  ? 'the US'
-                  : isNaN(this.state.currentDisplay[this.state.currentDisplay.length - 1])
-                    ? this.state.currentDisplay
-                    : (this.state.currentDisplay.substr(0, this.state.currentDisplay.length - 3) + ` County`))}
+                  (this.state.currentDisplay == 'none'
+                    ? 'the US'
+                    : isNaN(this.state.currentDisplay[this.state.currentDisplay.length - 1])
+                      ? this.state.currentDisplay
+                      : (this.state.currentDisplay.substr(0, this.state.currentDisplay.length - 3) + ` County`))}
                 <IconButton
                   onClick={this.runTutorial}
                   className={classes.menuButton}

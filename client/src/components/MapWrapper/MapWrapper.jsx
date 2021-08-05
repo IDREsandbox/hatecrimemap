@@ -16,6 +16,7 @@ import {
   defaultColors,
   covidColors,
   eachCovidState,
+  resetLockedLayer,
 } from 'utils/data-utils';
 import { useLocation } from 'react-router-dom';
 import Legend from './Legend/Legend';
@@ -79,9 +80,10 @@ const MapWrapper = (props) => {
           bounds={ML.worldBounds}
           stroke={false}
           fillOpacity="0"
-          onClick={() => props.updateState('none', true)}
-          // when clicking on rectangle, sets updateState to none without truly ever unlocking the state!
-          //
+          onClick={() => {
+            props.outsideClick();
+            resetLockedLayer();
+          }}   
         />
         {!props.covid && (
           <Pane
@@ -99,7 +101,7 @@ const MapWrapper = (props) => {
                     feature,
                     layer,
                     props.data,
-                    69,
+                    37, // believe this is max?
                     props.updateCounty,
                     theColors,
                   )}
