@@ -36,9 +36,9 @@ const theme = createMuiTheme({
 });
 
 const contextDefaultValue = {
-  enabled: false,
+  covidJoyrideRun: false,
+  homePageJoyrideRestart: false,
   stepIndex: 0,
-  run: false,
 }
 
 const App = () => (  

@@ -19,7 +19,7 @@ export const JOYRIDE_STEPS = [
           spotlightClicks: true,
         },
         {// 3
-          target: '#hatecrimeBarChart',
+          target: '.sideMenu__chart',
           content: 'Click anywhere within a bar section in the chart to see details, and then click "Next".',
           spotlightClicks: true,
           disableBeacon: true,
@@ -33,7 +33,7 @@ export const JOYRIDE_STEPS = [
           hideBackButton: true,
         },
         {// 5
-          target: '#hateCrimeDataTable',
+          target: '.homePage',
           content: 'This is the individual incident reports. Click "Close" to close the table and then click next.',
           disableOverlay:true,
           disableBeacon: true,
@@ -42,12 +42,12 @@ export const JOYRIDE_STEPS = [
           placement: 'center',
         },
         {// 6
-          disableBeacon: false,
-          target: '#chartbackButton',
+          target: '.sideMenu__chart',
           spotlightClicks: true,
           disableOverlay:true,
           content: 'Click on the "Back" button return to the previous chart, then click "Next".',
           hideBackButton: true,
+          placement: 'top-end',
         },      
         {// 7
           target: '.leaflet-states-pane .leaflet-interactive:nth-child(4)',

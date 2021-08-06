@@ -184,13 +184,22 @@ class HomePage extends Component {
       || (index == 7 && this.chartsRef.current.state.currentDisplay != 5)
       || (index == 8 && this.state.currentDisplay === JOYRIDE_LOCK_STATE)
       || (index == 9 && this.state.zoom < 6)
-      || (index == 11 && this.state.zoom >= 6)
+      || (index == 11 && this.state.zoom >= 6 && [EVENTS.STEP_BEFORE].includes(type))
   };
 
   handleJoyrideCallback = (data) => {
     const { action, index, status, type } = data;
 
+    console.log(data);
+    
     if (action == ACTIONS.CLOSE || action == ACTIONS.SKIP) {
+      // prevents covid tutorial from opening on covid homepage if the joyride is exited
+      const context = this.context;
+      context.covidJoyrideRun = false;
+      context.stepIndex = 0;
+      context.homePageJoyrideRestart = false;
+
+
       this.setState({ stepIndex: 0, run: false });
       return; // avoid pathways that could all setState [to the same fields], this leads to race conditions
     }
@@ -207,33 +216,25 @@ class HomePage extends Component {
       this.setState({ stepIndex: index - 1, skipStep: true });
     } else if (this.isNotReadyToStep(index, type)) {
       this.setState({ stepIndex: index - 1 });
-    } else if (
-      index == 5
-      && [EVENTS.TARGET_NOT_FOUND].includes(type)
-      && !this.chartsRef.current.state.dialogOpen
-    ) {
-      // once you click "next" when the table is open, it will throw an error because the current target (reports) is technically closed
-      this.setState({ stepIndex: index + 1 });
     } // removed the step that automatically zooms onto the map
     else if (
       [EVENTS.STEP_AFTER, EVENTS.TARGET_NOT_FOUND].includes(type)
-      && index != 5
     ) {
       // Update state to advance the tour
       this.setState({ stepIndex: index + (action === ACTIONS.PREV ? -1 : 1) });
     } else if (index == 12) {
       const context = this.context;
       if ([EVENTS.TOOLTIP].includes(type)) { // upon mounting of step 12 tooltip, set this context  
-        context.enabled = true;
+        context.covidJoyrideRun = true;
         context.stepIndex = 13;
-        context.run = true;
+        context.homePageJoyrideRestart = true;
         console.log(context);
       }
     } else if (index == 13) {
       const context = this.context;
-      context.enabled = false;
+      context.covidJoyrideRun = false;
       context.stepIndex = 0;
-      context.run = false;
+      context.homePageJoyrideRestart = false;
     } else if ([STATUS.FINISHED, STATUS.SKIPPED].includes(status)) {
       // Need to set our running state to false, so we can restart if we click start again.
       this.setState({ stepIndex: 0 }); // added this to make sure the tutorial can be ran again

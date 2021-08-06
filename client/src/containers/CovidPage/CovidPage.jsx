@@ -64,7 +64,7 @@ class CovidPage extends Component {
 
     const context = this.context;
     console.log(context);
-    this.state.run = context.enabled;
+    this.state.run = context.covidJoyrideRun;
 
     getCovidData().then((values) => {
       stateNames = Object.keys(values);
@@ -163,9 +163,9 @@ class CovidPage extends Component {
     if ([EVENTS.STEP_AFTER].includes(type)) {
       this.setState({ run: false });
       const context = this.context;
-      context.enabled = false;
+      context.covidJoyrideRun = false;
       context.stepIndex = 0;
-      context.run = false
+      context.homePageJoyrideRestart = false
     }
   };
 
