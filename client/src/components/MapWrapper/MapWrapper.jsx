@@ -18,7 +18,6 @@ import {
   eachCovidState,
 } from 'utils/data-utils';
 import { useLocation } from 'react-router-dom';
-import Legend from './Legend/Legend';
 
 const months_short = [
   'Jan',
@@ -181,7 +180,6 @@ const MapWrapper = (props) => {
             });
           }}
         />
-        <Legend colors={theColors} covid={covidFlag} />
         {props.children}
       </Map>
     </div>

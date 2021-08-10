@@ -8,6 +8,7 @@ import {
   SideMenu,
   CovidCharts,
   MapBar,
+  Legend,
 } from 'components';
 import { getCovidData, resetStateColor, covidColors } from 'utils/data-utils';
 import { wordCloudReducer, takeTop } from 'utils/chart-utils';
@@ -174,6 +175,7 @@ class CovidPage extends Component {
             changeRegion={this.changeViewRegion}
             region={this.state.region}
           />
+          <Legend colors={covidColors} covidFlag={true} />
         </MapWrapper>
 
         <div className="side">

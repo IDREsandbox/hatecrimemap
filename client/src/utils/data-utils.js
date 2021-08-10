@@ -105,6 +105,16 @@ export function counts_maxPrimary(data) {
 	return Math.max(...fields.map(field => counts_aggregateBy(data, 'primary_reason', field)))
 }
 
+export function counts_maxCounties(data) {
+	return Math.max(Object.values(data.reduce((accumulate, row) => {
+		let county = row['county'];
+		if (accumulate[county]) accumulate[county] += row.count;
+		else accumulate[county] = row.count;
+		return accumulate;
+	}, {}))
+	);
+}
+
 export function counts_maxState(data) {
 	let fields = STATES;
 	return Math.max(...fields.map(field => counts_aggregateBy(data, 'state', field)))

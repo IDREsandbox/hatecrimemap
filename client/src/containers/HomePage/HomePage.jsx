@@ -10,6 +10,7 @@ import {
   Charts,
   FilterBar,
   MapBar,
+  Legend
 } from 'components';
 import { JOYRIDE_STEPS } from 'res/values/joyride';
 import { MAP_DISPLAY } from 'res/values/map';
@@ -19,6 +20,7 @@ import {
   counts_total,
   counts_maxPrimary,
   counts_maxState,
+  counts_maxCounties
 } from 'utils/data-utils';
 
 import HelpIcon from '@material-ui/icons/Help';
@@ -26,7 +28,7 @@ import HelpIcon from '@material-ui/icons/Help';
 import Joyride, { ACTIONS, EVENTS, STATUS } from 'react-joyride';
 
 import Nouislider from 'nouislider-react';
-import { resetStateColor, defaultColors } from '../../utils/data-utils';
+import { resetStateColor, defaultColors } from 'utils/data-utils';
 import 'nouislider/distribute/nouislider.css';
 
 import './HomePage.css';
@@ -69,15 +71,6 @@ class HomePage extends Component {
   }
 
   async componentDidMount() {
-    // getStateDataReports().then(values => {
-    //   this.setState({
-    //     data: values,
-    //     publishedData: filterPublishedReports(values),
-    //     isFetching: false
-    //   });
-
-    // });
-
     getDataCounts().then((values) => {
       const max = counts_total(values);
       // console.log(values.filter(f => f.state=="California"))
@@ -258,7 +251,7 @@ class HomePage extends Component {
       (row) => row.yyyy >= this.state.filterTimeRange[0]
         && row.yyyy <= this.state.filterTimeRange[1],
     );
-    const dataMapMax = this.state.zoom >= 6 ? 30 : counts_maxState(data);
+    const dataMapMax = this.state.zoom >= 6 ? counts_maxCounties(data) : counts_maxState(data);
     const dataMax = counts_maxPrimary(data);
     let currTotal = 0;
 
@@ -328,6 +321,7 @@ class HomePage extends Component {
               },
             }}
           />
+          <Legend colors={defaultColors} max={dataMapMax} />
         </MapWrapper>
 
         <div className="side">
