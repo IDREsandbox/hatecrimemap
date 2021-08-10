@@ -1,6 +1,6 @@
 import React from 'react';
 import {
- Map, TileLayer, Rectangle, GeoJSON, Pane,
+ MapContainer, TileLayer, Rectangle, GeoJSON, Pane, MapConsumer
 } from 'react-leaflet';
 
 import './MapWrapper.css';
@@ -59,7 +59,7 @@ const MapWrapper = (props) => {
   return (
     <div id="MapWrapper">
       {props.timeSlider && props.timeSlider}
-      <Map
+      <MapContainer
         id="USA"
         ref={props.mapRef}
         maxBounds={ML.worldBounds}
@@ -181,7 +181,7 @@ const MapWrapper = (props) => {
           }}
         />
         {props.children}
-      </Map>
+      </MapContainer>
     </div>
   );
 };

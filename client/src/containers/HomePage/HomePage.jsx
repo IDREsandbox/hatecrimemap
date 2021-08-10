@@ -288,11 +288,12 @@ class HomePage extends Component {
           zoom={this.getZoom}
           filterTime={this.filterTime}
           timeSlider={this.timeSlider}
+          controls={(map) =>
+            <React.Fragment>
+              <Legend colors={defaultColors} max={dataMapMax} />
+              <MapBar changeRegion={this.changeViewRegion} region={this.state.region} />
+            </React.Fragment> }
         >
-          <MapBar
-            changeRegion={this.changeViewRegion}
-            region={this.state.region}
-          />
           <Joyride
             run={run}
             scrollToFirstStep
@@ -321,7 +322,6 @@ class HomePage extends Component {
               },
             }}
           />
-          <Legend colors={defaultColors} max={dataMapMax} />
         </MapWrapper>
 
         <div className="side">

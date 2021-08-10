@@ -1,5 +1,5 @@
-import React from 'react';
-import { MapControl, withLeaflet } from 'react-leaflet';
+import React, { useEffect } from 'react';
+import { useMap } from 'react-leaflet';
 import L from 'leaflet';
 import ReactDOM from 'react-dom';
 import './MapBar.css';
@@ -7,8 +7,10 @@ import './MapBar.css';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 
-class MapBar extends MapControl {
-  createLeafletElement(props) {
+const MapBar = (props) => {
+  const map = useMap();
+
+  const createLeafletElement = () => {
     const jsx = (
       <div className="map-bar">
         <ToggleButtonGroup
@@ -39,10 +41,13 @@ class MapBar extends MapControl {
 
     return new mapbar({ position: 'bottomleft' });
   }
+
+  useEffect(() => {
+    const control = createLeafletElement();
+    control.addTo(map);
+  }, [])
+
+  return null;
 }
 
-// MapBar.propTypes = {
-//   classes: PropTypes.object.isRequired,
-// };
-
-export default withLeaflet(MapBar);
+export default MapBar;

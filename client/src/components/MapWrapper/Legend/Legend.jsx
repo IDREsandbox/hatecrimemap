@@ -1,9 +1,12 @@
-import { MapControl, withLeaflet } from 'react-leaflet';
+import React, { useEffect } from 'react';
+import { useMap } from 'react-leaflet';
 import L from 'leaflet';
 import './Legend.css';
 
-class Legend extends MapControl {
-  createLeafletElement(props) {
+const Legend = (props) => {
+  const map = useMap();
+
+  const createLeafletElement = () => {
     const getColor = (d) => {
       // REFERENCE: data-utils.js::hashStateColor()
       if(d < props.max/10) return props.colors[0];
@@ -50,6 +53,14 @@ class Legend extends MapControl {
 
     return new legend({ position: 'bottomright' });
   }
+
+  useEffect(() => {
+    const control = createLeafletElement();
+    console.log(control, map);
+    control.addTo(map);
+  }, [])
+
+  return null;
 }
 
-export default withLeaflet(Legend);
+export default Legend;
