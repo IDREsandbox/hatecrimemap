@@ -84,10 +84,8 @@ export const JOYRIDE_STEPS = [
           spotlightClicks: true,
           hideBackButton: true,
         },
-        {// 12 
-          /* NOTE
-          * add functionality here that the user can actually click on the covid section to explore it and then return back to the homepage
-          */
+         {// 12
+          // user can go to covid section on this page and return back 
           disableBeacon: false,
           disableOverlay: true,
           target: '#covidButton',
@@ -112,10 +110,6 @@ export const COVID_JOYRIDE_STEPS = [
           showSkipButton: false,
           disableOverlay: true,
           target: '#homepage-button',
-          content: 'This is the page to view covid related incidents. Click "See all hate crimes" to continue the tutorial on the home page or close to end the tutorial here.',
-  },
-  { // dummy step, so as not not show a finish button
-    target: '.leaflet-container',
-    content: 'dummy step',
+          content: 'This is the page to view covid related incidents. Click "See All Other Hate Crimes" to continue the tutorial on the home page or close to end the tutorial here.',
   }
 ]

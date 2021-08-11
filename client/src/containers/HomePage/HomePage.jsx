@@ -87,7 +87,7 @@ class HomePage extends Component {
     const context = this.context;
     console.log(context);
 
-    this.state.run = context.run;
+    this.state.run = context.homePageJoyrideRestart;
     this.state.stepIndex = context.stepIndex;
 
     getDataCounts().then((values) => {
@@ -190,21 +190,17 @@ class HomePage extends Component {
   handleJoyrideCallback = (data) => {
     const { action, index, status, type } = data;
 
-    console.log(data);
-    
     if (action == ACTIONS.CLOSE || action == ACTIONS.SKIP) {
       // prevents covid tutorial from opening on covid homepage if the joyride is exited
       const context = this.context;
       context.covidJoyrideRun = false;
       context.stepIndex = 0;
       context.homePageJoyrideRestart = false;
-
-
       this.setState({ stepIndex: 0, run: false });
       return; // avoid pathways that could all setState [to the same fields], this leads to race conditions
     }
 
-    // First 4 options are special cases
+    // First 4 steps are special cases
     if (this.state.skipStep && type == EVENTS.STEP_BEFORE) {
       this.setState({ stepIndex: 4, skipStep: false });
     } else if (
@@ -293,11 +289,11 @@ class HomePage extends Component {
     const filters = [];
     if (this.state.currentDisplay != 'none') {
       filters.push([this.state.lockType, this.state.currentDisplay]);
-        currTotal = counts_aggregateBy(
-          data,
-          this.state.lockType,
-          this.state.currentDisplay,
-        );
+      currTotal = counts_aggregateBy(
+        data,
+        this.state.lockType,
+        this.state.currentDisplay,
+      );
     } else {
       currTotal = counts_total(data);
     }
@@ -364,11 +360,11 @@ class HomePage extends Component {
               <h2>
                 Hate Crimes in
                 {' ' +
-                (this.state.currentDisplay == 'none'
-                  ? 'the US'
-                  : isNaN(this.state.currentDisplay[this.state.currentDisplay.length - 1])
-                    ? this.state.currentDisplay
-                    : (this.state.currentDisplay.substr(0, this.state.currentDisplay.length - 3) + ` County`))}
+                  (this.state.currentDisplay == 'none'
+                    ? 'the US'
+                    : isNaN(this.state.currentDisplay[this.state.currentDisplay.length - 1])
+                      ? this.state.currentDisplay
+                      : (this.state.currentDisplay.substr(0, this.state.currentDisplay.length - 3) + ` County`))}
                 <IconButton
                   onClick={this.runTutorial}
                   className={classes.menuButton}

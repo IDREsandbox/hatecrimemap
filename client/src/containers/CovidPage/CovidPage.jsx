@@ -16,7 +16,7 @@ import './CovidPage.css';
 
 import { MainContext } from 'containers/context/joyrideContext';
 import { COVID_JOYRIDE_STEPS } from 'res/values/joyride';
-import Joyride, { EVENTS } from 'react-joyride';
+import Joyride, { ACTIONS, EVENTS } from 'react-joyride';
 
 export const MAP_DISPLAY = {
   USA: 1,
@@ -160,6 +160,15 @@ class CovidPage extends Component {
   handleJoyrideCallback = data => {
     const { action, index, status, type } = data;
 
+    if (action == ACTIONS.CLOSE || action == ACTIONS.SKIP) {
+      // prevents joyride from opening on normal homepage if the joyride is exited
+      const context = this.context;
+      context.covidJoyrideRun = false;
+      context.stepIndex = 0;
+      context.homePageJoyrideRestart = false;
+      return; 
+    }
+
     if ([EVENTS.STEP_AFTER].includes(type)) {
       this.setState({ run: false });
       const context = this.context;
@@ -197,9 +206,13 @@ class CovidPage extends Component {
         >
           <Joyride
             run={this.state.run}
+            continuous
             scrollToFirstStep
             callback={this.handleJoyrideCallback}
             showSkipButton
+            locale={{
+              last: 'Close',
+            }}
             stepIndex={0}
             steps={this.state.steps}
             styles={{
