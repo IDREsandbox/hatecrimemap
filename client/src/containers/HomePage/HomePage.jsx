@@ -19,6 +19,7 @@ import {
   counts_total,
   counts_maxPrimary,
   counts_maxState,
+  counts_maxCounty,
 } from 'utils/data-utils';
 
 import HelpIcon from '@material-ui/icons/Help';
@@ -259,6 +260,7 @@ class HomePage extends Component {
         && row.yyyy <= this.state.filterTimeRange[1],
     );
     const dataMapMax = this.state.zoom >= 6 ? 30 : counts_maxState(data);
+    const countyMax = counts_maxCounty(data);
     const dataMax = counts_maxPrimary(data);
     let currTotal = 0;
 
@@ -290,6 +292,7 @@ class HomePage extends Component {
           hawaiiRef={this.hawaiiRef}
           data={data}
           max={dataMapMax}
+          countyMax={countyMax}
           updateView={this.changeViewRegion}
           updateZoom={this.updateZoom}
           zoom={this.getZoom}

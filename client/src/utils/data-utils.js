@@ -1,5 +1,5 @@
 import axios from 'axios';
-
+import COUNTIES from '../res/values/counties'
 // TODO get rid of state
 var _stateData = {};
 var _countyData = {};
@@ -108,6 +108,11 @@ export function counts_maxPrimary(data) {
 export function counts_maxState(data) {
 	let fields = STATES;
 	return Math.max(...fields.map(field => counts_aggregateBy(data, 'state', field)))
+}
+
+export function counts_maxCounty(data) {
+	let fields = COUNTIES;
+	return Math.max(...fields.map(field => counts_aggregateBy(data, 'county', field)))
 }
 
 export function counts_aggregateBy(data, field, value) {

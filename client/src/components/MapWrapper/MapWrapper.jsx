@@ -97,7 +97,7 @@ const MapWrapper = (props) => {
                     feature,
                     layer,
                     props.data,
-                    69,
+                    props.countyMax,
                     props.updateCounty,
                     theColors,
                   )}
