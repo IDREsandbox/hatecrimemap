@@ -26,7 +26,7 @@ import HelpIcon from '@material-ui/icons/Help';
 import Joyride, { ACTIONS, EVENTS, STATUS } from 'react-joyride';
 
 import Nouislider from 'nouislider-react';
-import { resetStateColor, defaultColors } from '../../utils/data-utils';
+import { resetStateColors, defaultColors } from '../../utils/data-utils';
 import 'nouislider/distribute/nouislider.css';
 
 import './HomePage.css';
