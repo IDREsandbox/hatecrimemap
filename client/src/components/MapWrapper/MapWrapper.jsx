@@ -16,6 +16,7 @@ import {
   defaultColors,
   covidColors,
   eachCovidState,
+  resetLockedLayer,
 } from 'utils/data-utils';
 import { useLocation } from 'react-router-dom';
 import Legend from './Legend/Legend';
@@ -79,7 +80,10 @@ const MapWrapper = (props) => {
           bounds={ML.worldBounds}
           stroke={false}
           fillOpacity="0"
-          onClick={() => props.updateState('none', true)}
+          onClick={() =>{
+            props.outsideClick();
+            resetLockedLayer();
+          }}
         />
         {!props.covid && (
           <Pane
@@ -97,7 +101,7 @@ const MapWrapper = (props) => {
                     feature,
                     layer,
                     props.data,
-                    69,
+                    37, // need a way to compute county max
                     props.updateCounty,
                     theColors,
                   )}

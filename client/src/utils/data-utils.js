@@ -190,6 +190,15 @@ const colorBins = ["#f2f0f7", "#cbc9e2", "#9e9ac8", "#756bb1", "#54278f"];
 var lockedLayer = null;
 var lockedLayerColor = null;
 
+export function resetLockedLayer() {
+	// manually call this on click of "rectangle" section of map 
+	if (lockedLayer) {
+		lockedLayer.setStyle({ fillColor: lockedLayerColor });
+	}
+	lockedLayer = null;
+	lockedLayerColor = null;
+}
+
 function hashStateColor(sum, max,colorBins) {
 	let colorHashed;
 	if(sum < max/10) colorHashed = colorBins[0];
@@ -201,18 +210,26 @@ function hashStateColor(sum, max,colorBins) {
 	return colorHashed;
 }
 
-export function resetStateColor(layer, statesData,colorBins) {
+export function resetStateColor(layer, statesData,colorBins, max) {
 	const STATE_NAME = layer.feature.properties.NAME;
 	if(!STATE_NAME) return;
 	const stateData = statesData[STATE_NAME];
 
-	if(!stateData || stateData.total <= 0) {
-		layer.setStyle({color: 'rgba(0, 0, 0, 0)'});
+	const count = counts_aggregateBy(statesData, 'state', STATE_NAME);
+
+	if (!count || count <= 0) {
+		layer.setStyle({ color: 'rgba(0, 0, 0, 0)' });
 		return;
 	}
 
-	let colorHashed = hashStateColor(stateData.count, statesData.max,colorBins);
-    
+    let colorHashed = hashStateColor(count, max, colorBins);
+	
+
+	if (lockedLayer == STATE_NAME) {
+		lockedLayer = null;
+		lockedLayerColor = null;
+	}
+
     layer.setStyle({fillColor: colorHashed})
 }
 

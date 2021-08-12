@@ -19,6 +19,9 @@ import {
   counts_total,
   counts_maxPrimary,
   counts_maxState,
+  resetStateColor,
+  defaultColors,
+  resetStateColors,
 } from 'utils/data-utils';
 
 import HelpIcon from '@material-ui/icons/Help';
@@ -26,7 +29,6 @@ import HelpIcon from '@material-ui/icons/Help';
 import Joyride, { ACTIONS, EVENTS, STATUS } from 'react-joyride';
 
 import Nouislider from 'nouislider-react';
-import { resetStateColor, defaultColors } from '../../utils/data-utils';
 import 'nouislider/distribute/nouislider.css';
 
 import './HomePage.css';
@@ -127,30 +129,67 @@ class HomePage extends Component {
     this.setState({ filterTimeRange: time });
   };
 
+
+  // only called by map wrapper by click outside the map to manually imitate a state/county being un clicked
+  updateMap = () => {
+    if (this.state.locked) {
+      if (this.state.lockType === 'county') {
+        this.updateCounty('none', true);
+      } else if (this.state.lockType === 'state') {
+        this.updateState('none', true)
+      }
+    }
+  }
+
+  updateLockItem = (item, lock = false, lockType = 'none') => {
+    if (lock || !this.state.locked) {
+      this.setState({
+        currentDisplay: item,
+        locked: lock && item !== 'none',
+        lockType: lockType,
+      }); // we never want to lock onto None
+      // setting lock type parameters correctly for future use?
+      if (this.state.locked === false) {
+        this.state.lockType = 'none';
+      }
+      return true;
+    }
+    return false;
+  }
+
   // Return value, success (in our terms, not react's)
   updateState = (state, lock = false) => {
     if (lock || !this.state.locked) {
       // lock parameter overrides current lock
-      if (this.state.locked && state === 'none') this.resetStateColors(); // would like color-setting to be more declarative
+      // NOTE: commented out  call of this.resetStateColors(). With new changes, all color changing is handled inside data utils by all 'each state + county functions'
+      //if (this.state.locked && state === 'none') this.resetStateColors();
       // but onEachFeature only executes to initialize, so color handling is all done within events (mouseon, mouseout, click)
-
       this.setState({
         currentDisplay: state,
         locked: lock && state !== 'none',
         lockType: 'state',
       }); // we never want to lock onto None
+      // setting lock type parameters correctly for future use?
+      if (this.state.locked === false) {
+        this.state.lockType = 'none';
+      }
       return true;
     }
     return false;
   };
 
   updateCounty = (county, lock = false) => {
-    if (lock) {
-      this.setState({ currentDisplay: county, locked: county !== 'none', lockType: 'county' });
-      return true;
-    }
-    if (!this.state.locked) {
-      this.setState({ currentDisplay: county });
+    // same functionality as above state county -> could possibly change to be one function 
+    if (lock || !this.state.locked) {
+      this.setState({
+        currentDisplay: county,
+        locked: lock && county !== 'none',
+        lockType: 'county',
+      }); // we never want to lock onto None
+      // setting lock type parameters correctly for future use?
+      if (this.state.locked === false) {
+        this.state.lockType = 'none';
+      }
       return true;
     }
     return false;
@@ -265,11 +304,11 @@ class HomePage extends Component {
     const filters = [];
     if (this.state.currentDisplay != 'none') {
       filters.push([this.state.lockType, this.state.currentDisplay]);
-        currTotal = counts_aggregateBy(
-          data,
-          this.state.lockType,
-          this.state.currentDisplay,
-        );
+      currTotal = counts_aggregateBy(
+        data,
+        this.state.lockType,
+        this.state.currentDisplay,
+      );
     } else {
       currTotal = counts_total(data);
     }
@@ -288,6 +327,7 @@ class HomePage extends Component {
           mapRef={this.mapRef}
           alaskaRef={this.alaskaRef}
           hawaiiRef={this.hawaiiRef}
+          outsideClick={this.updateMap}
           data={data}
           max={dataMapMax}
           updateView={this.changeViewRegion}
@@ -336,11 +376,11 @@ class HomePage extends Component {
               <h2>
                 Hate Crimes in
                 {' ' +
-                (this.state.currentDisplay == 'none'
-                  ? 'the US'
-                  : isNaN(this.state.currentDisplay[this.state.currentDisplay.length - 1])
-                    ? this.state.currentDisplay
-                    : (this.state.currentDisplay.substr(0, this.state.currentDisplay.length - 3) + ` County`))}
+                  (this.state.currentDisplay == 'none'
+                    ? 'the US'
+                    : isNaN(this.state.currentDisplay[this.state.currentDisplay.length - 1])
+                      ? this.state.currentDisplay
+                      : (this.state.currentDisplay.substr(0, this.state.currentDisplay.length - 3) + ` County`))}
                 <IconButton
                   onClick={this.runTutorial}
                   className={classes.menuButton}
