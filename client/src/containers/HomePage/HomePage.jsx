@@ -122,6 +122,7 @@ class HomePage extends Component {
 
   // Return value, success (in our terms, not react's)
   updateState = (state, lock = false) => {
+    console.log(state);
     if (lock || !this.state.locked) {
       // lock parameter overrides current lock
       if (this.state.locked && state === 'none') this.resetStateColors(); // would like color-setting to be more declarative
@@ -251,7 +252,7 @@ class HomePage extends Component {
       (row) => row.yyyy >= this.state.filterTimeRange[0]
         && row.yyyy <= this.state.filterTimeRange[1],
     );
-    const dataMapMax = this.state.zoom >= 6 ? counts_maxCounties(data) : counts_maxState(data);
+    const dataMapMax = this.state.zoom >= 6 ? 30 : counts_maxState(data);
     const dataMax = counts_maxPrimary(data);
     let currTotal = 0;
 

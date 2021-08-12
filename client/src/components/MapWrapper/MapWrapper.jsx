@@ -2,6 +2,7 @@ import React from 'react';
 import {
  MapContainer, TileLayer, Rectangle, GeoJSON, Pane, MapConsumer
 } from 'react-leaflet';
+import L from 'leaflet';
 
 import './MapWrapper.css';
 import { MAP_LOCATIONS as ML } from 'res/values/map';
@@ -61,7 +62,7 @@ const MapWrapper = (props) => {
       {props.timeSlider && props.timeSlider}
       <MapContainer
         id="USA"
-        ref={props.mapRef}
+        whenCreated={map => props.mapRef.current = map}
         maxBounds={ML.worldBounds}
         minZoom={2}
         zoomSnap={0.25}
@@ -92,6 +93,7 @@ const MapWrapper = (props) => {
               <GeoJSON
                 key={index}
                 data={state}
+                pathOptions={{ renderer: L.canvas() }}
                 onEachFeature={(feature, layer) => eachStatesCounties(
                     feature,
                     layer,

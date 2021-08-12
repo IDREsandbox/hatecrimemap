@@ -276,6 +276,7 @@ export function eachState(feature, layer, data, max, setStateDisplay, colorBins)
     layer.on('mouseover', function(event){
 	    if(!setStateDisplay(STATE_NAME)) return;  // setStateDisplay() will return false if we're locked onto something else
 	    // layer._path.classList.add("show-state");
+	    console.log(STATE_NAME)
 	    layer.setStyle({fillColor: 'rgb(200, 200, 200)'});
 	});
     layer.on('mouseout', function(event){
