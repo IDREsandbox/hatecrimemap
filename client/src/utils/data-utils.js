@@ -210,6 +210,7 @@ function hashStateColor(sum, max,colorBins) {
 	return colorHashed;
 }
 
+// NOTE - CURRENTLY UNUSED WITH CURRENT METRIC 
 export function resetStateColor(layer, statesData,colorBins, max) {
 	const STATE_NAME = layer.feature.properties.NAME;
 	if(!STATE_NAME) return;

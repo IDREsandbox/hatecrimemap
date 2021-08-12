@@ -91,18 +91,6 @@ class HomePage extends Component {
     });
   }
 
-  resetStateColors() {
-    Object.values(
-      this.statesRef.current.contextValue.layerContainer._layers,
-    ).forEach((layer) => {
-      if (layer.feature) {
-        // only the states/counties have a feature
-        // console.log(layer.feature);
-        resetStateColor(layer, this.state.data, defaultColors);
-      }
-    });
-  }
-
   changeViewRegion = (event, region) => {
     if (region !== null) {
       this.setState({ region }, () => {
@@ -128,7 +116,6 @@ class HomePage extends Component {
   filterTime = (time) => {
     this.setState({ filterTimeRange: time });
   };
-
 
   // only called by map wrapper by click outside the map to manually imitate a state/county being un clicked
   updateMap = () => {
