@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo, useEffect } from 'react';
 import {
  MapContainer, TileLayer, Rectangle, GeoJSON, Pane, MapConsumer
 } from 'react-leaflet';
@@ -17,6 +17,8 @@ import {
   defaultColors,
   covidColors,
   eachCovidState,
+  counts_aggregateBy,
+  hashStateColor
 } from 'utils/data-utils';
 import { useLocation } from 'react-router-dom';
 
@@ -57,6 +59,19 @@ const MapWrapper = (props) => {
     covidFlag = 0;
   }
 
+  const calculateStateColor = (state, data, max) => {
+      const stateCount = counts_aggregateBy(data, 'state', state);
+      if(stateCount <= 0) {
+        return 'rgba(0, 0, 0, 0)';
+      }
+      return hashStateColor(stateCount, max);
+  }
+
+  useEffect(() => {
+    states_usa.features.forEach(eachState => eachState.properties.COLOR = calculateStateColor(eachState.properties.NAME, props.data, props.max));
+    return () => { console.log("hit") };
+  }, [props.data.length]) // pretty good indicator of when we should recalculate colors? Could be an edge case where # elements are the same 
+
   return (
     <div id="MapWrapper">
       {props.timeSlider && props.timeSlider}
@@ -67,8 +82,7 @@ const MapWrapper = (props) => {
         minZoom={2}
         zoomSnap={0.25}
         center={ML.usaCenter}
-        zoom={4.5}
-        onZoomend={props.updateZoom}
+        zoom={props.zoom()}
       >
         <TileLayer
           bounds={ML.worldBounds}
@@ -81,55 +95,19 @@ const MapWrapper = (props) => {
           fillOpacity="0"
           onClick={() => props.updateState('none', true)}
         />
-        {!props.covid && (
-          <Pane
-            name="counties"
-            style={{
-              zIndex: 500,
-              display: props.zoom() >= 6 ? 'block' : 'none',
-            }}
-          >
-            {counties.map((state, index) => (
-              <GeoJSON
-                key={index}
-                data={state}
-                pathOptions={{ renderer: L.canvas() }}
-                onEachFeature={(feature, layer) => eachStatesCounties(
-                    feature,
-                    layer,
-                    props.data,
-                    69,
-                    props.updateCounty,
-                    theColors,
-                  )}
-              />
-            ))}
-          </Pane>
-        )}
         <Pane
           name="states"
           style={{ zIndex: 500, display: props.zoom() >= 6 ? 'none' : 'block' }}
         >
           <GeoJSON
-            ref={props.statesRef}
+            key={1}
             data={states_usa}
             onAdd={() => props.updateView(0, 1)}
-            onEachFeature={(feature, layer) => (props.covid
-                ? eachCovidState(
-                    feature,
-                    layer,
-                    props.data,
-                    props.updateState,
-                    theColors,
-                  )
-                : eachState(
-                    feature,
-                    layer,
-                    props.data,
-                    props.max,
-                    props.updateState,
-                    theColors,
-                  ))}
+            style={(feature) => ({stroke: 1, weight: 1, opacity: 0.75, color: 'white', fillColor: feature.properties.COLOR, fillOpacity: 0.75})}
+            eventHandlers={{
+              mouseover: ({layer}) => props.updateState(layer.feature.properties.NAME) && layer.setStyle({fillColor: 'rgb(200, 200, 200)'}),
+              mouseout: ({layer}) => props.updateState('none') && layer.setStyle({fillColor: layer.feature.properties.COLOR})
+            }}
           />
           <GeoJSON
             ref={props.alaskaRef}
@@ -174,13 +152,7 @@ const MapWrapper = (props) => {
         </Pane>
         <GeoJSON
           data={usa}
-          onEachFeature={(feature, layer) => {
-            layer.setStyle({
-              stroke: 0.3,
-              color: '#777777',
-              backgroundColor: '#aaaaaa',
-            });
-          }}
+          key="usa"
         />
         {props.children}
       </MapContainer>

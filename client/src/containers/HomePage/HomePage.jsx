@@ -212,7 +212,7 @@ class HomePage extends Component {
     this.setState({ zoom: z.target._zoom });
   };
 
-  getZoom = () => this.state.zoom;
+  getZoom = () => this.mapRef.current ? this.mapRef.current.getZoom() : 4.5;
 
   timeSlider = (
     <div id="timeslider">
