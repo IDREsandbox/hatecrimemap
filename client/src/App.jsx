@@ -12,6 +12,7 @@ import { Header, Footer } from './components';
 import ReportIncidentPage from './containers/ReportIncidentPage/ReportIncidentPage';
 import VerifyIncidentsPage from './containers/VerifyIncidentsPage/VerifyIncidentsPage';
 import './App.css';
+import {MainContext} from 'containers/context/joyrideContext';
 
 import { createMuiTheme } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/core/styles';
@@ -34,7 +35,14 @@ const theme = createMuiTheme({
   }
 });
 
-const App = () => (
+const contextDefaultValue = {
+  covidJoyrideRun: false,
+  homePageJoyrideRestart: false,
+  stepIndex: 0,
+}
+
+const App = () => (  
+  <MainContext.Provider value={contextDefaultValue}>
   <ThemeProvider theme={theme}>
     <CssBaseline />
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
@@ -52,6 +60,7 @@ const App = () => (
       </Router>
     </MuiPickersUtilsProvider>
   </ThemeProvider>
+  </MainContext.Provider>
 );
 
 export default App;
