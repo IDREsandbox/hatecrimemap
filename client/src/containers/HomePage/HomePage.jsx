@@ -95,20 +95,8 @@ class HomePage extends Component {
   }
 
   changeViewRegion = (event, region) => {
-    if (region !== null) {
-      this.setState({ region }, () => {
-        if (this.mapRef.current !== null && this.statesRef.current !== null) {
-          let bounds;
-          if (region == MAP_DISPLAY.ALASKA) {
-            bounds = this.alaskaRef.current.leafletElement.getBounds().pad(0.1);
-          } else if (region == MAP_DISPLAY.USA) {
-            bounds = this.statesRef.current.leafletElement.getBounds();
-          } else if (region == MAP_DISPLAY.HAWAII) {
-            bounds = this.hawaiiRef.current.leafletElement.getBounds().pad(0.5);
-          }
-          this.mapRef.current.leafletElement.fitBounds(bounds);
-        }
-      });
+    if (region && this.mapRef.current) {
+      this.mapRef.current.fitBounds(region);
     }
   };
 

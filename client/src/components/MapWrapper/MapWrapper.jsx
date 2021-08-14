@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
  MapContainer, TileLayer, Rectangle, GeoJSON, Pane, MapConsumer
 } from 'react-leaflet';
@@ -40,27 +40,12 @@ const months_short = [
 const monthVals = months_short.map((month) => Date.parse(`${month} 1, 2020`));
 
 // move to map res utils
-const usaCentre = [38.0, -96.0];
-const usaBounds = [[18.0, -135.0], [52.0, -60.0]];
-const alaskaCentre = [64.0, -150.0];
-const alaskaBounds = [[34.0, -110.0], [94.0, -190.0]];
-const hawaiiCentre = [20.0, -155.0];
-const hawaiiBounds = [[0.0, -170.0], [40.0, -135.0]];
 const worldBounds = [[-90.0, -180.0], [90.0, 180.0]];
 
 const usa_background_style = {stroke: 0.3, color: '#777777', backgroundColor: '#aaaaaa'};
 
 const MapWrapper = (props) => {
   const location = useLocation();
-  let theColors;
-  let covidFlag;
-  if (location.pathname == '/covid') {
-    theColors = covidColors;
-    covidFlag = 1;
-  } else {
-    theColors = defaultColors;
-    covidFlag = 0;
-  }
 
   const calculateStateColor = (state, data, max) => {
       const stateCount = counts_aggregateBy(data, 'state', state);
@@ -70,10 +55,12 @@ const MapWrapper = (props) => {
       return hashStateColor(stateCount, max);
   }
 
+  let lockedLayer; // useState causes rerendering
+
   useEffect(() => {
     states_usa.features.forEach(eachState => eachState.properties.COLOR = calculateStateColor(eachState.properties.NAME, props.data, props.max));
     return () => { };
-  }, [props.data.length]) // pretty good indicator of when we should recalculate colors? Could be an edge case where # elements are the same 
+  }, [props.data.length]) // pretty good indicator of when we should recalculate colors? Could be an edge case where # elements are the same
 
   return (
     <div id="MapWrapper">
@@ -103,7 +90,7 @@ const MapWrapper = (props) => {
           style={{ zIndex: 500, display: props.zoom() >= 6 ? 'none' : 'block' }}
         >
           <GeoJSON
-            key={1}
+            key={'states'}
             data={states_usa}
             onAdd={() => props.updateView(0, 1)}
             style={(feature) => ({stroke: 1, weight: 1, opacity: 0.75, color: 'white', fillColor: feature.properties.COLOR, fillOpacity: 0.75})}
@@ -111,33 +98,19 @@ const MapWrapper = (props) => {
             eventHandlers={{
               mouseover: ({layer}) => props.updateState(layer.feature.properties.NAME) && layer.setStyle({fillColor: 'rgb(200, 200, 200)'}),
               mouseout: ({layer}) => props.updateState('none') && layer.setStyle({fillColor: layer.feature.properties.COLOR}),
-              click: ({layer}) => props.updateState(layer.feature.properties.NAME, true) ? layer.setStyle({fillColor: 'rgb(100, 100, 100)'}) : layer.setStyle({fillColor: layer.feature.properties.COLOR})
+              click: ({layer}) => {
+                props.updateState(layer.feature.properties.NAME, true);
+                if (lockedLayer) {
+                  lockedLayer.setStyle({fillColor: lockedLayer.feature.properties.COLOR});
+                  if (lockedLayer === layer) {
+                    lockedLayer = null;
+                    return;
+                  }
+                }
+                layer.setStyle({fillColor: 'rgb(100, 100, 100)'});
+                lockedLayer = layer;
+              }
             }}
-          />
-          <GeoJSON
-            ref={props.alaskaRef}
-            data={states_alaska}
-            onEachFeature={(feature, layer) => {layer.setStyle({stroke: 1, weight: 1, opacity: 0.75, color: 'white', fillColor: layer.feature.properties.COLOR, fillOpacity: 0.75})}}
-          />
-          <GeoJSON
-            ref={props.hawaiiRef}
-            data={states_hawaii}
-            onEachFeature={(feature, layer) => (props.covid
-                ? eachCovidState(
-                    feature,
-                    layer,
-                    props.data,
-                    props.updateState,
-                    theColors,
-                  )
-                : eachState(
-                    feature,
-                    layer,
-                    props.data,
-                    props.max,
-                    props.updateState,
-                    theColors,
-                  ))}
           />
         </Pane>
         <GeoJSON
@@ -145,6 +118,9 @@ const MapWrapper = (props) => {
           key="usa"
           style={usa_background_style}
         />
+        <MapConsumer>
+          {props.controls}
+        </MapConsumer>
         {props.children}
       </MapContainer>
     </div>
