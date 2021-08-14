@@ -122,20 +122,22 @@ class HomePage extends Component {
 
   // Return value, success (in our terms, not react's)
   updateState = (state, lock = false) => {
-    console.log(state);
-    if (lock || !this.state.locked) {
-      // lock parameter overrides current lock
-      if (this.state.locked && state === 'none') this.resetStateColors(); // would like color-setting to be more declarative
-      // but onEachFeature only executes to initialize, so color handling is all done within events (mouseon, mouseout, click)
-
+    if (this.state.locked && !lock) return false;
+    if (this.state.locked && this.state.currentDisplay === state) {
       this.setState({
-        currentDisplay: state,
-        locked: lock && state !== 'none',
+        currentDisplay: 'none', // if we try to "re-lock" onto the same state, toggle it off
+        locked: false,
         lockType: 'state',
-      }); // we never want to lock onto None
-      return true;
+      });
+      return false; // uncolor
     }
-    return false;
+
+    this.setState({
+      currentDisplay: state,
+      locked: lock && state !== 'none', // we never want to lock onto None
+      lockType: 'state',
+    });
+    return true;
   };
 
   updateCounty = (county, lock = false) => {
@@ -295,34 +297,7 @@ class HomePage extends Component {
               <MapBar changeRegion={this.changeViewRegion} region={this.state.region} />
             </React.Fragment> }
         >
-          <Joyride
-            run={run}
-            scrollToFirstStep
-            continuous
-            showSkipButton
-            showProgress={false}
-            callback={this.handleJoyrideCallback}
-            stepIndex={stepIndex}
-            steps={steps}
-            locale={{
-              back: 'Back',
-              close: 'Close',
-              last: 'Finish',
-              next: 'Next',
-              skip: 'Skip',
-            }}
-            styles={{
-              options: {
-                arrowColor: 'rgb(236, 242, 255)',
-                backgroundColor: 'rgb(236, 242, 255)',
-                overlayColor: 'rgba(5, 5, 10, 0.7)',
-                primaryColor: 'rgb(0, 100, 255)',
-                textColor: 'black',
-                width: 800,
-                zIndex: 9000,
-              },
-            }}
-          />
+          
         </MapWrapper>
 
         <div className="side">
@@ -365,6 +340,35 @@ class HomePage extends Component {
             <FilterBar filterfn={this.filterIncidents} />
           </SideMenu>
         </div>
+        <Joyride
+          className='joyride'
+          run={run}
+          scrollToFirstStep
+          continuous
+          showSkipButton
+          showProgress={false}
+          callback={this.handleJoyrideCallback}
+          stepIndex={stepIndex}
+          steps={steps}
+          locale={{
+            back: 'Back',
+            close: 'Close',
+            last: 'Finish',
+            next: 'Next',
+            skip: 'Skip',
+          }}
+          styles={{
+            options: {
+              arrowColor: 'rgb(236, 242, 255)',
+              backgroundColor: 'rgb(236, 242, 255)',
+              overlayColor: 'rgba(5, 5, 10, 0.7)',
+              primaryColor: 'rgb(0, 100, 255)',
+              textColor: 'black',
+              width: 800,
+              zIndex: 9000,
+            },
+          }}
+        />
       </div>
     );
   }

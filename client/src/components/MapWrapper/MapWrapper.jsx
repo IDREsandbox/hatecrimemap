@@ -72,7 +72,7 @@ const MapWrapper = (props) => {
 
   useEffect(() => {
     states_usa.features.forEach(eachState => eachState.properties.COLOR = calculateStateColor(eachState.properties.NAME, props.data, props.max));
-    return () => { console.log("hit") };
+    return () => { };
   }, [props.data.length]) // pretty good indicator of when we should recalculate colors? Could be an edge case where # elements are the same 
 
   return (
@@ -102,37 +102,24 @@ const MapWrapper = (props) => {
           name="states"
           style={{ zIndex: 500, display: props.zoom() >= 6 ? 'none' : 'block' }}
         >
-          <MyGeoJSON
+          <GeoJSON
             key={1}
             data={states_usa}
             onAdd={() => props.updateView(0, 1)}
-            onEachFeature={(feature, layer) => {layer.setStyle({stroke: 1, weight: 1, opacity: 0.75, color: 'white', fillColor: feature.properties.COLOR, fillOpacity: 0.75})}}
+            style={(feature) => ({stroke: 1, weight: 1, opacity: 0.75, color: 'white', fillColor: feature.properties.COLOR, fillOpacity: 0.75})}
+            /* style is mutable in 3.2.1, so this would override eventHandlers changing the hover color. This only works now because of React.memo() below */
             eventHandlers={{
               mouseover: ({layer}) => props.updateState(layer.feature.properties.NAME) && layer.setStyle({fillColor: 'rgb(200, 200, 200)'}),
-              mouseout: ({layer}) => props.updateState('none') && layer.setStyle({fillColor: layer.feature.properties.COLOR})
+              mouseout: ({layer}) => props.updateState('none') && layer.setStyle({fillColor: layer.feature.properties.COLOR}),
+              click: ({layer}) => props.updateState(layer.feature.properties.NAME, true) ? layer.setStyle({fillColor: 'rgb(100, 100, 100)'}) : layer.setStyle({fillColor: layer.feature.properties.COLOR})
             }}
           />
-          <MyGeoJSON
+          <GeoJSON
             ref={props.alaskaRef}
             data={states_alaska}
-            onEachFeature={(feature, layer) => (props.covid
-                ? eachCovidState(
-                    feature,
-                    layer,
-                    props.data,
-                    props.updateState,
-                    theColors,
-                  )
-                : eachState(
-                    feature,
-                    layer,
-                    props.data,
-                    props.max,
-                    props.updateState,
-                    theColors,
-                  ))}
+            onEachFeature={(feature, layer) => {layer.setStyle({stroke: 1, weight: 1, opacity: 0.75, color: 'white', fillColor: layer.feature.properties.COLOR, fillOpacity: 0.75})}}
           />
-          <MyGeoJSON
+          <GeoJSON
             ref={props.hawaiiRef}
             data={states_hawaii}
             onEachFeature={(feature, layer) => (props.covid
@@ -153,7 +140,7 @@ const MapWrapper = (props) => {
                   ))}
           />
         </Pane>
-        <MyGeoJSON
+        <GeoJSON
           data={usa}
           key="usa"
           style={usa_background_style}
@@ -169,4 +156,6 @@ MapWrapper.propTypes = {
   // zoom: PropTypes.function.isRequired,
 };
 // https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png
-export default MapWrapper;
+
+const rerenderWhen = (prevProps, props) => prevProps.zoom() === props.zoom() && prevProps.data.length === props.data.length;
+export default React.memo(MapWrapper, rerenderWhen);

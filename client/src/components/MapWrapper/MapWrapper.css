@@ -6,13 +6,8 @@
 	/*opacity: 0.5;*/
 }
 
-.show-staRte {
-	/*stroke: rgb(227, 255, 255);*/
-	/*z-index: 1;*/
-	/*opacity: 1;*/
-}
-
 #MapWrapper {
+    grid-area: map;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     grid-template-rows: 1fr 1fr 1fr;
