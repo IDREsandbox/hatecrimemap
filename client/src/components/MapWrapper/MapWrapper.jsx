@@ -21,6 +21,7 @@ import {
   hashStateColor
 } from 'utils/data-utils';
 import { useLocation } from 'react-router-dom';
+import MyGeoJSON from './GeoJSON/MyGeoJSON';
 
 const months_short = [
   'Jan',
@@ -46,6 +47,8 @@ const alaskaBounds = [[34.0, -110.0], [94.0, -190.0]];
 const hawaiiCentre = [20.0, -155.0];
 const hawaiiBounds = [[0.0, -170.0], [40.0, -135.0]];
 const worldBounds = [[-90.0, -180.0], [90.0, 180.0]];
+
+const usa_background_style = {stroke: 0.3, color: '#777777', backgroundColor: '#aaaaaa'};
 
 const MapWrapper = (props) => {
   const location = useLocation();
@@ -74,7 +77,7 @@ const MapWrapper = (props) => {
 
   return (
     <div id="MapWrapper">
-      {props.timeSlider && props.timeSlider}
+      {props.timeSlider}
       <MapContainer
         id="USA"
         whenCreated={map => props.mapRef.current = map}
@@ -99,17 +102,17 @@ const MapWrapper = (props) => {
           name="states"
           style={{ zIndex: 500, display: props.zoom() >= 6 ? 'none' : 'block' }}
         >
-          <GeoJSON
+          <MyGeoJSON
             key={1}
             data={states_usa}
             onAdd={() => props.updateView(0, 1)}
-            style={(feature) => ({stroke: 1, weight: 1, opacity: 0.75, color: 'white', fillColor: feature.properties.COLOR, fillOpacity: 0.75})}
+            onEachFeature={(feature, layer) => {layer.setStyle({stroke: 1, weight: 1, opacity: 0.75, color: 'white', fillColor: feature.properties.COLOR, fillOpacity: 0.75})}}
             eventHandlers={{
               mouseover: ({layer}) => props.updateState(layer.feature.properties.NAME) && layer.setStyle({fillColor: 'rgb(200, 200, 200)'}),
               mouseout: ({layer}) => props.updateState('none') && layer.setStyle({fillColor: layer.feature.properties.COLOR})
             }}
           />
-          <GeoJSON
+          <MyGeoJSON
             ref={props.alaskaRef}
             data={states_alaska}
             onEachFeature={(feature, layer) => (props.covid
@@ -129,7 +132,7 @@ const MapWrapper = (props) => {
                     theColors,
                   ))}
           />
-          <GeoJSON
+          <MyGeoJSON
             ref={props.hawaiiRef}
             data={states_hawaii}
             onEachFeature={(feature, layer) => (props.covid
@@ -150,9 +153,10 @@ const MapWrapper = (props) => {
                   ))}
           />
         </Pane>
-        <GeoJSON
+        <MyGeoJSON
           data={usa}
           key="usa"
+          style={usa_background_style}
         />
         {props.children}
       </MapContainer>
