@@ -15,6 +15,10 @@ import { wordCloudReducer, takeTop } from 'utils/chart-utils';
 
 import './CovidPage.css';
 
+import { MainContext } from 'containers/context/joyrideContext';
+import { COVID_JOYRIDE_STEPS } from 'res/values/joyride';
+import Joyride, { ACTIONS, EVENTS } from 'react-joyride';
+
 export const MAP_DISPLAY = {
   USA: 1,
   ALASKA: 2,
@@ -46,6 +50,8 @@ class CovidPage extends Component {
       isFetching: true,
       currentDisplay: 'none',
       locked: false, // lock the sidebar on a state or county
+      steps: COVID_JOYRIDE_STEPS,
+      run: false,
     };
     this.statesRef = React.createRef();
     this.alaskaRef = React.createRef();
@@ -53,7 +59,14 @@ class CovidPage extends Component {
     this.mapRef = React.createRef();
   }
 
+  static contextType = MainContext;
+  
   async componentDidMount() {
+
+    const context = this.context;
+    console.log(context);
+    this.state.run = context.covidJoyrideRun;
+
     getCovidData().then((values) => {
       stateNames = Object.keys(values);
       wordData = {};
@@ -145,6 +158,27 @@ class CovidPage extends Component {
 
   filterTime = (time) => {};
 
+  handleJoyrideCallback = data => {
+    const { action, index, status, type } = data;
+
+    if (action == ACTIONS.CLOSE || action == ACTIONS.SKIP) {
+      // prevents joyride from opening on normal homepage if the joyride is exited
+      const context = this.context;
+      context.covidJoyrideRun = false;
+      context.stepIndex = 0;
+      context.homePageJoyrideRestart = false;
+      return; 
+    }
+
+    if ([EVENTS.STEP_AFTER].includes(type)) {
+      this.setState({ run: false });
+      const context = this.context;
+      context.covidJoyrideRun = false;
+      context.stepIndex = 0;
+      context.homePageJoyrideRestart = false
+    }
+  };
+
   render() {
     const { isFetching } = this.state;
     const { classes } = this.props;
@@ -171,6 +205,29 @@ class CovidPage extends Component {
           updateView={this.changeViewRegion}
           covid
         >
+          <Joyride
+            run={this.state.run}
+            continuous
+            scrollToFirstStep
+            callback={this.handleJoyrideCallback}
+            showSkipButton
+            locale={{
+              last: 'Close',
+            }}
+            stepIndex={0}
+            steps={this.state.steps}
+            styles={{
+              options: {
+                arrowColor: 'rgb(236, 242, 255)',
+                backgroundColor: 'rgb(236, 242, 255)',
+                overlayColor: 'rgba(5, 5, 10, 0.7)',
+                primaryColor: 'rgb(0, 100, 255)',
+                textColor: 'black',
+                width: 800,
+                zIndex: 9000,
+              },
+            }}
+          />
           <MapBar
             changeRegion={this.changeViewRegion}
             region={this.state.region}

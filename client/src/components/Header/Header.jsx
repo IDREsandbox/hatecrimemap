@@ -72,7 +72,7 @@ const CovidHeader = ({ classes }) => (
           )
         </Typography>
         <Link to="/" className={classes.link}>
-          <Button className={classes.gotoOriginal} color="inherit">
+          <Button className={classes.gotoOriginal} color="inherit" id="homepage-button">
             See All Other Hate Crimes
           </Button>
         </Link>

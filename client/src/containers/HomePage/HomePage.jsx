@@ -13,7 +13,7 @@ import {
   Legend
 } from 'components';
 import { JOYRIDE_STEPS } from 'res/values/joyride';
-import { MAP_DISPLAY } from 'res/values/map';
+import { MAP_DISPLAY, MAP_LOCATIONS } from 'res/values/map';
 import {
   getDataCounts,
   counts_aggregateBy,
@@ -34,6 +34,8 @@ import 'nouislider/distribute/nouislider.css';
 import './HomePage.css';
 import { ControlPointSharp } from '@material-ui/icons';
 
+import { MainContext } from 'containers/context/joyrideContext';
+
 const styles = () => ({
   progress: {
     position: 'fixed',
@@ -45,6 +47,9 @@ const styles = () => ({
 const JOYRIDE_LOCK_STATE = 'California';
 
 class HomePage extends Component {
+
+
+  static contextType = MainContext;
 
   constructor(props) {
     super(props);
@@ -61,9 +66,11 @@ class HomePage extends Component {
       stepIndex: 0,
       skipStep: false,
       lockType: 'none',
+      context: this.context,
     };
 
     this.statesRef = React.createRef();
+    this.countiesRef = React.createRef();
     this.alaskaRef = React.createRef();
     this.hawaiiRef = React.createRef();
     this.mapRef = React.createRef();
@@ -71,6 +78,12 @@ class HomePage extends Component {
   }
 
   async componentDidMount() {
+    const context = this.context;
+    console.log(context);
+
+    this.state.run = context.homePageJoyrideRestart;
+    this.state.stepIndex = context.stepIndex;
+
     getDataCounts().then((values) => {
       const max = counts_total(values);
       // console.log(values.filter(f => f.state=="California"))
@@ -155,17 +168,24 @@ class HomePage extends Component {
       || (index == 6 && this.chartsRef.current.state.dialogOpen)
       || (index == 7 && this.chartsRef.current.state.currentDisplay != 5)
       || (index == 8 && this.state.currentDisplay === JOYRIDE_LOCK_STATE)
+      || (index == 9 && this.state.zoom < 6)
+      || (index == 11 && this.state.zoom >= 6 && [EVENTS.STEP_BEFORE].includes(type))
   };
 
   handleJoyrideCallback = (data) => {
     const { action, index, status, type } = data;
 
     if (action == ACTIONS.CLOSE || action == ACTIONS.SKIP) {
+      // prevents covid tutorial from opening on covid homepage if the joyride is exited
+      const context = this.context;
+      context.covidJoyrideRun = false;
+      context.stepIndex = 0;
+      context.homePageJoyrideRestart = false;
       this.setState({ stepIndex: 0, run: false });
       return; // avoid pathways that could all setState [to the same fields], this leads to race conditions
     }
 
-    // First 4 options are special cases
+    // First 4 steps are special cases
     if (this.state.skipStep && type == EVENTS.STEP_BEFORE) {
       this.setState({ stepIndex: 4, skipStep: false });
     } else if (
@@ -177,20 +197,25 @@ class HomePage extends Component {
       this.setState({ stepIndex: index - 1, skipStep: true });
     } else if (this.isNotReadyToStep(index, type)) {
       this.setState({ stepIndex: index - 1 });
-    } else if (
-      index == 5
-      && [EVENTS.TARGET_NOT_FOUND].includes(type)
-      && !this.chartsRef.current.state.dialogOpen
-    ) {
-      // once you click "next" when the table is open, it will throw an error because the current target (reports) is technically closed
-      // the "step-after" part of the event can't mount because the target isn't found -> need to make it so that it manually skips over?
-      this.setState({ stepIndex: index + 1 });
-    } else if (
+    } // removed the step that automatically zooms onto the map
+    else if (
       [EVENTS.STEP_AFTER, EVENTS.TARGET_NOT_FOUND].includes(type)
-      && index != 5
     ) {
       // Update state to advance the tour
       this.setState({ stepIndex: index + (action === ACTIONS.PREV ? -1 : 1) });
+    } else if (index == 12) {
+      const context = this.context;
+      if ([EVENTS.TOOLTIP].includes(type)) { // upon mounting of step 12 tooltip, set this context  
+        context.covidJoyrideRun = true;
+        context.stepIndex = 13;
+        context.homePageJoyrideRestart = true;
+        console.log(context);
+      }
+    } else if (index == 13) {
+      const context = this.context;
+      context.covidJoyrideRun = false;
+      context.stepIndex = 0;
+      context.homePageJoyrideRestart = false;
     } else if ([STATUS.FINISHED, STATUS.SKIPPED].includes(status)) {
       // Need to set our running state to false, so we can restart if we click start again.
       this.setState({ stepIndex: 0 }); // added this to make sure the tutorial can be ran again
@@ -249,11 +274,11 @@ class HomePage extends Component {
     const filters = [];
     if (this.state.currentDisplay != 'none') {
       filters.push([this.state.lockType, this.state.currentDisplay]);
-        currTotal = counts_aggregateBy(
-          data,
-          this.state.lockType,
-          this.state.currentDisplay,
-        );
+      currTotal = counts_aggregateBy(
+        data,
+        this.state.lockType,
+        this.state.currentDisplay,
+      );
     } else {
       currTotal = counts_total(data);
     }
@@ -294,11 +319,11 @@ class HomePage extends Component {
               <h2>
                 Hate Crimes in
                 {' ' +
-                (this.state.currentDisplay == 'none'
-                  ? 'the US'
-                  : isNaN(this.state.currentDisplay[this.state.currentDisplay.length - 1])
-                    ? this.state.currentDisplay
-                    : (this.state.currentDisplay.substr(0, this.state.currentDisplay.length - 3) + ` County`))}
+                  (this.state.currentDisplay == 'none'
+                    ? 'the US'
+                    : isNaN(this.state.currentDisplay[this.state.currentDisplay.length - 1])
+                      ? this.state.currentDisplay
+                      : (this.state.currentDisplay.substr(0, this.state.currentDisplay.length - 3) + ` County`))}
                 <IconButton
                   onClick={this.runTutorial}
                   className={classes.menuButton}

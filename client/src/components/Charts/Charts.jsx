@@ -259,6 +259,7 @@ class Charts extends React.Component {
       return (
         <div className="charts" id="theChartsState">
           <Bar
+            id="hatecrimeBarChart"
             data={getChartData(CHARTS.TOP, this.props.data, this.props.filters)}
             options={options}
             onElementsClick={this.barClick}
