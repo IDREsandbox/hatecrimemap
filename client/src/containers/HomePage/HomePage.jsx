@@ -243,7 +243,7 @@ class HomePage extends Component {
         && row.yyyy <= this.state.filterTimeRange[1],
     );
     const dataMapMax = this.state.zoom >= 6 ? 30 : counts_maxState(data);
-    const dataMax = counts_maxPrimary(data);
+    const dataMax = counts_maxPrimary(data); // TODO: rename these...
     let currTotal = 0;
 
     const filters = [];

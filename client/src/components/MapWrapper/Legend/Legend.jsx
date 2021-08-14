@@ -56,9 +56,9 @@ const Legend = (props) => {
 
   useEffect(() => {
     const control = createLeafletElement();
-    console.log(control, map);
     control.addTo(map);
-  }, [])
+    return () => map.removeControl(control);
+  }, [props.max])
 
   return null;
 }
