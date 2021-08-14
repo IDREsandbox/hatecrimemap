@@ -28,7 +28,7 @@ import HelpIcon from '@material-ui/icons/Help';
 import Joyride, { ACTIONS, EVENTS, STATUS } from 'react-joyride';
 
 import Nouislider from 'nouislider-react';
-import { resetStateColor, defaultColors } from 'utils/data-utils';
+import { defaultColors } from 'utils/data-utils';
 import 'nouislider/distribute/nouislider.css';
 
 import './HomePage.css';
@@ -86,24 +86,11 @@ class HomePage extends Component {
 
     getDataCounts().then((values) => {
       const max = counts_total(values);
-      // console.log(values.filter(f => f.state=="California"))
       this.setState({
         data: values,
         dataMax: max,
         isFetching: false,
       });
-    });
-  }
-
-  resetStateColors() {
-    Object.values(
-      this.statesRef.current.contextValue.layerContainer._layers,
-    ).forEach((layer) => {
-      if (layer.feature) {
-        // only the states/counties have a feature
-        // console.log(layer.feature);
-        resetStateColor(layer, this.state.data, defaultColors);
-      }
     });
   }
 

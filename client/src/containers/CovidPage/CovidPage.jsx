@@ -10,7 +10,7 @@ import {
   MapBar,
   Legend,
 } from 'components';
-import { getCovidData, resetStateColor, covidColors } from 'utils/data-utils';
+import { getCovidData, covidColors } from 'utils/data-utils';
 import { wordCloudReducer, takeTop } from 'utils/chart-utils';
 
 import './CovidPage.css';
@@ -64,7 +64,6 @@ class CovidPage extends Component {
   async componentDidMount() {
 
     const context = this.context;
-    console.log(context);
     this.state.run = context.covidJoyrideRun;
 
     getCovidData().then((values) => {
@@ -82,23 +81,10 @@ class CovidPage extends Component {
         wordCloudData: wordData,
         isFetching: false,
       });
-      // console.log(wordData);
     });
   }
 
   resetMapData = () => {};
-
-  resetStateColors() {
-    Object.values(
-      this.statesRef.current.contextValue.layerContainer._layers,
-    ).forEach((layer) => {
-      if (layer.feature) {
-        // only the states/counties have a feature
-        // console.log(layer.feature);
-        resetStateColor(layer, this.state.data, covidColors);
-      }
-    });
-  }
 
   filterIncidents = (flt) => {
     this.setState({ currentFilter: flt }); // 'all' or 'published'
@@ -106,18 +92,22 @@ class CovidPage extends Component {
 
   // Return value, success (in our terms, not react's)
   updateState = (state, lock = false) => {
-    if (lock || !this.state.locked) {
-      // lock parameter overrides current lock
-      if (this.state.locked && state === 'none') this.resetStateColors(); // would like color-setting to be more declarative
-      // but onEachFeature only executes to initialize, so color handling is all done within events (mouseon, mouseout, click)
-
+    if (this.state.locked && !lock) return false;
+    if (this.state.locked && this.state.currentDisplay === state) {
       this.setState({
-        currentDisplay: state,
-        locked: lock && state !== 'none',
-      }); // we never want to lock onto None
-      return true;
+        currentDisplay: 'none', // if we try to "re-lock" onto the same state, toggle it off
+        locked: false,
+        lockType: 'state',
+      });
+      return false; // uncolor
     }
-    return false;
+
+    this.setState({
+      currentDisplay: state,
+      locked: lock && state !== 'none', // we never want to lock onto None
+      lockType: 'state',
+    });
+    return true;
   };
 
   updateCounty = (county, lock = false) => {
@@ -133,20 +123,8 @@ class CovidPage extends Component {
   };
 
   changeViewRegion = (event, region) => {
-    if (region !== null) {
-      this.setState({ region }, () => {
-        if (this.mapRef.current !== null && this.statesRef.current !== null) {
-          let bounds;
-          if (region == MAP_DISPLAY.ALASKA) {
-            bounds = this.alaskaRef.current.leafletElement.getBounds().pad(0.1);
-          } else if (region == MAP_DISPLAY.USA) {
-            bounds = this.statesRef.current.leafletElement.getBounds();
-          } else if (region == MAP_DISPLAY.HAWAII) {
-            bounds = this.hawaiiRef.current.leafletElement.getBounds().pad(0.5);
-          }
-          this.mapRef.current.leafletElement.fitBounds(bounds);
-        }
-      });
+    if (region && this.mapRef.current) {
+      this.mapRef.current.fitBounds(region);
     }
   };
 
@@ -187,6 +165,8 @@ class CovidPage extends Component {
       return <CircularProgress className={classes.progress} />;
     }
 
+    console.log(this.state.data)
+
     return (
       <div className="CovidPage">
         {/* <FirstTimeOverlay /> */}
@@ -204,6 +184,14 @@ class CovidPage extends Component {
           data={this.state.data}
           updateView={this.changeViewRegion}
           covid
+          controls={(map) =>
+            <>
+              <MapBar
+                changeRegion={this.changeViewRegion}
+                region={this.state.region}
+              />
+              <Legend colors={covidColors} covidFlag={true} />
+            </>}
         >
           <Joyride
             run={this.state.run}
@@ -228,11 +216,6 @@ class CovidPage extends Component {
               },
             }}
           />
-          <MapBar
-            changeRegion={this.changeViewRegion}
-            region={this.state.region}
-          />
-          <Legend colors={covidColors} covidFlag={true} />
         </MapWrapper>
 
         <div className="side">

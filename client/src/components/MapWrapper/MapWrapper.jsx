@@ -9,8 +9,6 @@ import { MAP_LOCATIONS as ML } from 'res/values/map';
 import { usa } from 'res/geography/usa.js';
 import { counties } from 'res/geography/counties/statecounties.js';
 import { states_usa } from 'res/geography/states.js';
-import { states_alaska } from 'res/geography/alaska.js';
-import { states_hawaii } from 'res/geography/hawaii.js';
 import {
   eachState,
   eachStatesCounties,
@@ -58,7 +56,10 @@ const MapWrapper = (props) => {
   let lockedLayer; // useState causes rerendering
 
   useEffect(() => {
-    states_usa.features.forEach(eachState => eachState.properties.COLOR = calculateStateColor(eachState.properties.NAME, props.data, props.max));
+    if (!props.covid)
+      states_usa.features.forEach(eachState => eachState.properties.COLOR = calculateStateColor(eachState.properties.NAME, props.data, props.max));
+    else
+      states_usa.features.forEach(eachState => eachState.properties.COLOR = props.data[eachState.properties.NAME] ? hashStateColor(props.data[eachState.properties.NAME].count, 70) : 'rgb(0,0,0)');
     return () => { };
   }, [props.data.length]) // pretty good indicator of when we should recalculate colors? Could be an edge case where # elements are the same
 
