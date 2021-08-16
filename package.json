@@ -38,7 +38,7 @@
     "prettier": "^1.9.1",
     "prettier-eslint": "^10.1.0",
     "re-resizable": "^6.7.0",
-    "react-checkbox-tree": "^1.6.0",
+    "react-checkbox-tree": "^1.7.2",
     "react-joyride": "^2.2.1",
     "react-wordcloud": "^1.2.7",
     "valid-url": "^1.0.9"

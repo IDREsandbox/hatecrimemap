@@ -11,8 +11,8 @@ import {
   IconButton,
 } from '@material-ui/core';
 
-import AboutDialog from 'components/AboutDialog/AboutDialog';
-import AboutCovidDialog from 'components/AboutDialog/AboutCovidDialog';
+import AboutDialog from '../AboutDialog/AboutDialog';
+import AboutCovidDialog from '../AboutDialog/AboutCovidDialog';
 
 const styles = {
   root: {},

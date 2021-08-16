@@ -6,7 +6,7 @@ import './FilterBar.css';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 
-const styles = (theme) => ({
+const styles = (theme) => ({ // eslint-disable-line no-unused-vars
 
 });
 
@@ -45,7 +45,7 @@ const FilterBar = (props) => {
 };
 
 FilterBar.propTypes = {
-  classes: PropTypes.object.isRequired,
+  classes: PropTypes.object.isRequired, // eslint-disable-line react/no-unused-prop-types
 };
 
 export default withStyles(styles)(FilterBar);

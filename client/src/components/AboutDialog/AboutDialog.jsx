@@ -1,3 +1,4 @@
+/*  eslint import/no-unresolved: 0, global-require: 0  */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
@@ -11,7 +12,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-import { ABOUT_DIALOGS } from 'res/values/string';
+import { ABOUT_DIALOGS } from '../../res/values/string';
 
 const styles = {
   aboutButton: {
@@ -86,16 +87,16 @@ class AboutDialog extends Component {
               <p>{ABOUT_DIALOGS.HCM.ACKNOWLEDGEMENTS}</p>
               <div className={classes.images}>
                 <div className={classes.inline}>
-                  <img src={require('res/img/AISC_logo.png')} />
+                  <img src={require('res/img/AISC_logo.png')} alt="UCLA American Indian Studies Center Logo" />
                 </div>
                 <div className={classes.inline}>
-                  <img src={require('res/img/idre-logo.png')} />
+                  <img src={require('res/img/idre-logo.png')} alt="UCLA Institute for Digital Research and Education Logo" />
                 </div>
                 <div className={classes.inline}>
-                  <img src={require('res/img/InstAmerCultures_A.png')} />
+                  <img src={require('res/img/InstAmerCultures_A.png')} alt="UCLA Insitute of American Cultures Logo" />
                 </div>
                 <div className={classes.inline}>
-                  <img src={require('res/img/social-sciences-logo.png')} />
+                  <img src={require('res/img/social-sciences-logo.png')} alt="UCLA Social Sciences Logo" />
                 </div>
               </div>
             </DialogContentText>

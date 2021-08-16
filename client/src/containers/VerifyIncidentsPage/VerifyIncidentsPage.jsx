@@ -16,22 +16,21 @@ import {
   LinearProgress,
   Toolbar,
   Tooltip,
-  Checkbox,
   Typography,
   Button,
 } from '@material-ui/core';
 import {
- MoreVert, Done, Link, Web,
+  MoreVert, Done, Link, Web,
 } from '@material-ui/icons';
 
-import SimpleTable from 'components/SimpleTable/SimpleTable';
-import Login from 'components/Login/Login';
 import {
   reviewIncidentReport,
   validateIncidentReport,
   publishedIncidentReport,
   deleteIncidentReport,
-} from 'utils/utilities';
+} from '../../utils/utilities';
+import Login from '../../components/Login/Login';
+import SimpleTable from '../../components/SimpleTable/SimpleTable';
 
 const styles = () => ({
   root: {
@@ -142,14 +141,18 @@ const getInitialState = () => ({
 });
 
 class VerifyIncidentsPage extends Component {
-  state = getInitialState();
+  constructor(props) {
+    super(props);
 
-  componentWillMount() {
+    this.state = getInitialState();
+  }
+
+  UNSAFE_componentWillMount() {
     axios
       .get(`/api/verify/unreviewedcount/${this.state.verified}`)
       .then((res) => {
         if (res.data.counts) {
-          this.setState({ counts: parseInt(res.data.counts) });
+          this.setState({ counts: parseInt(res.data.counts, 10) });
         }
       })
       .catch((err) => alert(err));
@@ -205,7 +208,7 @@ class VerifyIncidentsPage extends Component {
         issourceurlvalid,
         verified,
         published,
-        waybackurl,
+        waybackurl, // eslint-disable-line no-unused-vars
         groupsharassed,
       }) => {
         const link = sourceurl ? (
@@ -325,7 +328,7 @@ class VerifyIncidentsPage extends Component {
       // typeof(action) == "string"
       this.setState({
         openAlertDialog: true,
-        alertDialogAction: action,
+        /* alertDialogAction: action,  //// commenting out, unused but might be needed? */
         storeIds: id,
         storeAction: action,
       });
@@ -414,7 +417,7 @@ class VerifyIncidentsPage extends Component {
               incidentsChecked={this.state.incidentsChecked}
               actions={this.handleAction}
             />
-          )}
+        )}
         <SimpleTable
           columnHeaders={COLUMN_HEADERS}
           tableData={incidentReports}
