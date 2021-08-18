@@ -6,14 +6,16 @@ import TextField from '@material-ui/core/TextField';
 
 import './LocationSearchInput.css';
 
-const styles = theme => ({
+const styles = (theme) => ({
   textField: {
     margin: theme.spacing(1),
     width: 200,
   },
 });
 
-const LocationSearchInput = ({ value, onChange, onSelect, classes, name, errorText }) => (
+const LocationSearchInput = ({
+  value, onChange, onSelect, classes, name, errorText,
+}) => (
   <PlacesAutocomplete
     value={value}
     onChange={onChange}

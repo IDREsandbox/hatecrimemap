@@ -3,6 +3,10 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { CircularProgress, IconButton } from '@material-ui/core';
 
+import HelpIcon from '@material-ui/icons/Help';
+import Joyride, { ACTIONS, EVENTS, STATUS } from 'react-joyride';
+import Nouislider from 'nouislider-react';
+import { MainContext } from '../context/joyrideContext';
 import {
   FirstTimeOverlay,
   MapWrapper,
@@ -10,29 +14,21 @@ import {
   Charts,
   FilterBar,
   MapBar,
-} from 'components';
-import { JOYRIDE_STEPS } from 'res/values/joyride';
-import { MAP_DISPLAY, MAP_LOCATIONS } from 'res/values/map';
+} from '../../components';
+import { JOYRIDE_STEPS } from '../../res/values/joyride';
+import { MAP_DISPLAY } from '../../res/values/map';
 import {
   getDataCounts,
   counts_aggregateBy,
   counts_total,
   counts_maxPrimary,
   counts_maxState,
-} from 'utils/data-utils';
+  resetStateColor, defaultColors,
+} from '../../utils/data-utils';
 
-import HelpIcon from '@material-ui/icons/Help';
-
-import Joyride, { ACTIONS, EVENTS, STATUS } from 'react-joyride';
-
-import Nouislider from 'nouislider-react';
-import { resetStateColor, defaultColors } from '../../utils/data-utils';
 import 'nouislider/distribute/nouislider.css';
 
 import './HomePage.css';
-import { ControlPointSharp } from '@material-ui/icons';
-
-import { MainContext } from 'containers/context/joyrideContext';
 
 const styles = () => ({
   progress: {
@@ -45,9 +41,26 @@ const styles = () => ({
 const JOYRIDE_LOCK_STATE = 'California';
 
 class HomePage extends Component {
-
-
   static contextType = MainContext;
+
+  timeSlider = (
+    <div id="timeslider">
+      <Nouislider
+        behaviour="tap-drag"
+        connect
+        range={{
+          min: 2015,
+          max: 2021,
+        }}
+        direction="ltr"
+        pips={{ mode: 'count', values: 7 }}
+        clickablePips
+        step={1}
+        start={[2015, 2021]}
+        onUpdate={(render, handle, value, un, percent) => this.filterTime(value)} // eslint-disable-line no-unused-vars
+      />
+    </div>
+  );
 
   constructor(props) {
     super(props);
@@ -64,7 +77,6 @@ class HomePage extends Component {
       stepIndex: 0,
       skipStep: false,
       lockType: 'none',
-      context: this.context,
     };
 
     this.statesRef = React.createRef();
@@ -84,7 +96,7 @@ class HomePage extends Component {
     //   });
 
     // });
-    const context = this.context;
+    const { context } = this;
     console.log(context);
 
     this.state.run = context.homePageJoyrideRestart;
@@ -95,21 +107,9 @@ class HomePage extends Component {
       // console.log(values.filter(f => f.state=="California"))
       this.setState({
         data: values,
-        dataMax: max,
+        dataMax: max, // eslint-disable-line react/no-unused-state
         isFetching: false,
       });
-    });
-  }
-
-  resetStateColors() {
-    Object.values(
-      this.statesRef.current.contextValue.layerContainer._layers,
-    ).forEach((layer) => {
-      if (layer.feature) {
-        // only the states/counties have a feature
-        // console.log(layer.feature);
-        resetStateColor(layer, this.state.data, defaultColors);
-      }
     });
   }
 
@@ -176,23 +176,23 @@ class HomePage extends Component {
     this.setState({ run: true });
   };
 
-  isNotReadyToStep = (index, type) => {
-    // Logic for each indiviudal step on whether the joyride should move forward or not
-    return (index == 3 && this.state.currentDisplay !== JOYRIDE_LOCK_STATE)
-      || (index == 4 && [EVENTS.TARGET_NOT_FOUND].includes(type))
-      || (index == 6 && this.chartsRef.current.state.dialogOpen)
-      || (index == 7 && this.chartsRef.current.state.currentDisplay != 5)
-      || (index == 8 && this.state.currentDisplay === JOYRIDE_LOCK_STATE)
-      || (index == 9 && this.state.zoom < 6)
-      || (index == 11 && this.state.zoom >= 6 && [EVENTS.STEP_BEFORE].includes(type))
-  };
+  // Logic for each indiviudal step on whether the joyride should move forward or not
+  isNotReadyToStep = (index, type) => (index == 3 && this.state.currentDisplay !== JOYRIDE_LOCK_STATE)
+    || (index == 4 && [EVENTS.TARGET_NOT_FOUND].includes(type))
+    || (index == 6 && this.chartsRef.current.state.dialogOpen)
+    || (index == 7 && this.chartsRef.current.state.currentDisplay != 5)
+    || (index == 8 && this.state.currentDisplay === JOYRIDE_LOCK_STATE)
+    || (index == 9 && this.state.zoom < 6)
+    || (index == 11 && this.state.zoom >= 6 && [EVENTS.STEP_BEFORE].includes(type));
 
   handleJoyrideCallback = (data) => {
-    const { action, index, status, type } = data;
+    const {
+      action, index, status, type,
+    } = data;
 
     if (action == ACTIONS.CLOSE || action == ACTIONS.SKIP) {
       // prevents covid tutorial from opening on covid homepage if the joyride is exited
-      const context = this.context;
+      const { context } = this;
       context.covidJoyrideRun = false;
       context.stepIndex = 0;
       context.homePageJoyrideRestart = false;
@@ -212,22 +212,19 @@ class HomePage extends Component {
       this.setState({ stepIndex: index - 1, skipStep: true });
     } else if (this.isNotReadyToStep(index, type)) {
       this.setState({ stepIndex: index - 1 });
-    } // removed the step that automatically zooms onto the map
-    else if (
-      [EVENTS.STEP_AFTER, EVENTS.TARGET_NOT_FOUND].includes(type)
-    ) {
+    } else if ([EVENTS.STEP_AFTER, EVENTS.TARGET_NOT_FOUND].includes(type)) {
       // Update state to advance the tour
       this.setState({ stepIndex: index + (action === ACTIONS.PREV ? -1 : 1) });
     } else if (index == 12) {
-      const context = this.context;
-      if ([EVENTS.TOOLTIP].includes(type)) { // upon mounting of step 12 tooltip, set this context  
+      const { context } = this;
+      if ([EVENTS.TOOLTIP].includes(type)) { // upon mounting of step 12 tooltip, set this context
         context.covidJoyrideRun = true;
         context.stepIndex = 13;
         context.homePageJoyrideRestart = true;
         console.log(context);
       }
     } else if (index == 13) {
-      const context = this.context;
+      const { context } = this;
       context.covidJoyrideRun = false;
       context.stepIndex = 0;
       context.homePageJoyrideRestart = false;
@@ -244,24 +241,17 @@ class HomePage extends Component {
 
   getZoom = () => this.state.zoom;
 
-  timeSlider = (
-    <div id="timeslider">
-      <Nouislider
-        behaviour="tap-drag"
-        connect
-        range={{
-          min: 2015,
-          max: 2021,
-        }}
-        direction="ltr"
-        pips={{ mode: 'count', values: 7 }}
-        clickablePips
-        step={1}
-        start={[2015, 2021]}
-        onUpdate={(render, handle, value, un, percent) => this.filterTime(value)}
-      />
-    </div>
-  );
+  resetStateColors() {
+    Object.values(
+      this.statesRef.current.contextValue.layerContainer._layers,
+    ).forEach((layer) => {
+      if (layer.feature) {
+        // only the states/counties have a feature
+        // console.log(layer.feature);
+        resetStateColor(layer, this.state.data, defaultColors);
+      }
+    });
+  }
 
   render() {
     const {
@@ -273,12 +263,10 @@ class HomePage extends Component {
       return <CircularProgress className={classes.progress} />;
     }
 
-    let data;
-    let dataPtr;
     // timeslider filter. TODO: make a generic state data filter/callback that handles pointer and closures
     // TODO: sort by date and binary search
-    dataPtr = this.state.data;
-    data = dataPtr.filter(
+    const dataPtr = this.state.data;
+    const data = dataPtr.filter(
       (row) => row.yyyy >= this.state.filterTimeRange[0]
         && row.yyyy <= this.state.filterTimeRange[1],
     );
@@ -359,12 +347,11 @@ class HomePage extends Component {
             <div className="sideMenu__header">
               <h2>
                 Hate Crimes in
-                {' ' +
-                  (this.state.currentDisplay == 'none'
-                    ? 'the US'
-                    : isNaN(this.state.currentDisplay[this.state.currentDisplay.length - 1])
-                      ? this.state.currentDisplay
-                      : (this.state.currentDisplay.substr(0, this.state.currentDisplay.length - 3) + ` County`))}
+                {` ${this.state.currentDisplay == 'none'
+                  ? 'the US'
+                  : isNaN(this.state.currentDisplay[this.state.currentDisplay.length - 1]) // eslint-disable-line no-restricted-globals
+                    ? this.state.currentDisplay
+                    : (`${this.state.currentDisplay.substr(0, this.state.currentDisplay.length - 3)} County`)}`}
                 <IconButton
                   onClick={this.runTutorial}
                   className={classes.menuButton}
@@ -375,7 +362,10 @@ class HomePage extends Component {
               </h2>
 
               <h4>
-                {currTotal} in {this.state.filterTimeRange.join('-')}
+                {currTotal}
+                {' '}
+                in
+                {this.state.filterTimeRange.join('-')}
               </h4>
             </div>
 
