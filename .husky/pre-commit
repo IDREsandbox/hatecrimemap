@@ -2,3 +2,4 @@
 . "$(dirname "$0")/_/husky.sh"
 
 npm run lint-commit
+echo Running eslint before commit 
