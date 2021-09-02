@@ -7,13 +7,11 @@ import {
   Divider,
   TextField,
   InputAdornment,
-  IconButton,
   FormControl,
   Input,
   InputLabel,
   Button,
 } from '@material-ui/core';
-import { Visibility, VisibilityOff } from '@material-ui/icons';
 
 const styles = (theme) => ({
   root: {

@@ -1,4 +1,4 @@
-import React, { Component, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { uuid } from 'uuidv4';
@@ -13,7 +13,6 @@ import {
   Paper,
   Checkbox,
 } from '@material-ui/core';
-import { useEffect } from 'react';
 
 const styles = (theme) => ({
   root: {
@@ -46,28 +45,25 @@ const styles = (theme) => ({
  *
  * */
 
-
-
 const SimpleTable = (props) => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [page, setPage] = useState(0);
   const [total, setTotal] = useState(props.counts);
 
-
-  const handlePageChange = (e, page) => {
+  const handlePageChange = (e, newPage) => {
     setPage(page);
-    props.fetchData(rowsPerPage, page);
+    props.fetchData(rowsPerPage, newPage);
   };
 
   const handleRowChange = (e) => {
     setRowsPerPage(e.target.value);
     props.fetchData(e.target.value, page);
-  }
+  };
 
   useEffect(() => {
     const { counts } = props;
     setTotal(counts);
-  }, [props])
+  }, [props]);
 
   const {
     classes,
@@ -135,7 +131,7 @@ const SimpleTable = (props) => {
       </Table>
     </Paper>
   );
-}
+};
 
 SimpleTable.propTypes = {
   columnHeaders: PropTypes.array.isRequired,

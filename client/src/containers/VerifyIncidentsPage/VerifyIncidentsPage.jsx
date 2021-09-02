@@ -23,7 +23,6 @@ import {
   Grid,
   InputLabel,
   FormControl,
-  FormHelperText,
 } from '@material-ui/core';
 import {
   MoreVert, Done, Link, Web,
@@ -389,14 +388,6 @@ class VerifyIncidentsPage extends Component {
       });
   };
 
-
-  sortDataBy = (parameter) => {
-    const { incidentReports } = this.state;
-
-
-
-  }
-
   render() {
     const {
       incidentReports,
@@ -444,7 +435,7 @@ class VerifyIncidentsPage extends Component {
               incidentsChecked={this.state.incidentsChecked}
               actions={this.handleAction}
             />
-          )}
+        )}
         {
 
         }
@@ -452,7 +443,8 @@ class VerifyIncidentsPage extends Component {
           direction="row"
           justifyContent="flex-start"
           alignItems="center"
-          container>
+          container
+        >
           <FormControl className={classes.formControl}>
             <InputLabel shrink id="demo-simple-select-placeholder-label-label">
               Student Reviewed Status
@@ -470,9 +462,9 @@ class VerifyIncidentsPage extends Component {
               displayEmpty
               className={classes.selectEmpty}
             >
-              <MenuItem value={'{ true, false }'}>Both</MenuItem>
-              <MenuItem value={'{ true }'}>Reviewed</MenuItem>
-              <MenuItem value={'{ false }'}>Unreviewed</MenuItem>
+              <MenuItem value="{ true, false }">Both</MenuItem>
+              <MenuItem value="{ true }">Reviewed</MenuItem>
+              <MenuItem value="{ false }">Unreviewed</MenuItem>
             </Select>
           </FormControl>
           {/* WIP - SORT DATA ON BACKEND
@@ -607,7 +599,7 @@ VerifyIncidentsPage.propTypes = {
 };
 
 export default withStyles(styles)(VerifyIncidentsPage);
-/*TODO
+/* TODO
 Fix up verified portal
   Add option to change the 'verified' sort parameter for events from true, false, or both
   (doesn't make sense why there's so many false events?)
