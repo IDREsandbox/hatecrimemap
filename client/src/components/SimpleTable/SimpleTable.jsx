@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { uuid } from 'uuidv4';
@@ -13,6 +13,7 @@ import {
   Paper,
   Checkbox,
 } from '@material-ui/core';
+import { useEffect } from 'react';
 
 const styles = (theme) => ({
   root: {
@@ -44,95 +45,96 @@ const styles = (theme) => ({
  *   counts - max number of rows, for pagination purposes
  *
  * */
-class SimpleTable extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      rowsPerPage: 10,
-      page: 0,
-      total: this.props.counts,
-    };
+
+
+
+const SimpleTable = (props) => {
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [page, setPage] = useState(0);
+  const [total, setTotal] = useState(props.counts);
+
+
+  const handlePageChange = (e, page) => {
+    setPage(page);
+    props.fetchData(rowsPerPage, page);
+  };
+
+  const handleRowChange = (e) => {
+    setRowsPerPage(e.target.value);
+    props.fetchData(e.target.value, page);
   }
 
-  handlePageChange = (e, page) => {
-    console.log(page);
-    this.setState({ page });
-    this.props.fetchData(this.state.rowsPerPage, page);
-  };
+  useEffect(() => {
+    const { counts } = props;
+    setTotal(counts);
+  }, [props])
 
-  handleRowChange = (e) => {
-    this.setState({ rowsPerPage: e.target.value }, () => {
-      this.props.fetchData(e.target.value, this.state.page);
-    });
-  };
+  const {
+    classes,
+    columnHeaders,
+    tableData,
+    idsChecked,
+    onCheckIncident,
+    onCheckAll,
+  } = props;
 
-  render() {
-    const {
-      classes,
-      columnHeaders,
-      tableData,
-      idsChecked,
-      onCheckIncident,
-      onCheckAll,
-    } = this.props;
-    return (
-      <Paper className={classes.root}>
-        <Table className={classes.table}>
-          <TableHead>
-            <TableRow>
-              <TableCell className={classes.cell} key="select">
+  return (
+    <Paper className={classes.root}>
+      <Table className={classes.table}>
+        <TableHead>
+          <TableRow>
+            <TableCell className={classes.cell} key="select">
+              <Checkbox
+                checked={tableData.every((row) => idsChecked.includes(row[0]))}
+                onChange={() => onCheckAll(tableData.map((row) => row[0]))}
+              />
+            </TableCell>
+            <TableCell className={classes.cell} key="id">
+              ID
+            </TableCell>
+            {/* Generate rest of table HEADERS */}
+            {columnHeaders.map((header) => (
+              <TableCell className={classes.cell} key={header}>
+                {header}
+              </TableCell>
+            ))}
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {/* Row FOR EACH incident fetched */}
+          {tableData.map((row, i) => ( // eslint-disable-line no-unused-vars
+            <TableRow className={classes.row} key={row[0]}>
+              <TableCell className={classes.cell} key={`select${row[0]}`}>
                 <Checkbox
-                  checked={tableData.every((row) => idsChecked.includes(row[0]))}
-                  onChange={() => onCheckAll(tableData.map((row) => row[0]))}
+                  key={`select${row[0]}`}
+                  checked={idsChecked.includes(row[0])}
+                  onChange={(e) => onCheckIncident(e, row[0])}
                 />
               </TableCell>
-              <TableCell className={classes.cell} key="id">
-                ID
-              </TableCell>
-              {/* Generate rest of table HEADERS */}
-              {columnHeaders.map((header) => (
-                <TableCell className={classes.cell} key={header}>
-                  {header}
+              {/* Generate rest of column's for individual row */}
+              {row.map((cell) => (
+                <TableCell className={classes.cell} key={uuid()}>
+                  {cell}
                 </TableCell>
               ))}
             </TableRow>
-          </TableHead>
-          <TableBody>
-            {/* Row FOR EACH incident fetched */}
-            {tableData.map((row, i) => ( // eslint-disable-line no-unused-vars
-              <TableRow className={classes.row} key={row[0]}>
-                <TableCell className={classes.cell} key={`select${row[0]}`}>
-                  <Checkbox
-                    key={`select${row[0]}`}
-                    checked={idsChecked.includes(row[0])}
-                    onChange={(e) => onCheckIncident(e, row[0])}
-                  />
-                </TableCell>
-                {/* Generate rest of column's for individual row */}
-                {row.map((cell) => (
-                  <TableCell className={classes.cell} key={uuid()}>
-                    {cell}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))}
-          </TableBody>
-          <TableFooter>
-            <TableRow>
-              <TablePagination
-                rowsPerPageOptions={[10, 25, 50]}
-                rowsPerPage={this.state.rowsPerPage}
-                page={this.state.page}
-                onChangePage={this.handlePageChange}
-                onChangeRowsPerPage={this.handleRowChange}
-                count={this.state.total}
-              />
-            </TableRow>
-          </TableFooter>
-        </Table>
-      </Paper>
-    );
-  }
+          ))}
+        </TableBody>
+        <TableFooter>
+          <TableRow>
+            <TablePagination
+              rowsPerPageOptions={[10, 25, 50]}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onChangePage={handlePageChange}
+              onChangeRowsPerPage={handleRowChange}
+              count={total}
+            />
+          </TableRow>
+        </TableFooter>
+      </Table>
+    </Paper>
+  );
 }
 
 SimpleTable.propTypes = {

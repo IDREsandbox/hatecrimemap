@@ -387,21 +387,21 @@ class ReportIncidentPage extends Component {
     this.reportIncident();
   };
 
+  resetState = () => this.setState(getInitialState());
+
   reportIncident = () => {
     const dataToSubmit = createDataToSubmit(this.state);
+    this.resetState(); // movin resetState here so that it can clear the text inputs before receiving confirmation report was
     axios
       .post('/api/report/incident', dataToSubmit)
       .then(() => {
         this.setState({ snackOpen: true });
-        this.resetState();
       })
       .catch((err) => {
         alert('Failed to submit the report');
         console.log(err);
       });
   };
-
-  resetState = () => this.setState(getInitialState());
 
   render() {
     const { activeStep } = this.state;
@@ -456,7 +456,10 @@ class ReportIncidentPage extends Component {
           autoHideDuration={5000}
           onClose={this.onHandleClose}
         >
-          <Alert severity="success">Incident Reported!</Alert>
+
+          <Alert severity="success">
+            Incident Reported!
+          </Alert>
         </Snackbar>
       </Paper>
     );

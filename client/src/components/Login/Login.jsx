@@ -84,13 +84,13 @@ class Login extends Component {
                 onChange={onChange}
                 endAdornment={(
                   <InputAdornment position="end">
-                    <IconButton
+                    {/* <IconButton
                       aria-label="Toggle password visibility"
                       onClick={this.handleClickShowPassword}
                       onMouseDown={this.handleMouseDownPassword}
                     >
                       {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
+                    </IconButton> */}
                   </InputAdornment>
                 )}
               />

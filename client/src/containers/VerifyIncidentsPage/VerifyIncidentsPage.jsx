@@ -18,6 +18,12 @@ import {
   Tooltip,
   Typography,
   Button,
+  Select,
+  MenuItem,
+  Grid,
+  InputLabel,
+  FormControl,
+  FormHelperText,
 } from '@material-ui/core';
 import {
   MoreVert, Done, Link, Web,
@@ -32,7 +38,7 @@ import {
 import Login from '../../components/Login/Login';
 import SimpleTable from '../../components/SimpleTable/SimpleTable';
 
-const styles = () => ({
+const styles = ({ spacing }) => ({
   root: {
     textAlign: 'center',
   },
@@ -47,6 +53,14 @@ const styles = () => ({
     'justify-content': 'center',
     'margin-top': '16px',
     width: '100%',
+  },
+  formControl: {
+    margin: spacing.unit,
+    minWidth: 200,
+    color: 'blue',
+  },
+  selectEmpty: {
+    marginTop: spacing.unit * 2,
   },
 });
 
@@ -135,7 +149,7 @@ const getInitialState = () => ({
   storeIds: [],
   storeAction: null,
   activeReport: null,
-  verified: '{ false }', // note -> must change to '{ true, false }' to consider both
+  verified: '{ false }', // note -> must change to '{ true, false }' to consider both // what is this actually considering?
   counts: 0,
   incidentsChecked: [],
 });
@@ -148,14 +162,7 @@ class VerifyIncidentsPage extends Component {
   }
 
   UNSAFE_componentWillMount() {
-    axios
-      .get(`/api/verify/unreviewedcount/${this.state.verified}`)
-      .then((res) => {
-        if (res.data.counts) {
-          this.setState({ counts: parseInt(res.data.counts, 10) });
-        }
-      })
-      .catch((err) => alert(err));
+    this.getTableCounts();
   }
 
   componentDidMount() {
@@ -257,6 +264,18 @@ class VerifyIncidentsPage extends Component {
     );
     return displayableData;
   };
+
+  getTableCounts = () => {
+    axios
+      .get(`/api/verify/unreviewedcount/${this.state.verified}`)
+      .then((res) => {
+        if (res.data.counts) {
+          console.log(res.data.counts);
+          this.setState({ counts: parseInt(res.data.counts, 10) });
+        }
+      })
+      .catch((err) => alert(err));
+  }
 
   fetchData = (perPage = 10, page = 0) => {
     axios
@@ -370,6 +389,14 @@ class VerifyIncidentsPage extends Component {
       });
   };
 
+
+  sortDataBy = (parameter) => {
+    const { incidentReports } = this.state;
+
+
+
+  }
+
   render() {
     const {
       incidentReports,
@@ -417,7 +444,58 @@ class VerifyIncidentsPage extends Component {
               incidentsChecked={this.state.incidentsChecked}
               actions={this.handleAction}
             />
-        )}
+          )}
+        {
+
+        }
+        <Grid
+          direction="row"
+          justifyContent="flex-start"
+          alignItems="center"
+          container>
+          <FormControl className={classes.formControl}>
+            <InputLabel shrink id="demo-simple-select-placeholder-label-label">
+              Student Reviewed Status
+            </InputLabel>
+            <Select
+              labelId="demo-simple-select-placeholder-label-label"
+              id="demo-simple-select-placeholder-label"
+              value={this.state.verified}
+              onChange={(event) => {
+                this.setState({ verified: event.target.value }, () => {
+                  this.getTableCounts();
+                  this.fetchData();
+                });
+              }}
+              displayEmpty
+              className={classes.selectEmpty}
+            >
+              <MenuItem value={'{ true, false }'}>Both</MenuItem>
+              <MenuItem value={'{ true }'}>Reviewed</MenuItem>
+              <MenuItem value={'{ false }'}>Unreviewed</MenuItem>
+            </Select>
+          </FormControl>
+          {/* WIP - SORT DATA ON BACKEND
+           <FormControl className={classes.formControl}>
+            <InputLabel shrink id="sort-label">
+              Sort Data By
+            </InputLabel>
+            <Select
+              labelId="sort-label"
+              id="sort-select-field"
+              value={"date-sub-desc"}
+              onChange={(event) => {
+                 console.log(event.target.value);
+                 console.log(this.state.incidentReports);
+              }}
+              displayEmpty
+              className={classes.selectEmpty}
+            >
+              <MenuItem value={'date-sub-desc'}>Date Submitted (descending)</MenuItem>
+              <MenuItem value={'date-sub-asc'}>Date Submitted (ascending)</MenuItem>
+            </Select>
+          </FormControl> */}
+        </Grid>
         <SimpleTable
           columnHeaders={COLUMN_HEADERS}
           tableData={incidentReports}
@@ -458,19 +536,20 @@ class VerifyIncidentsPage extends Component {
             open={openActionDialog}
           >
             <DialogTitle>Choose Action</DialogTitle>
+
             <div>
               <List>
                 {!this.state.verified ? (
                   <ListItem
                     button
-                    onClick={this.handleAction(activeReport, ACTIONS.VERIFY)}
+                    onClick={() => this.handleAction(activeReport, ACTIONS.VERIFY)}
                   >
                     <ListItemText primary="Mark Verified" />
                   </ListItem>
                 ) : (
                   <ListItem
                     button
-                    onClick={this.handleAction(activeReport, ACTIONS.UNVERIFY)}
+                    onClick={() => this.handleAction(activeReport, ACTIONS.UNVERIFY)}
                   >
                     <ListItemText primary="Mark Unverified" />
                   </ListItem>
@@ -478,14 +557,14 @@ class VerifyIncidentsPage extends Component {
                 {!this.state.urlvalid ? (
                   <ListItem
                     button
-                    onClick={this.handleAction(activeReport, ACTIONS.VALID_URL)}
+                    onClick={() => this.handleAction(activeReport, ACTIONS.VALID_URL)}
                   >
                     <ListItemText primary="Mark Valid URL" />
                   </ListItem>
                 ) : (
                   <ListItem
                     button
-                    onClick={this.handleAction(
+                    onClick={() => this.handleAction(
                       activeReport,
                       ACTIONS.INVALID_URL,
                     )}
@@ -496,21 +575,21 @@ class VerifyIncidentsPage extends Component {
                 {!this.state.published ? (
                   <ListItem
                     button
-                    onClick={this.handleAction(activeReport, ACTIONS.PUBLISH)}
+                    onClick={() => this.handleAction(activeReport, ACTIONS.PUBLISH)}
                   >
                     <ListItemText primary="Mark Published Source" />
                   </ListItem>
                 ) : (
                   <ListItem
                     button
-                    onClick={this.handleAction(activeReport, ACTIONS.UNPUBLISH)}
+                    onClick={() => this.handleAction(activeReport, ACTIONS.UNPUBLISH)}
                   >
                     <ListItemText primary="Mark Unpublished Source" />
                   </ListItem>
                 )}
                 <ListItem
                   button
-                  onClick={this.handleAction(activeReport, ACTIONS.DELETE)}
+                  onClick={() => this.handleAction(activeReport, ACTIONS.DELETE)}
                 >
                   <ListItemText primary="Delete Report" />
                 </ListItem>
@@ -528,3 +607,10 @@ VerifyIncidentsPage.propTypes = {
 };
 
 export default withStyles(styles)(VerifyIncidentsPage);
+/*TODO
+Fix up verified portal
+  Add option to change the 'verified' sort parameter for events from true, false, or both
+  (doesn't make sense why there's so many false events?)
+  fuck it. converting this to a functional component
+
+*/
