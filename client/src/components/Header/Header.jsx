@@ -14,6 +14,8 @@ import {
 import AboutDialog from '../AboutDialog/AboutDialog';
 import AboutCovidDialog from '../AboutDialog/AboutCovidDialog';
 
+import SpotlightModal from 'components/SpotlightModal/SpotlightModal';
+
 const styles = {
   root: {},
   covidFlex: {
@@ -133,6 +135,7 @@ const Header = ({ classes }) => {
             </Button>
           </Link>
           <AboutDialog />
+          <SpotlightModal />
         </Toolbar>
       </AppBar>
     </div>

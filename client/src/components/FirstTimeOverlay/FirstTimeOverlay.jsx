@@ -10,6 +10,9 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { FIRST_OVERLAY } from '../../res/values/string';
 
+
+
+
 const styles = {
   dontShowBox: {
     'justify-content': 'flex-end',
@@ -20,7 +23,7 @@ class FirstTimeOverlay extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      open: true,
+      open: false,
       dontShow: false,
     };
   }

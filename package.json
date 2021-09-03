@@ -12,7 +12,7 @@
     "client": "npm start --prefix client",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "lint-commit": "npx eslint --fix client/src --ext .jsx",
-    "prepare": "husky-install"
+    "prepare": "npx husky install"
   },
   "cacheDirectories": [
     "node_modules",
