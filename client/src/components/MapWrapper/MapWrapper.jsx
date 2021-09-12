@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
- MapContainer, TileLayer, Rectangle, GeoJSON, Pane, MapConsumer
+ MapContainer, TileLayer, Rectangle, GeoJSON, Pane, MapConsumer, LayerGroup
 } from 'react-leaflet';
 import L from 'leaflet';
 
@@ -16,7 +16,7 @@ import {
   covidColors,
   eachCovidState,
   counts_aggregateBy,
-  hashStateColor
+  hashColor
 } from 'utils/data-utils';
 import { useLocation } from 'react-router-dom';
 import MyGeoJSON from './GeoJSON/MyGeoJSON';
@@ -50,16 +50,28 @@ const MapWrapper = (props) => {
       if(stateCount <= 0) {
         return 'rgba(0, 0, 0, 0)';
       }
-      return hashStateColor(stateCount, max);
+      return hashColor(stateCount, max);
   }
 
-  let lockedLayer; // useState causes rerendering
+  const calculateCountyColor = (county, data, max) => {
+      const countyCount = counts_aggregateBy(data, 'county', county);
+      if(countyCount <= 0) {
+        return 'rgba(0, 0, 0, 0)';
+      }
+      return hashColor(countyCount, max);
+  }
 
   useEffect(() => {
-    if (!props.covid)
+    if (!props.covid) {
       states_usa.features.forEach(eachState => eachState.properties.COLOR = calculateStateColor(eachState.properties.NAME, props.data, props.max));
-    else
-      states_usa.features.forEach(eachState => eachState.properties.COLOR = props.data[eachState.properties.NAME] ? hashStateColor(props.data[eachState.properties.NAME].count, 70) : 'rgb(0,0,0)');
+      counties.forEach(countiesInState =>
+        countiesInState.features.forEach(eachCounty =>
+          eachCounty.properties.COLOR = calculateCountyColor(eachCounty.properties.NAME, props.data, props.maxCounty)
+          )
+        );
+    } else {
+      states_usa.features.forEach(eachState => eachState.properties.COLOR = props.data[eachState.properties.NAME] ? hashColor(props.data[eachState.properties.NAME].count, 70) : 'rgb(0,0,0)');
+    }
     return () => { };
   }, [props.data.length]) // pretty good indicator of when we should recalculate colors? Could be an edge case where # elements are the same
 
@@ -73,9 +85,10 @@ const MapWrapper = (props) => {
         minZoom={2}
         zoomSnap={0.25}
         center={ML.usaCenter}
-        zoom={props.zoom()}
+        zoom={props.zoom}
       >
         <TileLayer
+          key="base"
           bounds={ML.worldBounds}
           attribution="&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
           url="https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png"
@@ -87,36 +100,30 @@ const MapWrapper = (props) => {
           onClick={() => props.updateState('none', true)}
         />
         <Pane
-          name="states"
-          style={{ zIndex: 500, display: props.zoom() >= 6 ? 'none' : 'block' }}
-        >
-          <GeoJSON
-            key={'states'}
-            data={states_usa}
-            onAdd={() => props.updateView(0, 1)}
+          name='states'
+          className={props.zoom >= 6 ? 'paneHide' : ''}>
+          <MyGeoJSON
+            key='states'
             style={(feature) => ({stroke: 1, weight: 1, opacity: 0.75, color: 'white', fillColor: feature.properties.COLOR, fillOpacity: 0.75})}
-            /* style is mutable in 3.2.1, so this would override eventHandlers changing the hover color. This only works now because of React.memo() below */
-            eventHandlers={{
-              mouseover: ({layer}) => props.updateState(layer.feature.properties.NAME) && layer.setStyle({fillColor: 'rgb(200, 200, 200)'}),
-              mouseout: ({layer}) => props.updateState('none') && layer.setStyle({fillColor: layer.feature.properties.COLOR}),
-              click: ({layer}) => {
-                props.updateState(layer.feature.properties.NAME, true);
-                if (lockedLayer) {
-                  lockedLayer.setStyle({fillColor: lockedLayer.feature.properties.COLOR});
-                  if (lockedLayer === layer) {
-                    lockedLayer = null;
-                    return;
-                  }
-                }
-                layer.setStyle({fillColor: 'rgb(100, 100, 100)'});
-                lockedLayer = layer;
-              }
-            }}
+            geojson={states_usa}
+            update={props.updateState}
+            datalen={props.data.length}
           />
         </Pane>
-        <GeoJSON
-          data={usa}
+        <Pane
+          name='counties'
+          className={props.zoom < 6 ? 'paneHide' : ''}>
+          <MyGeoJSON
+            key='counties'
+            style={(feature) => ({stroke: 1, weight: 1, opacity: 0.75, color: 'white', fillColor: feature.properties.COLOR, fillOpacity: 0.75})}
+            geojson={counties}
+            update={props.updateCounty}
+            datalen={props.data.length}
+          />
+        </Pane>
+        <MyGeoJSON
           key="usa"
+          geojson={usa}
           style={usa_background_style}
         />
         <MapConsumer>
@@ -134,5 +141,5 @@ MapWrapper.propTypes = {
 };
 // https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png
 
-const rerenderWhen = (prevProps, props) => prevProps.zoom() === props.zoom() && prevProps.data.length === props.data.length;
+const rerenderWhen = (prevProps, props) => prevProps.data.length === props.data.length;
 export default React.memo(MapWrapper, rerenderWhen);

@@ -39,3 +39,6 @@
     pointer-events: all;
   }
    
+.paneHide {
+    display: none;
+}

@@ -10,7 +10,8 @@ import {
   Charts,
   FilterBar,
   MapBar,
-  Legend
+  Legend,
+  CountyToggle
 } from 'components';
 import { JOYRIDE_STEPS } from 'res/values/joyride';
 import { MAP_DISPLAY, MAP_LOCATIONS } from 'res/values/map';
@@ -129,15 +130,22 @@ class HomePage extends Component {
   };
 
   updateCounty = (county, lock = false) => {
-    if (lock) {
-      this.setState({ currentDisplay: county, locked: county !== 'none', lockType: 'county' });
-      return true;
+    if (this.state.locked && !lock) return false;
+    if (this.state.locked && this.state.currentDisplay === county) {
+      this.setState({
+        currentDisplay: 'none',
+        locked: false,
+        lockType: 'county',
+      });
+      return false; // uncolor
     }
-    if (!this.state.locked) {
-      this.setState({ currentDisplay: county });
-      return true;
-    }
-    return false;
+
+    this.setState({
+      currentDisplay: county,
+      locked: lock && county !== 'none', // we never want to lock onto None
+      lockType: 'county',
+    });
+    return true;
   };
 
   showTutorial = () => {
@@ -211,10 +219,8 @@ class HomePage extends Component {
   };
 
   updateZoom = (z) => {
-    this.setState({ zoom: z.target._zoom });
+    this.setState({ zoom: z });
   };
-
-  getZoom = () => this.mapRef.current ? this.mapRef.current.getZoom() : 4.5;
 
   timeSlider = (
     <div id="timeslider">
@@ -237,7 +243,7 @@ class HomePage extends Component {
 
   render() {
     const {
-      isFetching, run, steps, stepIndex,
+      isFetching, run, steps, stepIndex, zoom
     } = this.state;
     const { classes } = this.props;
 
@@ -254,7 +260,8 @@ class HomePage extends Component {
       (row) => row.yyyy >= this.state.filterTimeRange[0]
         && row.yyyy <= this.state.filterTimeRange[1],
     );
-    const dataMapMax = this.state.zoom >= 6 ? 30 : counts_maxState(data);
+    const dataStateMax = counts_maxState(data);
+    const dataCountyMax = 30; // replace with county-max calculator
     const dataMax = counts_maxPrimary(data); // TODO: rename these...
     let currTotal = 0;
 
@@ -285,16 +292,17 @@ class HomePage extends Component {
           alaskaRef={this.alaskaRef}
           hawaiiRef={this.hawaiiRef}
           data={data}
-          max={dataMapMax}
+          max={dataStateMax}
+          maxCounty={dataCountyMax}
           updateView={this.changeViewRegion}
-          updateZoom={this.updateZoom}
-          zoom={this.getZoom}
+          zoom={zoom}
           filterTime={this.filterTime}
           timeSlider={this.timeSlider}
           controls={(map) =>
             <React.Fragment>
-              <Legend colors={defaultColors} max={dataMapMax} />
+              <Legend colors={defaultColors} max={dataStateMax} />
               <MapBar changeRegion={this.changeViewRegion} region={this.state.region} />
+              <CountyToggle zoom={zoom} updateZoom={this.updateZoom} />
             </React.Fragment> }
         >
           

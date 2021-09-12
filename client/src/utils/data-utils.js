@@ -200,7 +200,7 @@ const colorBins = ["#f2f0f7", "#cbc9e2", "#9e9ac8", "#756bb1", "#54278f"];
 var lockedLayer = null;
 var lockedLayerColor = null;
 
-export function hashStateColor(sum, max,colorBin=colorBins) {
+export function hashColor(sum, max,colorBin=colorBins) {
 	let colorHashed;
 	if(sum < max/10) colorHashed = colorBin[0];
     else if(sum < max/8) colorHashed = colorBin[1];

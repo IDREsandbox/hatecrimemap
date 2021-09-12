@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { useMap } from 'react-leaflet';
+import { hashColor } from 'utils/data-utils';
 import L from 'leaflet';
 import './Legend.css';
 
@@ -8,14 +9,10 @@ const Legend = (props) => {
 
   const createLeafletElement = () => {
     const getColor = (d) => {
-      // REFERENCE: data-utils.js::hashStateColor()
-      if(d < props.max/10) return props.colors[0];
-      else if(d < props.max/8) return props.colors[1];
-      else if(d < props.max/5) return props.colors[2];
-      else if(d < props.max/3) return props.colors[3];
-      else if(d < props.max + 1) return props.colors[4];
+      return hashColor(d, props.max, props.colors);
     }
 
+    // REFERENCE hashColor in data-utils
     const ranges = [
         0,
         Math.floor(props.max/10),

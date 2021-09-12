@@ -9,6 +9,7 @@ export { default as Header } from './Header/Header.jsx';
 export { default as Login } from './Login/Login.jsx';
 export { default as MapWrapper } from './MapWrapper/MapWrapper.jsx';
 export { default as Legend } from './MapWrapper/Legend/Legend.jsx';
+export { default as CountyToggle } from './MapWrapper/CountyToggle/CountyToggle.jsx';
 export { default as SideMenu } from './SideMenu/SideMenu.jsx';
 export { default as SimpleTable } from './SimpleTable/SimpleTable.jsx';
 export { default as Footer } from './Footer/Footer.jsx';
