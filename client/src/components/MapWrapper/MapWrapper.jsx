@@ -66,7 +66,7 @@ const MapWrapper = (props) => {
       states_usa.features.forEach(eachState => eachState.properties.COLOR = calculateStateColor(eachState.properties.NAME, props.data, props.max));
       counties.forEach(countiesInState =>
         countiesInState.features.forEach(eachCounty =>
-          eachCounty.properties.COLOR = calculateCountyColor(eachCounty.properties.NAME, props.data, props.maxCounty)
+          eachCounty.properties.COLOR = calculateCountyColor(eachCounty.properties.County_state, props.data, props.maxCounty)
           )
         );
     } else {
@@ -74,6 +74,8 @@ const MapWrapper = (props) => {
     }
     return () => { };
   }, [props.data.length]) // pretty good indicator of when we should recalculate colors? Could be an edge case where # elements are the same
+
+  let lockedLayer;
 
   return (
     <div id="MapWrapper">
@@ -85,7 +87,7 @@ const MapWrapper = (props) => {
         minZoom={2}
         zoomSnap={0.25}
         center={ML.usaCenter}
-        zoom={props.zoom}
+        zoom={props.zoom()}
       >
         <TileLayer
           key="base"
@@ -101,24 +103,56 @@ const MapWrapper = (props) => {
         />
         <Pane
           name='states'
-          className={props.zoom >= 6 ? 'paneHide' : ''}>
+          className={props.zoom() >= 6 ? 'paneHide' : ''}>
           <MyGeoJSON
             key='states'
             style={(feature) => ({stroke: 1, weight: 1, opacity: 0.75, color: 'white', fillColor: feature.properties.COLOR, fillOpacity: 0.75})}
             geojson={states_usa}
-            update={props.updateState}
             datalen={props.data.length}
+            eventHandlers={{
+              mouseover: ({layer}) => props.updateState && props.updateState(layer.feature.properties.NAME) && layer.setStyle({fillColor: 'rgb(200, 200, 200)'}),
+              mouseout: ({layer}) => props.updateState && props.updateState('none') && layer.setStyle({fillColor: layer.feature.properties.COLOR}),
+              click: ({layer}) => {
+                if (!props.updateState) return;
+                props.updateState(layer.feature.properties.NAME, true);
+                if (lockedLayer) {
+                  lockedLayer.setStyle({fillColor: lockedLayer.feature.properties.COLOR});
+                  if (lockedLayer === layer) {
+                    lockedLayer = null;
+                    return;
+                  }
+                }
+                layer.setStyle({fillColor: 'rgb(100, 100, 100)'});
+                lockedLayer = layer;
+              }
+            }}
           />
         </Pane>
         <Pane
           name='counties'
-          className={props.zoom < 6 ? 'paneHide' : ''}>
+          className={props.zoom() < 6 ? 'paneHide' : ''}>
           <MyGeoJSON
             key='counties'
             style={(feature) => ({stroke: 1, weight: 1, opacity: 0.75, color: 'white', fillColor: feature.properties.COLOR, fillOpacity: 0.75})}
             geojson={counties}
-            update={props.updateCounty}
             datalen={props.data.length}
+            eventHandlers={{
+              mouseover: ({layer}) => props.updateCounty && props.updateCounty(layer.feature.properties.County_state) && layer.setStyle({fillColor: 'rgb(200, 200, 200)'}),
+              mouseout: ({layer}) => props.updateCounty && props.updateCounty('none') && layer.setStyle({fillColor: layer.feature.properties.COLOR}),
+              click: ({layer}) => {
+                if (!props.updateCounty) return;
+                props.updateCounty(layer.feature.properties.County_state, true);
+                if (lockedLayer) {
+                  lockedLayer.setStyle({fillColor: lockedLayer.feature.properties.COLOR});
+                  if (lockedLayer === layer) {
+                    lockedLayer = null;
+                    return;
+                  }
+                }
+                layer.setStyle({fillColor: 'rgb(100, 100, 100)'});
+                lockedLayer = layer;
+              }
+            }}
           />
         </Pane>
         <MyGeoJSON

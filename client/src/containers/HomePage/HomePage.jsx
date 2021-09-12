@@ -80,7 +80,6 @@ class HomePage extends Component {
 
   async componentDidMount() {
     const context = this.context;
-    console.log(context);
 
     this.state.run = context.homePageJoyrideRestart;
     this.state.stepIndex = context.stepIndex;
@@ -222,6 +221,8 @@ class HomePage extends Component {
     this.setState({ zoom: z });
   };
 
+  getZoom = () => this.state.zoom;
+
   timeSlider = (
     <div id="timeslider">
       <Nouislider
@@ -243,7 +244,7 @@ class HomePage extends Component {
 
   render() {
     const {
-      isFetching, run, steps, stepIndex, zoom
+      isFetching, run, steps, stepIndex
     } = this.state;
     const { classes } = this.props;
 
@@ -295,14 +296,14 @@ class HomePage extends Component {
           max={dataStateMax}
           maxCounty={dataCountyMax}
           updateView={this.changeViewRegion}
-          zoom={zoom}
+          zoom={this.getZoom}
           filterTime={this.filterTime}
           timeSlider={this.timeSlider}
           controls={(map) =>
             <React.Fragment>
               <Legend colors={defaultColors} max={dataStateMax} />
               <MapBar changeRegion={this.changeViewRegion} region={this.state.region} />
-              <CountyToggle zoom={zoom} updateZoom={this.updateZoom} />
+              <CountyToggle zoom={this.getZoom} updateZoom={this.updateZoom} />
             </React.Fragment> }
         >
           
