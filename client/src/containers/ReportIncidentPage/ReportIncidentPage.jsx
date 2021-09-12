@@ -89,30 +89,6 @@ class ReportIncidentPage extends Component {
     this.setState({ groups: {}, snackOpen: false });
   }
 
-  onHandleClose = () => {
-    this.setState({ snackOpen: false });
-  };
-
-  groupToNodes = (groups) => groups.map((eachGroup) => {
-      eachGroup.value = eachGroup.key;
-      delete eachGroup.key;
-      eachGroup.label = eachGroup.name;
-      delete eachGroup.name;
-      if (eachGroup.children) {
-        eachGroup.children = this.groupToNodes(eachGroup.children);
-      }
-
-      if (eachGroup.level == 0) {
-        // disable toplevel categories, they're just for grouping
-        eachGroup.showCheckbox = false;
-        // this.setState((prevState) => prevState.groupsExpanded.push(eachGroup['value']));
-      }
-
-      // Do other node customizations, e.g. custom icons or class
-
-      return eachGroup;
-    });
-
   async componentDidMount() {
     axios
       .get('/api/totals/groups')
@@ -122,6 +98,30 @@ class ReportIncidentPage extends Component {
         return {};
       });
   }
+
+  onHandleClose = () => {
+    this.setState({ snackOpen: false });
+  };
+
+  groupToNodes = (groups) => groups.map((eachGroup) => {
+    eachGroup.value = eachGroup.key;
+    delete eachGroup.key;
+    eachGroup.label = eachGroup.name;
+    delete eachGroup.name;
+    if (eachGroup.children) {
+      eachGroup.children = this.groupToNodes(eachGroup.children);
+    }
+
+    if (eachGroup.level == 0) {
+      // disable toplevel categories, they're just for grouping
+      eachGroup.showCheckbox = false;
+      // this.setState((prevState) => prevState.groupsExpanded.push(eachGroup['value']));
+    }
+
+    // Do other node customizations, e.g. custom icons or class
+
+    return eachGroup;
+  });
 
   getStepContent = (index) => {
     const {
@@ -180,8 +180,7 @@ class ReportIncidentPage extends Component {
                 >
                   {groups[category].label}
                 </MenuItem>
-              )) // Top level
-            }
+              )) /* Top level */}
           </Select>
         );
       case 3:
@@ -392,7 +391,7 @@ class ReportIncidentPage extends Component {
     const dataToSubmit = createDataToSubmit(this.state);
     axios
       .post('/api/report/incident', dataToSubmit)
-      .then((res) => {
+      .then(() => {
         this.setState({ snackOpen: true });
         this.resetState();
       })

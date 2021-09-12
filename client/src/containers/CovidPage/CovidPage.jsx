@@ -3,21 +3,21 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { CircularProgress } from '@material-ui/core';
 
+import Joyride, { ACTIONS, EVENTS } from 'react-joyride';
+import { MainContext } from '../context/joyrideContext';
 import {
   MapWrapper,
   SideMenu,
   CovidCharts,
   MapBar,
   Legend,
-} from 'components';
-import { getCovidData, covidColors } from 'utils/data-utils';
-import { wordCloudReducer, takeTop } from 'utils/chart-utils';
+} from '../../components';
+import { getCovidData, covidColors } from '../../utils/data-utils';
+import { wordCloudReducer, takeTop } from '../../utils/chart-utils';
 
 import './CovidPage.css';
 
-import { MainContext } from 'containers/context/joyrideContext';
-import { COVID_JOYRIDE_STEPS } from 'res/values/joyride';
-import Joyride, { ACTIONS, EVENTS } from 'react-joyride';
+import { COVID_JOYRIDE_STEPS } from '../../res/values/joyride';
 
 export const MAP_DISPLAY = {
   USA: 1,
@@ -39,9 +39,10 @@ const styles = () => ({
 });
 
 let wordData = {};
-let stateNames = {};
 
 class CovidPage extends Component {
+  static contextType = MainContext;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -59,22 +60,18 @@ class CovidPage extends Component {
     this.mapRef = React.createRef();
   }
 
-  static contextType = MainContext;
-  
   async componentDidMount() {
-
     const context = this.context;
     this.state.run = context.covidJoyrideRun;
 
     getCovidData().then((values) => {
-      stateNames = Object.keys(values);
       wordData = {};
       Object.keys(values)
         .filter((state) => values[state] instanceof Object)
         .forEach(
           (state) => (wordData[state] = takeTop(
-              values[state].children.reduce(wordCloudReducer, []),
-            )),
+            values[state].children.reduce(wordCloudReducer, []),
+          )),
         );
       this.setState({
         data: values,
@@ -134,26 +131,28 @@ class CovidPage extends Component {
 
   getZoom = () => this.state.zoom;
 
-  filterTime = (time) => {};
+  filterTime = (time) => { }; // eslint-disable-line no-unused-vars
 
-  handleJoyrideCallback = data => {
-    const { action, index, status, type } = data;
+  handleJoyrideCallback = (data) => {
+    const {
+      action, index, status, type, // eslint-disable-line no-unused-vars
+    } = data;
 
     if (action == ACTIONS.CLOSE || action == ACTIONS.SKIP) {
       // prevents joyride from opening on normal homepage if the joyride is exited
-      const context = this.context;
+      const { context } = this;
       context.covidJoyrideRun = false;
       context.stepIndex = 0;
       context.homePageJoyrideRestart = false;
-      return; 
+      return;
     }
 
     if ([EVENTS.STEP_AFTER].includes(type)) {
       this.setState({ run: false });
-      const context = this.context;
+      const { context } = this;
       context.covidJoyrideRun = false;
       context.stepIndex = 0;
-      context.homePageJoyrideRestart = false
+      context.homePageJoyrideRestart = false;
     }
   };
 
@@ -164,8 +163,6 @@ class CovidPage extends Component {
     if (isFetching) {
       return <CircularProgress className={classes.progress} />;
     }
-
-    console.log(this.state.data, this.state.currentDisplay)
 
     return (
       <div className="CovidPage">
@@ -219,11 +216,10 @@ class CovidPage extends Component {
         <div className="side">
           <SideMenu>
             <h2 className="sideMenu__header">
-              {`COVID Hate Incidents in ${
-              this.state.currentDisplay == 'none'
+              {`COVID Hate Incidents in ${this.state.currentDisplay == 'none'
                 ? 'US'
                 : this.state.currentDisplay
-            }`}
+              }`}
             </h2>
             {this.state.currentDisplay != 'none' ? (
               <div className={`sideMenu__info ${classes.dateRange}`}>
@@ -240,8 +236,7 @@ class CovidPage extends Component {
                 </p>
               </div>
             ) : (
-              <div className="sideMenu__info">
-              </div>
+              <div className="sideMenu__info" />
             )}
             <div className="sideMenu__chart">
               <CovidCharts

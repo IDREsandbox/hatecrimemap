@@ -2,13 +2,13 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { Button, Checkbox, FormControlLabel } from '@material-ui/core';
-import { FIRST_OVERLAY } from 'res/values/string';
 
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import { FIRST_OVERLAY } from '../../res/values/string';
 
 const styles = {
   dontShowBox: {
@@ -35,13 +35,13 @@ class FirstTimeOverlay extends Component {
     }
   }
 
-  handleCheck = (e) => {
-    this.setState((prev, props) => ({ dontShow: !prev.dontShow }));
+  handleCheck = () => {
+    this.setState((prev) => ({ dontShow: !prev.dontShow }));
     if (
       document.cookie
         .split(';')
         .some((item) => item.trim().startsWith('dontshow='))
-    ) {
+    ) { // eslint-disable-line no-empty
     }
   };
 

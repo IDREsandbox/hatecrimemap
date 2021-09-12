@@ -3,8 +3,6 @@ import { withStyles } from '@material-ui/core/styles';
 import './Charts.css';
 import { Button, LinearProgress } from '@material-ui/core';
 import { ArrowBack } from '@material-ui/icons';
-import { CHARTS, CHART_STRINGS, getChartData } from 'utils/chart-utils';
-import { countyDisplayName } from 'utils/data-utils'
 import { Bar, Pie } from 'react-chartjs-2';
 import Grid from '@material-ui/core/Grid';
 
@@ -22,15 +20,17 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
 import ChartDataLabels from 'chartjs-plugin-datalabels';
+import { countyDisplayName } from '../../utils/data-utils';
+import { CHARTS, CHART_STRINGS, getChartData } from '../../utils/chart-utils';
 
-const styles = (theme) => ({
+const styles = (theme) => ({ // eslint-disable-line no-unused-vars
 
 });
 
 const LOCK_TYPE = {
   COUNTY: 'county',
   STATE: 'state',
-}
+};
 
 class Charts extends React.Component {
   chartReference = createRef();
@@ -89,12 +89,12 @@ class Charts extends React.Component {
       parent_group: this.state.drilldown, // see: note in totals.js regarding ignoring this property
       group: elems[0]._chart.config.data.labels[elems[0]._index],
       // time: this.props.time
-      state: null, 
+      state: null,
       county: null,
       // published: false // filled in by filters, used to filter data once retrieved from backend
     };
-    this.props.filters.forEach((f) => params[f[0]] = f[1]); 
-  
+    this.props.filters.forEach((f) => params[f[0]] = f[1]);
+
     /*
     if both state and county are null, don't trigger any change on backend
     */
@@ -104,7 +104,7 @@ class Charts extends React.Component {
         popup_data: prevState.tableRows[params.state][params.group].filter((each) => (new Date(each.date).getFullYear() >= this.props.time[0] && new Date(each.date).getFullYear() <= this.props.time[1] && (!params.published || (params.published && each.published)))),
       }));
       return;
-    }  else if (this.state.tableRows[params.county] && this.state.tableRows[params.county][params.group]) {
+    } if (this.state.tableRows[params.county] && this.state.tableRows[params.county][params.group]) {
       this.setState((prevState) => ({
         popup_data: prevState.tableRows[params.county][params.group].filter((each) => (new Date(each.date).getFullYear() >= this.props.time[0] && new Date(each.date).getFullYear() <= this.props.time[1] && (!params.published || (params.published && each.published)))),
       }));
@@ -134,7 +134,7 @@ class Charts extends React.Component {
     this.setState({ dialogOpen: open });
   }
 
-  barClick = (elems, event=null) => {
+  barClick = (elems, event = null) => {
     // index into `data` of the bar clicked
     // TODO -> add requirements that click can only be inside the chart itself, not outside borders?
     if (!elems[0]) {
@@ -146,7 +146,7 @@ class Charts extends React.Component {
     }
 
     const dataIdx = elems[0]._index;
-    switch (dataIdx) {
+    switch (dataIdx) { // eslint-disable-line default-case
       case 0:
         this.setState({ currentDisplay: dataIdx + 1, drilldown: 'Race/Ethnicity', popup_filter_num: 0 });
         break;
@@ -217,31 +217,31 @@ class Charts extends React.Component {
               <DialogTitle id="responsive-dialog-title">Hate Crimes</DialogTitle>
               <DialogContent>
                 {!this.state.popup_data ? <LinearProgress style={{ width: '100%' }} />
-                    : (
-                      <Table stickyHeader className="hello" aria-label="simple table" width="100%">
-                        <TableHead>
-                          <TableRow>
-                            <TableCell width="10%">Date (M/D/Y)</TableCell>
-                            <TableCell width="10%">{this.props.lockType === LOCK_TYPE.COUNTY ? 'County' : 'State' }</TableCell>
-                            <TableCell width="15%">Primary Reason</TableCell>
-                            <TableCell width="20%">Source</TableCell>
-                            <TableCell width="45%">Description</TableCell>
+                  : (
+                    <Table stickyHeader className="hello" aria-label="simple table" width="100%">
+                      <TableHead>
+                        <TableRow>
+                          <TableCell width="10%">Date (M/D/Y)</TableCell>
+                          <TableCell width="10%">{this.props.lockType === LOCK_TYPE.COUNTY ? 'County' : 'State' }</TableCell>
+                          <TableCell width="15%">Primary Reason</TableCell>
+                          <TableCell width="20%">Source</TableCell>
+                          <TableCell width="45%">Description</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {this.state.popup_data.map((row) => (
+                          <TableRow key={row.id}>
+                            <TableCell width="10%">{row.date}</TableCell>
+                            {/* Change the following below to include {___} County, {state}? */}
+                            <TableCell width="10%">{this.props.lockType === LOCK_TYPE.COUNTY ? countyDisplayName(row.county, row.state) : row.state}</TableCell>
+                            <TableCell width="15%">{row.group}</TableCell>
+                            <TableCell width="20%">{row.link ? <a href={row.link} target="_blank" rel="noreferrer noopener">{row.link}</a> : 'N/A'}</TableCell>
+                            <TableCell width="45%">{row.description || '--'}</TableCell>
                           </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {this.state.popup_data.map((row) => (
-                            <TableRow key={row.id}>
-                              <TableCell width="10%">{row.date}</TableCell>
-                              {/* Change the following below to include {___} County, {state}?*/}
-                              <TableCell width="10%">{this.props.lockType === LOCK_TYPE.COUNTY ? countyDisplayName(row.county, row.state) : row.state}</TableCell>
-                              <TableCell width="15%">{row.group}</TableCell>
-                              <TableCell width="20%">{row.link ? <a href={row.link} target="_blank" rel="noreferrrer noopener">{row.link}</a> : 'N/A'}</TableCell>
-                              <TableCell width="45%">{row.description || '--'}</TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    )}
+                        ))}
+                      </TableBody>
+                    </Table>
+                  )}
               </DialogContent>
               <DialogActions id="closeDataTable">
                 <Button onClick={() => this.toggleOpen(false)} color="primary">

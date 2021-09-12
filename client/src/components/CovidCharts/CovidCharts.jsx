@@ -2,7 +2,6 @@ import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import './CovidCharts.css';
 import { Button } from '@material-ui/core';
-import { COVID_CHARTS, getCovidChartData, takeTop } from 'utils/chart-utils';
 import { Pie } from 'react-chartjs-2';
 import Grid from '@material-ui/core/Grid';
 
@@ -17,15 +16,18 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import { getCovidChartData, takeTop } from '../../utils/chart-utils';
 
 import WordCloud from '../Charts/elements/WordCloud/WordCloud';
 
 import 'tippy.js/dist/tippy.css';
 import 'tippy.js/animations/scale.css';
 
-const styles = (theme) => ({});
+// Note: when cleaned up, left all outdated wordcloud props in case they're ever needed for reference
 
-const columns = [
+const styles = (theme) => ({}); // eslint-disable-line no-unused-vars
+
+const columns = [ // eslint-disable-line no-unused-vars
   { field: 'date', headerName: 'Date of Incident', width: 70 },
   {
     field: 'cityState',
@@ -76,7 +78,7 @@ const covidType = [
 ];
 const covidOther = ['Unknown'];
 
-const options = {
+const options = { // eslint-disable-line no-unused-vars
   colors: ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b'],
   enableTooltip: true,
   deterministic: false,
@@ -92,8 +94,8 @@ const options = {
   transitionDuration: 1000,
 };
 
-const size = [200, 200];
-const words = [
+const size = [200, 200]; // eslint-disable-line no-unused-vars
+const words = [ // eslint-disable-line no-unused-vars
   {
     text: 'told',
     value: 64,
@@ -112,14 +114,11 @@ const words = [
   },
 ];
 
-const callbacks = {};
-
 class CovidCharts extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      currentDisplay: COVID_CHARTS.TOP,
       options: {
         scales: {
           yAxes: [
@@ -132,7 +131,6 @@ class CovidCharts extends React.Component {
           ],
         },
       },
-      drilldown: {},
       dialogOpen: false,
       dialogShow: 'all',
       dialogFilter: 0,
@@ -141,10 +139,6 @@ class CovidCharts extends React.Component {
 
   toggleOpen = (open) => {
     this.setState({ dialogOpen: open });
-  };
-
-  barUnClick = () => {
-    this.setState({ currentDisplay: 'TOP' });
   };
 
   pieREClick = (elems) => {
@@ -187,20 +181,20 @@ class CovidCharts extends React.Component {
       );
 
       const rows = this.props.currState == 'none'
-          ? Object.values(this.props.data)
-              .filter((val) => val instanceof Object)
-              .reduce(
-                (prev, next) => prev.concat(
-                    next.children.filter(
-                      (el) => el[this.state.dialogShow]
+        ? Object.values(this.props.data)
+          .filter((val) => val instanceof Object)
+          .reduce(
+            (prev, next) => prev.concat(
+              next.children.filter(
+                (el) => el[this.state.dialogShow]
                         && el[this.state.dialogShow].includes(
                           this.state.dialogFilter,
                         ),
-                    ),
-                  ),
-                [],
-              )
-          : this.props.data[this.props.currState]
+              ),
+            ),
+            [],
+          )
+        : this.props.data[this.props.currState]
             && this.props.data[this.props.currState].children
             && this.props.data[this.props.currState].children.filter(
               (el) => el[this.state.dialogShow]

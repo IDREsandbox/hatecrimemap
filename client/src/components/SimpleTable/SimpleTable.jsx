@@ -83,7 +83,7 @@ class SimpleTable extends Component {
               <TableCell className={classes.cell} key="select">
                 <Checkbox
                   checked={tableData.every((row) => idsChecked.includes(row[0]))}
-                  onChange={(e) => onCheckAll(tableData.map((row) => row[0]))}
+                  onChange={() => onCheckAll(tableData.map((row) => row[0]))}
                 />
               </TableCell>
               <TableCell className={classes.cell} key="id">
@@ -99,7 +99,7 @@ class SimpleTable extends Component {
           </TableHead>
           <TableBody>
             {/* Row FOR EACH incident fetched */}
-            {tableData.map((row, i) => (
+            {tableData.map((row, i) => ( // eslint-disable-line no-unused-vars
               <TableRow className={classes.row} key={row[0]}>
                 <TableCell className={classes.cell} key={`select${row[0]}`}>
                   <Checkbox

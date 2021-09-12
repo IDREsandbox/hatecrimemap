@@ -17,7 +17,6 @@
         ],
         "no-console": 0,
         "no-plusplus": 0,
-        "indent": 0,
         "no-alert": 0,
         "jsx-a11y/label-has-for": 0,
         "no-return-assign": 0,
@@ -25,6 +24,15 @@
         "jsx-a11y/anchor-is-valid": 0,
         "max-len": 0,
         "react/no-did-mount-set-state": 0,
-        "react/forbid-prop-types": 0
+        "react/forbid-prop-types": 0,
+        "no-nested-ternary": 0,
+        "eqeqeq": 0,
+        "react/no-access-state-in-setstate": 0,
+        "import/no-extraneous-dependencies": 0,
+        "camelcase": 0,
+        "react/static-property-placement": 0,
+        "react/jsx-props-no-spreading": 0,
+        "radix": 0,
+        "prefer-destructuring": 0
     }
 }
