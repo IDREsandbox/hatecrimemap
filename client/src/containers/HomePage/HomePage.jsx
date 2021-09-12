@@ -66,6 +66,7 @@ class HomePage extends Component {
       steps: JOYRIDE_STEPS,
       stepIndex: 0,
       skipStep: false,
+      displayType: 'state', // consider simplifying with lockType
       lockType: 'none',
       context: this.context,
     };
@@ -85,10 +86,8 @@ class HomePage extends Component {
     this.state.stepIndex = context.stepIndex;
 
     getDataCounts().then((values) => {
-      const max = counts_total(values);
       this.setState({
         data: values,
-        dataMax: max,
         isFetching: false,
       });
     });
@@ -217,8 +216,16 @@ class HomePage extends Component {
     }
   };
 
-  updateZoom = (z) => {
-    this.setState({ zoom: z });
+  updateZoom = (z, callback) => {
+    if (this.state.zoom < 6 && z >= 6) {
+      // Should show county
+      this.setState({ zoom: z, displayType: 'county' }, callback('county'));
+    } else if (this.state.zoom >= 6 && z < 6) {
+      // Should show state
+      this.setState({ zoom: z, displayType: 'state' }, callback('state'));
+    } else {
+      this.setState({ zoom: z });
+    }
   };
 
   getZoom = () => this.state.zoom;
@@ -244,7 +251,7 @@ class HomePage extends Component {
 
   render() {
     const {
-      isFetching, run, steps, stepIndex
+      isFetching, run, steps, stepIndex, region, displayType
     } = this.state;
     const { classes } = this.props;
 
@@ -261,9 +268,14 @@ class HomePage extends Component {
       (row) => row.yyyy >= this.state.filterTimeRange[0]
         && row.yyyy <= this.state.filterTimeRange[1],
     );
+    if (this.state.filterPublished) {
+      data = data.filter(
+        (row) => row.published
+      )
+    }
     const dataStateMax = counts_maxState(data);
     const dataCountyMax = 30; // replace with county-max calculator
-    const dataMax = counts_maxPrimary(data); // TODO: rename these...
+    const dataMaxTopLevel = counts_maxPrimary(data); // TODO: rename these...
     let currTotal = 0;
 
     const filters = [];
@@ -277,7 +289,6 @@ class HomePage extends Component {
     } else {
       currTotal = counts_total(data);
     }
-    if (this.state.filterPublished) filters.push(['published', true]);
 
     return (
       <div className="homePage">
@@ -285,25 +296,20 @@ class HomePage extends Component {
 
         {/* TODO: context for mapdata and data.states? */}
         <MapWrapper
-          region={this.state.region}
           updateState={this.updateState}
           updateCounty={this.updateCounty}
-          statesRef={this.statesRef}
           mapRef={this.mapRef}
-          alaskaRef={this.alaskaRef}
-          hawaiiRef={this.hawaiiRef}
           data={data}
           max={dataStateMax}
           maxCounty={dataCountyMax}
-          updateView={this.changeViewRegion}
           zoom={this.getZoom}
-          filterTime={this.filterTime}
+          displayType={displayType}
           timeSlider={this.timeSlider}
           controls={(map) =>
             <React.Fragment>
-              <Legend colors={defaultColors} max={dataStateMax} />
-              <MapBar changeRegion={this.changeViewRegion} region={this.state.region} />
-              <CountyToggle zoom={this.getZoom} updateZoom={this.updateZoom} />
+              <Legend colors={defaultColors} maxState={dataStateMax} maxCounty={dataCountyMax} displayType={displayType} />
+              <MapBar changeRegion={this.changeViewRegion} region={region} />
+              <CountyToggle updateZoom={this.updateZoom} />
             </React.Fragment> }
         >
           
@@ -338,7 +344,7 @@ class HomePage extends Component {
               <Charts
                 ref={this.chartsRef}
                 data={data}
-                max={dataMax}
+                max={dataMaxTopLevel}
                 filters={filters}
                 time={this.state.filterTimeRange}
                 lockType={this.state.lockType}

@@ -11,14 +11,15 @@ const CountyToggle = (props) => {
   useMapEvents({
     zoomend: (e) => {
       const z = e.target.getZoom();
-      if (props.zoom() < 6 && z >= 6) {
-        map.getPane('states').style.display = 'none';
-        map.getPane('counties').style.display = 'block';
-      } else if (props.zoom() >= 6 && z < 6) {
-        map.getPane('states').style.display = 'block';
-        map.getPane('counties').style.display = 'none';
-      }
-      props.updateZoom(z);
+      props.updateZoom(z, (displayType) => {
+        if (displayType === 'county') {
+          map.getPane('states').style.display = 'none';
+          map.getPane('counties').style.display = 'block';
+        } else if (displayType === 'state') {
+          map.getPane('states').style.display = 'block';
+          map.getPane('counties').style.display = 'none';
+        }
+      })
     }
   })
 

@@ -103,7 +103,7 @@ const MapWrapper = (props) => {
         />
         <Pane
           name='states'
-          className={props.zoom() >= 6 ? 'paneHide' : ''}>
+          className={props.displayType === 'state' ? '' : 'paneHide'}>
           <MyGeoJSON
             key='states'
             style={(feature) => ({stroke: 1, weight: 1, opacity: 0.75, color: 'white', fillColor: feature.properties.COLOR, fillOpacity: 0.75})}
@@ -130,7 +130,7 @@ const MapWrapper = (props) => {
         </Pane>
         <Pane
           name='counties'
-          className={props.zoom() < 6 ? 'paneHide' : ''}>
+          className={props.displayType === 'county' ? '' : 'paneHide'}>
           <MyGeoJSON
             key='counties'
             style={(feature) => ({stroke: 1, weight: 1, opacity: 0.75, color: 'white', fillColor: feature.properties.COLOR, fillOpacity: 0.75})}
@@ -175,5 +175,5 @@ MapWrapper.propTypes = {
 };
 // https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png
 
-const rerenderWhen = (prevProps, props) => prevProps.data.length === props.data.length;
+const rerenderWhen = (prevProps, props) => prevProps.displayType === props.displayType && prevProps.data.length === props.data.length;
 export default React.memo(MapWrapper, rerenderWhen);
