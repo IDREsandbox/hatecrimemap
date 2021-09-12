@@ -11,7 +11,7 @@ const STATES = ["Alabama", "Alaska", "Arizona", "Arkansas", "California", "Color
 "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee",
 "Texas", "Utah", "United States Virgin Islands", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming", "Puerto Rico"]
 
-export const covidColors = ["#fed98e","#fed98e","#fe9929","#d95f0e","#993404"] // made the first two the same since the second bin isnt used ffffd4 was the original
+export const covidColors = ["#ffffd4", "#fed98e","#fe9929","#d95f0e","#993404"] // made the first two the same since the second bin isnt used ffffd4 was the original
 export const defaultColors = ["#f2f0f7", "#cbc9e2", "#9e9ac8", "#756bb1", "#54278f"]
 
 function storeStateDataReports(data) {
@@ -196,13 +196,21 @@ export async function getCovidData() {
 	});
 }
 
-const colorBins = ["#f2f0f7", "#cbc9e2", "#9e9ac8", "#756bb1", "#54278f"];
-var lockedLayer = null;
-var lockedLayerColor = null;
-
-export function hashColor(sum, max,colorBin=colorBins) {
+export function hashColor(sum, max,colorBin=defaultColors) {
 	let colorHashed;
 	if(sum < max/10) colorHashed = colorBin[0];
+    else if(sum < max/8) colorHashed = colorBin[1];
+    else if(sum < max/5) colorHashed = colorBin[2];
+    else if(sum < max/3) colorHashed = colorBin[3];
+    else if(sum < max + 1) colorHashed = colorBin[4];
+
+	return colorHashed;
+}
+
+export function hashCovidColor(sum, max,colorBin=covidColors) {
+	let colorHashed;
+	if (sum === 0) colorHashed = '#cccccc';
+	else if(sum < max/10) colorHashed = colorBin[0];
     else if(sum < max/8) colorHashed = colorBin[1];
     else if(sum < max/5) colorHashed = colorBin[2];
     else if(sum < max/3) colorHashed = colorBin[3];

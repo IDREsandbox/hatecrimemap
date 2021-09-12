@@ -16,7 +16,8 @@ import {
   covidColors,
   eachCovidState,
   counts_aggregateBy,
-  hashColor
+  hashColor,
+  hashCovidColor
 } from 'utils/data-utils';
 import { useLocation } from 'react-router-dom';
 import MyGeoJSON from './GeoJSON/MyGeoJSON';
@@ -70,7 +71,7 @@ const MapWrapper = (props) => {
           )
         );
     } else {
-      states_usa.features.forEach(eachState => eachState.properties.COLOR = props.data[eachState.properties.NAME] ? hashColor(props.data[eachState.properties.NAME].count, 70) : 'rgb(0,0,0)');
+      states_usa.features.forEach(eachState => eachState.properties.COLOR = props.data[eachState.properties.NAME] ? hashCovidColor(props.data[eachState.properties.NAME].count, props.max) : 'rgb(0,0,0)');
     }
     return () => { };
   }, [props.data.length]) // pretty good indicator of when we should recalculate colors? Could be an edge case where # elements are the same
@@ -128,6 +129,7 @@ const MapWrapper = (props) => {
             }}
           />
         </Pane>
+        {!props.covid &&
         <Pane
           name='counties'
           className={props.displayType === 'county' ? '' : 'paneHide'}>
@@ -155,6 +157,7 @@ const MapWrapper = (props) => {
             }}
           />
         </Pane>
+        }
         <MyGeoJSON
           key="usa"
           geojson={usa}

@@ -32,7 +32,7 @@ const Legend = (props) => {
 
         const labels = [];
         if (props.hasNone) {
-          labels.push('<i style="background:"#cccccc"' + '"></i> None');
+          labels.push('<i style="background:#cccccc"' + '"></i> None');
         }
 
         for (let i = 0; i < ranges.length - 1; i++) {

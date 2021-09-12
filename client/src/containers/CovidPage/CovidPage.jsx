@@ -165,7 +165,7 @@ class CovidPage extends Component {
       return <CircularProgress className={classes.progress} />;
     }
 
-    console.log(this.state.data)
+    console.log(this.state.data, this.state.currentDisplay)
 
     return (
       <div className="CovidPage">
@@ -173,14 +173,12 @@ class CovidPage extends Component {
         {/* TODO: context for mapdata and data.states? */}
         <MapWrapper
           region={this.state.region}
-          updateState={this.updateState}
+          max={this.state.data.max}
           zoom={this.getZoom}
-          updateZoom={this.updateZoom}
+          updateState={this.updateState}
+          displayType={'state'}
           filterTime={this.filterTime}
-          statesRef={this.statesRef}
           mapRef={this.mapRef}
-          alaskaRef={this.alaskaRef}
-          hawaiiRef={this.hawaiiRef}
           data={this.state.data}
           updateView={this.changeViewRegion}
           covid
@@ -190,7 +188,7 @@ class CovidPage extends Component {
                 changeRegion={this.changeViewRegion}
                 region={this.state.region}
               />
-              <Legend colors={covidColors} covidFlag={true} />
+              <Legend colors={covidColors} hasNone={true} maxState={this.state.data.max} displayType={'state'} />
             </>}
         >
           <Joyride
@@ -230,15 +228,14 @@ class CovidPage extends Component {
             {this.state.currentDisplay != 'none' ? (
               <div className={`sideMenu__info ${classes.dateRange}`}>
                 <p>
-                  {this.state.data[this.state.currentDisplay].children[0].date}
-                  {' '}
-                  -
-                  {' '}
-                  {
+                  {this.state.data[this.state.currentDisplay].children.length > 0
+                    && this.state.data[this.state.currentDisplay].children[0].date
+                  + ' - ' +
+                  (this.state.data[this.state.currentDisplay].children.length > 1 &&
                     this.state.data[this.state.currentDisplay].children[
                       this.state.data[this.state.currentDisplay].children
                         .length - 1
-                    ].date
+                    ].date)
                   }
                 </p>
               </div>
