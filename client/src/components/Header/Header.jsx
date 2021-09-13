@@ -11,10 +11,9 @@ import {
   IconButton,
 } from '@material-ui/core';
 
+import SpotlightModal from '../SpotlightModal/SpotlightModal';
 import AboutDialog from '../AboutDialog/AboutDialog';
 import AboutCovidDialog from '../AboutDialog/AboutCovidDialog';
-
-import SpotlightModal from 'components/SpotlightModal/SpotlightModal';
 
 const styles = {
   root: {},

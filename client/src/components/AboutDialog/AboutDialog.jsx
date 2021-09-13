@@ -107,8 +107,6 @@ class AboutDialog extends Component {
             </Button>
           </DialogActions>
 
-
-          
         </Dialog>
       </div>
     );

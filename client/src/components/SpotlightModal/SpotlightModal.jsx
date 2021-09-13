@@ -1,111 +1,121 @@
 /*  eslint import/no-unresolved: 0, global-require: 0  */
+
+/* eslint-disable */
+
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import {
-    Button,
+  Button,
+  CircularProgress,
+  Paper,
 } from '@material-ui/core';
 
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import { Paper } from '@material-ui/core'
+import DialogTitle from '@material-ui/core/DialogTitle'; //eslint-disable-line
+import Carousel from './Carousel';
 
-import { ABOUT_DIALOGS } from '../../res/values/string';
 
-import Carousel from './Carousel'
+import axios from 'axios';
 
 const styles = {
-    aboutButton: {
-        color: 'white',
+  loading: {
+    display: 'flex',
+    'justify-content': 'center',
+    'margin-top': '16px',
+    width: '100%',
+  },
+  aboutButton: {
+    color: 'white',
+  },
+  images: {
+    display: 'table',
+    'border-collapse': 'collapse',
+    width: '100%',
+  },
+  inline: {
+    display: 'table-cell',
+    'vertical-align': 'middle',
+    '& img': {
+      display: 'block',
+      width: '100%',
+      height: 'auto',
     },
-    images: {
-        display: 'table',
-        'border-collapse': 'collapse',
-        width: '100%',
-    },
-    inline: {
-        display: 'table-cell',
-        'vertical-align': 'middle',
-        '& img': {
-            display: 'block',
-            width: '100%',
-            height: 'auto',
-        },
-    },
-    mainModal: {
-        width: '100%',
-    }
+  },
+  mainModal: {
+    width: '100%',
+  },
+  content: {
+    width: '100%',
+  }
 };
-
-
-function Item(props) {
-    return (
-        <Paper>
-            <h2>{props.item.name}</h2>
-            <p>{props.item.description}</p>
-
-            <Button className="CheckButton">
-                Check it out!
-            </Button>
-        </Paper>
-    )
-}
-
 
 
 function SpotlightModal(props) {
-    const { classes } = props;
+  const { classes, state } = props;
 
-    const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [carouselData, setCarouselData] = useState(null);
 
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
 
-    const handleClose = () => {
-        setOpen(false);
-    };
+  const handleClose = () => {
+    setOpen(false);
+  };
 
+  useEffect(() => {
+    axios.get(`/stories/${state}`)
+      .then(res => {
+        console.log(res);
+        /*DO AFTER FINISHED EXTRACTING DATA
+  
+        setCarouselData(data);
+  
+        */
+      })
+      .catch(err => {
+        console.log(err);
+      })
 
-    var items = [
-        {
-            name: "Random Name #1",
-            description: "Probably the most random thing you have ever seen!"
-        },
-        {
-            name: "Random Name #2",
-            description: "Hello World!"
-        }
-    ]
+  }, [open]);
 
-    return (
-        <div>
-            <Button className={classes.aboutButton} onClick={handleClickOpen}>
-                About
-            </Button>
-            <Dialog
-                open={open}
-                onClose={handleClose}
-                aria-labelledby="responsive-dialog-title"
-                className={classes.mainModal}
-            >
-                <DialogContent>
-                    <Carousel >
-                    </Carousel>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleClose} color="primary">
-                        Close
-                    </Button>
-                </DialogActions>
-            </Dialog>
-        </div>
-    );
+  return (
+    <div>
+      <Button className={classes.aboutButton} onClick={handleClickOpen}>
+        About
+      </Button>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="responsive-dialog-title"
+        fullWidth
+        maxWidth="md"
+        className={classes.mainModal}
+      >
+        <DialogContent className={classes.content}>
 
-};
+          {carouselData ?
+            <Carousel />
+            :
+            <div className={classes.loading}>
+              <CircularProgress />
+            </div>
+          }
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </div>
+  );
+}
 
 /*
 Thoughts
@@ -114,12 +124,13 @@ Thoughts
 
     Idea: I think I should include the same inner workings of the spotlightModal in the first time overlay with just general stories
     Upon "locking" onto a state, have a button appear on sidebar (so much wasted space) to
-    Ok -> have a slideshow component as part of the inner workings sof the spotlightModal, then add 
+    Ok -> have a slideshow component as part of the inner workings sof the spotlightModal, then add
 
 */
 
 SpotlightModal.propTypes = {
-    classes: PropTypes.object.isRequired,
+  classes: PropTypes.object.isRequired,
 };
 
 export default withStyles(styles)(SpotlightModal);
+/* eslint-enable */
