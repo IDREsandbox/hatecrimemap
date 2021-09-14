@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useMap } from 'react-leaflet';
-import { hashColor } from 'utils/data-utils';
 import L from 'leaflet';
+import { hashColor } from '../../../utils/data-utils';
 import './Legend.css';
 
 const Legend = (props) => {
@@ -12,32 +12,30 @@ const Legend = (props) => {
     if (props.displayType === 'state') max = props.maxState;
     else if (props.displayType === 'county') max = props.maxCounty;
 
-    const getColor = (d) => {
-      return hashColor(d, max, props.colors);
-    }
+    const getColor = (d) => hashColor(d, max, props.colors);
 
     // REFERENCE hashColor in data-utils
     const ranges = [
-        0,
-        Math.floor(max/10),
-        Math.floor(max/8),
-        Math.floor(max/5),
-        Math.floor(max/3),
-        Math.floor(max + 1)
-    ]
+      0,
+      Math.floor(max / 10),
+      Math.floor(max / 8),
+      Math.floor(max / 5),
+      Math.floor(max / 3),
+      Math.floor(max + 1),
+    ];
 
-    const legend = L.Control.extend({
-      onAdd: (map) => {
+    const LegendConstructor = L.Control.extend({
+      onAdd: () => { // 'map' prop to this Leaflet function removed to satisfy eslint
         const div = L.DomUtil.create('div', 'info legend');
 
         const labels = [];
         if (props.hasNone) {
-          labels.push('<i style="background:#cccccc"' + '"></i> None');
+          labels.push('<i style="background:#cccccc"' + '"></i> None'); //eslint-disable-line
         }
 
         for (let i = 0; i < ranges.length - 1; i++) {
-          let start = ranges[i];
-          let end = ranges[i+1];
+          const start = ranges[i];
+          const end = ranges[i + 1];
           labels.push(
             `<i style="background:${getColor(
               start + 1,
@@ -52,16 +50,16 @@ const Legend = (props) => {
       },
     });
 
-    return new legend({ position: 'bottomright' });
-  }
+    return new LegendConstructor({ position: 'bottomright' });
+  };
 
   useEffect(() => {
     const control = createLeafletElement();
     control.addTo(map);
     return () => map.removeControl(control);
-  }, [props.displayType, props.maxState, props.maxCounty])
+  }, [props.displayType, props.maxState, props.maxCounty]);
 
   return null;
-}
+};
 
 export default Legend;

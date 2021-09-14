@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
+import React from 'react'; //eslint-disable-line
 import { useMap, useMapEvents } from 'react-leaflet';
-import L from 'leaflet';
+import L from 'leaflet'; //eslint-disable-line
 
 const CountyToggle = (props) => {
   const map = useMap();
@@ -19,11 +19,11 @@ const CountyToggle = (props) => {
           map.getPane('states').style.display = 'block';
           map.getPane('counties').style.display = 'none';
         }
-      })
-    }
-  })
+      });
+    },
+  });
 
   return null;
-}
+};
 
 export default CountyToggle;

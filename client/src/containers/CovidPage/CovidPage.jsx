@@ -84,7 +84,8 @@ class CovidPage extends Component {
   resetMapData = () => {};
 
   filterIncidents = (flt) => {
-    this.setState({ currentFilter: flt }); // 'all' or 'published'
+    // 'all' or 'published'
+    this.setState({ currentFilter: flt }); //eslint-disable-line
   };
 
   // Return value, success (in our terms, not react's)
@@ -94,7 +95,7 @@ class CovidPage extends Component {
       this.setState({
         currentDisplay: 'none', // if we try to "re-lock" onto the same state, toggle it off
         locked: false,
-        lockType: 'state',
+        // lockType: 'state, (lockType only needed on homePage?)
       });
       return false; // uncolor
     }
@@ -102,7 +103,7 @@ class CovidPage extends Component {
     this.setState({
       currentDisplay: state,
       locked: lock && state !== 'none', // we never want to lock onto None
-      lockType: 'state',
+      // lockType: 'state', (lockType only needed on homePage)
     });
     return true;
   };
@@ -173,20 +174,21 @@ class CovidPage extends Component {
           max={this.state.data.max}
           zoom={this.getZoom}
           updateState={this.updateState}
-          displayType={'state'}
+          displayType="state"
           filterTime={this.filterTime}
           mapRef={this.mapRef}
           data={this.state.data}
           updateView={this.changeViewRegion}
           covid
-          controls={(map) =>
+          controls={(map) => ( //eslint-disable-line
             <>
               <MapBar
                 changeRegion={this.changeViewRegion}
                 region={this.state.region}
               />
-              <Legend colors={covidColors} hasNone={true} maxState={this.state.data.max} displayType={'state'} />
-            </>}
+              <Legend colors={covidColors} hasNone maxState={this.state.data.max} displayType="state" />
+            </>
+          )}
         >
           <Joyride
             run={this.state.run}
@@ -225,14 +227,13 @@ class CovidPage extends Component {
               <div className={`sideMenu__info ${classes.dateRange}`}>
                 <p>
                   {this.state.data[this.state.currentDisplay].children.length > 0
-                    && this.state.data[this.state.currentDisplay].children[0].date
-                  + ' - ' +
-                  (this.state.data[this.state.currentDisplay].children.length > 1 &&
-                    this.state.data[this.state.currentDisplay].children[
+                    && `${this.state.data[this.state.currentDisplay].children[0].date
+                    } - ${
+                      this.state.data[this.state.currentDisplay].children.length > 1
+                    && this.state.data[this.state.currentDisplay].children[
                       this.state.data[this.state.currentDisplay].children
                         .length - 1
-                    ].date)
-                  }
+                    ].date}`}
                 </p>
               </div>
             ) : (

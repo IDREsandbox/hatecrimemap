@@ -15,7 +15,7 @@ import {
   FilterBar,
   MapBar,
   Legend,
-  CountyToggle
+  CountyToggle,
 } from '../../components';
 import { JOYRIDE_STEPS } from '../../res/values/joyride';
 import { MAP_DISPLAY } from '../../res/values/map';
@@ -25,7 +25,6 @@ import {
   counts_total,
   counts_maxPrimary,
   counts_maxState,
-  counts_maxCounties,
   defaultColors,
 } from '../../utils/data-utils';
 
@@ -241,7 +240,7 @@ class HomePage extends Component {
 
   render() {
     const {
-      isFetching, run, steps, stepIndex, region, displayType
+      isFetching, run, steps, stepIndex, region, displayType,
     } = this.state;
     const { classes } = this.props;
 
@@ -252,14 +251,14 @@ class HomePage extends Component {
     // timeslider filter. TODO: make a generic state data filter/callback that handles pointer and closures
     // TODO: sort by date and binary search
     const dataPtr = this.state.data;
-    const data = dataPtr.filter(
+    let data = dataPtr.filter(
       (row) => row.yyyy >= this.state.filterTimeRange[0]
         && row.yyyy <= this.state.filterTimeRange[1],
     );
     if (this.state.filterPublished) {
       data = data.filter(
-        (row) => row.published
-      )
+        (row) => row.published,
+      );
     }
     const dataStateMax = counts_maxState(data);
     const dataCountyMax = 30; // replace with county-max calculator
@@ -293,15 +292,14 @@ class HomePage extends Component {
           zoom={this.getZoom}
           displayType={displayType}
           timeSlider={this.timeSlider}
-          controls={(map) =>
-            <React.Fragment>
+          controls={(map) => ( //eslint-disable-line
+            <>
               <Legend colors={defaultColors} maxState={dataStateMax} maxCounty={dataCountyMax} displayType={displayType} />
               <MapBar changeRegion={this.changeViewRegion} region={region} />
               <CountyToggle updateZoom={this.updateZoom} />
-            </React.Fragment> }
-        >
-          
-        </MapWrapper>
+            </>
+          )}
+        />
 
         <div className="side">
           <SideMenu>
@@ -323,9 +321,9 @@ class HomePage extends Component {
               </h2>
 
               <h4>
-                {currTotal
-                 + ' in '
-                 + this.state.filterTimeRange.join('-')}
+                {`${currTotal
+                } in ${
+                  this.state.filterTimeRange.join('-')}`}
               </h4>
             </div>
 
@@ -345,7 +343,7 @@ class HomePage extends Component {
           </SideMenu>
         </div>
         <Joyride
-          className='joyride'
+          className="joyride"
           run={run}
           scrollToFirstStep
           continuous

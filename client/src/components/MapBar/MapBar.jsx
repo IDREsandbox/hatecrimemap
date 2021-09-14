@@ -1,3 +1,4 @@
+/* eslint new-cap: 0 */
 import React, { useEffect } from 'react';
 import { useMap } from 'react-leaflet';
 import L from 'leaflet';
@@ -19,7 +20,7 @@ const hawaiiBounds = [[23.891022, -152.0892635], [17.259614, -162.9697255]];
 const MapBar = (props) => {
   const map = useMap();
 
-  const createLeafletElement = () => {
+  const CreateLeafletElement = () => {
     const jsx = (
       <div className="map-bar">
         <ToggleButtonGroup
@@ -41,7 +42,7 @@ const MapBar = (props) => {
     );
 
     const mapbar = L.Control.extend({
-      onAdd: (map) => {
+      onAdd: (map) => {  //eslint-disable-line
         const div = L.DomUtil.create('div', '');
         ReactDOM.render(jsx, div);
         return div;
@@ -49,14 +50,14 @@ const MapBar = (props) => {
     });
 
     return new mapbar({ position: 'bottomleft' });
-  }
+  };
 
   useEffect(() => {
-    const control = createLeafletElement();
+    const control = CreateLeafletElement();
     control.addTo(map);
-  }, [])
+  }, []);
 
   return null;
-}
+};
 
 export default MapBar;
