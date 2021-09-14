@@ -94,13 +94,6 @@ var topChartData = {
 // Could make a single function, but this should allow us to customize chart colors more easily in the future
 export function getChartData(chart, allData, filters) {
 
-  // if (state == 'none') {
-  //   // All of USA
-  //   allData = Object.values(allData).reduce(((p, c) => c instanceof Object ? p.concat(c.children) : p), [])
-  // } else {
-  //   allData = allData[state].children;
-  // }
-
   let chartData;
   let data = {labels: [], counts: []};
   if (chart === CHARTS.RACE_ETHNICITY) {
@@ -139,12 +132,6 @@ export function getChartData(chart, allData, filters) {
       data.counts.push(counts_aggregateByAll(allData, [...filters, ["primary_reason", label]]))
     })
   }
-
-  // if (chart !== CHARTS.TOP) {
-  //   // Sort the counts
-  //   data = mapData(allData, true);
-  // }
-
 
   chartData.datasets[0].data = data.counts; // because we don't want "counts" => undefined
   chartData.labels = data.labels;
