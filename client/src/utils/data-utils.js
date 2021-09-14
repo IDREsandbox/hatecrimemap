@@ -11,7 +11,7 @@ const STATES = ["Alabama", "Alaska", "Arizona", "Arkansas", "California", "Color
 "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee",
 "Texas", "Utah", "United States Virgin Islands", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming", "Puerto Rico"]
 
-export const covidColors = ["#fed98e","#fed98e","#fe9929","#d95f0e","#993404"] // made the first two the same since the second bin isnt used ffffd4 was the original
+export const covidColors = ["#ffffd4", "#fed98e","#fe9929","#d95f0e","#993404"] // made the first two the same since the second bin isnt used ffffd4 was the original
 export const defaultColors = ["#f2f0f7", "#cbc9e2", "#9e9ac8", "#756bb1", "#54278f"]
 
 function storeStateDataReports(data) {
@@ -105,6 +105,16 @@ export function counts_maxPrimary(data) {
 	return Math.max(...fields.map(field => counts_aggregateBy(data, 'primary_reason', field)))
 }
 
+export function counts_maxCounties(data) {
+	return Math.max(Object.values(data.reduce((accumulate, row) => {
+		let county = row['county'];
+		if (accumulate[county]) accumulate[county] += row.count;
+		else accumulate[county] = row.count;
+		return accumulate;
+	}, {}))
+	);
+}
+
 export function counts_maxState(data) {
 	let fields = STATES;
 	return Math.max(...fields.map(field => counts_aggregateBy(data, 'state', field)))
@@ -186,156 +196,27 @@ export async function getCovidData() {
 	});
 }
 
-const colorBins = ["#f2f0f7", "#cbc9e2", "#9e9ac8", "#756bb1", "#54278f"];
-var lockedLayer = null;
-var lockedLayerColor = null;
-
-function hashStateColor(sum, max,colorBins) {
+export function hashColor(sum, max,colorBin=defaultColors) {
 	let colorHashed;
-	if(sum < max/10) colorHashed = colorBins[0];
-    else if(sum < max/8) colorHashed = colorBins[1];
-    else if(sum < max/5) colorHashed = colorBins[2];
-    else if(sum < max/3) colorHashed = colorBins[3];
-    else if(sum < max + 1) colorHashed = colorBins[4];
+	if(sum < max/10) colorHashed = colorBin[0];
+    else if(sum < max/8) colorHashed = colorBin[1];
+    else if(sum < max/5) colorHashed = colorBin[2];
+    else if(sum < max/3) colorHashed = colorBin[3];
+    else if(sum < max + 1) colorHashed = colorBin[4];
 
 	return colorHashed;
 }
 
-export function resetStateColor(layer, statesData,colorBins) {
-	const STATE_NAME = layer.feature.properties.NAME;
-	if(!STATE_NAME) return;
-	const stateData = statesData[STATE_NAME];
+export function hashCovidColor(sum, max,colorBin=covidColors) {
+	let colorHashed;
+	if (sum === 0) colorHashed = '#cccccc';
+	else if(sum < max/10) colorHashed = colorBin[0];
+    else if(sum < max/8) colorHashed = colorBin[1];
+    else if(sum < max/5) colorHashed = colorBin[2];
+    else if(sum < max/3) colorHashed = colorBin[3];
+    else if(sum < max + 1) colorHashed = colorBin[4];
 
-	if(!stateData || stateData.total <= 0) {
-		layer.setStyle({color: 'rgba(0, 0, 0, 0)'});
-		return;
-	}
-
-	let colorHashed = hashStateColor(stateData.count, statesData.max,colorBins);
-    
-    layer.setStyle({fillColor: colorHashed})
-}
-
-export function eachCovidState(feature, layer, statesData, setStateDisplay, colorBins) {
-	const STATE_NAME = feature.properties.NAME;
-	const stateData = statesData[STATE_NAME];
-	if(!stateData || stateData.count <= 0) {
-		layer.setStyle({color: 'rgba(0, 0, 0, 0)'});
-		return;
-	}
-    // const colorHashed = colorBins[Math.floor((5*stateData.total-1)/total)];
-	let colorHashed = hashStateColor(stateData.count, statesData.max,colorBins);
-    layer.on('mouseover', function(event){
-	    if(!setStateDisplay(STATE_NAME)) return;  // setStateDisplay() will return false if we're locked onto something else
-	    // layer._path.classList.add("show-state");
-	    layer.setStyle({fillColor: 'rgb(200, 200, 200)'});
-	});
-    layer.on('mouseout', function(event){
-    	if(!setStateDisplay("none")) return;
-    	// layer._path.classList.remove("show-state");
-    	layer.setStyle({fillColor: colorHashed});
-	});
-	layer.on('click', function(event) {
-		layer.setStyle({fillColor: `rgb(100, 100, 100)`});
-		if(lockedLayer) {
-			lockedLayer.setStyle({fillColor: lockedLayerColor});
-			if(lockedLayer === layer) {
-				setStateDisplay("none", true);
-				lockedLayer = null;
-				lockedLayerColor = null;
-				return;
-			}
-		}
-		setStateDisplay(STATE_NAME, true);  // true parameter for locking
-
-		lockedLayer = layer;
-		lockedLayerColor = colorHashed;
-	});
-	layer.setStyle({stroke: 1, weight: 1, opacity: 0.75, color: 'white', fillColor: colorHashed, fillOpacity: 0.75});
-}
-
-export function eachState(feature, layer, data, max, setStateDisplay, colorBins) {
-	const STATE_NAME = feature.properties.NAME;
-	const stateCount = counts_aggregateBy(data, 'state', STATE_NAME);
-	if(stateCount <= 0) {
-		layer.setStyle({color: 'rgba(0, 0, 0, 0)'});
-		return;
-	}
-    // const colorHashed = colorBins[Math.floor((5*stateData.total-1)/total)];
-	let colorHashed = hashStateColor(stateCount, max, colorBins);
-    layer.on('mouseover', function(event){
-	    if(!setStateDisplay(STATE_NAME)) return;  // setStateDisplay() will return false if we're locked onto something else
-	    // layer._path.classList.add("show-state");
-	    layer.setStyle({fillColor: 'rgb(200, 200, 200)'});
-	});
-    layer.on('mouseout', function(event){
-    	if(!setStateDisplay("none")) return;
-    	// layer._path.classList.remove("show-state");
-    	layer.setStyle({fillColor: colorHashed});
-	});
-	layer.on('click', function(event) {
-		layer.setStyle({fillColor: `rgb(100, 100, 100)`});
-		if(lockedLayer) {
-			lockedLayer.setStyle({fillColor: lockedLayerColor});
-			if(lockedLayer === layer) {
-				setStateDisplay("none", true);
-				lockedLayer = null;
-				lockedLayerColor = null;
-				return;
-			}
-		}
-		setStateDisplay(STATE_NAME, true);  // true parameter for locking
-
-		lockedLayer = layer;
-		lockedLayerColor = colorHashed;
-	});
-	layer.setStyle({stroke: 1, weight: 1, opacity: 0.75, color: 'white', fillColor: colorHashed, fillOpacity: 0.75});
-}
-
-export function eachStatesCounties(feature, layer, data, max, setCountyDisplay, colorBins)
-{
-	const COUNTY_NAME = feature.properties.NAME;
-	const STATE_FP = feature.properties.STATEFP;
-	const countyCount = counts_aggregateBy(data, 'county', COUNTY_NAME + ',' + STATE_FP);
-	if(countyCount <= 0) {
-		layer.setStyle({color: 'rgba(0, 0, 0, 0)'});
-		return;
-	}
-    // const colorHashed = colorBins[Math.floor((5*countytotals[feature.properties.County_state].total-1)/total)];
-    let colorHashed = 0;
-    if(countyCount < max/10) colorHashed = colorBins[0];
-    else if(countyCount < max/8) colorHashed = colorBins[1];
-    else if(countyCount < max/6) colorHashed = colorBins[2];
-    else if(countyCount < max/4) colorHashed = colorBins[3];
-    else if(countyCount < max + 1) colorHashed = colorBins[4];
-    //colorHashed = colorBins[0];
-    layer.on('mouseover', function(event){
-	      if(!setCountyDisplay(feature.properties.County_state)) return;  // setCountyDisplay() will return false if we're locked onto something else
-	      // layer._path.classList.add("show-state");
-	      layer.setStyle({fillColor: 'rgb(200, 200, 200)'});
-	  });
-	    layer.on('mouseout', function(event){
-	    	if(!setCountyDisplay("none")) return;
-	      // layer._path.classList.remove("show-state");
-	      layer.setStyle({fillColor: colorHashed});
-	  });
-	    layer.on('click', function(event) {
-	    	layer.setStyle({fillColor: `rgb(100, 100, 100)`});
-	    	if(lockedLayer) {
-	    		lockedLayer.setStyle({fillColor: lockedLayerColor});
-	    		if(lockedLayer === layer) {
-	    			setCountyDisplay("none", true);
-	    			lockedLayer = null;
-	    			lockedLayerColor = null;
-	    			return;
-	    		}
-	    	}
-	      setCountyDisplay(feature.properties.County_state, true);  // true parameter for locking
-
-	      lockedLayer = layer;
-		  lockedLayerColor = colorHashed;
-	  });
-    layer.setStyle({stroke: 0.1, weight: 1, opacity: 0.75, color: 'black', fillColor: colorHashed, fillOpacity: 0.75});
+	return colorHashed;
 }
 
 export const countyDisplayName = (county, state) => {
