@@ -1,3 +1,4 @@
+const { response } = require('express');
 const express = require('express');
 const PG = require('pg-promise')();
 
@@ -9,22 +10,48 @@ const {
 const router = express.Router();
 
 
-const storiesQuery = `select us.name as state, us.id, (uc.name||','||uc.statefp) as county, published, extract(year from incidentdate) as yyyy, i.description
+const storiesQuery = `select us.name as state, us.id, (uc.name||','||uc.statefp) as county, published, incidentdate as date, i.location, i.description
 from incident i -- include all groups, even if aggregate of one is 0
 join us_states us on us.id = i.state_id -- attach the state name
 join us_counties uc on uc.id = i.county_id -- attach the county name
-where incidentdate IS NOT NULL AND incidentdate < now()::date and us.name = 'California'`
+where incidentdate IS NOT NULL AND incidentdate < now()::date`
 
 
-router.post('/stories/:state', (req, res) => {
+const processStoryData = (response) => {
+    let data = response.filter(each => {
+        if (each.description) {
+            return each.description !== '';
+        } else {
+            return false;
+        }
+    })
+    if (data.length > 10) {
+        return data.splice(0, 10);
+    } else {
+        return data;
+    }
+}
 
+router.get('/:type/:name', (req, res) => {
     let query = storiesQuery;
 
-    if (req.params.state) {
-        query += ` and us.name = ${req.params.state}`;
+    //console.log(req.params.type, req.params.name);
+
+
+
+    if (req.params.type === 'state') {
+        query += ` and us.name = '${req.params.name}'`;
+    } else if (req.params.type === 'county') {
+        query += ` and (uc.name||','||uc.statefp) = '${req.params.name}'`;
     }
+    console.log(query);
+
     db.any(query)
-        .then(res => console.log(res))
+        .then(result => {
+            console.log(result);
+            let data = processStoryData(result);
+            res.send(data);
+        })
         .catch(err => {
             console.log(err);
             res.status(500).send();

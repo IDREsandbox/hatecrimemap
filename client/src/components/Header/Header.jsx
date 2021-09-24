@@ -11,7 +11,6 @@ import {
   IconButton,
 } from '@material-ui/core';
 
-import SpotlightModal from '../SpotlightModal/SpotlightModal';
 import AboutDialog from '../AboutDialog/AboutDialog';
 import AboutCovidDialog from '../AboutDialog/AboutCovidDialog';
 
@@ -134,7 +133,6 @@ const Header = ({ classes }) => {
             </Button>
           </Link>
           <AboutDialog />
-          <SpotlightModal />
         </Toolbar>
       </AppBar>
     </div>

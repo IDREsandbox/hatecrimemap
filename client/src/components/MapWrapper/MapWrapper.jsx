@@ -92,7 +92,7 @@ const MapWrapper = (props) => {
           bounds={ML.worldBounds}
           stroke={false}
           fillOpacity="0"
-          onClick={() => props.updateState('none', true)}
+          onClick={() => props.updateState('none', true)} // Doesn't work anymore, seems like rectangle onClick was outdated in react-leaflet
         />
         <Pane
           name="states"
@@ -107,10 +107,10 @@ const MapWrapper = (props) => {
             datalen={props.data.length}
             eventHandlers={{
               mouseover: ({ layer }) => props.updateState && props.updateState(layer.feature.properties.NAME) && layer.setStyle({ fillColor: 'rgb(200, 200, 200)' }),
-              mouseout: ({ layer }) => props.updateState && props.updateState('none') && layer.setStyle({ fillColor: layer.feature.properties.COLOR }),
+              mouseout: ({ layer }) => props.updateState && props.updateState('none', false) && layer.setStyle({ fillColor: layer.feature.properties.COLOR }),
               click: ({ layer }) => {
                 if (!props.updateState) return;
-                props.updateState(layer.feature.properties.NAME, true);
+                props.updateState(layer.feature.properties.NAME, true); // this update state is not resetting to state!!
                 if (lockedLayer) {
                   lockedLayer.setStyle({ fillColor: lockedLayer.feature.properties.COLOR });
                   if (lockedLayer === layer) {

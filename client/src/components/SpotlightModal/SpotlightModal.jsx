@@ -14,22 +14,19 @@ import {
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle'; //eslint-disable-line
 import Carousel from './Carousel';
-
-
 import axios from 'axios';
 
 const styles = {
-  loading: {
+  flexCenter: {
     display: 'flex',
     'justify-content': 'center',
+    'align-items': 'center',
+  },
+  loading: {
     'margin-top': '16px',
     width: '100%',
-  },
-  aboutButton: {
-    color: 'white',
+    height: 300,
   },
   images: {
     display: 'table',
@@ -55,10 +52,53 @@ const styles = {
 
 
 function SpotlightModal(props) {
-  const { classes, state } = props;
+  const { classes } = props;
 
   const [open, setOpen] = useState(false);
-  const [carouselData, setCarouselData] = useState(null);
+  const [carouselData, setCarouselData] = useState({
+    data: {}
+  });
+
+  const [lockItem, setLockItem] = useState(props.lockItem);
+  const [lockType, setLockType] = useState(props.lockType);
+
+  useEffect(() => {
+    setLockItem(props.lockItem);
+    setLockType(props.lockType); // i knew this would happen.. lockType and lockItem techincally aren't finished being changed before the next couple lines are executed
+  }, [props.lockItem, props.lockType])
+
+
+  // FIX THIS: CHANGE QUERY TO ONLY BE MADE IF DATA NOT ALREADY PRESENT, NOT EVERY TIME
+  useEffect(() => {
+    // this is causing an extra call to API without the need?
+    if (open) {
+
+      let lockTypeQuery;
+      if (lockItem === 'none') {
+        lockTypeQuery = 'none'
+      } else {
+        lockTypeQuery = lockType
+      }
+
+      axios.get(`/api/stories/${lockTypeQuery}/${lockItem}`)
+        .then(res => {
+          if (carouselData.data[lockItem]) {
+            // do nothing, data already exists
+          } else {
+            (`should get caught here`)
+            setCarouselData((prevState) => ({
+              data: {
+                ...prevState.data,
+                [lockItem]: res.data,
+              }
+            }));
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        })
+    }
+  }, [open]);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -68,27 +108,34 @@ function SpotlightModal(props) {
     setOpen(false);
   };
 
-  useEffect(() => {
-    axios.get(`/stories/${state}`)
-      .then(res => {
-        console.log(res);
-        /*DO AFTER FINISHED EXTRACTING DATA
-  
-        setCarouselData(data);
-  
-        */
-      })
-      .catch(err => {
-        console.log(err);
-      })
-
-  }, [open]);
+  const loadingOrNot = () => {
+    if (carouselData.data[lockItem]) {
+      return (
+        <Carousel
+          lockItem={lockItem}
+          lockType={lockType}
+          data={carouselData.data[lockItem]}
+        />
+      )
+    } else {
+      return (
+        <div className={`${classes.loading} ${classes.flexCenter}`}>
+          <CircularProgress />
+        </div>
+      )
+    }
+  }
 
   return (
     <div>
-      <Button className={classes.aboutButton} onClick={handleClickOpen}>
-        About
-      </Button>
+      <div className={classes.flexCenter}>
+        <Button
+          variant="outlined"
+          className={classes.aboutButton}
+          onClick={handleClickOpen}>
+          View Stories from this Location
+        </Button>
+      </div>
       <Dialog
         open={open}
         onClose={handleClose}
@@ -98,13 +145,7 @@ function SpotlightModal(props) {
         className={classes.mainModal}
       >
         <DialogContent className={classes.content}>
-
-          {carouselData ?
-            <Carousel />
-            :
-            <div className={classes.loading}>
-              <CircularProgress />
-            </div>
+          {loadingOrNot()
           }
         </DialogContent>
         <DialogActions>
@@ -119,12 +160,6 @@ function SpotlightModal(props) {
 
 /*
 Thoughts
-    So we're trying to highlight a few of the stories on the site. Is it worthwile to create a modal specifically for highlighting states or should it just be included
-        in the first time overlay?
-
-    Idea: I think I should include the same inner workings of the spotlightModal in the first time overlay with just general stories
-    Upon "locking" onto a state, have a button appear on sidebar (so much wasted space) to
-    Ok -> have a slideshow component as part of the inner workings sof the spotlightModal, then add
 
 */
 
