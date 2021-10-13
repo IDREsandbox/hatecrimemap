@@ -6,6 +6,7 @@ import { CircularProgress, IconButton } from '@material-ui/core';
 import HelpIcon from '@material-ui/icons/Help';
 import Joyride, { ACTIONS, EVENTS, STATUS } from 'react-joyride';
 import Nouislider from 'nouislider-react';
+import SpotlightModal from '../../components/SpotlightModal/SpotlightModal';
 import { MainContext } from '../context/joyrideContext';
 import {
   FirstTimeOverlay,
@@ -121,11 +122,18 @@ class HomePage extends Component {
   // Return value, success (in our terms, not react's)
   updateState = (state, lock = false) => {
     if (this.state.locked && !lock) return false;
+
+    // console.log(`this.state.locked`, this.state.locked);
+    // console.log(`this.state.currentDisplay:`, this.state.currentDisplay);
+    // console.log(`state param`, state)
     if (this.state.locked && this.state.currentDisplay === state) {
       this.setState({
         currentDisplay: 'none', // if we try to "re-lock" onto the same state, toggle it off
         locked: false,
-        lockType: 'state',
+        lockType: 'none', // if there's nothing locked on, the lockType should be none!
+      }, () => {
+        // console.log(`this.state.currentDisplay after state update`, this.state.currentDisplay);
+        // console.log(`lockType after state update`, this.state.lockType);
       });
       return false; // uncolor
     }
@@ -138,13 +146,19 @@ class HomePage extends Component {
     return true;
   };
 
+  /*
+    the lockType paramaeter is not correctly resetting to 'none' after unlocking off of a state?
+    what could be causing this...
+
+  */
+
   updateCounty = (county, lock = false) => {
     if (this.state.locked && !lock) return false;
     if (this.state.locked && this.state.currentDisplay === county) {
       this.setState({
         currentDisplay: 'none',
         locked: false,
-        lockType: 'county',
+        lockType: 'none',
       });
       return false; // uncolor
     }
@@ -210,7 +224,6 @@ class HomePage extends Component {
         context.covidJoyrideRun = true;
         context.stepIndex = 13;
         context.homePageJoyrideRestart = true;
-        console.log(context);
       }
     } else if (index == 13) {
       const { context } = this;
@@ -340,6 +353,10 @@ class HomePage extends Component {
             </div>
             <br />
             <FilterBar filterfn={this.filterIncidents} />
+            <SpotlightModal
+              lockType={this.state.lockType}
+              lockItem={this.state.currentDisplay}
+            />
           </SideMenu>
         </div>
         <Joyride
