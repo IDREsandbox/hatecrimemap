@@ -145,8 +145,7 @@ function SpotlightModal(props) {
         className={classes.mainModal}
       >
         <DialogContent className={classes.content}>
-          {loadingOrNot()
-          }
+          {loadingOrNot()}
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">

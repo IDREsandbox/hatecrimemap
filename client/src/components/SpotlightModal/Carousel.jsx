@@ -13,6 +13,7 @@ import 'pure-react-carousel/dist/react-carousel.es.css';
 import { makeStyles } from '@material-ui/core/styles';
 import { Button } from '@material-ui/core';
 import { stateIdToStateName } from 'utils/data-utils';
+import SliderExport from './ProgressBar';
 
 const useStyles = makeStyles({
   /* root: {
@@ -109,6 +110,11 @@ const useStyles = makeStyles({
   slider: {
     height: '80%',
   }, */
+  hr: {
+    margin: '1em 0',
+    color: 'black',
+    height: 2,
+  },
   slider: {
     height: 300,
     margin: '1em 0',
@@ -130,12 +136,12 @@ const useStyles = makeStyles({
     fontSize: 18,
   },
   incidentRightAlign: {
-    textAlign: 'right',
+    fontSize: 20,
     width: '100%',
     paddingRight: 10,
   },
   incidentDescription: {
-    fontSize: 15,
+    fontSize: 24,
   },
   incidentContainer: {
     display: 'flex',
@@ -147,7 +153,7 @@ const useStyles = makeStyles({
   },
   buttonContainer: {
     display: 'flex',
-    'justify-content': 'center',
+    'justify-content': 'space-between',
     'margin-top': '16px',
     'align-items': 'center',
   },
@@ -178,8 +184,6 @@ const useStyles = makeStyles({
 const Carousel = (props) => {
   const { data, lockItem, lockType } = props;
 
-  console.log(data);
-
   const classes = useStyles();
 
   const getDateFromISOString = (isoString) => {
@@ -195,18 +199,16 @@ const Carousel = (props) => {
       toReturn.push(
         <Slide tag="a" key={index}>
           <div className={classes.incidentContainer}>
+            <p className={classes.incidentRightAlign}>
+              {/* location here */}
+               From {data[each].location} on {' '}
+              {getDateFromISOString(data[each].date)}
+              {' '}
+            </p>
+            <p>
+            </p>
             <p className={classes.incidentDescription}>
               {data[each].description}
-            </p>
-            <p className={classes.incidentRightAlign}>slin
-              {' '}
-              {/* location here */}
-              {data[each].location}
-            </p>
-            <p className={classes.incidentRightAlign}>
-              {' '}
-              {/* date here  */}
-              {getDateFromISOString(data[each].date)}
             </p>
           </div>
         </Slide>,
@@ -215,14 +217,13 @@ const Carousel = (props) => {
     return toReturn;
   };
   /* eslint-enable */
-
-  function eventLogger(ev) {
-    // eslint-disable-next-line no-console
-    // console.log(ev.type, ev.target);
-  }
+  const [currentSlide, setCurrentSlide] = useState(0);
 
   function renderDots(ev) {
-    console.log(ev);
+    console.log(ev.currentSlide);
+    setCurrentSlide(ev.currentSlide);
+
+    /* No longer needed?
     const totalSlides = ev.totalSlides;
     const currentSlide = ev.currentSlide;
     let i = 0;
@@ -240,6 +241,7 @@ const Carousel = (props) => {
       );
     }
     return dots;
+    */
   }
 
   function getLabel() {
@@ -253,6 +255,8 @@ const Carousel = (props) => {
     }
     return lockItem; // for some reason, this if statamnet is yielding 'none'
   }
+
+  const numItems = Object.keys(data).length;
 
   return (
     <CarouselProvider
@@ -268,74 +272,10 @@ const Carousel = (props) => {
         {' '}
         {getLabel()}
       </p>
+      <hr className={classes.hr} />
       <Slider
         className={classes.slider}
-        trayProps={{
-          // clipboard events? Sure why not.
-          onCopy: eventLogger,
-          onCut: eventLogger,
-          onPaste: eventLogger,
-
-          // composition events
-          onCompositionEnd: eventLogger,
-          onCompositionStart: eventLogger,
-          onCompositionUpdate: eventLogger,
-
-          // keyboard events
-          onKeyDown: eventLogger,
-          onKeyPress: eventLogger,
-          onKeyUp: eventLogger,
-
-          // focus events,
-          onFocus: eventLogger,
-          onBlur: eventLogger,
-
-          // form events,
-          onChange: eventLogger,
-          onInput: eventLogger,
-          onInvalid: eventLogger,
-          onSubmit: eventLogger,
-
-          // mouse events
-          onClick: eventLogger,
-          onContextMenu: eventLogger,
-          onDoubleClick: eventLogger,
-          onDrag: eventLogger,
-          onDragEnd: eventLogger,
-          onDragEnter: eventLogger,
-          onDragExit: eventLogger,
-          onDragLeave: eventLogger,
-          onDragOver: eventLogger,
-          onDragStart: eventLogger,
-          onDrop: eventLogger,
-          onMouseDown: eventLogger,
-          onMouseEnter: eventLogger,
-          onMouseLeave: eventLogger,
-          // onMouseMove: eventLogger,
-          onMouseOut: eventLogger,
-          onMouseOver: eventLogger,
-          onMouseUp: eventLogger,
-
-          // touch events
-          onTouchCancel: eventLogger,
-          onTouchEnd: eventLogger,
-          // onTouchMove: eventLogger,
-          onTouchStart: eventLogger,
-
-          // pointer events
-          onPointerDown: eventLogger,
-          // onPointerMove: eventLogger,
-          onPointerUp: eventLogger,
-          onPointerCancel: eventLogger,
-          onGotPointerCapture: eventLogger,
-          onLostPointerCapture: eventLogger,
-          onPointerEnter: eventLogger,
-          onPointerLeave: eventLogger,
-          onPointerOver: eventLogger,
-          onPointerOut: eventLogger,
-
-          draggable: true,
-        }}
+        trayProps={{ draggable: true }}
       >
         {renderChildren()}
       </Slider>
@@ -351,10 +291,9 @@ const Carousel = (props) => {
           </Button>
         </ButtonNext>
       </div>
+      <DotGroup renderDots={renderDots} />
       <div className={classes.flexCenter}>
-        <DotGroup
-          renderDots={renderDots}
-        />
+        <SliderExport length={numItems} current={currentSlide} />
       </div>
     </CarouselProvider>
   );
