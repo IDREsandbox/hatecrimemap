@@ -194,6 +194,9 @@ const Carousel = (props) => {
 
   /* eslint-disable */
   const renderChildren = (input) => {
+    if (Object.keys(data).length === 0) {
+      return <h1> No data for this location. </h1>
+    }
     const toReturn = [];
     Object.keys(data).forEach((each, index) => {
       toReturn.push(

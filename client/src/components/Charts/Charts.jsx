@@ -1,5 +1,6 @@
 import React, { createRef } from 'react';
 import { withStyles } from '@material-ui/core/styles';
+
 import './Charts.css';
 import { Button, LinearProgress } from '@material-ui/core';
 import { ArrowBack } from '@material-ui/icons';
@@ -44,6 +45,7 @@ class Charts extends React.Component {
       options: {
         plugins: {
           datalabels: {
+            color: 'white',
             anchor: 'end',
             align(context) {
               const index = context.dataIndex;
@@ -55,9 +57,21 @@ class Charts extends React.Component {
             },
           },
         },
+        legend: {
+          display: true,
+          labels: {
+            fontColor: "white",
+          }
+        },
         scales: {
+          xAxes: [{
+            ticks: {
+              fontColor: "white",
+            }
+          }],
           yAxes: [{
             ticks: {
+              fontColor: "white",
               // beginAtZero:true,
               // callback: function(value) {if(value % 1 ===0) {return value;}},
               min: 0,
@@ -67,6 +81,7 @@ class Charts extends React.Component {
           }],
         },
         tooltips: {
+
           intersect: false,
           mode: 'index',
         },
@@ -171,13 +186,20 @@ class Charts extends React.Component {
         /* Need to adjust styling of chart labels for pie charts */
 
         const pieOptions = {
+          legend: {
+            display: true,
+            labels: {
+              fontColor: "white",
+            }
+          },
           plugins: {
             datalabels: {
+              color: 'white',
               anchor: 'center',
               display(context) {
                 const index = context.dataIndex;
                 const value = context.dataset.data[index];
-                if (value > 0) {
+                if (value > 1) {
                   return true;
                 }
                 return false;
@@ -191,9 +213,9 @@ class Charts extends React.Component {
           <div key={this.props.currState} className="charts">
             <Grid container justify="space-between">
               <Grid item xs={3}>
-                <Button variant="outlined" color="primary" size="small" aria-label="back" id="chartbackButton" onClick={this.barUnClick} startIcon={<ArrowBack />}>Back</Button>
+                <Button variant="outlined" color="info" size="small" aria-label="back" id="chartbackButton" onClick={this.barUnClick} startIcon={<ArrowBack />}>Back</Button>
               </Grid>
-              <Grid item xs={6} style={{ textAlign: 'center' }}>
+              <Grid item xs={6} style={{ textAlign: 'center', color: 'white' }}>
                 <h4>{CHART_STRINGS[this.state.currentDisplay - 1]}</h4>
               </Grid>
               <Grid item xs={3}>{/* to center the title */}</Grid>
@@ -222,7 +244,7 @@ class Charts extends React.Component {
                       <TableHead>
                         <TableRow>
                           <TableCell width="10%">Date (M/D/Y)</TableCell>
-                          <TableCell width="10%">{this.props.lockType === LOCK_TYPE.COUNTY ? 'County' : 'State' }</TableCell>
+                          <TableCell width="10%">{this.props.lockType === LOCK_TYPE.COUNTY ? 'County' : 'State'}</TableCell>
                           <TableCell width="15%">Primary Reason</TableCell>
                           <TableCell width="20%">Source</TableCell>
                           <TableCell width="45%">Description</TableCell>

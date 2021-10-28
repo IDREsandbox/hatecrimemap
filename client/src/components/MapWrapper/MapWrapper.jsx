@@ -85,8 +85,9 @@ const MapWrapper = (props) => {
         <TileLayer
           key="base"
           bounds={ML.worldBounds}
-          attribution="&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
-          url="https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png"
+          attribution="&copy; <a href=&quot;https://www.openstreetmap.org/copyright&quot;>OpenStreetMap</a> contributors &copy; <a href=&quot;https://carto.com/attributions&quot;>CARTO</a>"
+          url="https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png"
+          subdomains="abcd"
         />
         <Rectangle
           bounds={ML.worldBounds}
@@ -101,7 +102,7 @@ const MapWrapper = (props) => {
           <MyGeoJSON
             key="states"
             style={(feature) => ({
-              stroke: 1, weight: 1, opacity: 0.75, color: 'white', fillColor: feature.properties.COLOR, fillOpacity: 0.75,
+              stroke: 0.5, weight: 0.5, color: 'black', fillColor: feature.properties.COLOR, fillOpacity: 0.75,
             })}
             geojson={states_usa}
             datalen={props.data.length}
@@ -124,7 +125,7 @@ const MapWrapper = (props) => {
             }}
           />
         </Pane>
-        {!props.covid
+        {!props.covid // if covid map, don't draw county
         && (
         <Pane
           name="counties"
@@ -133,15 +134,16 @@ const MapWrapper = (props) => {
           <MyGeoJSON
             key="counties"
             style={(feature) => ({
-              stroke: 1, weight: 1, opacity: 0.75, color: 'white', fillColor: feature.properties.COLOR, fillOpacity: 0.75,
+              stroke: 1, weight: 1, color: 'black', fillColor: feature.properties.COLOR, fillOpacity: 0.75,
             })}
             geojson={counties}
             datalen={props.data.length}
             eventHandlers={{
-              mouseover: ({ layer }) => props.updateCounty && props.updateCounty(layer.feature.properties.County_state) && layer.setStyle({ fillColor: 'rgb(200, 200, 200)' }),
-              mouseout: ({ layer }) => props.updateCounty && props.updateCounty('none') && layer.setStyle({ fillColor: layer.feature.properties.COLOR }),
+              mouseover: ({ layer }) =>  layer.feature.properties.COLOR !== "rgba(0, 0, 0, 0)" && props.updateCounty && props.updateCounty(layer.feature.properties.County_state) && layer.setStyle({ fillColor: 'rgb(200, 200, 200)' }),
+              mouseout: ({ layer }) => layer.feature.properties.COLOR !== "rgba(0, 0, 0, 0)" && props.updateCounty && props.updateCounty('none') && layer.setStyle({ fillColor: layer.feature.properties.COLOR }),
               click: ({ layer }) => {
-                if (!props.updateCounty) return;
+                console.log(layer)
+                if (!props.updateCounty || layer.feature.properties.COLOR !== "rgba(0, 0, 0, 0)" ) return;
                 props.updateCounty(layer.feature.properties.County_state, true);
                 if (lockedLayer) {
                   lockedLayer.setStyle({ fillColor: lockedLayer.feature.properties.COLOR });

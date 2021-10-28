@@ -27,7 +27,9 @@ export const CHART_STRINGS = ["Race/Ethnicity", "Religion", "Gender/Sexuality", 
 // var otherData = [];
 // //( ({disabled, trump_supporter, others}) => ({disabled, trump_supporter, others}))(statetotals[currentState]);
 
-const CHART_COLORS = ["#003f5c", "#f95d6a", "#665191", "#d45087", "#ffa600", "#a05195", "#ff7c43", "#2f4b7c"]
+
+// NOTE: CAN RETRIEVE OLD COLORS FROM OLD COMMITS
+const CHART_COLORS = ["#228A96",  "#f95d6a", "#665191", "#d45087", "#ffa600", "#a05195", "#ff7c43", "#2f4b7c"]
 
 const RACE_LABELS = ["African American", "Asian", "Latinx", "Native American/Indigenous", "White", "Other Race/Ethnicity"]
 const RELIGION_LABELS = ["Anti-Jewish", "Anti-Christian", "Anti-Muslim", "Other Religion"]
@@ -38,10 +40,10 @@ var raceChartData = {
   datasets: [
   {
     label:"Number of Hate Crimes against Race Groups",
-    backgroundColor: CHART_COLORS.map(c => c + "33"),
+    backgroundColor: CHART_COLORS.map(c => c ),
     borderColor: CHART_COLORS,
     borderWidth: 1,
-    hoverBackgroundColor: CHART_COLORS.map(c => c + "66"),
+    hoverBackgroundColor: CHART_COLORS.map(c => c + "33"),
     hoverBorderColor: CHART_COLORS
   }]
 };
@@ -50,10 +52,10 @@ var religionChartData = {
   datasets: [
   {
     label:"Number of Hate Crimes against Religious Groups",
-    backgroundColor: CHART_COLORS.map(c => c + "33"),
+    backgroundColor: CHART_COLORS.map(c => c ),
     borderColor: CHART_COLORS,
     borderWidth: 1,
-    hoverBackgroundColor: CHART_COLORS.map(c => c + "66"),
+    hoverBackgroundColor: CHART_COLORS.map(c => c + "33"),
     hoverBorderColor: CHART_COLORS
   }]
 };
@@ -61,10 +63,10 @@ var genderChartData = {
   datasets: [
   {
     label:"Number of Hate Crimes based on Gender",
-    backgroundColor: CHART_COLORS.map(c => c + "33"),
+    backgroundColor: CHART_COLORS.map(c => c),
     borderColor: CHART_COLORS,
     borderWidth: 1,
-    hoverBackgroundColor: CHART_COLORS.map(c => c + "66"),
+    hoverBackgroundColor: CHART_COLORS.map(c => c + "33"),
     hoverBorderColor: CHART_COLORS
   }]
 };
@@ -72,10 +74,10 @@ var otherChartData = {
   datasets: [
   {
     label:"Number of Hate Crimes against Other Groups",
-    backgroundColor: CHART_COLORS.map(c => c + "33"),
+    backgroundColor: CHART_COLORS.map(c => c ),
     borderColor: CHART_COLORS,
     borderWidth: 1,
-    hoverBackgroundColor: CHART_COLORS.map(c => c + "66"),
+    hoverBackgroundColor: CHART_COLORS.map(c => c + "33"),
     hoverBorderColor: CHART_COLORS
   }]
 };
@@ -83,10 +85,10 @@ var topChartData = {
   datasets: [
   {
     label:"Number of Hate Crimes",
-    backgroundColor: CHART_COLORS.map(c => c + "33"),
+    backgroundColor: CHART_COLORS.map(c => c + "99"),
     borderColor: CHART_COLORS,
     borderWidth: 1,
-    hoverBackgroundColor: CHART_COLORS.map(c => c + "66"),
+    hoverBackgroundColor: CHART_COLORS.map(c => c + "33"),
     hoverBorderColor: CHART_COLORS
   }]
 }

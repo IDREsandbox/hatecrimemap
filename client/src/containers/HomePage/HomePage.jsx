@@ -328,6 +328,7 @@ class HomePage extends Component {
                   onClick={this.runTutorial}
                   className={classes.menuButton}
                   aria-label="Menu"
+                  style={{color: 'white'}}
                 >
                   <HelpIcon id="hateCrimeTutorial" />
                 </IconButton>
