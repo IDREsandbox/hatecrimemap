@@ -4,7 +4,7 @@
 
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles, makeStyles } from '@material-ui/core/styles';
 import {
   Button,
   CircularProgress,
@@ -16,6 +16,10 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import Carousel from './Carousel';
 import axios from 'axios';
+
+import Floater from 'react-floater'
+import ColoredButton from 'components/Reusables/ColoredButton';
+
 
 const styles = {
   flexCenter: {
@@ -50,6 +54,13 @@ const styles = {
   }
 };
 
+const ColorButton = withStyles((theme) => ({
+  root: {
+    color: 'white',
+    borderColor: 'white',
+  }
+}))(Button)
+
 
 function SpotlightModal(props) {
   const { classes } = props;
@@ -61,6 +72,8 @@ function SpotlightModal(props) {
 
   const [lockItem, setLockItem] = useState(props.lockItem);
   const [lockType, setLockType] = useState(props.lockType);
+
+
 
   useEffect(() => {
     setLockItem(props.lockItem);
@@ -100,13 +113,26 @@ function SpotlightModal(props) {
     }
   }, [open]);
 
+
+
+
+
+  let leafletTarget = null;
+
   const handleClickOpen = () => {
-    setOpen(true);
+    leafletTarget = (".sideMenu__chart")
+    if (open) {
+      setOpen(false)
+    } else {
+      setOpen(true)
+    }
+
   };
 
   const handleClose = () => {
     setOpen(false);
   };
+
 
   const loadingOrNot = () => {
     if (carouselData.data[lockItem]) {
@@ -129,28 +155,60 @@ function SpotlightModal(props) {
   return (
     <div>
       <div className={classes.flexCenter}>
-        <Button
+        <ColorButton
           variant="outlined"
           className={classes.aboutButton}
           onClick={handleClickOpen}>
           View Stories from this Location
-        </Button>
+        </ColorButton>
       </div>
-      <Dialog
+
+      {/* <Floater
         open={open}
-        onClose={handleClose}
+        target=".leaflet-states-pane .leaflet-interactive:nth-child(4)"
+        content="This is the Floater content"
+        showCloseButton={true}
+        options={{
+          textColor: 'black',
+          width: 800,
+          zIndex: 9000,
+        }}
+        styles={{
+          options: {
+            textColor: 'black',
+            width: 800,
+            zIndex: 9000,
+          },
+        }}
+      >
+        text
+      </Floater> */}
+
+       <Dialog
+        open={open}
+        onClose={handleClickOpen}
         aria-labelledby="responsive-dialog-title"
         fullWidth
         maxWidth="md"
         className={classes.mainModal}
+        PaperProps={{
+          style: {
+            backgroundColor: '#262626',
+            boxShadow: 'none',
+          },
+        }}
       >
         <DialogContent className={classes.content}>
           {loadingOrNot()}
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="primary">
+          <ColoredButton
+            buttonClick={handleClose}
+            notOutlined
+            noIcon
+          >
             Close
-          </Button>
+          </ColoredButton>
         </DialogActions>
       </Dialog>
     </div>
@@ -158,7 +216,13 @@ function SpotlightModal(props) {
 }
 
 /*
-Thoughts
+Have  to reimplement floater to lock on to exact 
+
+
+
+
+ok so idea -> on open click, have the button set the floater to open
+if the map is locked onto anything, have the floater lock onto that location
 
 */
 

@@ -3,7 +3,6 @@ import { withStyles } from '@material-ui/core/styles';
 
 import './Charts.css';
 import { Button, LinearProgress } from '@material-ui/core';
-import { ArrowBack } from '@material-ui/icons';
 import { Bar, Pie } from 'react-chartjs-2';
 import Grid from '@material-ui/core/Grid';
 
@@ -21,11 +20,12 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
 import ChartDataLabels from 'chartjs-plugin-datalabels';
+import ColoredButton from 'components/Reusables/ColoredButton';
 import { countyDisplayName } from '../../utils/data-utils';
 import { CHARTS, CHART_STRINGS, getChartData } from '../../utils/chart-utils';
 
 const styles = (theme) => ({ // eslint-disable-line no-unused-vars
-
+  // leaving above theme for future syntax reference
 });
 
 const LOCK_TYPE = {
@@ -60,18 +60,18 @@ class Charts extends React.Component {
         legend: {
           display: true,
           labels: {
-            fontColor: "white",
-          }
+            fontColor: 'white',
+          },
         },
         scales: {
           xAxes: [{
             ticks: {
-              fontColor: "white",
-            }
+              fontColor: 'white',
+            },
           }],
           yAxes: [{
             ticks: {
-              fontColor: "white",
+              fontColor: 'white',
               // beginAtZero:true,
               // callback: function(value) {if(value % 1 ===0) {return value;}},
               min: 0,
@@ -189,8 +189,8 @@ class Charts extends React.Component {
           legend: {
             display: true,
             labels: {
-              fontColor: "white",
-            }
+              fontColor: 'white',
+            },
           },
           plugins: {
             datalabels: {
@@ -213,7 +213,13 @@ class Charts extends React.Component {
           <div key={this.props.currState} className="charts">
             <Grid container justify="space-between">
               <Grid item xs={3}>
-                <Button variant="outlined" color="info" size="small" aria-label="back" id="chartbackButton" onClick={this.barUnClick} startIcon={<ArrowBack />}>Back</Button>
+                <ColoredButton
+                  id="chartbackButton"
+                  buttonClick={this.barUnClick}
+                  backButton
+                >
+                  Back
+                </ColoredButton>
               </Grid>
               <Grid item xs={6} style={{ textAlign: 'center', color: 'white' }}>
                 <h4>{CHART_STRINGS[this.state.currentDisplay - 1]}</h4>

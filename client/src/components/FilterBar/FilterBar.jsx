@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
 import './FilterBar.css';
-
+import {
+  createTheme, withStyles, makeStyles, ThemeProvider,
+} from '@material-ui/core/styles';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 
@@ -10,18 +11,30 @@ const styles = (theme) => ({ // eslint-disable-line no-unused-vars
 
 });
 
+const ColorFormControlLabel = withStyles((theme) => ({
+  root: {
+    color: 'white',
+  },
+}))(FormControlLabel);
+
+const ColorCheckbox = withStyles((theme) => ({
+  root: {
+    color: 'white',
+  },
+}))(Checkbox);
+
 const FilterBar = (props) => {
   const [published, filterPublished] = useState(false);
 
   return (
     <div className="filterBar">
-      <FormControlLabel
+      <ColorFormControlLabel
         control={(
-          <Checkbox
+          <ColorCheckbox
             checked={published}
             onChange={(e, v) => { filterPublished(v); props.filterfn(v); }}
             name="published"
-            color="primary"
+            color="white"
           />
         )}
         label="View only incidents that have been published"

@@ -28,3 +28,8 @@
   text-align: center;
   color: white;
 }
+
+
+.__floater__open {
+  z-index: 5000
+}

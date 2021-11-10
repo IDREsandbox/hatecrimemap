@@ -13,6 +13,7 @@ import 'pure-react-carousel/dist/react-carousel.es.css';
 import { makeStyles } from '@material-ui/core/styles';
 import { Button } from '@material-ui/core';
 import { stateIdToStateName } from 'utils/data-utils';
+import ColoredButton from 'components/Reusables/ColoredButton';
 import SliderExport from './ProgressBar';
 
 const useStyles = makeStyles({
@@ -111,13 +112,16 @@ const useStyles = makeStyles({
     height: '80%',
   }, */
   hr: {
-    margin: '1em 0',
-    color: 'black',
-    height: 2,
+    marginTop: '1em',
+    marginBottom: '0',
+    color: 'white',
+    boxShadow: 'none',
+    borderTop: '0.5px solid white',
+    borderBottom: '0.5px solid white',
   },
   slider: {
     height: 300,
-    margin: '1em 0',
+    margin: '0.1em 0',
   },
   buttonWrapper: {
     margin: '1em',
@@ -127,12 +131,14 @@ const useStyles = makeStyles({
     background: 'none',
   },
   headline: {
+    color: 'white',
     fontSize: 50,
     margin: 0,
     marginTop: 2,
     padding: 0,
   },
   label: {
+    color: 'white',
     fontSize: 18,
   },
   incidentRightAlign: {
@@ -144,12 +150,13 @@ const useStyles = makeStyles({
     fontSize: 24,
   },
   incidentContainer: {
+    color: 'white',
     display: 'flex',
     flexDirection: 'column',
     'justify-content': 'center',
     'margin-top': '16px',
     'align-items': 'center',
-    margin: '5px 10px',
+    margin: '1px 10px',
   },
   buttonContainer: {
     display: 'flex',
@@ -179,6 +186,9 @@ const useStyles = makeStyles({
     'align-items': 'center',
     width: '100%',
   },
+  location: {
+    color: '#1CC2C2',
+  },
 });
 
 const Carousel = (props) => {
@@ -202,7 +212,7 @@ const Carousel = (props) => {
       toReturn.push(
         <Slide tag="a" key={index}>
           <div className={classes.incidentContainer}>
-            <p className={classes.incidentRightAlign}>
+            <p className={`${classes.incidentRightAlign} ${classes.location}`}>
               {/* location here */}
                From {data[each].location} on {' '}
               {getDateFromISOString(data[each].date)}
@@ -223,28 +233,9 @@ const Carousel = (props) => {
   const [currentSlide, setCurrentSlide] = useState(0);
 
   function renderDots(ev) {
-    console.log(ev.currentSlide);
+    // console.log(ev.carouselStore);
+    // ev.carouselStore.setStoreState({ currentSlide: 5 })
     setCurrentSlide(ev.currentSlide);
-
-    /* No longer needed?
-    const totalSlides = ev.totalSlides;
-    const currentSlide = ev.currentSlide;
-    let i = 0;
-    const dots = [];
-    for (; i < totalSlides; ++i) {
-      dots.push(
-        <Dot
-          key={i}
-          slide={i}
-          selected
-          disabled={false}
-        >
-          <span className={classes.innerDot}> </span>
-        </Dot>,
-      );
-    }
-    return dots;
-    */
   }
 
   function getLabel() {
@@ -256,7 +247,7 @@ const Carousel = (props) => {
       console.log(id);
       return `${countyName} County, ${stateIdToStateName(id)}`;
     }
-    return lockItem; // for some reason, this if statamnet is yielding 'none'
+    return lockItem; // for some reason, this if is yielding 'none'
   }
 
   const numItems = Object.keys(data).length;
@@ -284,14 +275,16 @@ const Carousel = (props) => {
       </Slider>
       <div className={classes.buttonContainer}>
         <ButtonBack className={classes.buttonWrapper}>
-          <Button variant="outlined" color="primary">
+          <ColoredButton
+            backButton
+          >
             Back
-          </Button>
+          </ColoredButton>
         </ButtonBack>
         <ButtonNext className={classes.buttonWrapper}>
-          <Button variant="outlined" color="primary">
+          <ColoredButton>
             Next
-          </Button>
+          </ColoredButton>
         </ButtonNext>
       </div>
       <DotGroup renderDots={renderDots} />

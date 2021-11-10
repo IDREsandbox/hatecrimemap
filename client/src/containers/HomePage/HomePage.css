@@ -64,3 +64,10 @@
 .react-joyride {
   position: absolute;
 }
+
+.popup-style {
+  min-height: 300px;
+  min-width: 300px;
+  background-color: #262626;
+  margin: 0;
+}

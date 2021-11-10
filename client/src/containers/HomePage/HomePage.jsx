@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import PropTypes, { instanceOf } from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { CircularProgress, IconButton } from '@material-ui/core';
 
 import HelpIcon from '@material-ui/icons/Help';
 import Joyride, { ACTIONS, EVENTS, STATUS } from 'react-joyride';
 import Nouislider from 'nouislider-react';
+import { Popup } from 'react-leaflet';
+import { popup } from 'leaflet';
 import SpotlightModal from '../../components/SpotlightModal/SpotlightModal';
 import { MainContext } from '../context/joyrideContext';
 import {
@@ -33,11 +35,16 @@ import 'nouislider/distribute/nouislider.css';
 
 import './HomePage.css';
 
+const pop = new popup();
 const styles = () => ({
   progress: {
     position: 'fixed',
     top: '50%',
     left: '50%',
+  },
+  popupStyle: {
+    minWidth: 300,
+    padding: 0,
   },
 });
 
@@ -81,6 +88,7 @@ class HomePage extends Component {
       skipStep: false,
       displayType: 'state', // consider simplifying with lockType
       lockType: 'none',
+      floaterOpen: false,
     };
 
     this.statesRef = React.createRef();
@@ -103,12 +111,47 @@ class HomePage extends Component {
         isFetching: false,
       });
     });
+
+    setTimeout(() => {
+      this.setState({ floaterOpen: true });
+    }, 5000);
   }
 
   changeViewRegion = (event, region) => {
-    if (region && this.mapRef.current) {
-      this.mapRef.current.fitBounds(region);
+    console.log(region);
+    console.log(this.mapRef.current);
+    this.mapRef.current.closePopup();
+    const lockItem = this.state.currentDisplay;
+    const lockType = this.state.lockType;
+
+    let lockTypeQuery;
+    if (lockItem === 'none') {
+      lockTypeQuery = 'none';
+    } else {
+      lockTypeQuery = lockType;
     }
+    const newPopup = popup({
+      closeButton: false,
+      className: this.props.classes.popupStyle,
+    });
+    newPopup.setLatLng([34.0522, -118.2437]);
+
+    newPopup.setContent('<div><p>From Los Angeles, CA on 11/3/21</p><p></p><p>Example event description.</p></div>');
+    this.mapRef.current.openPopup(newPopup);
+
+    if (region == this.alaskaRef) {
+      newPopup.unbindPopup();
+    }
+
+    // var z = (<Popup id="ll"  />)
+    // this.mapRef.current.openPopup("test", [34.0522, -118.2437])
+    /* openPopup(
+      <Popup
+        position={[34.0522, -118.2437]}
+      >
+        test
+      </Popup>
+    ) */
   };
 
   filterIncidents = (flt) => {
@@ -290,6 +333,7 @@ class HomePage extends Component {
       currTotal = counts_total(data);
     }
 
+    console.log(this.mapRef.current);
     return (
       <div className="homePage">
         <FirstTimeOverlay onClose={this.showTutorial} />
@@ -302,6 +346,8 @@ class HomePage extends Component {
           data={data}
           max={dataStateMax}
           maxCounty={dataCountyMax}
+          lockType={this.state.lockType}
+          lockItem={this.state.currentDisplay}
           zoom={this.getZoom}
           displayType={displayType}
           timeSlider={this.timeSlider}
@@ -328,7 +374,7 @@ class HomePage extends Component {
                   onClick={this.runTutorial}
                   className={classes.menuButton}
                   aria-label="Menu"
-                  style={{color: 'white'}}
+                  style={{ color: 'white' }}
                 >
                   <HelpIcon id="hateCrimeTutorial" />
                 </IconButton>
@@ -336,8 +382,7 @@ class HomePage extends Component {
 
               <h4>
                 {`${currTotal
-                } in ${
-                  this.state.filterTimeRange.join('-')}`}
+                } in ${this.state.filterTimeRange.join('-')}`}
               </h4>
             </div>
 

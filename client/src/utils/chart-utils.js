@@ -52,7 +52,7 @@ var religionChartData = {
   datasets: [
   {
     label:"Number of Hate Crimes against Religious Groups",
-    backgroundColor: CHART_COLORS.map(c => c ),
+    backgroundColor: CHART_COLORS.map(c => c + "99"),
     borderColor: CHART_COLORS,
     borderWidth: 1,
     hoverBackgroundColor: CHART_COLORS.map(c => c + "33"),
@@ -63,7 +63,7 @@ var genderChartData = {
   datasets: [
   {
     label:"Number of Hate Crimes based on Gender",
-    backgroundColor: CHART_COLORS.map(c => c),
+    backgroundColor: CHART_COLORS.map(c => c+ "99"),
     borderColor: CHART_COLORS,
     borderWidth: 1,
     hoverBackgroundColor: CHART_COLORS.map(c => c + "33"),
@@ -74,7 +74,7 @@ var otherChartData = {
   datasets: [
   {
     label:"Number of Hate Crimes against Other Groups",
-    backgroundColor: CHART_COLORS.map(c => c ),
+    backgroundColor: CHART_COLORS.map(c => c  + "99"),
     borderColor: CHART_COLORS,
     borderWidth: 1,
     hoverBackgroundColor: CHART_COLORS.map(c => c + "33"),
@@ -85,10 +85,10 @@ var topChartData = {
   datasets: [
   {
     label:"Number of Hate Crimes",
-    backgroundColor: CHART_COLORS.map(c => c + "99"),
+    backgroundColor: CHART_COLORS.map(c => c),
     borderColor: CHART_COLORS,
     borderWidth: 1,
-    hoverBackgroundColor: CHART_COLORS.map(c => c + "33"),
+    hoverBackgroundColor: CHART_COLORS.map(c => c + "99"),
     hoverBorderColor: CHART_COLORS
   }]
 }
