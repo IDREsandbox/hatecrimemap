@@ -20,6 +20,10 @@ import './App.css';
 
 library.add(faCheckSquare, faChevronRight, faChevronLeft, faChevronDown, faPlusSquare, faMinusSquare);
 
+
+
+const unusedVar = 'test';
+
 const theme = createMuiTheme({
   overrides: {
     MuiTypography: {
