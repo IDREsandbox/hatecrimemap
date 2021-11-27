@@ -157,7 +157,6 @@ class CovidPage extends Component {
     }
   };
 
-  
   render() {
     const { isFetching } = this.state;
     const { classes } = this.props;

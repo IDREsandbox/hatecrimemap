@@ -92,7 +92,7 @@ class HomePage extends Component {
   }
 
   async componentDidMount() {
-   const context = this.context;
+    const context = this.context;
 
     this.state.run = context.homePageJoyrideRestart;
     this.state.stepIndex = context.stepIndex;
