@@ -7,6 +7,7 @@
   flex-basis: auto
   */
   grid-template-areas: 
+    "map side"
     "map side";
   grid-template-columns: 1.6fr 1fr;
   height: 100%;
@@ -60,3 +61,6 @@
   text-align: center;
 }
 
+.react-joyride {
+  position: absolute;
+}
