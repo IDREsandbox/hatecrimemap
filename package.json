@@ -11,7 +11,7 @@
         "server": "nodemon ./server/index.js",
         "client": "npm start --prefix client",
         "dev": "concurrently \"npm run server\" \"npm run client\"",
-        "lint-commit": "npx eslint --fix client/src --ext .jsx",
+        "lint-commit": "npx eslint --cache --fix client/src --ext .jsx",
         "prepare": "npx husky install"
     },
     "cacheDirectories": [
