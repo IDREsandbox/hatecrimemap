@@ -6,6 +6,7 @@ import { CircularProgress, IconButton } from '@material-ui/core';
 import HelpIcon from '@material-ui/icons/Help';
 import Joyride, { ACTIONS, EVENTS, STATUS } from 'react-joyride';
 import Nouislider from 'nouislider-react';
+import SpotlightModal from '../../components/SpotlightModal/SpotlightModal';
 import { MainContext } from '../context/joyrideContext';
 import {
   FirstTimeOverlay,
@@ -14,6 +15,8 @@ import {
   Charts,
   FilterBar,
   MapBar,
+  Legend,
+  CountyToggle,
 } from '../../components';
 import { JOYRIDE_STEPS } from '../../res/values/joyride';
 import { MAP_DISPLAY } from '../../res/values/map';
@@ -23,7 +26,7 @@ import {
   counts_total,
   counts_maxPrimary,
   counts_maxState,
-  resetStateColor, defaultColors,
+  defaultColors,
 } from '../../utils/data-utils';
 
 import 'nouislider/distribute/nouislider.css';
@@ -76,6 +79,7 @@ class HomePage extends Component {
       steps: JOYRIDE_STEPS,
       stepIndex: 0,
       skipStep: false,
+      displayType: 'state', // consider simplifying with lockType
       lockType: 'none',
     };
 
@@ -88,46 +92,22 @@ class HomePage extends Component {
   }
 
   async componentDidMount() {
-    // getStateDataReports().then(values => {
-    //   this.setState({
-    //     data: values,
-    //     publishedData: filterPublishedReports(values),
-    //     isFetching: false
-    //   });
-
-    // });
-    const { context } = this;
-    console.log(context);
+    const context = this.context;
 
     this.state.run = context.homePageJoyrideRestart;
     this.state.stepIndex = context.stepIndex;
 
     getDataCounts().then((values) => {
-      const max = counts_total(values);
-      // console.log(values.filter(f => f.state=="California"))
       this.setState({
         data: values,
-        dataMax: max, // eslint-disable-line react/no-unused-state
         isFetching: false,
       });
     });
   }
 
   changeViewRegion = (event, region) => {
-    if (region !== null) {
-      this.setState({ region }, () => {
-        if (this.mapRef.current !== null && this.statesRef.current !== null) {
-          let bounds;
-          if (region == MAP_DISPLAY.ALASKA) {
-            bounds = this.alaskaRef.current.leafletElement.getBounds().pad(0.1);
-          } else if (region == MAP_DISPLAY.USA) {
-            bounds = this.statesRef.current.leafletElement.getBounds();
-          } else if (region == MAP_DISPLAY.HAWAII) {
-            bounds = this.hawaiiRef.current.leafletElement.getBounds().pad(0.5);
-          }
-          this.mapRef.current.leafletElement.fitBounds(bounds);
-        }
-      });
+    if (region && this.mapRef.current) {
+      this.mapRef.current.fitBounds(region);
     }
   };
 
@@ -141,31 +121,54 @@ class HomePage extends Component {
 
   // Return value, success (in our terms, not react's)
   updateState = (state, lock = false) => {
-    if (lock || !this.state.locked) {
-      // lock parameter overrides current lock
-      if (this.state.locked && state === 'none') this.resetStateColors(); // would like color-setting to be more declarative
-      // but onEachFeature only executes to initialize, so color handling is all done within events (mouseon, mouseout, click)
+    if (this.state.locked && !lock) return false;
 
+    // console.log(`this.state.locked`, this.state.locked);
+    // console.log(`this.state.currentDisplay:`, this.state.currentDisplay);
+    // console.log(`state param`, state)
+    if (this.state.locked && this.state.currentDisplay === state) {
       this.setState({
-        currentDisplay: state,
-        locked: lock && state !== 'none',
-        lockType: 'state',
-      }); // we never want to lock onto None
-      return true;
+        currentDisplay: 'none', // if we try to "re-lock" onto the same state, toggle it off
+        locked: false,
+        lockType: 'none', // if there's nothing locked on, the lockType should be none!
+      }, () => {
+        // console.log(`this.state.currentDisplay after state update`, this.state.currentDisplay);
+        // console.log(`lockType after state update`, this.state.lockType);
+      });
+      return false; // uncolor
     }
-    return false;
+
+    this.setState({
+      currentDisplay: state,
+      locked: lock && state !== 'none', // we never want to lock onto None
+      lockType: 'state',
+    });
+    return true;
   };
 
+  /*
+    the lockType paramaeter is not correctly resetting to 'none' after unlocking off of a state?
+    what could be causing this...
+
+  */
+
   updateCounty = (county, lock = false) => {
-    if (lock) {
-      this.setState({ currentDisplay: county, locked: county !== 'none', lockType: 'county' });
-      return true;
+    if (this.state.locked && !lock) return false;
+    if (this.state.locked && this.state.currentDisplay === county) {
+      this.setState({
+        currentDisplay: 'none',
+        locked: false,
+        lockType: 'none',
+      });
+      return false; // uncolor
     }
-    if (!this.state.locked) {
-      this.setState({ currentDisplay: county });
-      return true;
-    }
-    return false;
+
+    this.setState({
+      currentDisplay: county,
+      locked: lock && county !== 'none', // we never want to lock onto None
+      lockType: 'county',
+    });
+    return true;
   };
 
   showTutorial = () => {
@@ -221,7 +224,6 @@ class HomePage extends Component {
         context.covidJoyrideRun = true;
         context.stepIndex = 13;
         context.homePageJoyrideRestart = true;
-        console.log(context);
       }
     } else if (index == 13) {
       const { context } = this;
@@ -235,27 +237,23 @@ class HomePage extends Component {
     }
   };
 
-  updateZoom = (z) => {
-    this.setState({ zoom: z.target._zoom });
+  updateZoom = (z, callback) => {
+    if (this.state.zoom < 6 && z >= 6) {
+      // Should show county
+      this.setState({ zoom: z, displayType: 'county' }, callback('county'));
+    } else if (this.state.zoom >= 6 && z < 6) {
+      // Should show state
+      this.setState({ zoom: z, displayType: 'state' }, callback('state'));
+    } else {
+      this.setState({ zoom: z });
+    }
   };
 
   getZoom = () => this.state.zoom;
 
-  resetStateColors() {
-    Object.values(
-      this.statesRef.current.contextValue.layerContainer._layers,
-    ).forEach((layer) => {
-      if (layer.feature) {
-        // only the states/counties have a feature
-        // console.log(layer.feature);
-        resetStateColor(layer, this.state.data, defaultColors);
-      }
-    });
-  }
-
   render() {
     const {
-      isFetching, run, steps, stepIndex,
+      isFetching, run, steps, stepIndex, region, displayType,
     } = this.state;
     const { classes } = this.props;
 
@@ -266,12 +264,18 @@ class HomePage extends Component {
     // timeslider filter. TODO: make a generic state data filter/callback that handles pointer and closures
     // TODO: sort by date and binary search
     const dataPtr = this.state.data;
-    const data = dataPtr.filter(
+    let data = dataPtr.filter(
       (row) => row.yyyy >= this.state.filterTimeRange[0]
         && row.yyyy <= this.state.filterTimeRange[1],
     );
-    const dataMapMax = this.state.zoom >= 6 ? 30 : counts_maxState(data);
-    const dataMax = counts_maxPrimary(data);
+    if (this.state.filterPublished) {
+      data = data.filter(
+        (row) => row.published,
+      );
+    }
+    const dataStateMax = counts_maxState(data);
+    const dataCountyMax = 30; // replace with county-max calculator
+    const dataMaxTopLevel = counts_maxPrimary(data); // TODO: rename these...
     let currTotal = 0;
 
     const filters = [];
@@ -285,7 +289,6 @@ class HomePage extends Component {
     } else {
       currTotal = counts_total(data);
     }
-    if (this.state.filterPublished) filters.push(['published', true]);
 
     return (
       <div className="homePage">
@@ -293,54 +296,23 @@ class HomePage extends Component {
 
         {/* TODO: context for mapdata and data.states? */}
         <MapWrapper
-          region={this.state.region}
           updateState={this.updateState}
           updateCounty={this.updateCounty}
-          statesRef={this.statesRef}
           mapRef={this.mapRef}
-          alaskaRef={this.alaskaRef}
-          hawaiiRef={this.hawaiiRef}
           data={data}
-          max={dataMapMax}
-          updateView={this.changeViewRegion}
-          updateZoom={this.updateZoom}
+          max={dataStateMax}
+          maxCounty={dataCountyMax}
           zoom={this.getZoom}
-          filterTime={this.filterTime}
+          displayType={displayType}
           timeSlider={this.timeSlider}
-        >
-          <MapBar
-            changeRegion={this.changeViewRegion}
-            region={this.state.region}
-          />
-          <Joyride
-            run={run}
-            scrollToFirstStep
-            continuous
-            showSkipButton
-            showProgress={false}
-            callback={this.handleJoyrideCallback}
-            stepIndex={stepIndex}
-            steps={steps}
-            locale={{
-              back: 'Back',
-              close: 'Close',
-              last: 'Finish',
-              next: 'Next',
-              skip: 'Skip',
-            }}
-            styles={{
-              options: {
-                arrowColor: 'rgb(236, 242, 255)',
-                backgroundColor: 'rgb(236, 242, 255)',
-                overlayColor: 'rgba(5, 5, 10, 0.7)',
-                primaryColor: 'rgb(0, 100, 255)',
-                textColor: 'black',
-                width: 800,
-                zIndex: 9000,
-              },
-            }}
-          />
-        </MapWrapper>
+          controls={(map) => ( //eslint-disable-line
+            <>
+              <Legend colors={defaultColors} maxState={dataStateMax} maxCounty={dataCountyMax} displayType={displayType} />
+              <MapBar changeRegion={this.changeViewRegion} region={region} />
+              <CountyToggle updateZoom={this.updateZoom} />
+            </>
+          )}
+        />
 
         <div className="side">
           <SideMenu>
@@ -362,10 +334,9 @@ class HomePage extends Component {
               </h2>
 
               <h4>
-                {currTotal}
-                {' '}
-                in
-                {this.state.filterTimeRange.join('-')}
+                {`${currTotal
+                } in ${
+                  this.state.filterTimeRange.join('-')}`}
               </h4>
             </div>
 
@@ -373,7 +344,7 @@ class HomePage extends Component {
               <Charts
                 ref={this.chartsRef}
                 data={data}
-                max={dataMax}
+                max={dataMaxTopLevel}
                 filters={filters}
                 time={this.state.filterTimeRange}
                 lockType={this.state.lockType}
@@ -382,8 +353,41 @@ class HomePage extends Component {
             </div>
             <br />
             <FilterBar filterfn={this.filterIncidents} />
+            <SpotlightModal
+              lockType={this.state.lockType}
+              lockItem={this.state.currentDisplay}
+            />
           </SideMenu>
         </div>
+        <Joyride
+          className="joyride"
+          run={run}
+          scrollToFirstStep
+          continuous
+          showSkipButton
+          showProgress={false}
+          callback={this.handleJoyrideCallback}
+          stepIndex={stepIndex}
+          steps={steps}
+          locale={{
+            back: 'Back',
+            close: 'Close',
+            last: 'Finish',
+            next: 'Next',
+            skip: 'Skip',
+          }}
+          styles={{
+            options: {
+              arrowColor: 'rgb(236, 242, 255)',
+              backgroundColor: 'rgb(236, 242, 255)',
+              overlayColor: 'rgba(5, 5, 10, 0.7)',
+              primaryColor: 'rgb(0, 100, 255)',
+              textColor: 'black',
+              width: 800,
+              zIndex: 9000,
+            },
+          }}
+        />
       </div>
     );
   }

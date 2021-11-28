@@ -56,8 +56,6 @@ class AboutDialog extends Component {
       classes,
     } = this.props;
 
-    console.log(classes);
-
     return (
       <div>
         <Button className={classes.aboutButton} onClick={this.handleClickOpen}>
@@ -106,6 +104,7 @@ class AboutDialog extends Component {
               Close
             </Button>
           </DialogActions>
+
         </Dialog>
       </div>
     );

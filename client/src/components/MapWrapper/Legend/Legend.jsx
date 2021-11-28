@@ -1,89 +1,65 @@
-import { MapControl, withLeaflet } from 'react-leaflet';
+import { useEffect } from 'react';
+import { useMap } from 'react-leaflet';
 import L from 'leaflet';
+import { hashColor } from '../../../utils/data-utils';
 import './Legend.css';
 
-class Legend extends MapControl {
-  createLeafletElement(props) {
-    // BEGIN: ghetto temporary fix for getting the numbers in ASAP..... need to refactor this
-    let rangeValue1;
-    let rangeValue2;
-    let rangeValue3;
-    let rangeValue4;
-    let rangeValue5;
+const Legend = (props) => {
+  const map = useMap();
 
-    if (props.covid == 1) {
-      rangeValue1 = 272;
-      rangeValue2 = 341;
-      rangeValue3 = 545;
-      rangeValue4 = 909;
-      rangeValue5 = 2728;
-    } else {
-      rangeValue1 = 22;
-      rangeValue2 = 28;
-      rangeValue3 = 45;
-      rangeValue4 = 75;
-      rangeValue5 = 227;
-    }
-    // END: Ghetto method for getting the numbers
+  const createLeafletElement = () => {
+    let max;
+    if (props.displayType === 'state') max = props.maxState;
+    else if (props.displayType === 'county') max = props.maxCounty;
 
-    const getColor = (d) =>
-      // Done: take these colors from/to data_utils -- by AK 10/24/2020
+    const getColor = (d) => hashColor(d, max, props.colors);
 
-      // TODO (Albert): Need to get the numbers from data_utils and not use ghetto method
-      (d < rangeValue1
-        ? props.colors[0]
-        : d < rangeValue2
-          ? props.colors[1]
-          : d < rangeValue3
-            ? props.colors[2]
-            : d < rangeValue4
-              ? props.colors[3]
-              : d < rangeValue5 ? props.colors[4] : '#cccccc');
-    const legend = L.Control.extend({
-      onAdd: (map) => {
+    // REFERENCE hashColor in data-utils
+    const ranges = [
+      0,
+      Math.floor(max / 10),
+      Math.floor(max / 8),
+      Math.floor(max / 5),
+      Math.floor(max / 3),
+      Math.floor(max + 1),
+    ];
+
+    const LegendConstructor = L.Control.extend({
+      onAdd: () => { // 'map' prop to this Leaflet function removed to satisfy eslint
         const div = L.DomUtil.create('div', 'info legend');
-        let grades;
-        // BEGIN: Temporary fix for the legend categories being less than 5 for COVID
-        if (props.covid == 1) {
-          // covid only has 4 categories, so reducing them to 4
-          grades = [1, rangeValue2, rangeValue3, rangeValue4, rangeValue5];
-        } else {
-          grades = [
-            0,
-            rangeValue1,
-            rangeValue2,
-            rangeValue3,
-            rangeValue4,
-            rangeValue5,
-          ];
-        }
-        // END: Temp fix.
 
         const labels = [];
-        let from;
-        let to;
-        if (props.covid == 1) {
-          labels.push('<i style="background:"#cccccc"' + '"></i> None');
+        if (props.hasNone) {
+          labels.push('<i style="background:#cccccc"' + '"></i> None'); //eslint-disable-line
         }
-        for (let i = 0; i < grades.length - 1; i++) {
-          from = grades[i];
-          to = grades[i + 1];
+
+        for (let i = 0; i < ranges.length - 1; i++) {
+          const start = ranges[i];
+          const end = ranges[i + 1];
           labels.push(
             `<i style="background:${getColor(
-              from + 1,
-            )}"></i> ${from}&ndash;${to}`,
+              start + 1,
+            )}"></i> ${start}&ndash;${end}`,
           );
         }
 
-        const header = '<p><strong>Cases per state</strong></p>';
+        const header = `<p><strong>Cases per ${props.displayType}</strong></p>`;
 
         div.innerHTML = header + labels.join('<br>');
         return div;
       },
     });
 
-    return new legend({ position: 'bottomright' });
-  }
-}
+    return new LegendConstructor({ position: 'bottomright' });
+  };
 
-export default withLeaflet(Legend);
+  useEffect(() => {
+    const control = createLeafletElement();
+    control.addTo(map);
+    return () => map.removeControl(control);
+  }, [props.displayType, props.maxState, props.maxCounty]);
+
+  return null;
+};
+
+export default Legend;
