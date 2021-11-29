@@ -39,7 +39,7 @@ router.get('/unreviewedcount/:verified', (req, res) => {
     })
 })
 
-router.get('/unreviewed/:per/:page/:verified', (req, res) => {
+router.get('/unreviewed/:per/:page/:verified/:sorted', (req, res) => {
   db.any(`SELECT * FROM paginate_by_offset($1, $2, $3::boolean[])`, [req.params.page, req.params.per, req.params.verified])
     .then((incidents) => {
       res.status(200)

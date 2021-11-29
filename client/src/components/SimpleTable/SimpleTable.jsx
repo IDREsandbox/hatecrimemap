@@ -51,8 +51,7 @@ const SimpleTable = (props) => {
   const [total, setTotal] = useState(props.counts);
 
   const handlePageChange = (e, newPage) => {
-    setPage(page);
-    props.fetchData(rowsPerPage, newPage);
+    setPage(newPage);
   };
 
   const handleRowChange = (e) => {
@@ -64,6 +63,12 @@ const SimpleTable = (props) => {
     const { counts } = props;
     setTotal(counts);
   }, [props]);
+
+
+  useEffect(() => {
+    props.fetchData(rowsPerPage, page);
+  }, [page])
+
 
   const {
     classes,
