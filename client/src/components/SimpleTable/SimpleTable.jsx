@@ -42,33 +42,12 @@ const styles = (theme) => ({
  *   idsChecked - array of ids (corresponding to the first element of every row array) to track checkbox status
  *   fetchData - function(int #rows, int page#) to update table data whenever pagination values are updated
  *   counts - max number of rows, for pagination purposes
- *
+ *  
  * */
 
 const SimpleTable = (props) => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [page, setPage] = useState(0);
-  const [total, setTotal] = useState(props.counts);
-
-  const handlePageChange = (e, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleRowChange = (e) => {
-    setRowsPerPage(e.target.value);
-    props.fetchData(e.target.value, page);
-  };
-
-  useEffect(() => {
-    const { counts } = props;
-    setTotal(counts);
-  }, [props]);
-
-
-  useEffect(() => {
-    props.fetchData(rowsPerPage, page);
-  }, [page])
-
 
   const {
     classes,
@@ -78,6 +57,29 @@ const SimpleTable = (props) => {
     onCheckIncident,
     onCheckAll,
   } = props;
+
+
+  const handlePageChange = (e, newPage) => {
+    setPage(newPage);
+  };
+  
+  // changes handleRowChange to 
+  const handleRowChange = (e) => {
+    let newRowsPerPage = e.target.value
+    let currentStartingNumber = (rowsPerPage * page) + 1  
+    let startingPage = Math.floor(currentStartingNumber / newRowsPerPage)
+    setRowsPerPage(e.target.value);
+    setPage(startingPage)
+    /* NOTE
+    The above function doesn't actually call fetchData itself - have a useEffect only triggered by page change to call fetchData
+    This is due to useState not updating fast enough before next line is called (state change stuff)
+    This fix fixes change with the event verification portal going out of range
+    */
+  };
+
+  useEffect(() => {
+    props.fetchData(rowsPerPage, page);
+  }, [page]);
 
   return (
     <Paper className={classes.root}>
@@ -129,13 +131,14 @@ const SimpleTable = (props) => {
               page={page}
               onChangePage={handlePageChange}
               onChangeRowsPerPage={handleRowChange}
-              count={total}
+              count={props.counts}
             />
           </TableRow>
         </TableFooter>
       </Table>
     </Paper>
   );
+
 };
 
 SimpleTable.propTypes = {

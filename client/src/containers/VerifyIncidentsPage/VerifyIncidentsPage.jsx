@@ -151,7 +151,7 @@ const getInitialState = () => ({
   verified: '{ false }', // note -> must change to '{ true, false }' to consider both // what is this actually considering?
   counts: 0,
   incidentsChecked: [],
-  sorted: 'none'
+  sorted: 'none',
 });
 
 class VerifyIncidentsPage extends Component {
@@ -281,7 +281,6 @@ class VerifyIncidentsPage extends Component {
     axios
       .get(`/api/verify/unreviewed/${perPage}/${page}/${this.state.verified}/${this.state.sorted}/`)
       .then((res) => {
-        console.log(res)
         if (!res.data.incidents) {
           this.setState({ loggedIn: false }); // TODO: it could be a server error, not authentication? Add a check
           return;
@@ -421,13 +420,13 @@ class VerifyIncidentsPage extends Component {
       );
     }
 
-    if (incidentReports == null) {
+     if (incidentReports == null) {
       return (
         <div className={classes.loading}>
           <LinearProgress className={classes.progress} />
         </div>
       );
-    }
+    } 
 
     return (
       <div className={classes.root}>
@@ -461,7 +460,7 @@ class VerifyIncidentsPage extends Component {
                   this.fetchData();
                 });
               }}
-              defaultValue={"{true, false }"}
+              defaultValue="{true, false }"
               className={classes.selectEmpty}
             >
               <MenuItem value="{ true, false }">Both</MenuItem>
