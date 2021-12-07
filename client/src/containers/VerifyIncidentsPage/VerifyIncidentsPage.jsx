@@ -420,13 +420,13 @@ class VerifyIncidentsPage extends Component {
       );
     }
 
-     if (incidentReports == null) {
+    if (incidentReports == null) {
       return (
         <div className={classes.loading}>
           <LinearProgress className={classes.progress} />
         </div>
       );
-    } 
+    }
 
     return (
       <div className={classes.root}>
