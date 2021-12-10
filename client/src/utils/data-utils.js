@@ -23,6 +23,8 @@ const colors = ["#a11506", "#d04814", "#ef6a1d", "#ff8e33", "#ffb454"];
 //export const defaultColors = [ "#5f0000", "#be2d00", "#de4a00", "#ff6600", "#ff8008"];
 
 
+//export const defaultColors = ["#582c0e", "#914505", "#c85700", "#ff6e00", "#ffa200"];
+
 //export const defaultColors = ["#212320", "#86310d","#B34211" ,"#CA4A13","#E05215"]// email set, dark orange ish
 
 //export const defaultColors = ["#560000", "#7a0100", "#9e0200", "#b60200", "#ef0300"]; // 'dark red' 

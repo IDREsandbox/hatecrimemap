@@ -17,9 +17,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import Carousel from './Carousel';
 import axios from 'axios';
 
-import Floater from 'react-floater'
 import ColoredButton from 'components/Reusables/ColoredButton';
-
 
 const styles = {
   flexCenter: {
@@ -51,6 +49,9 @@ const styles = {
   },
   content: {
     width: '100%',
+  }, 
+  SpotlightContainer: {
+    height: '100%',
   }
 };
 
@@ -63,9 +64,8 @@ const ColorButton = withStyles((theme) => ({
 
 
 function SpotlightModal(props) {
-  const { classes } = props;
+  const { classes, openPopup, closePopup } = props;
 
-  const [open, setOpen] = useState(false);
   const [carouselData, setCarouselData] = useState({
     data: {}
   });
@@ -73,71 +73,51 @@ function SpotlightModal(props) {
   const [lockItem, setLockItem] = useState(props.lockItem);
   const [lockType, setLockType] = useState(props.lockType);
 
-
-
   useEffect(() => {
     setLockItem(props.lockItem);
     setLockType(props.lockType); // i knew this would happen.. lockType and lockItem techincally aren't finished being changed before the next couple lines are executed
   }, [props.lockItem, props.lockType])
 
-
   // FIX THIS: CHANGE QUERY TO ONLY BE MADE IF DATA NOT ALREADY PRESENT, NOT EVERY TIME
   useEffect(() => {
     // this is causing an extra call to API without the need?
-    if (open) {
-
-      let lockTypeQuery;
-      if (lockItem === 'none') {
-        lockTypeQuery = 'none'
-      } else {
-        lockTypeQuery = lockType
-      }
-
-      axios.get(`/api/stories/${lockTypeQuery}/${lockItem}`)
-        .then(res => {
-          if (carouselData.data[lockItem]) {
-            // do nothing, data already exists
-          } else {
-            (`should get caught here`)
-            setCarouselData((prevState) => ({
-              data: {
-                ...prevState.data,
-                [lockItem]: res.data,
-              }
-            }));
-          }
-        })
-        .catch(err => {
-          console.log(err);
-        })
-    }
-  }, [open]);
-
-
-
-
-
-  let leafletTarget = null;
-
-  const handleClickOpen = () => {
-    leafletTarget = (".sideMenu__chart")
-    if (open) {
-      setOpen(false)
+    let lockTypeQuery;
+    if (lockItem === 'none') {
+      lockTypeQuery = 'none'
     } else {
-      setOpen(true)
+      lockTypeQuery = lockType
     }
-
-  };
+    axios.get(`/api/stories/${lockTypeQuery}/${lockItem}`)
+      .then(res => {
+        console.log(res)
+        if (carouselData.data[lockItem]) {
+          // do nothing, data already exists
+        } else {
+          (`should get caught here`)
+          setCarouselData((prevState) => ({
+            data: {
+              ...prevState.data,
+              [lockItem]: res.data,
+            }
+          }));
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      })
+  }, []);
 
   const handleClose = () => {
-    setOpen(false);
+    closePopup()
+    props.exitSpotlightMode()
   };
-
 
   const loadingOrNot = () => {
     if (carouselData.data[lockItem]) {
       return (
         <Carousel
+          closePopup={closePopup}
+          openPopup={openPopup}
           lockItem={lockItem}
           lockType={lockType}
           data={carouselData.data[lockItem]}
@@ -153,73 +133,21 @@ function SpotlightModal(props) {
   }
 
   return (
-    <div>
-      <div className={classes.flexCenter}>
-        <ColorButton
-          variant="outlined"
-          className={classes.aboutButton}
-          onClick={handleClickOpen}>
-          View Stories from this Location
-        </ColorButton>
-      </div>
-
-      {/* <Floater
-        open={open}
-        target=".leaflet-states-pane .leaflet-interactive:nth-child(4)"
-        content="This is the Floater content"
-        showCloseButton={true}
-        options={{
-          textColor: 'black',
-          width: 800,
-          zIndex: 9000,
-        }}
-        styles={{
-          options: {
-            textColor: 'black',
-            width: 800,
-            zIndex: 9000,
-          },
-        }}
+    <div className={classes.SpotlightContainer}>
+      <ColoredButton
+        id="spotlightbackButton"
+        buttonClick={handleClose}
+        backButton
       >
-        text
-      </Floater> */}
-
-       <Dialog
-        open={open}
-        onClose={handleClickOpen}
-        aria-labelledby="responsive-dialog-title"
-        fullWidth
-        maxWidth="md"
-        className={classes.mainModal}
-        PaperProps={{
-          style: {
-            backgroundColor: '#262626',
-            boxShadow: 'none',
-          },
-        }}
-      >
-        <DialogContent className={classes.content}>
-          {loadingOrNot()}
-        </DialogContent>
-        <DialogActions>
-          <ColoredButton
-            buttonClick={handleClose}
-            notOutlined
-            noIcon
-          >
-            Close
-          </ColoredButton>
-        </DialogActions>
-      </Dialog>
+        Back
+      </ColoredButton>
+      {loadingOrNot()}
     </div>
   );
 }
 
 /*
 Have  to reimplement floater to lock on to exact 
-
-
-
 
 ok so idea -> on open click, have the button set the floater to open
 if the map is locked onto anything, have the floater lock onto that location

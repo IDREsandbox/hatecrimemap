@@ -23,7 +23,7 @@ const ColoredButton = (props) => {
 
   return (
     <ColorButton
-      variant={props.notOutlined ? '' : 'outlined'}
+      variant={props.notOutlined ? 'contained' : 'outlined'}
       size="small"
       aria-label={props.backButton ? 'back' : 'next'}
       id="chartbackButton"

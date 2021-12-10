@@ -34,7 +34,6 @@ const FilterBar = (props) => {
             checked={published}
             onChange={(e, v) => { filterPublished(v); props.filterfn(v); }}
             name="published"
-            color="white"
           />
         )}
         label="View only incidents that have been published"

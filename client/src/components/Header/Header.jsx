@@ -26,22 +26,25 @@ const styles = {
   menuButton: {
     marginLeft: -12,
     marginRight: 20,
-    color: 'white',
+    color: 'black',
   },
   reportIncidentButton: {
-    color: 'white',
+    color: 'black',
   },
   gotoOriginal: {
     color: 'white',
   },
   gotoCovid: {
-    color: 'white',
+    color: 'black',
   },
   link: {
     textDecoration: 'none',
   },
   titleLink: {
     color: 'inherit',
+  },
+  homeTitle: {
+    color: 'black',
   },
 };
 
@@ -111,7 +114,7 @@ const Header = ({ classes }) => {
               <HomeIcon />
             </IconButton>
           </Link>
-          <Typography variant="h6" color="inherit" className={classes.flex}>
+          <Typography variant="h6" color="inherit" className={`${classes.flex} ${classes.homeTitle}`}>
             Mapping Hate Crimes in the US #OneHateCrimeIsTooMany
           </Typography>
           <Link to="/covid" className={classes.link}>

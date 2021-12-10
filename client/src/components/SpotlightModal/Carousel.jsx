@@ -120,7 +120,7 @@ const useStyles = makeStyles({
     borderBottom: '0.5px solid white',
   },
   slider: {
-    height: 300,
+    height: 325,
     margin: '0.1em 0',
   },
   buttonWrapper: {
@@ -187,12 +187,17 @@ const useStyles = makeStyles({
     width: '100%',
   },
   location: {
-    color: '#1CC2C2',
+    color: '#E05215',
+  },
+  CarouselProvider: {
+    height: '100%',
   },
 });
 
 const Carousel = (props) => {
-  const { data, lockItem, lockType } = props;
+  const {
+    data, lockItem, lockType, openPopup, closePopup,
+  } = props;
 
   const classes = useStyles();
 
@@ -235,7 +240,13 @@ const Carousel = (props) => {
   function renderDots(ev) {
     // console.log(ev.carouselStore);
     // ev.carouselStore.setStoreState({ currentSlide: 5 })
+    // console.log(data[ev.currentSlide])
+    // ev.currentSlide contains umbers
+    closePopup();
+    const latitude = data[ev.currentSlide].latitude;
+    const longitude = data[ev.currentSlide].longitude;
     setCurrentSlide(ev.currentSlide);
+    openPopup(latitude, longitude, data[ev.currentSlide].location, getDateFromISOString(data[ev.currentSlide].date));
   }
 
   function getLabel() {

@@ -16,7 +16,7 @@ import { ABOUT_DIALOGS } from '../../res/values/string';
 
 const styles = {
   aboutButton: {
-    color: 'white',
+    color: 'black',
   },
   images: {
     display: 'table',

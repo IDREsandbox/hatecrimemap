@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
-  MapContainer, TileLayer, Rectangle, Pane, MapConsumer, Popup,
+  MapContainer, TileLayer, Rectangle, Pane, MapConsumer, Popup, Marker,
 } from 'react-leaflet';
 import L from 'leaflet'; //eslint-disable-line
 
@@ -217,6 +217,7 @@ const MapWrapper = (props) => {
               />
             </Pane>
           )}
+        <Marker position={[37.7, -122.24584]} />
         <MyGeoJSON
           key="usa"
           geojson={usa}
