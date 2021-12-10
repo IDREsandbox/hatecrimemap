@@ -1,9 +1,4 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
-
-
-
-echo Running eslint before commit
-
-
+echo Running eslint before commit 
 #npm run lint-commit
