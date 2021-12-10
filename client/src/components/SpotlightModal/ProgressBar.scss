@@ -108,7 +108,7 @@ $dot-speed: 200ms;
         width: $dot-holder-size;
         height: $dot-holder-size;
         border-radius: 50%;
-        background-color: #4256b4;
+        background-color: gray;
         margin-right: 0.3 * $dot-holder-size;
     }
     .dot-holder:last-child {

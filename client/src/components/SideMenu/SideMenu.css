@@ -1,4 +1,4 @@
-.sideMenu {
+.sideMenuOld {
   display: grid;
   grid-template-areas:
     "smheader"
@@ -9,9 +9,27 @@
   grid-template-rows: 1fr;
   padding: 10px 20px;
   overflow-y: auto;
+  background-color: #262626;
+  height: 100%;
+}
+
+.sideMenu {
+  display: flex;
+  flex-direction: column;
+  background-color:  #262626;
+  border-left: 2px solid #090909;
+  height: 100%;
+  padding: 10px 20px;
+  overflow-y: auto;
 }
 
 .sideMenu__header {
 	margin: 10px 0;
   text-align: center;
+  color: white;
+}
+
+
+.__floater__open {
+  z-index: 5000
 }

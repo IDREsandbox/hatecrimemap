@@ -13,7 +13,23 @@ const STATES = ["Alabama", "Alaska", "Arizona", "Arkansas", "California", "Color
 ]
 
 export const covidColors = ["#ffffd4", "#fed98e", "#fe9929", "#d95f0e", "#993404"] // made the first two the same since the second bin isnt used ffffd4 was the original
-export const defaultColors = ["#f2f0f7", "#cbc9e2", "#9e9ac8", "#756bb1", "#54278f"]
+//export const defaultColors = ["#f2f0f7", "#cbc9e2", "#9e9ac8", "#756bb1", "#54278f"] // lightest to darkest
+//export const defaultColors =  ["#a11506", "#d04814","#ef6a1d","#ff8e33","#ffb454"] //(first orange set tried)
+const colors = ["#a11506", "#d04814", "#ef6a1d", "#ff8e33", "#ffb454"];
+// #582c0e|#914505|#c85700|#ff6e00|#ffa200
+//export const defaultColors = ["#584100", "#886200", "#b78300", "#e7a300", "#ffc800"];
+//export const defaultColors = ["#eee4d7", "#e7b439", "#e19c18", "#c73915", "#9a2d19"]
+// #582c0e|#914505|#c85700|#ff6e00|#ffa200
+//export const defaultColors = [ "#5f0000", "#be2d00", "#de4a00", "#ff6600", "#ff8008"];
+
+
+//export const defaultColors = ["#582c0e", "#914505", "#c85700", "#ff6e00", "#ffa200"];
+
+//export const defaultColors = ["#212320", "#86310d","#B34211" ,"#CA4A13","#E05215"]// email set, dark orange ish
+
+//export const defaultColors = ["#560000", "#7a0100", "#9e0200", "#b60200", "#ef0300"]; // 'dark red' 
+export const defaultColors = ["#212320", "#007b7b", "#00a4a4", "#00cccc", "#00ffff"];
+
 
 function storeStateDataReports(data) {
     let stateData = {}
@@ -284,6 +300,60 @@ const idReference = {
     "78": "United States Virgin Islands",
 }
 
+const nth = {
+    "01": "Alabama",
+    "04": "Arizona",
+    "05": "Arkansas",
+    "06": "California",
+    "08": "Colorado",
+    "09": "Connecticut",
+    "10": "Delaware",
+    "11": "District of Columbia",
+    "12": "Florida",
+    "13": "Georgia",
+    "16": "Idaho",
+    "17": "Illinois",
+    "18": "Indiana",
+    "19": "Iowa",
+    "20": "Kansas",
+    "21": "Kentucky",
+    "22": "Louisiana",
+    "23": "Maine",
+    "24": "Maryland",
+    "25": "Massachusetts",
+    "26": "Michigan",
+    "27": "Minnesota",
+    "28": "Mississippi",
+    "29": "Missouri",
+    "30": "Montana",
+    "31": "Nebraska",
+    "32": "Nevada",
+    "33": "New Hampshire",
+    "34": "New Jersey",
+    "35": "New Mexico",
+    "36": "New York",
+    "37": "North Carolina",
+    "38": "North Dakota",
+    "39": "Ohio",
+    "40": "Oklahoma",
+    "41": "Oregon",
+    "42": "Pennsylvania",
+    "44": "Rhode Island",
+    "45": "South Carolina",
+    "46": "South Dakota",
+    "47": "Tennessee",
+    "48": "Texas",
+    "49": "Utah",
+    "50": "Vermont",
+    "51": "Virginia",
+    "53": "Washington",
+    "54": "West Virginia",
+    "55": "Wisconsin",
+    "56": "Wyoming",
+}
+
+ // should I have state id map to the number that it is?
+ // I need to fetch the location that 
 export const stateIdToStateName = (id) => {
     return idReference[`${id}`].toString();
 }

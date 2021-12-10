@@ -1,17 +1,22 @@
 /*   eslint max-classes-per-file: 0, react/prefer-stateless-function: 0, jsx-a11y/click-events-have-key-events: 0, jsx-a11y/no-static-element-interactions: 0 */
 
 import React, { useEffect, useState } from 'react';
+import { WithStore } from 'pure-react-carousel';
 import './ProgressBar.scss';
 
 const Slider = (props) => {
   const [position, setPosition] = useState(props.position);
 
   const updatePosition = (positionInput) => {
+    if (positionInput === position) {
+      return;
+    }
     if (props.clickable) {
       setPosition(positionInput);
       if (props.positionChangeListener) {
         props.positionChangeListener(positionInput);
       }
+      props.setStoreState({ currentSlide: positionInput });
     }
   };
 
@@ -52,7 +57,7 @@ class Dot extends React.Component {
   render() {
     const positionClass = `dot dot-position-${this.props.position}`;
     return (
-      <div className={positionClass} />
+      <div className={positionClass} onClick={this.props.onClick} />
     );
   }
 }
@@ -74,9 +79,9 @@ const SliderExport = (props) => {
 
   return (
     <div className="slider-panel">
-      <Slider length={length} size="normal" position={current} clickable />
+      <Slider setStoreState={props.carouselStore.setStoreState} length={length} size="normal" position={current} clickable />
     </div>
   );
 };
 
-export default SliderExport;
+export default WithStore(SliderExport);

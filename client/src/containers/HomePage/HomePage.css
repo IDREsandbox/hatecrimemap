@@ -64,3 +64,30 @@
 .react-joyride {
   position: absolute;
 }
+
+.popup-style {
+  min-height: 300px;
+  min-width: 300px;
+  background-color: #262626;
+  margin: 0;
+}
+
+.noUi-connect {
+  background: gray;
+}
+
+/*  popup css - leaving here for now will clean up code later*/
+
+
+.leaflet-popup-content-wrapper {
+  background-color: gray;
+  color: black;
+  border: 3px solid black;
+}
+
+/* border colors for css: */
+
+.leaflet-popup-tip {
+  background-color: gray;
+  border: 3px solid black;
+}

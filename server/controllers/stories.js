@@ -10,12 +10,13 @@ const {
 const router = express.Router();
 
 
-const storiesQuery = `select us.name as state, us.id, (uc.name||','||uc.statefp) as county, published, incidentdate as date, i.location, i.description
+// note (goes latitude, longitude)
+
+const storiesQuery = `select us.name as state, us.id, (uc.name||','||uc.statefp) as county, published, incidentdate as date, i.location, i.description, st_x(i.coord) as longitude, st_y(i.coord) as latitude
 from incident i -- include all groups, even if aggregate of one is 0
 join us_states us on us.id = i.state_id -- attach the state name
 join us_counties uc on uc.id = i.county_id -- attach the county name
 where incidentdate IS NOT NULL AND incidentdate < now()::date`
-
 
 
 // TODO - implmeent
@@ -44,8 +45,6 @@ const cleanupStory = (data) => {
     });
     return data;
 }
-
-
 
 const processStoryData = (response) => {
     let data = response.filter(each => {

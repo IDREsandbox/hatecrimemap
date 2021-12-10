@@ -13,7 +13,10 @@ import 'pure-react-carousel/dist/react-carousel.es.css';
 import { makeStyles } from '@material-ui/core/styles';
 import { Button } from '@material-ui/core';
 import { stateIdToStateName } from 'utils/data-utils';
+import ColoredButton from 'components/Reusables/ColoredButton';
 import SliderExport from './ProgressBar';
+import './Carousel.css'
+
 
 const useStyles = makeStyles({
   /* root: {
@@ -111,13 +114,16 @@ const useStyles = makeStyles({
     height: '80%',
   }, */
   hr: {
-    margin: '1em 0',
-    color: 'black',
-    height: 2,
+    marginTop: '1em',
+    marginBottom: '0',
+    color: 'white',
+    boxShadow: 'none',
+    borderTop: '0.5px solid white',
+    borderBottom: '0.5px solid white',
   },
   slider: {
-    height: 300,
-    margin: '1em 0',
+    height: '100%',
+    margin: '0.1em 0',
   },
   buttonWrapper: {
     margin: '1em',
@@ -127,12 +133,14 @@ const useStyles = makeStyles({
     background: 'none',
   },
   headline: {
+    color: 'white',
     fontSize: 50,
     margin: 0,
     marginTop: 2,
     padding: 0,
   },
   label: {
+    color: 'white',
     fontSize: 18,
   },
   incidentRightAlign: {
@@ -141,15 +149,16 @@ const useStyles = makeStyles({
     paddingRight: 10,
   },
   incidentDescription: {
-    fontSize: 24,
+    fontSize: 20,
   },
   incidentContainer: {
+    color: 'white',
     display: 'flex',
     flexDirection: 'column',
     'justify-content': 'center',
     'margin-top': '16px',
     'align-items': 'center',
-    margin: '5px 10px',
+    margin: '1px 10px',
   },
   buttonContainer: {
     display: 'flex',
@@ -179,10 +188,18 @@ const useStyles = makeStyles({
     'align-items': 'center',
     width: '100%',
   },
+  location: {
+    color: 'white'
+  },
+  CarouselProvider: {
+    height: '100%',
+  },
 });
 
 const Carousel = (props) => {
-  const { data, lockItem, lockType } = props;
+  const {
+    data, lockItem, lockType, openPopup
+  } = props;
 
   const classes = useStyles();
 
@@ -194,12 +211,15 @@ const Carousel = (props) => {
 
   /* eslint-disable */
   const renderChildren = (input) => {
+    if (Object.keys(data).length === 0) {
+      return <h1> No data for this location. </h1>
+    }
     const toReturn = [];
     Object.keys(data).forEach((each, index) => {
       toReturn.push(
-        <Slide tag="a" key={index}>
+        <Slide tag="a" key={index} className='slide-style'>
           <div className={classes.incidentContainer}>
-            <p className={classes.incidentRightAlign}>
+            <p className={`${classes.incidentRightAlign} ${classes.location}`}>
               {/* location here */}
                From {data[each].location} on {' '}
               {getDateFromISOString(data[each].date)}
@@ -220,28 +240,14 @@ const Carousel = (props) => {
   const [currentSlide, setCurrentSlide] = useState(0);
 
   function renderDots(ev) {
-    console.log(ev.currentSlide);
+    // console.log(ev.carouselStore);
+    // ev.carouselStore.setStoreState({ currentSlide: 5 })
+    // console.log(data[ev.currentSlide])
+    // ev.currentSlide contains umbers
+    const latitude = data[ev.currentSlide].latitude;
+    const longitude = data[ev.currentSlide].longitude;
     setCurrentSlide(ev.currentSlide);
-
-    /* No longer needed?
-    const totalSlides = ev.totalSlides;
-    const currentSlide = ev.currentSlide;
-    let i = 0;
-    const dots = [];
-    for (; i < totalSlides; ++i) {
-      dots.push(
-        <Dot
-          key={i}
-          slide={i}
-          selected
-          disabled={false}
-        >
-          <span className={classes.innerDot}> </span>
-        </Dot>,
-      );
-    }
-    return dots;
-    */
+    openPopup(latitude, longitude, data[ev.currentSlide].location, getDateFromISOString(data[ev.currentSlide].date));
   }
 
   function getLabel() {
@@ -253,7 +259,7 @@ const Carousel = (props) => {
       console.log(id);
       return `${countyName} County, ${stateIdToStateName(id)}`;
     }
-    return lockItem; // for some reason, this if statamnet is yielding 'none'
+    return lockItem; // for some reason, this if is yielding 'none'
   }
 
   const numItems = Object.keys(data).length;
@@ -263,8 +269,9 @@ const Carousel = (props) => {
       className={classes.CarouselProvider}
       visibleSlides={1}
       totalSlides={Object.keys(data).length}
-      naturalSlideWidth={100}
-      naturalSlideHeight={100}
+      naturalSlideWidth={2}
+      naturalSlideHeight={1}
+      isIntrinsicHeight={false}
     >
       <h1 className={classes.headline}>Featured Stories</h1>
       <p className={classes.label}>
@@ -281,14 +288,16 @@ const Carousel = (props) => {
       </Slider>
       <div className={classes.buttonContainer}>
         <ButtonBack className={classes.buttonWrapper}>
-          <Button variant="outlined" color="primary">
+          <ColoredButton
+            backButton
+          >
             Back
-          </Button>
+          </ColoredButton>
         </ButtonBack>
         <ButtonNext className={classes.buttonWrapper}>
-          <Button variant="outlined" color="primary">
+          <ColoredButton>
             Next
-          </Button>
+          </ColoredButton>
         </ButtonNext>
       </div>
       <DotGroup renderDots={renderDots} />

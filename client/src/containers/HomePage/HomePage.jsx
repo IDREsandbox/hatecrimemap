@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import PropTypes, { instanceOf } from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { CircularProgress, IconButton } from '@material-ui/core';
 
 import HelpIcon from '@material-ui/icons/Help';
 import Joyride, { ACTIONS, EVENTS, STATUS } from 'react-joyride';
 import Nouislider from 'nouislider-react';
+import { popup, marker, icon } from 'leaflet';
+import OutlineButton from 'components/SpotlightModal/OutlineButton';
 import SpotlightModal from '../../components/SpotlightModal/SpotlightModal';
 import { MainContext } from '../context/joyrideContext';
 import {
@@ -33,11 +35,28 @@ import 'nouislider/distribute/nouislider.css';
 
 import './HomePage.css';
 
+
+
+const pop = new popup();
 const styles = () => ({
   progress: {
     position: 'fixed',
     top: '50%',
     left: '50%',
+  },
+  popupStyle: {
+    minWidth: 300,
+    padding: 0,
+  },
+  flexCenter: {
+    flexDirection: 'row',
+    display: 'flex',
+    'justify-content': 'center',
+    'align-items': 'center',
+    width: '100%',
+  },
+  timeSlider: {
+    backgroundColor: '#E05215',
   },
 });
 
@@ -45,25 +64,6 @@ const JOYRIDE_LOCK_STATE = 'California';
 
 class HomePage extends Component {
   static contextType = MainContext;
-
-  timeSlider = (
-    <div id="timeslider">
-      <Nouislider
-        behaviour="tap-drag"
-        connect
-        range={{
-          min: 2015,
-          max: 2021,
-        }}
-        direction="ltr"
-        pips={{ mode: 'count', values: 7 }}
-        clickablePips
-        step={1}
-        start={[2015, 2021]}
-        onUpdate={(render, handle, value, un, percent) => this.filterTime(value)} // eslint-disable-line no-unused-vars
-      />
-    </div>
-  );
 
   constructor(props) {
     super(props);
@@ -81,6 +81,7 @@ class HomePage extends Component {
       skipStep: false,
       displayType: 'state', // consider simplifying with lockType
       lockType: 'none',
+      spotlightMode: false,
     };
 
     this.statesRef = React.createRef();
@@ -105,10 +106,58 @@ class HomePage extends Component {
     });
   }
 
-  changeViewRegion = (event, region) => {
-    if (region && this.mapRef.current) {
-      this.mapRef.current.fitBounds(region);
+  timeSlider = (
+    <div id="timeslider">
+      <Nouislider
+        behaviour="tap-drag"
+        connect
+        range={{
+          min: 2015,
+          max: 2021,
+        }}
+        direction="ltr"
+        pips={{ mode: 'count', values: 7 }}
+        clickablePips
+        step={1}
+        start={[2015, 2021]}
+        style={{ color: '#E05215' }}
+        onUpdate={(render, handle, value, un, percent) => {
+          this.filterTime(value);
+        }} // eslint-disable-line no-unused-vars
+      />
+    </div>
+  );
+
+  closePopup = () => {
+    this.mapRef.current.closePopup();
+  }
+
+  myMarker = null
+  generateNewPopup = (latitude = 34.0522, longitude = -118.2437, location, date) => {
+    console.log(this.mapRef.current)
+    if (!this.myMarker) {
+      const newMarker = marker([latitude, longitude]);
+      this.myMarker = newMarker
+
+      var greenIcon = icon({
+        iconUrl: require('./map_marker.png'),
+        iconSize: [40, 40], // size of the icon
+        iconAnchor: [22, 40], // point of the icon which will correspond to marker's location
+      });
+      newMarker.setIcon(greenIcon)
+      newMarker.addTo(this.mapRef.current);
+    } else {
+      this.myMarker.setLatLng([latitude, longitude])
     }
+  }
+
+  closeMarker = () => {
+    this.myMarker.remove()
+    this.myMarker = null
+  }
+
+  changeViewRegion = (event, region) => {
+    
   };
 
   filterIncidents = (flt) => {
@@ -290,6 +339,7 @@ class HomePage extends Component {
       currTotal = counts_total(data);
     }
 
+    console.log(this.mapRef.current);
     return (
       <div className="homePage">
         <FirstTimeOverlay onClose={this.showTutorial} />
@@ -302,6 +352,8 @@ class HomePage extends Component {
           data={data}
           max={dataStateMax}
           maxCounty={dataCountyMax}
+          lockType={this.state.lockType}
+          lockItem={this.state.currentDisplay}
           zoom={this.getZoom}
           displayType={displayType}
           timeSlider={this.timeSlider}
@@ -313,50 +365,68 @@ class HomePage extends Component {
             </>
           )}
         />
-
         <div className="side">
           <SideMenu>
-            <div className="sideMenu__header">
-              <h2>
-                Hate Crimes in
-                {` ${this.state.currentDisplay == 'none'
-                  ? 'the US'
-                  : isNaN(this.state.currentDisplay[this.state.currentDisplay.length - 1]) // eslint-disable-line no-restricted-globals
-                    ? this.state.currentDisplay
-                    : (`${this.state.currentDisplay.substr(0, this.state.currentDisplay.length - 3)} County`)}`}
-                <IconButton
-                  onClick={this.runTutorial}
-                  className={classes.menuButton}
-                  aria-label="Menu"
-                >
-                  <HelpIcon id="hateCrimeTutorial" />
-                </IconButton>
-              </h2>
+            {!this.state.spotlightMode
+              ? (
+                <>
+                  <div className="sideMenu__header">
+                    <h2>
+                      Hate Crimes in
+                      {` ${this.state.currentDisplay == 'none'
+                        ? 'the US'
+                        : isNaN(this.state.currentDisplay[this.state.currentDisplay.length - 1]) // eslint-disable-line no-restricted-globals
+                          ? this.state.currentDisplay
+                          : (`${this.state.currentDisplay.substr(0, this.state.currentDisplay.length - 3)} County`)}`}
+                      <IconButton
+                        onClick={this.runTutorial}
+                        className={classes.menuButton}
+                        aria-label="Menu"
+                        style={{ color: 'white' }}
+                      >
+                        <HelpIcon id="hateCrimeTutorial" />
+                      </IconButton>
+                    </h2>
 
-              <h4>
-                {`${currTotal
-                } in ${
-                  this.state.filterTimeRange.join('-')}`}
-              </h4>
-            </div>
+                    <h4>
+                      {`${currTotal
+                        } incidents (${this.state.filterTimeRange.join('–')})`}
+                    </h4>
+                  </div>
 
-            <div className="sideMenu__chart">
-              <Charts
-                ref={this.chartsRef}
-                data={data}
-                max={dataMaxTopLevel}
-                filters={filters}
-                time={this.state.filterTimeRange}
-                lockType={this.state.lockType}
-                lockItem={this.state.currentDisplay}
-              />
-            </div>
-            <br />
-            <FilterBar filterfn={this.filterIncidents} />
-            <SpotlightModal
-              lockType={this.state.lockType}
-              lockItem={this.state.currentDisplay}
-            />
+                  <div className="sideMenu__chart">
+                    <Charts
+                      ref={this.chartsRef}
+                      data={data}
+                      max={dataMaxTopLevel}
+                      filters={filters}
+                      time={this.state.filterTimeRange}
+                      lockType={this.state.lockType}
+                      lockItem={this.state.currentDisplay}
+                    />
+                  </div>
+                  <br />
+                  <FilterBar filterfn={this.filterIncidents} />
+                  <div className={classes.flexCenter}>
+                    <OutlineButton onClick={() => {
+                      this.setState({ spotlightMode: true });
+                    }}
+                    >
+                      View Stories From This Location
+                    </OutlineButton>
+                  </div>
+                </>
+              )
+              : (
+                <SpotlightModal
+                  openPopup={this.generateNewPopup}
+                  closePopup={this.closeMarker}
+                  exitSpotlightMode={() => { this.setState({ spotlightMode: false }); }}
+                  lockType={this.state.lockType}
+                  lockItem={this.state.currentDisplay}
+                />
+              )}
+
           </SideMenu>
         </div>
         <Joyride

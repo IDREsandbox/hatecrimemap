@@ -19,7 +19,6 @@
         "client/node_modules"
     ],
     "dependencies": {
-        "@material-ui/core": "^4.10.2",
         "axios": "^0.22.0",
         "babel-eslint": "^10.1.0",
         "body-parser": "^1.19.0",
@@ -33,7 +32,6 @@
         "helmet": "^3.23.1",
         "husky": "^7.0.1",
         "nodemailer": "^6.6.5",
-        "nouislider-react": "^3.4.0",
         "pg-promise": "^10.5.6",
         "postcss-preset-env": "^6.7.0",
         "prettier": "^1.9.1",
