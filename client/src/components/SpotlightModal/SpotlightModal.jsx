@@ -51,7 +51,7 @@ const styles = {
     width: '100%',
   }, 
   SpotlightContainer: {
-    height: '100%',
+    height: '50%',
   }
 };
 

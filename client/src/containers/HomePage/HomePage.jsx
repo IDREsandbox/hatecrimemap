@@ -6,7 +6,7 @@ import { CircularProgress, IconButton } from '@material-ui/core';
 import HelpIcon from '@material-ui/icons/Help';
 import Joyride, { ACTIONS, EVENTS, STATUS } from 'react-joyride';
 import Nouislider from 'nouislider-react';
-import { popup, marker } from 'leaflet';
+import { popup, marker, icon } from 'leaflet';
 import OutlineButton from 'components/SpotlightModal/OutlineButton';
 import SpotlightModal from '../../components/SpotlightModal/SpotlightModal';
 import { MainContext } from '../context/joyrideContext';
@@ -34,6 +34,8 @@ import {
 import 'nouislider/distribute/nouislider.css';
 
 import './HomePage.css';
+
+
 
 const pop = new popup();
 const styles = () => ({
@@ -130,32 +132,32 @@ class HomePage extends Component {
     this.mapRef.current.closePopup();
   }
 
+  myMarker = null
   generateNewPopup = (latitude = 34.0522, longitude = -118.2437, location, date) => {
-    const newPopup = popup({
-      closeButton: false,
-      className: this.props.classes.popupStyle,
-    });
+    console.log(this.mapRef.current)
+    if (!this.myMarker) {
+      const newMarker = marker([latitude, longitude]);
+      this.myMarker = newMarker
 
-    const newMarker = marker([latitude, longitude]);
-    newMarker.addTo(this.mapRef.current);
-    newPopup.setLatLng([latitude, longitude]);
-    newPopup.setContent(`<div><p>From ${location} on ${date}</p></div>`);
-    console.log(this.mapRef.current);
-    this.mapRef.current.openPopup(newPopup);
+      var greenIcon = icon({
+        iconUrl: require('./map_marker.png'),
+        iconSize: [40, 40], // size of the icon
+        iconAnchor: [22, 40], // point of the icon which will correspond to marker's location
+      });
+      newMarker.setIcon(greenIcon)
+      newMarker.addTo(this.mapRef.current);
+    } else {
+      this.myMarker.setLatLng([latitude, longitude])
+    }
+  }
+
+  closeMarker = () => {
+    this.myMarker.remove()
+    this.myMarker = null
   }
 
   changeViewRegion = (event, region) => {
-    this.mapRef.current.closePopup();
-    const lockItem = this.state.currentDisplay;
-    const lockType = this.state.lockType;
-
-    let lockTypeQuery;
-    if (lockItem === 'none') {
-      lockTypeQuery = 'none';
-    } else {
-      lockTypeQuery = lockType;
-    }
-    this.generateNewPopup();
+    
   };
 
   filterIncidents = (flt) => {
@@ -388,7 +390,7 @@ class HomePage extends Component {
 
                     <h4>
                       {`${currTotal
-                      } in ${this.state.filterTimeRange.join('-')}`}
+                        } incidents (${this.state.filterTimeRange.join('–')})`}
                     </h4>
                   </div>
 
@@ -418,7 +420,7 @@ class HomePage extends Component {
               : (
                 <SpotlightModal
                   openPopup={this.generateNewPopup}
-                  closePopup={this.closePopup}
+                  closePopup={this.closeMarker}
                   exitSpotlightMode={() => { this.setState({ spotlightMode: false }); }}
                   lockType={this.state.lockType}
                   lockItem={this.state.currentDisplay}

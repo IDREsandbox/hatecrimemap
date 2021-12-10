@@ -217,7 +217,6 @@ const MapWrapper = (props) => {
               />
             </Pane>
           )}
-        <Marker position={[37.7, -122.24584]} />
         <MyGeoJSON
           key="usa"
           geojson={usa}

@@ -15,6 +15,8 @@ import { Button } from '@material-ui/core';
 import { stateIdToStateName } from 'utils/data-utils';
 import ColoredButton from 'components/Reusables/ColoredButton';
 import SliderExport from './ProgressBar';
+import './Carousel.css'
+
 
 const useStyles = makeStyles({
   /* root: {
@@ -120,7 +122,7 @@ const useStyles = makeStyles({
     borderBottom: '0.5px solid white',
   },
   slider: {
-    height: 325,
+    height: '100%',
     margin: '0.1em 0',
   },
   buttonWrapper: {
@@ -147,7 +149,7 @@ const useStyles = makeStyles({
     paddingRight: 10,
   },
   incidentDescription: {
-    fontSize: 24,
+    fontSize: 20,
   },
   incidentContainer: {
     color: 'white',
@@ -187,7 +189,7 @@ const useStyles = makeStyles({
     width: '100%',
   },
   location: {
-    color: '#E05215',
+    color: 'white'
   },
   CarouselProvider: {
     height: '100%',
@@ -196,7 +198,7 @@ const useStyles = makeStyles({
 
 const Carousel = (props) => {
   const {
-    data, lockItem, lockType, openPopup, closePopup,
+    data, lockItem, lockType, openPopup
   } = props;
 
   const classes = useStyles();
@@ -215,7 +217,7 @@ const Carousel = (props) => {
     const toReturn = [];
     Object.keys(data).forEach((each, index) => {
       toReturn.push(
-        <Slide tag="a" key={index}>
+        <Slide tag="a" key={index} className='slide-style'>
           <div className={classes.incidentContainer}>
             <p className={`${classes.incidentRightAlign} ${classes.location}`}>
               {/* location here */}
@@ -242,7 +244,6 @@ const Carousel = (props) => {
     // ev.carouselStore.setStoreState({ currentSlide: 5 })
     // console.log(data[ev.currentSlide])
     // ev.currentSlide contains umbers
-    closePopup();
     const latitude = data[ev.currentSlide].latitude;
     const longitude = data[ev.currentSlide].longitude;
     setCurrentSlide(ev.currentSlide);
@@ -268,8 +269,9 @@ const Carousel = (props) => {
       className={classes.CarouselProvider}
       visibleSlides={1}
       totalSlides={Object.keys(data).length}
-      naturalSlideWidth={100}
-      naturalSlideHeight={100}
+      naturalSlideWidth={2}
+      naturalSlideHeight={1}
+      isIntrinsicHeight={false}
     >
       <h1 className={classes.headline}>Featured Stories</h1>
       <p className={classes.label}>
