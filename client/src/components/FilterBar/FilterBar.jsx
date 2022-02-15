@@ -31,6 +31,7 @@ const FilterBar = (props) => {
       <ColorFormControlLabel
         control={(
           <ColorCheckbox
+            color="info"
             checked={published}
             onChange={(e, v) => { filterPublished(v); props.filterfn(v); }}
             name="published"

@@ -111,21 +111,22 @@ class HomePage extends Component {
   }
 
   myMarker = null
-  generateNewPopup = (latitude = 34.0522, longitude = -118.2437, location, date) => {
+  generateNewPopup = (latitude = 34.0522, longitude = -118.2437) => {
     if (!this.myMarker) {
       const newMarker = marker([latitude, longitude]);
       this.myMarker = newMarker
 
-      var greenIcon = icon({
+      var customIcon = icon({
         iconUrl: require('./map_marker.png'),
         iconSize: [40, 40], // size of the icon
         iconAnchor: [22, 40], // point of the icon which will correspond to marker's location
       });
-      newMarker.setIcon(greenIcon)
+      newMarker.setIcon(customIcon)
       newMarker.addTo(this.mapRef.current);
     } else {
       this.myMarker.setLatLng([latitude, longitude])
     }
+    this.mapRef.current.flyTo([latitude, longitude], 5);
   }
 
   closeMarker = () => {
