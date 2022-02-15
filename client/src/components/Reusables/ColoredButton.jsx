@@ -11,10 +11,22 @@ notOutlined - pass if non outlined variant desired
 backButton - used to control if forward/backward arrow should be placed
 id? - optional prop to pass the id
 */
+
+const styles = {
+  myButton: {
+    margin: '1em',
+  },
+};
+
 const ColorButton = withStyles((theme) => ({
   root: {
     color: 'white',
     borderColor: 'white',
+    "&:hover": {
+      background: "white",
+      borderColor: 'white',
+      color: 'black'
+    },
   },
 }))(Button);
 
@@ -25,9 +37,8 @@ const ColoredButton = (props) => {
     <ColorButton
       variant={props.notOutlined ? 'contained' : 'outlined'}
       size="small"
-      aria-label={props.backButton ? 'back' : 'next'}
-      id="chartbackButton"
-      onClick={props.buttonClick}
+      aria-label={props.noArrow ? 'button' : props.backButton ? 'back' : 'next'}
+      onClick={props.onClick}
       startIcon={props.backButton && !noIcon ? <ArrowBack /> : null}
       endIcon={!props.backButton && !noIcon ? <ArrowForward /> : null}
       id={props.id ? props.id : null}

@@ -23,10 +23,19 @@
   overflow-y: auto;
 }
 
+.sideMenu-covid {
+  background-color: whitesmoke;
+  border-left: none
+}
+
 .sideMenu__header {
 	margin: 10px 0;
   text-align: center;
   color: white;
+}
+
+.sideMenu__header-covid {
+  color: black;
 }
 
 

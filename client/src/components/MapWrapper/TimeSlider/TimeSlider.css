@@ -1,0 +1,18 @@
+#timeslider {
+  grid-column: 2 / 4;
+  grid-row: 1;
+  margin-top: 32px;
+  z-index: 401;
+}
+
+.noUi-base {
+  pointer-events: all;
+}
+
+.noUi-connect {
+  background: #808080;
+}
+
+.noUi-pips {
+    color: white;
+}

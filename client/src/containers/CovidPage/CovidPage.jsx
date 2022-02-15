@@ -216,8 +216,10 @@ class CovidPage extends Component {
         </MapWrapper>
 
         <div className="side">
-          <SideMenu>
-            <h2 className="sideMenu__header">
+          <SideMenu
+            covid
+          >
+            <h2 className="sideMenu__header sideMenu__header-covid">
               {`COVID Hate Incidents in ${this.state.currentDisplay == 'none'
                 ? 'US'
                 : this.state.currentDisplay

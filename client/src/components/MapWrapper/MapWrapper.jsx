@@ -9,6 +9,7 @@ import Floater from 'react-floater';
 import './MapWrapper.css';
 import { useLocation } from 'react-router-dom';
 import Carousel from 'components/SpotlightModal/Carousel';
+import TimeSlider from './TimeSlider/TimeSlider';
 import axios from 'axios';
 import { MAP_LOCATIONS as ML } from '../../res/values/map';
 import { usa } from '../../res/geography/usa';
@@ -20,6 +21,8 @@ import {
   hashCovidColor,
 } from '../../utils/data-utils';
 import MyGeoJSON from './GeoJSON/MyGeoJSON';
+
+
 
 const months_short = [ //eslint-disable-line
   'Jan',
@@ -46,12 +49,7 @@ const usa_background_style = { stroke: 0.3, color: '#777777', backgroundColor: '
 const MapWrapper = (props) => {
   const location = useLocation(); //eslint-disable-line
 
-  const [carouselData, setCarouselData] = useState({
-    data: {},
-  });
-
-  const [lockItem, setLockItem] = useState(props.lockItem);
-  const [lockType, setLockType] = useState(props.lockType);
+  const [datalen, setdatalen] = useState(props.data.length)
 
   const calculateStateColor = (state, data, max) => {
     const stateCount = counts_aggregateBy(data, 'state', state);
@@ -70,6 +68,7 @@ const MapWrapper = (props) => {
   };
 
   useEffect(() => {
+    console.log('fired')
     if (!props.covid) {
       states_usa.features.forEach((eachStateArg) => eachStateArg.properties.COLOR = calculateStateColor(eachStateArg.properties.NAME, props.data, props.max));
       counties.forEach((countiesInState) => countiesInState.features.forEach((eachCounty) => eachCounty.properties.COLOR = calculateCountyColor(eachCounty.properties.County_state, props.data, props.maxCounty)));
@@ -77,41 +76,19 @@ const MapWrapper = (props) => {
       states_usa.features.forEach((eachStateArg) => eachStateArg.properties.COLOR = props.data[eachStateArg.properties.NAME] ? hashCovidColor(props.data[eachStateArg.properties.NAME].count, props.max) : 'rgb(0,0,0)');
     }
 
+    setdatalen(props.data.length)
     return () => { };
-  }, [props.data.length]); // pretty good indicator of when we should recalculate colors? Could be an edge case where # elements are the same
+  }, [props.data.length]); // pretty good indicator of when we should recalculate colors? Could be an edge case where # elements are the same - huge edge case with changing the published
 
   let lockedLayer;
 
-  useEffect(() => {
-    // this is causing an extra call to API without the need?
-    let lockTypeQuery;
-    if (lockItem === 'none') {
-      lockTypeQuery = 'none';
-    } else {
-      lockTypeQuery = lockType;
-    }
-
-    axios.get(`/api/stories/${lockTypeQuery}/${lockItem}`)
-      .then((res) => {
-        if (carouselData.data[lockItem]) {
-          // do nothing, data already exists
-        } else {
-          setCarouselData((prevState) => ({
-            data: {
-              ...prevState.data,
-              [lockItem]: res.data,
-            },
-          }));
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
-
   return (
     <div id="MapWrapper">
-      {props.timeSlider}
+      {!props.covid &&
+        <TimeSlider
+          filterTime={props.timeSliderUpdate}
+        />
+      }
       <MapContainer
         id="USA"
         whenCreated={(map) => {
@@ -127,8 +104,8 @@ const MapWrapper = (props) => {
         <TileLayer
           key="base"
           bounds={ML.worldBounds}
-          attribution="&copy; <a href=&quot;https://www.openstreetmap.org/copyright&quot;>OpenStreetMap</a> contributors &copy; <a href=&quot;https://carto.com/attributions&quot;>CARTO</a>"
-          url="https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png"
+          attribution={props.covid ? "&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors" : "&copy; <a href=&quot;https://www.openstreetmap.org/copyright&quot;>OpenStreetMap</a> contributors &copy; <a href=&quot;https://carto.com/attributions&quot;>CARTO</a>"}
+          url={props.covid ? "https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png" : "https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png"}
           subdomains="abcd"
         />
         <Rectangle
@@ -144,12 +121,13 @@ const MapWrapper = (props) => {
           {
           }
           <MyGeoJSON
-            key="states"
+            key={`states-${props.publishedChange}`}
             style={(feature) => ({
               stroke: 0.5, weight: 0.5, color: 'black', fillColor: feature.properties.COLOR, fillOpacity: 1,
             })}
             geojson={states_usa}
-            datalen={props.data.length}
+            datalen={datalen}
+            published={props.publishedChange}
             eventHandlers={{
               mouseover: ({ layer }) => props.updateState && props.updateState(layer.feature.properties.NAME) && layer.setStyle({ fillColor: 'rgb(200, 200, 200)' }),
               mouseout: ({ layer }) => props.updateState && props.updateState('none', false) && layer.setStyle({ fillColor: layer.feature.properties.COLOR }),
@@ -168,20 +146,6 @@ const MapWrapper = (props) => {
               },
             }}
           />
-          {carouselData.data[lockItem] && false
-            && (
-            <Popup
-              className="my-popup"
-              position={[34.0522, -118.2437]}
-              pane="states"
-            >
-              <Carousel
-                lockItem={lockItem}
-                lockType={lockType}
-                data={carouselData.data[lockItem]}
-              />
-            </Popup>
-            )}
         </Pane>
         {!props.covid // if covid map, don't draw county
           && (
@@ -196,13 +160,15 @@ const MapWrapper = (props) => {
                 })}
                 geojson={counties}
                 datalen={props.data.length}
+                published={props.publishedChange  }
                 eventHandlers={{
                   mouseover: ({ layer }) => layer.feature.properties.COLOR !== 'rgba(0, 0, 0, 0)' && props.updateCounty && props.updateCounty(layer.feature.properties.County_state) && layer.setStyle({ fillColor: 'rgb(200, 200, 200)' }),
                   mouseout: ({ layer }) => layer.feature.properties.COLOR !== 'rgba(0, 0, 0, 0)' && props.updateCounty && props.updateCounty('none') && layer.setStyle({ fillColor: layer.feature.properties.COLOR }),
                   click: ({ layer }) => {
-                    console.log(layer);
-                    if (!props.updateCounty || layer.feature.properties.COLOR !== 'rgba(0, 0, 0, 0)') return;
-                    props.updateCounty(layer.feature.properties.County_state, true);
+                    console.log('i got clicked')
+                    if (!props.updateCounty && layer.feature.properties.COLOR !== 'rgba(0, 0, 0, 0)') return; // huge bug from that line -- why would you only want that if the layer color does not equal white? I think i was accessing color wrong anyway
+                    console.log('i got clicked')
+                    props.updateCounty(layer.feature.properties.County_state,true, true);
                     if (lockedLayer) {
                       lockedLayer.setStyle({ fillColor: lockedLayer.feature.properties.COLOR });
                       if (lockedLayer === layer) {

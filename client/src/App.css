@@ -14,3 +14,13 @@
   flex-flow: column;
   height: 100vh;
 }
+
+
+#covidButton {
+  margin: 0em 5em
+}
+
+
+.noUi-value  {
+  margin-top: 5px
+}

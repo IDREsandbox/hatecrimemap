@@ -9,7 +9,9 @@ import {
   Typography,
   Button,
   IconButton,
+  Box,
 } from '@material-ui/core';
+
 
 import AboutDialog from '../AboutDialog/AboutDialog';
 import AboutCovidDialog from '../AboutDialog/AboutCovidDialog';
@@ -26,16 +28,16 @@ const styles = {
   menuButton: {
     marginLeft: -12,
     marginRight: 20,
-    color: 'black',
+    color: 'white',
   },
   reportIncidentButton: {
-    color: 'black',
+    color: 'white',
   },
   gotoOriginal: {
     color: 'white',
   },
   gotoCovid: {
-    color: 'black',
+    color: 'white',
   },
   link: {
     textDecoration: 'none',
@@ -44,8 +46,12 @@ const styles = {
     color: 'inherit',
   },
   homeTitle: {
-    color: 'black',
+    color: 'white',
   },
+  rightBox: {
+    justifyContent: 'right',
+    flexDirection: 'row',
+  }
 };
 
 const CovidHeader = ({ classes }) => (
@@ -87,7 +93,6 @@ const CovidHeader = ({ classes }) => (
             Report Incident
           </Button>
         </a>
-
         <AboutCovidDialog />
       </Toolbar>
     </AppBar>
@@ -102,8 +107,8 @@ const Header = ({ classes }) => {
   }
 
   return (
-    <div className={classes.root}>
-      <AppBar position="static" style={{ background: '#F8D34F' }}>
+    <Box sx={{ flexGrow: 1 }}>
+      <AppBar position="static" style={{ background: '#000000' }} >
         <Toolbar>
           <Link to="/">
             <IconButton
@@ -114,18 +119,26 @@ const Header = ({ classes }) => {
               <HomeIcon />
             </IconButton>
           </Link>
-          <Typography variant="h6" color="inherit" className={`${classes.flex} ${classes.homeTitle}`}>
+          <Typography
+            variant="h6"
+            noWrap
+            component="div"
+            sx={{ mr: 2, display: { xs: 'none', md: 'flex' } }}
+          >
             Mapping Hate Crimes in the US #OneHateCrimeIsTooMany
           </Typography>
-          <Link to="/covid" className={classes.link}>
-            <Button
-              id="covidButton"
-              className={classes.gotoCovid}
-              color="inherit"
-            >
-              See COVID Hate Incidents
-            </Button>
-          </Link>
+          <Box sx={{ display: { xs: 'flex', md: 'flex' } }}>
+            <Link to="/covid" className={classes.link}>
+              <Button
+                id="covidButton"
+                className={classes.gotoCovid}
+                color="inherit"
+              >
+                See COVID Hate Incidents
+              </Button>
+            </Link>
+          </Box>
+          <Box className={classes.flex} flexGrow={1} sx={{ flex: 1 }} />
           <Link to="/reportincident" className={classes.link}>
             <Button
               className={classes.reportIncidentButton}
@@ -138,7 +151,7 @@ const Header = ({ classes }) => {
           <AboutDialog />
         </Toolbar>
       </AppBar>
-    </div>
+    </Box>
   );
 };
 

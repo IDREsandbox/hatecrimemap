@@ -66,3 +66,14 @@ const App = () => (
 );
 
 export default App;
+
+
+
+
+/*  DEV CHANGES
+*  simple table fix - what colors should I make it? the dark black?
+*  fix bug with spotlightModal not updating correctly when unlocking off of a state - DONE
+*  refactor updatestate + updatecounty into one function to save space
+*  refactor buttons to not be retarded and have like 3 diff ones
+*  next to do - add mobile styling
+*/
