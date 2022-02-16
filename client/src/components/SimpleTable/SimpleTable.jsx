@@ -19,9 +19,11 @@ const styles = (theme) => ({
     width: '100%',
     marginTop: theme.spacing(1),
     overflowX: 'auto',
+    backgroundColor: "#262626"
   },
   table: {
     minWidth: 700,
+    backgroundColor: "#262626",
   },
   row: {
     '&:nth-of-type(odd)': {

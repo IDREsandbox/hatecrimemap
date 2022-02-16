@@ -9,5 +9,18 @@
 }
 
 .MuiDialogContent-root {
+    background-color: #262626;
 	padding-top: 0px;
+}
+
+.hello {
+    background-color: #262626;
+}
+
+.table-row {
+    color: white
+}
+
+.white-text {
+    color: "white"
 }

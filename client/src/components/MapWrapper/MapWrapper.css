@@ -28,17 +28,6 @@
     grid-area: 3 / 1 / auto / auto;
 }
 
-#timeslider {
-    grid-column: 2 / 4;
-    grid-row: 1;
-    margin-top: 32px;
-    z-index: 401;
-  }
-  
-.noUi-base {
-    pointer-events: all;
-  }
-   
 .paneHide {
     display: none;
 }

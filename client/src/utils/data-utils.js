@@ -12,21 +12,27 @@ const STATES = ["Alabama", "Alaska", "Arizona", "Arkansas", "California", "Color
     "Texas", "Utah", "United States Virgin Islands", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming", "Puerto Rico"
 ]
 
-export const covidColors = ["#ffffd4", "#fed98e", "#fe9929", "#d95f0e", "#993404"] // made the first two the same since the second bin isnt used ffffd4 was the original
+// ORIGINAL export const covidColors = ["#ffffd4", "#fed98e", "#fe9929", "#d95f0e", "#993404"] // made the first two the same since the second bin isnt used ffffd4 was the original
+
+// orange 2
+//export const covidColors = ["#feedde", "#fdbe85", "#fd8d3c", "#e6550d", "#a63603"];
+
+// orange 3
+//export const covidColors = ["#ffffd4", "#fed98e", "#fe9929", "#d95f0e", "#993404"];
+
+//esri orange 1
+export const covidColors = ["#fdd4ba", "#fbc09b", "#f7975e", "#f36f20", "#c65a18"];
+
+// ALL OF THE BELOW ARE COVID COLORS 
 //export const defaultColors = ["#f2f0f7", "#cbc9e2", "#9e9ac8", "#756bb1", "#54278f"] // lightest to darkest
 //export const defaultColors =  ["#a11506", "#d04814","#ef6a1d","#ff8e33","#ffb454"] //(first orange set tried)
-const colors = ["#a11506", "#d04814", "#ef6a1d", "#ff8e33", "#ffb454"];
 // #582c0e|#914505|#c85700|#ff6e00|#ffa200
 //export const defaultColors = ["#584100", "#886200", "#b78300", "#e7a300", "#ffc800"];
 //export const defaultColors = ["#eee4d7", "#e7b439", "#e19c18", "#c73915", "#9a2d19"]
 // #582c0e|#914505|#c85700|#ff6e00|#ffa200
 //export const defaultColors = [ "#5f0000", "#be2d00", "#de4a00", "#ff6600", "#ff8008"];
-
-
 //export const defaultColors = ["#582c0e", "#914505", "#c85700", "#ff6e00", "#ffa200"];
-
 //export const defaultColors = ["#212320", "#86310d","#B34211" ,"#CA4A13","#E05215"]// email set, dark orange ish
-
 //export const defaultColors = ["#560000", "#7a0100", "#9e0200", "#b60200", "#ef0300"]; // 'dark red' 
 export const defaultColors = ["#212320", "#007b7b", "#00a4a4", "#00cccc", "#00ffff"];
 
@@ -81,7 +87,7 @@ export function storeStateData(data, start) {
 
     // let maxGroup = 0;
     let stateData = start
-        // secondary groups. does not work for deeper nested groups yet
+    // secondary groups. does not work for deeper nested groups yet
     data.forEach(state_group => {
         let { name, parent, group, count } = state_group;
         // we want to remove this if statement, the StateStructure should exactly reflect the data
@@ -178,7 +184,7 @@ function formatCovidData(data) {
             stateData[report.state].children.push(report);
             if (report.description) {
                 const description = report.description
-                    // console.log(description)
+                // console.log(description)
 
             }
         }
@@ -196,9 +202,9 @@ function formatCovidData(data) {
 
 
     stateData.max = max
-        // const wordData = ['test']
-        // const stateData = stateData
-        // console.log(stateData)
+    // const wordData = ['test']
+    // const stateData = stateData
+    // console.log(stateData)
     return stateData
 }
 
@@ -352,8 +358,8 @@ const nth = {
     "56": "Wyoming",
 }
 
- // should I have state id map to the number that it is?
- // I need to fetch the location that 
+// should I have state id map to the number that it is?
+// I need to fetch the location that 
 export const stateIdToStateName = (id) => {
     return idReference[`${id}`].toString();
 }

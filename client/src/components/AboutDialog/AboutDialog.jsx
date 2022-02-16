@@ -16,7 +16,7 @@ import { ABOUT_DIALOGS } from '../../res/values/string';
 
 const styles = {
   aboutButton: {
-    color: 'black',
+    color: 'white',
   },
   images: {
     display: 'table',
@@ -76,7 +76,7 @@ class AboutDialog extends Component {
               <br />
               <p>
                 Any questions? Email us at
-                <a href={`mailto:${ABOUT_DIALOGS.HCM.EMAIL}?Subject=Hate%20Crime%20Map%20Inquiry`}>{ABOUT_DIALOGS.HCM.EMAIL}</a>
+                {' '} <a href={`mailto:${ABOUT_DIALOGS.HCM.EMAIL}?Subject=Hate%20Crime%20Map%20Inquiry`}> {ABOUT_DIALOGS.HCM.EMAIL}</a>
               </p>
               <br />
               <hr />

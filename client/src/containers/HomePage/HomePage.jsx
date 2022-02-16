@@ -5,9 +5,8 @@ import { CircularProgress, IconButton } from '@material-ui/core';
 
 import HelpIcon from '@material-ui/icons/Help';
 import Joyride, { ACTIONS, EVENTS, STATUS } from 'react-joyride';
-import Nouislider from 'nouislider-react';
 import { popup, marker, icon } from 'leaflet';
-import OutlineButton from 'components/SpotlightModal/OutlineButton';
+import ColoredButton from 'components/Reusables/ColoredButton';
 import SpotlightModal from '../../components/SpotlightModal/SpotlightModal';
 import { MainContext } from '../context/joyrideContext';
 import {
@@ -31,7 +30,6 @@ import {
   defaultColors,
 } from '../../utils/data-utils';
 
-import 'nouislider/distribute/nouislider.css';
 
 import './HomePage.css';
 
@@ -82,6 +80,8 @@ class HomePage extends Component {
       displayType: 'state', // consider simplifying with lockType
       lockType: 'none',
       spotlightMode: false,
+
+      focusItem: 'none',
     };
 
     this.statesRef = React.createRef();
@@ -106,49 +106,27 @@ class HomePage extends Component {
     });
   }
 
-  timeSlider = (
-    <div id="timeslider">
-      <Nouislider
-        behaviour="tap-drag"
-        connect
-        range={{
-          min: 2015,
-          max: 2021,
-        }}
-        direction="ltr"
-        pips={{ mode: 'count', values: 7 }}
-        clickablePips
-        step={1}
-        start={[2015, 2021]}
-        style={{ color: '#E05215' }}
-        onUpdate={(render, handle, value, un, percent) => {
-          this.filterTime(value);
-        }} // eslint-disable-line no-unused-vars
-      />
-    </div>
-  );
-
   closePopup = () => {
     this.mapRef.current.closePopup();
   }
 
   myMarker = null
-  generateNewPopup = (latitude = 34.0522, longitude = -118.2437, location, date) => {
-    console.log(this.mapRef.current)
+  generateNewPopup = (latitude = 34.0522, longitude = -118.2437) => {
     if (!this.myMarker) {
       const newMarker = marker([latitude, longitude]);
       this.myMarker = newMarker
 
-      var greenIcon = icon({
+      var customIcon = icon({
         iconUrl: require('./map_marker.png'),
         iconSize: [40, 40], // size of the icon
         iconAnchor: [22, 40], // point of the icon which will correspond to marker's location
       });
-      newMarker.setIcon(greenIcon)
+      newMarker.setIcon(customIcon)
       newMarker.addTo(this.mapRef.current);
     } else {
       this.myMarker.setLatLng([latitude, longitude])
     }
+    this.mapRef.current.flyTo([latitude, longitude], 5);
   }
 
   closeMarker = () => {
@@ -157,7 +135,9 @@ class HomePage extends Component {
   }
 
   changeViewRegion = (event, region) => {
-    
+    if (region && this.mapRef.current) {
+      this.mapRef.current.fitBounds(region);
+    }
   };
 
   filterIncidents = (flt) => {
@@ -172,9 +152,6 @@ class HomePage extends Component {
   updateState = (state, lock = false) => {
     if (this.state.locked && !lock) return false;
 
-    // console.log(`this.state.locked`, this.state.locked);
-    // console.log(`this.state.currentDisplay:`, this.state.currentDisplay);
-    // console.log(`state param`, state)
     if (this.state.locked && this.state.currentDisplay === state) {
       this.setState({
         currentDisplay: 'none', // if we try to "re-lock" onto the same state, toggle it off
@@ -187,10 +164,13 @@ class HomePage extends Component {
       return false; // uncolor
     }
 
+
     this.setState({
       currentDisplay: state,
       locked: lock && state !== 'none', // we never want to lock onto None
       lockType: 'state',
+    }, () => {
+      console.log(this.state.locked)
     });
     return true;
   };
@@ -204,6 +184,7 @@ class HomePage extends Component {
   updateCounty = (county, lock = false) => {
     if (this.state.locked && !lock) return false;
     if (this.state.locked && this.state.currentDisplay === county) {
+      console.log('here')
       this.setState({
         currentDisplay: 'none',
         locked: false,
@@ -212,10 +193,16 @@ class HomePage extends Component {
       return false; // uncolor
     }
 
+
+
+    console.log(lock)
     this.setState({
       currentDisplay: county,
       locked: lock && county !== 'none', // we never want to lock onto None
       lockType: 'county',
+    }, () => {
+      console.log(this.state.currentDisplay)
+      console.log(this.state.locked)
     });
     return true;
   };
@@ -300,6 +287,24 @@ class HomePage extends Component {
 
   getZoom = () => this.state.zoom;
 
+  /*
+    top level component
+
+    so the lockItem mechanism is too generally used
+    make a callback so that when a state is clicked on, it sets a 'lockItem' component in upper level
+    this component should only be set when something is actually locked onto
+
+  */
+
+  lockChange = () => {
+    if (this.state.lockItem) {
+      // if the state is actually locked onto something, set the lockItem to that ?
+      // otherwise, set nothing
+
+      // why not just pass down the locked component from this level and only update if locked is true?
+    }
+  }
+
   render() {
     const {
       isFetching, run, steps, stepIndex, region, displayType,
@@ -307,7 +312,7 @@ class HomePage extends Component {
     const { classes } = this.props;
 
     if (isFetching) {
-      return <CircularProgress className={classes.progress} />;
+      return <CircularProgress style={{ 'color': 'black' }} className={classes.progress} />;
     }
 
     // timeslider filter. TODO: make a generic state data filter/callback that handles pointer and closures
@@ -339,7 +344,6 @@ class HomePage extends Component {
       currTotal = counts_total(data);
     }
 
-    console.log(this.mapRef.current);
     return (
       <div className="homePage">
         <FirstTimeOverlay onClose={this.showTutorial} />
@@ -356,7 +360,7 @@ class HomePage extends Component {
           lockItem={this.state.currentDisplay}
           zoom={this.getZoom}
           displayType={displayType}
-          timeSlider={this.timeSlider}
+          timeSliderUpdate={this.filterTime}
           controls={(map) => ( //eslint-disable-line
             <>
               <Legend colors={defaultColors} maxState={dataStateMax} maxCounty={dataCountyMax} displayType={displayType} />
@@ -364,6 +368,7 @@ class HomePage extends Component {
               <CountyToggle updateZoom={this.updateZoom} />
             </>
           )}
+          publishedChange={this.state.filterPublished}
         />
         <div className="side">
           <SideMenu>
@@ -408,12 +413,12 @@ class HomePage extends Component {
                   <br />
                   <FilterBar filterfn={this.filterIncidents} />
                   <div className={classes.flexCenter}>
-                    <OutlineButton onClick={() => {
-                      this.setState({ spotlightMode: true });
-                    }}
+                    <ColoredButton
+                      onClick={() => { this.setState({ spotlightMode: true }); }}
+                      noIcon
                     >
                       View Stories From This Location
-                    </OutlineButton>
+                    </ColoredButton>
                   </div>
                 </>
               )
@@ -424,6 +429,7 @@ class HomePage extends Component {
                   exitSpotlightMode={() => { this.setState({ spotlightMode: false }); }}
                   lockType={this.state.lockType}
                   lockItem={this.state.currentDisplay}
+                  locked={this.state.locked}
                 />
               )}
 

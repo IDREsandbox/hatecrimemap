@@ -49,7 +49,7 @@ const styles = {
   },
   content: {
     width: '100%',
-  }, 
+  },
   SpotlightContainer: {
     height: '50%',
   }
@@ -64,7 +64,7 @@ const ColorButton = withStyles((theme) => ({
 
 
 function SpotlightModal(props) {
-  const { classes, openPopup, closePopup } = props;
+  const { classes, openPopup, closePopup, locked } = props;
 
   const [carouselData, setCarouselData] = useState({
     data: {}
@@ -73,39 +73,71 @@ function SpotlightModal(props) {
   const [lockItem, setLockItem] = useState(props.lockItem);
   const [lockType, setLockType] = useState(props.lockType);
 
+  // can't only change on lockType, similar changes between state will break
   useEffect(() => {
+    if (!locked) {
+      if (lockItem !== 'none') {
+        setLockItem('none')
+      }
+      return;
+    }
     setLockItem(props.lockItem);
-    setLockType(props.lockType); // i knew this would happen.. lockType and lockItem techincally aren't finished being changed before the next couple lines are executed
-  }, [props.lockItem, props.lockType])
+    setLockType(props.lockType);
+  }, [props.lockItem, locked]) // janky fix, also considering locked as a parameter to reset to wait for state change above
 
   // FIX THIS: CHANGE QUERY TO ONLY BE MADE IF DATA NOT ALREADY PRESENT, NOT EVERY TIME
+  // need this to be triggered upon change to lockItem type & on default
   useEffect(() => {
+    console.log('called original')
     // this is causing an extra call to API without the need?
+    fetchSpotlightData(props.lockItem)
+  }, []);
+
+
+  // Fetch Hook upon lockItem changing on upper level
+  useEffect(() => {
+    console.log('called lockitem')
+    // if it's unlocked should display 'none' data
+    if (!locked) {
+
+      if (!carouselData['none']) {
+        fetchSpotlightData('none')
+        return;
+      }
+    } else {
+      fetchSpotlightData(lockItem)
+    }
+  }, [lockItem])
+
+  const fetchSpotlightData = (item) => {
+    if (!locked && carouselData['none']) { // if it's not locked, fetch carousel data
+      return;
+    }
+
     let lockTypeQuery;
-    if (lockItem === 'none') {
+    if (item === 'none') {
       lockTypeQuery = 'none'
     } else {
       lockTypeQuery = lockType
     }
-    axios.get(`/api/stories/${lockTypeQuery}/${lockItem}`)
-      .then(res => {
-        console.log(res)
-        if (carouselData.data[lockItem]) {
-          // do nothing, data already exists
-        } else {
-          (`should get caught here`)
+
+    if (carouselData[item]) {
+      // do nothing
+    } else {
+      axios.get(`/api/stories/${lockTypeQuery}/${item}`)
+        .then(res => {
           setCarouselData((prevState) => ({
             data: {
               ...prevState.data,
-              [lockItem]: res.data,
+              [item]: res.data,
             }
           }));
-        }
-      })
-      .catch(err => {
-        console.log(err);
-      })
-  }, []);
+        })
+        .catch(err => {
+          console.log(err);
+        })
+    }
+  }
 
   const handleClose = () => {
     closePopup()
@@ -126,7 +158,7 @@ function SpotlightModal(props) {
     } else {
       return (
         <div className={`${classes.loading} ${classes.flexCenter}`}>
-          <CircularProgress />
+          <CircularProgress style={{ 'color': 'white' }} />
         </div>
       )
     }
@@ -136,10 +168,10 @@ function SpotlightModal(props) {
     <div className={classes.SpotlightContainer}>
       <ColoredButton
         id="spotlightbackButton"
-        buttonClick={handleClose}
+        onClick={handleClose}
         backButton
       >
-        Back
+        Back to Charts
       </ColoredButton>
       {loadingOrNot()}
     </div>

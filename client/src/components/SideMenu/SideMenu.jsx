@@ -19,7 +19,7 @@ const styles = (theme) => ({
 });
 
 const SideMenu = (props) => (
-  <div className="sideMenu">
+  <div className={props.covid ? "sideMenu sideMenu-covid" : "sideMenu"}>
     {props.children}
   </div>
 );

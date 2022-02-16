@@ -2,36 +2,23 @@ import React, { createRef } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 
 import './Charts.css';
-import { Button, LinearProgress } from '@material-ui/core';
 import { Bar, Pie } from 'react-chartjs-2';
 import Grid from '@material-ui/core/Grid';
 
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
+import ChartsTable from './ChartsTable';
 
 import axios from 'axios';
 
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
-
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import ColoredButton from 'components/Reusables/ColoredButton';
-import { countyDisplayName } from '../../utils/data-utils';
 import { CHARTS, CHART_STRINGS, getChartData } from '../../utils/chart-utils';
 
 const styles = (theme) => ({ // eslint-disable-line no-unused-vars
   // leaving above theme for future syntax reference
 });
 
-const LOCK_TYPE = {
-  COUNTY: 'county',
-  STATE: 'state',
-};
+
+
 
 class Charts extends React.Component {
   chartReference = createRef();
@@ -215,7 +202,7 @@ class Charts extends React.Component {
               <Grid item xs={3}>
                 <ColoredButton
                   id="chartbackButton"
-                  buttonClick={this.barUnClick}
+                  onClick={this.barUnClick}
                   backButton
                 >
                   Back
@@ -234,49 +221,12 @@ class Charts extends React.Component {
               onElementsClick={this.pieClick}
             />
             {/* <ChartsText data={this.props.data[this.state.drilldown].children} /> */}
-
-            <Dialog
-              open={this.state.dialogOpen}
-              onClose={() => this.toggleOpen(false)}
-              maxWidth="xl"
-              aria-labelledby="responsive-dialog-title"
-              id="hateCrimeDataTable"
-            >
-              <DialogTitle id="responsive-dialog-title">Hate Crimes</DialogTitle>
-              <DialogContent>
-                {!this.state.popup_data ? <LinearProgress style={{ width: '100%' }} />
-                  : (
-                    <Table stickyHeader className="hello" aria-label="simple table" width="100%">
-                      <TableHead>
-                        <TableRow>
-                          <TableCell width="10%">Date (M/D/Y)</TableCell>
-                          <TableCell width="10%">{this.props.lockType === LOCK_TYPE.COUNTY ? 'County' : 'State'}</TableCell>
-                          <TableCell width="15%">Primary Reason</TableCell>
-                          <TableCell width="20%">Source</TableCell>
-                          <TableCell width="45%">Description</TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {this.state.popup_data.map((row) => (
-                          <TableRow key={row.id}>
-                            <TableCell width="10%">{row.date}</TableCell>
-                            {/* Change the following below to include {___} County, {state}? */}
-                            <TableCell width="10%">{this.props.lockType === LOCK_TYPE.COUNTY ? countyDisplayName(row.county, row.state) : row.state}</TableCell>
-                            <TableCell width="15%">{row.group}</TableCell>
-                            <TableCell width="20%">{row.link ? <a href={row.link} target="_blank" rel="noreferrer noopener">{row.link}</a> : 'N/A'}</TableCell>
-                            <TableCell width="45%">{row.description || '--'}</TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  )}
-              </DialogContent>
-              <DialogActions id="closeDataTable">
-                <Button onClick={() => this.toggleOpen(false)} color="primary">
-                  Close
-                </Button>
-              </DialogActions>
-            </Dialog>
+            <ChartsTable
+              toggleOpen={this.toggleOpen}
+              dialogOpen={this.state.dialogOpen}
+              popup_data={this.state.popup_data}
+              lockType={this.props.lockType}
+            />
           </div>
         );
       }

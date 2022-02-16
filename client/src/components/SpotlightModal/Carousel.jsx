@@ -16,6 +16,7 @@ import { stateIdToStateName } from 'utils/data-utils';
 import ColoredButton from 'components/Reusables/ColoredButton';
 import SliderExport from './ProgressBar';
 import './Carousel.css'
+import { CropDinSharp } from '@material-ui/icons';
 
 
 const useStyles = makeStyles({
@@ -240,6 +241,7 @@ const Carousel = (props) => {
   const [currentSlide, setCurrentSlide] = useState(0);
 
   function renderDots(ev) {
+    console.log('called')
     // console.log(ev.carouselStore);
     // ev.carouselStore.setStoreState({ currentSlide: 5 })
     // console.log(data[ev.currentSlide])
@@ -247,8 +249,14 @@ const Carousel = (props) => {
     const latitude = data[ev.currentSlide].latitude;
     const longitude = data[ev.currentSlide].longitude;
     setCurrentSlide(ev.currentSlide);
-    openPopup(latitude, longitude, data[ev.currentSlide].location, getDateFromISOString(data[ev.currentSlide].date));
   }
+
+  useEffect(() => {
+    openPopup(data[currentSlide].latitude, data[currentSlide].longitude)
+  }, [])
+  useEffect(() => {
+    openPopup(data[currentSlide].latitude, data[currentSlide].longitude)    
+  }, [currentSlide, lockItem]) // change here - utilizing lockIte passed down to trigger the popup rerender
 
   function getLabel() {
     if (lockItem === 'none') {
@@ -310,7 +318,6 @@ const Carousel = (props) => {
 
 /*
   note - button inside butotn DOM nesting = invalid
-
 */
 
 export default Carousel;
