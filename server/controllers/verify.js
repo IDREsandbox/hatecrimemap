@@ -55,7 +55,9 @@ router.get('/unreviewed/:per/:page/:verified', (req, res) => {
 router.post('/reviewedincident', (req, res) => {
   const { id, verified } = req.body;
 
-  db.none('UPDATE incident SET verified = $2 WHERE id = ANY($1)', [id, verified])
+  let query = `UPDATE incident SET verified = $1 WHERE id = ANY('{${generateIdString(id)}}')`;
+
+  db.none(query, [verified])
     .then(() => res.send('Incident report reviewed'))
     .catch(err => console.log('ERROR:', err));
 });
@@ -63,30 +65,55 @@ router.post('/reviewedincident', (req, res) => {
 router.post('/validateincident', (req, res) => {
   const { id, urlvalid } = req.body;
 
-  db.none('UPDATE incident SET issourceurlvalid = $2 WHERE id = ANY($1)', [id, urlvalid])
+  let query = `UPDATE incident SET issourceurlvalid = $1 WHERE id = ANY('{${generateIdString(id)}}')`;
+
+  db.none(query, [urlvalid])
     .then(() => res.send('Incident url validated'))
     .catch(err => console.log('ERROR:', err));
 });
 
 router.post('/publishedincident', (req, res) => {
   const { id, published } = req.body;
-
-  db.none('UPDATE incident SET published = $2 WHERE id = ANY($1)', [id, published])
+ 
+  let query = `UPDATE incident SET published = $1 WHERE id = ANY('{${generateIdString(id)}}')`;
+ 
+  db.none(query, [published])
     .then(() => res.send('Incident report marked published'))
     .catch(err => console.log('ERROR:', err));
 });
 
 // adding a function router/verify/incidentreport here, called in utilities.js and from verifyincidentspage
 
+
 router.delete('/incidentreport/:id', (req, res) => {
   db.tx(db => {
     const del1 = db.result('DELETE FROM incident_groups where incident_id = $1', [req.params.id]);
-    const del2 =  db.result('DELETE FROM incident where id = $1', [req.params.id]);
+    const del2 = db.result('DELETE FROM incident where id = $1', [req.params.id]);
 
     return db.batch([del1, del2]);
   }).then(response => res.status(200).send('deleted'))
     .catch(err => console.log('ERROR:', err))
 });
+
+const generateIdString = (id) => {
+  let idString = ''
+  if (id.length > 1) {
+    let length = id.length
+    id.forEach((each, index) => {
+      if (index !== length - 1) {
+        idString += each;
+        idString += ', '
+      }
+      else {
+        idString += each;
+      }
+    })
+    console.log(idString)
+    return idString;
+  } else {
+    return id
+  }
+}
 
 
 module.exports = router;
