@@ -182,7 +182,7 @@ class VerifyIncidentsPage extends Component {
         urlvalid: s,
         published: p,
       },
-      this.handleOpenActionDialog,
+      this.handleOpenActionDialog(),
     );
   };
 
@@ -347,6 +347,11 @@ class VerifyIncidentsPage extends Component {
     } else {
       alert('Something went wrong');
     }
+    this.setState({
+      openAlertDialog: false,
+    }, () => {
+      this.fetchData(this.state.perPage, this.state.page)
+    })
   };
 
   login = (e) => {
@@ -429,6 +434,7 @@ class VerifyIncidentsPage extends Component {
           <DialogContent>
             <DialogContentText>
               Are you sure you want to
+              {' '}
               {this.state.storeAction}
               {' '}
               {this.state.storeIds.length}
@@ -460,14 +466,14 @@ class VerifyIncidentsPage extends Component {
                 {!this.state.verified ? (
                   <ListItem
                     button
-                    onClick={this.handleAction(activeReport, ACTIONS.VERIFY)}
+                    onClick={() => {this.handleAction(activeReport, ACTIONS.VERIFY)}}
                   >
                     <ListItemText primary="Mark Verified" />
                   </ListItem>
                 ) : (
                   <ListItem
                     button
-                    onClick={this.handleAction(activeReport, ACTIONS.UNVERIFY)}
+                    onClick={() => {this.handleAction(activeReport, ACTIONS.UNVERIFY)}}
                   >
                     <ListItemText primary="Mark Unverified" />
                   </ListItem>
@@ -475,17 +481,17 @@ class VerifyIncidentsPage extends Component {
                 {!this.state.urlvalid ? (
                   <ListItem
                     button
-                    onClick={this.handleAction(activeReport, ACTIONS.VALID_URL)}
+                    onClick={() => {this.handleAction(activeReport, ACTIONS.VALID_URL)}}
                   >
                     <ListItemText primary="Mark Valid URL" />
                   </ListItem>
                 ) : (
                   <ListItem
                     button
-                    onClick={this.handleAction(
+                    onClick={() => {this.handleAction(
                       activeReport,
                       ACTIONS.INVALID_URL,
-                    )}
+                    )}}
                   >
                     <ListItemText primary="Mark Invalid URL" />
                   </ListItem>
@@ -493,21 +499,21 @@ class VerifyIncidentsPage extends Component {
                 {!this.state.published ? (
                   <ListItem
                     button
-                    onClick={this.handleAction(activeReport, ACTIONS.PUBLISH)}
+                    onClick={() => {this.handleAction(activeReport, ACTIONS.PUBLISH)}}
                   >
                     <ListItemText primary="Mark Published Source" />
                   </ListItem>
                 ) : (
                   <ListItem
                     button
-                    onClick={this.handleAction(activeReport, ACTIONS.UNPUBLISH)}
+                    onClick={() => {this.handleAction(activeReport, ACTIONS.UNPUBLISH)}}
                   >
                     <ListItemText primary="Mark Unpublished Source" />
                   </ListItem>
                 )}
                 <ListItem
                   button
-                  onClick={this.handleAction(activeReport, ACTIONS.DELETE)}
+                  onClick={() => {this.handleAction(activeReport, ACTIONS.DELETE)}}
                 >
                   <ListItemText primary="Delete Report" />
                 </ListItem>

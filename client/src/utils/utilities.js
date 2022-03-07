@@ -52,7 +52,6 @@ export const publishedIncidentReport = (id, published, callback = ()=>{}) => {
 };
 
 export const deleteIncidentReport = (id, callback = ()=>{}) => {
-  console.log(id);
   axios.delete(`/api/verify/incidentreport/${id}`)
     .then(res => console.log(res.data))
     .catch(err => console.log(err));
