@@ -21,7 +21,7 @@ import {
   Button,
 } from '@material-ui/core';
 import {
- MoreVert, Done, Link, Web,
+  MoreVert, Done, Link, Web,
 } from '@material-ui/icons';
 
 import SimpleTable from 'components/SimpleTable/SimpleTable';
@@ -123,6 +123,7 @@ const COLUMN_HEADERS = [
   'Student Reviewed',
   'URL Valid',
   'Published Source',
+  'Description',
   'Action',
 ];
 
@@ -206,7 +207,9 @@ class VerifyIncidentsPage extends Component {
         verified,
         published,
         waybackurl,
+        description,
         groupsharassed,
+
       }) => {
         const link = sourceurl ? (
           <a href={sourceurl} target="_blank" rel="noreferrer">
@@ -238,6 +241,31 @@ class VerifyIncidentsPage extends Component {
           groupsharassed = [];
         }
 
+        if (!published) {
+          published = 'false'
+        }
+
+        let finalDescription;
+        if (!description) {
+          finalDescription = (
+            <p style={{ textAlign: 'center' }}>
+              No description
+            </p>
+          )
+        } else {
+          finalDescription = (
+            <Tooltip title={
+              <Typography>
+                {description}
+              </Typography>
+            }>
+              <button style={{ textAlign: 'center', background: 'none', border: 'none', width: '100%', fontSize: 14 }}>
+                Hover to See
+              </button>
+            </Tooltip>
+          )
+        }
+
         return [
           id,
           location,
@@ -248,6 +276,7 @@ class VerifyIncidentsPage extends Component {
           verified.toString(),
           issourceurlvalid.toString(),
           published.toString(),
+          finalDescription,
           actionButton,
         ];
       },
@@ -259,6 +288,7 @@ class VerifyIncidentsPage extends Component {
     axios
       .get(`/api/verify/unreviewed/${perPage}/${page}/${this.state.verified}`)
       .then((res) => {
+        console.log(res)
         if (!res.data.incidents) {
           this.setState({ loggedIn: false }); // TODO: it could be a server error, not authentication? Add a check
           return;
@@ -466,14 +496,14 @@ class VerifyIncidentsPage extends Component {
                 {!this.state.verified ? (
                   <ListItem
                     button
-                    onClick={() => {this.handleAction(activeReport, ACTIONS.VERIFY)}}
+                    onClick={() => { this.handleAction(activeReport, ACTIONS.VERIFY) }}
                   >
                     <ListItemText primary="Mark Verified" />
                   </ListItem>
                 ) : (
                   <ListItem
                     button
-                    onClick={() => {this.handleAction(activeReport, ACTIONS.UNVERIFY)}}
+                    onClick={() => { this.handleAction(activeReport, ACTIONS.UNVERIFY) }}
                   >
                     <ListItemText primary="Mark Unverified" />
                   </ListItem>
@@ -481,17 +511,19 @@ class VerifyIncidentsPage extends Component {
                 {!this.state.urlvalid ? (
                   <ListItem
                     button
-                    onClick={() => {this.handleAction(activeReport, ACTIONS.VALID_URL)}}
+                    onClick={() => { this.handleAction(activeReport, ACTIONS.VALID_URL) }}
                   >
                     <ListItemText primary="Mark Valid URL" />
                   </ListItem>
                 ) : (
                   <ListItem
                     button
-                    onClick={() => {this.handleAction(
-                      activeReport,
-                      ACTIONS.INVALID_URL,
-                    )}}
+                    onClick={() => {
+                      this.handleAction(
+                        activeReport,
+                        ACTIONS.INVALID_URL,
+                      )
+                    }}
                   >
                     <ListItemText primary="Mark Invalid URL" />
                   </ListItem>
@@ -499,21 +531,21 @@ class VerifyIncidentsPage extends Component {
                 {!this.state.published ? (
                   <ListItem
                     button
-                    onClick={() => {this.handleAction(activeReport, ACTIONS.PUBLISH)}}
+                    onClick={() => { this.handleAction(activeReport, ACTIONS.PUBLISH) }}
                   >
                     <ListItemText primary="Mark Published Source" />
                   </ListItem>
                 ) : (
                   <ListItem
                     button
-                    onClick={() => {this.handleAction(activeReport, ACTIONS.UNPUBLISH)}}
+                    onClick={() => { this.handleAction(activeReport, ACTIONS.UNPUBLISH) }}
                   >
                     <ListItemText primary="Mark Unpublished Source" />
                   </ListItem>
                 )}
                 <ListItem
                   button
-                  onClick={() => {this.handleAction(activeReport, ACTIONS.DELETE)}}
+                  onClick={() => { this.handleAction(activeReport, ACTIONS.DELETE) }}
                 >
                   <ListItemText primary="Delete Report" />
                 </ListItem>
