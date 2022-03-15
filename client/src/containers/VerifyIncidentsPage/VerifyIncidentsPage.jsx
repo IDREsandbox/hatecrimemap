@@ -16,9 +16,13 @@ import {
   LinearProgress,
   Toolbar,
   Tooltip,
-  Checkbox,
   Typography,
   Button,
+  InputLabel,
+  MenuItem,
+  FormControl,
+  Select,
+  Grid
 } from '@material-ui/core';
 import {
   MoreVert, Done, Link, Web,
@@ -32,6 +36,7 @@ import {
   publishedIncidentReport,
   deleteIncidentReport,
 } from 'utils/utilities';
+import { faTemperatureHigh } from '@fortawesome/free-solid-svg-icons';
 
 const styles = () => ({
   root: {
@@ -49,6 +54,9 @@ const styles = () => ({
     'margin-top': '16px',
     width: '100%',
   },
+  filterOptionsContainer: {
+    padding: '0.5em'
+  }
 });
 
 const ACTIONS = {
@@ -137,27 +145,35 @@ const getInitialState = () => ({
   storeIds: [],
   storeAction: null,
   activeReport: null,
-  verified: '{ false }', // note -> must change to '{ true, false }' to consider both
-  counts: 0,
+  counts: null,
   incidentsChecked: [],
+  sortBy: 3,
+  perPage: 10,
+  page: 0,
 });
 
 class VerifyIncidentsPage extends Component {
   state = getInitialState();
 
   componentWillMount() {
+    if (this.state.loggedIn) {
+      this.getIncidentCounts()
+    }
+  }
+
+  componentDidMount() {
+    this.checkLoggedIn();
+  }
+
+  getIncidentCounts = () => {
     axios
-      .get(`/api/verify/unreviewedcount/${this.state.verified}`)
+      .get(`/api/verify/unreviewedcount`)
       .then((res) => {
         if (res.data.counts) {
           this.setState({ counts: parseInt(res.data.counts) });
         }
       })
       .catch((err) => alert(err));
-  }
-
-  componentDidMount() {
-    this.checkLoggedIn();
   }
 
   checkLoggedIn = () => {
@@ -286,7 +302,7 @@ class VerifyIncidentsPage extends Component {
 
   fetchData = (perPage = 10, page = 0) => {
     axios
-      .get(`/api/verify/unreviewed/${perPage}/${page}/${this.state.verified}`)
+      .get(`/api/verify/unreviewed/${perPage}/${page}/${this.state.sortBy}`)
       .then((res) => {
         console.log(res)
         if (!res.data.incidents) {
@@ -402,6 +418,27 @@ class VerifyIncidentsPage extends Component {
       });
   };
 
+  handleSortByChange = (e) => {
+    this.setState({ sortBy: e.target.value }, () => {
+      console.log(this.state.perPage, this.state.page)
+      this.fetchData(this.state.perPage, this.state.page);
+    })
+  }
+
+  handlePageChange = (e, page) => {
+    this.setState({ page });
+    this.fetchData(this.state.perPage, page);
+  };
+
+  handleRowChange = (e) => {
+    let currentNumber = this.state.perPage * this.state.page;
+    let value = Number(e.target.value)
+    let newPage = Math.floor(currentNumber/value);
+    this.setState({ perPage: e.target.value, page: newPage }, () => {
+      this.fetchData(e.target.value, newPage );
+    });
+  };
+
   render() {
     const {
       incidentReports,
@@ -411,6 +448,7 @@ class VerifyIncidentsPage extends Component {
       openAlertDialog,
       activeReport,
       loggedIn,
+      counts
     } = this.state;
     const { classes } = this.props;
 
@@ -441,6 +479,15 @@ class VerifyIncidentsPage extends Component {
       );
     }
 
+    if (!counts) {
+      this.getIncidentCounts();
+      return (
+        <div className={classes.loading}>
+          <LinearProgress className={classes.progress} />
+        </div>
+      );
+    }
+
     return (
       <div className={classes.root}>
         {this.state.incidentsChecked
@@ -450,6 +497,22 @@ class VerifyIncidentsPage extends Component {
               actions={this.handleAction}
             />
           )}
+        <Grid container justify="flex-start" className={classes.filterOptionsContainer}>
+          <FormControl>
+            <InputLabel > Sort By </InputLabel>
+            <Select
+              value={this.state.sortBy}
+              label="Sort By"
+              onChange={this.handleSortByChange}
+            >
+              <MenuItem value={0}> Incident ID </MenuItem>
+              <MenuItem value={1}> Date of Event (ascending) </MenuItem>
+              <MenuItem value={2}> Date of Event (descending) </MenuItem>
+              <MenuItem value={3}> Date Submitted (ascending) </MenuItem>
+              <MenuItem value={4}> Date Submitted (descending) </MenuItem>
+            </Select>
+          </FormControl>
+        </Grid>
         <SimpleTable
           columnHeaders={COLUMN_HEADERS}
           tableData={incidentReports}
@@ -459,6 +522,10 @@ class VerifyIncidentsPage extends Component {
           idsChecked={this.state.incidentsChecked || []}
           fetchData={this.fetchData}
           counts={this.state.counts}
+          perPage={this.state.perPage}
+          page={this.state.page}
+          handlePageChange={this.handlePageChange}
+          handleRowChange={this.handleRowChange}
         />
         <Dialog onClose={this.handleCloseAlertDialog} open={openAlertDialog}>
           <DialogContent>
@@ -493,21 +560,12 @@ class VerifyIncidentsPage extends Component {
             <DialogTitle>Choose Action</DialogTitle>
             <div>
               <List>
-                {!this.state.verified ? (
-                  <ListItem
-                    button
-                    onClick={() => { this.handleAction(activeReport, ACTIONS.VERIFY) }}
-                  >
-                    <ListItemText primary="Mark Verified" />
-                  </ListItem>
-                ) : (
-                  <ListItem
-                    button
-                    onClick={() => { this.handleAction(activeReport, ACTIONS.UNVERIFY) }}
-                  >
-                    <ListItemText primary="Mark Unverified" />
-                  </ListItem>
-                )}
+                <ListItem
+                  button
+                  onClick={() => { this.handleAction(activeReport, ACTIONS.VERIFY) }}
+                >
+                  <ListItemText primary="Mark Verified" />
+                </ListItem>
                 {!this.state.urlvalid ? (
                   <ListItem
                     button

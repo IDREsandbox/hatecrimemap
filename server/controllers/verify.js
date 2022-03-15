@@ -28,8 +28,8 @@ const findUnreviewedPoints = `SELECT ${columns}
                                 ORDER BY i.submittedon`
 
 
-router.get('/unreviewedcount/:verified', (req, res) => {
-  db.one(`SELECT COUNT(*) FROM incident WHERE verified=any($1::boolean[])`, [req.params.verified]) // removed isurlvalidcheck
+router.get('/unreviewedcount', (req, res) => {
+  db.one(`SELECT COUNT(*) FROM incident i where i.verified = false`)
     .then((counts) => {
       res.status(200)
         .json({
@@ -39,8 +39,19 @@ router.get('/unreviewedcount/:verified', (req, res) => {
     })
 })
 
-router.get('/unreviewed/:per/:page/:verified', (req, res) => {
-  db.any(`SELECT * FROM paginate_by_offset($1, $2)`, [req.params.page, req.params.per])
+router.get('/unreviewed/:per/:page/:sortby', (req, res) => {
+  let sortby = req.params.sortby;
+  let query;
+  if (sortby == 0) {
+    query = `SELECT * FROM paginate_by_offset($1, $2)`
+  }
+  else if (sortby % 2 == 0) {
+    query = `SELECT * FROM paginate_by_offset_desc($1, $2, $3)`
+  } else {
+    query = `SELECT * FROM paginate_by_offset_asc($1, $2, $3)`
+  }
+
+  db.any(query, [req.params.page, req.params.per, sortby]) // in case of first query 3rd param not used
     .then((incidents) => {
       res.status(200)
         .json({
