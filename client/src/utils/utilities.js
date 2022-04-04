@@ -26,7 +26,6 @@ export const reviewIncidentReport = (id, verified, callback = ()=>{}) => {
     .then(res => {
       console.log(res.data)
       callback();
-      window.location.reload();
     })
     .catch(err => console.log(err));
 };
@@ -36,7 +35,6 @@ export const validateIncidentReport = (id, urlvalid, callback = ()=>{}) => {
     .then(res => {
       console.log(res.data)
       callback();
-      window.location.reload();
     })
     .catch(err => console.log(err));
 };
@@ -46,7 +44,6 @@ export const publishedIncidentReport = (id, published, callback = ()=>{}) => {
     .then(res => {
       console.log(res.data)
       callback();
-      window.location.reload();
     })
     .catch(err => console.log(err));
 };
@@ -56,5 +53,4 @@ export const deleteIncidentReport = (id, callback = ()=>{}) => {
     .then(res => console.log(res.data))
     .catch(err => console.log(err));
   callback();
-  window.location.reload();
 };

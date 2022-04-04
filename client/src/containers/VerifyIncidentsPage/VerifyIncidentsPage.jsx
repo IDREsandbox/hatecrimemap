@@ -69,8 +69,8 @@ const ACTIONS = {
   DELETE: 7,
   MULTI_VERIFY: 'verify',
   MULTI_UNVERIFY: 'unverify',
-  MULTI_VALID_URL: 'validate the urls of',
-  MULTI_INVALID_URL: 'invalidate the urls of',
+  MULTI_VALID_URL: 'validate the URLs of',
+  MULTI_INVALID_URL: 'invalidate the URLs of',
   MULTI_PUBLISH: 'mark as published',
   MULTI_UNPUBLISH: 'mark as unpublished',
   MULTI_DELETE: 'delete',
@@ -352,13 +352,13 @@ class VerifyIncidentsPage extends Component {
   };
 
   handleAction = (id, action) => {
-    if (action == ACTIONS.VERIFY) reviewIncidentReport(id, true);
-    else if (action == ACTIONS.UNVERIFY) reviewIncidentReport(id, false);
-    else if (action == ACTIONS.VALID_URL) validateIncidentReport(id, true);
-    else if (action == ACTIONS.INVALID_URL) validateIncidentReport(id, false);
-    else if (action == ACTIONS.PUBLISH) publishedIncidentReport(id, true);
-    else if (action == ACTIONS.UNPUBLISH) publishedIncidentReport(id, false);
-    else if (action == ACTIONS.DELETE) deleteIncidentReport(id);
+    if (action == ACTIONS.VERIFY) reviewIncidentReport(id, true, () => { this.fetchData(this.state.perPage, this.state.page) });
+    else if (action == ACTIONS.UNVERIFY) reviewIncidentReport(id, false, () => { this.fetchData(this.state.perPage, this.state.page) });
+    else if (action == ACTIONS.VALID_URL) validateIncidentReport(id, true, () => { this.fetchData(this.state.perPage, this.state.page) });
+    else if (action == ACTIONS.INVALID_URL) validateIncidentReport(id, false, () => { this.fetchData(this.state.perPage, this.state.page) });
+    else if (action == ACTIONS.PUBLISH) publishedIncidentReport(id, true, () => { this.fetchData(this.state.perPage, this.state.page) });
+    else if (action == ACTIONS.UNPUBLISH) publishedIncidentReport(id, false, () => { this.fetchData(this.state.perPage, this.state.page) });
+    else if (action == ACTIONS.DELETE) deleteIncidentReport(id, () => { this.fetchData(this.state.perPage, this.state.page) });
     else if (
       action === ACTIONS.MULTI_VERIFY
       || action === ACTIONS.MULTI_UNVERIFY
@@ -433,9 +433,9 @@ class VerifyIncidentsPage extends Component {
   handleRowChange = (e) => {
     let currentNumber = this.state.perPage * this.state.page;
     let value = Number(e.target.value)
-    let newPage = Math.floor(currentNumber/value);
+    let newPage = Math.floor(currentNumber / value);
     this.setState({ perPage: e.target.value, page: newPage }, () => {
-      this.fetchData(e.target.value, newPage );
+      this.fetchData(e.target.value, newPage);
     });
   };
 
