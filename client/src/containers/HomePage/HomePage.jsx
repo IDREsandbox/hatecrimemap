@@ -130,7 +130,9 @@ class HomePage extends Component {
   }
 
   closeMarker = () => {
-    this.myMarker.remove()
+    if (this.myMarker) {
+      this.myMarker.remove()
+    }
     this.myMarker = null
   }
 

@@ -9,22 +9,18 @@ const {
 
 const router = express.Router();
 
-
-// note (goes latitude, longitude)
-
 const storiesQuery = `select us.name as state, us.id, (uc.name||','||uc.statefp) as county, published, incidentdate as date, i.location, i.description, st_x(i.coord) as longitude, st_y(i.coord) as latitude
 from incident i -- include all groups, even if aggregate of one is 0
 join us_states us on us.id = i.state_id -- attach the state name
 join us_counties uc on uc.id = i.county_id -- attach the county name
-where incidentdate IS NOT NULL AND incidentdate < now()::date`
+where incidentdate IS NOT NULL and st_x(i.coord) is not null AND st_y(i.coord) is not null and "location"  is not null
+and us.name is not null and us.id is not null and uc.name is not null and uc.statefp is not null and incidentdate < now()::date`
 
-
-// TODO - implmeent
+// TODO - implement
 const cleanupStory = (data) => {
     data.forEach(element => {
         for (let i = 0; i < element.length; i++) {
             if (element[i] === '�') {
-                // console.log(element.charCodeAtIndex(i)) this still isn't working
                 if (i > 0) {
                     let c = element[i - 1]
                     if (c.toLowerCase() != c.toUpperCase()) {
@@ -41,14 +37,13 @@ const cleanupStory = (data) => {
                 }
             }
         }
-        //   console.log(`done`);
     });
     return data;
 }
 
 const processStoryData = (response) => {
     let data = response.filter(each => {
-        if (each.description) {
+        if (each.description && each.latitude && each.longitude) {
             return each.description !== '';
         } else {
             return false;

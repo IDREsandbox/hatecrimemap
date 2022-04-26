@@ -2,7 +2,6 @@ import React from 'react';
 import { GeoJSON } from 'react-leaflet';
 
 const MyGeoJSON = (props) => {
-  console.log(props)
   return (<GeoJSON
     data={props.geojson}
     style={props.style}

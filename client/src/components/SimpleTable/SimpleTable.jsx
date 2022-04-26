@@ -57,7 +57,6 @@ class SimpleTable extends Component {
   }
 
   handlePageChange = (e, page) => {
-    console.log(page);
     this.setState({ page });
     this.props.fetchData(this.state.rowsPerPage, page);
   };

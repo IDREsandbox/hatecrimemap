@@ -68,7 +68,6 @@ const MapWrapper = (props) => {
   };
 
   useEffect(() => {
-    console.log('fired')
     if (!props.covid) {
       states_usa.features.forEach((eachStateArg) => eachStateArg.properties.COLOR = calculateStateColor(eachStateArg.properties.NAME, props.data, props.max));
       counties.forEach((countiesInState) => countiesInState.features.forEach((eachCounty) => eachCounty.properties.COLOR = calculateCountyColor(eachCounty.properties.County_state, props.data, props.maxCounty)));

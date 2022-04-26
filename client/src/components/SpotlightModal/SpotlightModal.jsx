@@ -88,7 +88,6 @@ function SpotlightModal(props) {
   // FIX THIS: CHANGE QUERY TO ONLY BE MADE IF DATA NOT ALREADY PRESENT, NOT EVERY TIME
   // need this to be triggered upon change to lockItem type & on default
   useEffect(() => {
-    console.log('called original')
     // this is causing an extra call to API without the need?
     fetchSpotlightData(props.lockItem)
   }, []);
@@ -96,7 +95,6 @@ function SpotlightModal(props) {
 
   // Fetch Hook upon lockItem changing on upper level
   useEffect(() => {
-    console.log('called lockitem')
     // if it's unlocked should display 'none' data
     if (!locked) {
 
