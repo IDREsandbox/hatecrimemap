@@ -99,7 +99,7 @@ export default function ChartsTable(props) {
                     )}
             </DialogContent>
             <DialogActions className={classes.closebuttons} id="closeDataTable">
-                <ColoredButton noIcon buttonClick={() => toggleOpen(false)}>
+                <ColoredButton noIcon onClick={() => toggleOpen(false)}>
                     Close
                 </ColoredButton>
             </DialogActions>
