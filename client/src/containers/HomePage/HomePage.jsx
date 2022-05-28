@@ -28,14 +28,11 @@ import {
   counts_maxPrimary,
   counts_maxState,
   defaultColors,
+  counts_maxCounties,
 } from '../../utils/data-utils';
-
 
 import './HomePage.css';
 
-
-
-const pop = new popup();
 const styles = () => ({
   progress: {
     position: 'fixed',
@@ -126,7 +123,7 @@ class HomePage extends Component {
     } else {
       this.myMarker.setLatLng([latitude, longitude])
     }
-    this.mapRef.current.flyTo([latitude, longitude], 5);
+    this.mapRef.current.flyTo([latitude, longitude], this.state.lockType === 'county' ? 2.5 : 6);
   }
 
   closeMarker = () => {
@@ -150,61 +147,43 @@ class HomePage extends Component {
     this.setState({ filterTimeRange: time });
   };
 
+  clearLock = () => {
+    this.setState({
+      currentDisplay: 'none', // if we try to "re-lock" onto the same state, toggle it off
+      locked: false,
+      lockType: 'none', // if there's nothing locked on, the lockType should be none!
+    });
+  }
+
   // Return value, success (in our terms, not react's)
   updateState = (state, lock = false) => {
     if (this.state.locked && !lock) return false;
 
     if (this.state.locked && this.state.currentDisplay === state) {
-      this.setState({
-        currentDisplay: 'none', // if we try to "re-lock" onto the same state, toggle it off
-        locked: false,
-        lockType: 'none', // if there's nothing locked on, the lockType should be none!
-      }, () => {
-        // console.log(`this.state.currentDisplay after state update`, this.state.currentDisplay);
-        // console.log(`lockType after state update`, this.state.lockType);
-      });
+      this.clearLock();
       return false; // uncolor
     }
-
 
     this.setState({
       currentDisplay: state,
       locked: lock && state !== 'none', // we never want to lock onto None
       lockType: 'state',
-    }, () => {
-      console.log(this.state.locked)
     });
     return true;
   };
 
-  /*
-    the lockType paramaeter is not correctly resetting to 'none' after unlocking off of a state?
-    what could be causing this...
-
-  */
-
   updateCounty = (county, lock = false) => {
     if (this.state.locked && !lock) return false;
+
     if (this.state.locked && this.state.currentDisplay === county) {
-      console.log('here')
-      this.setState({
-        currentDisplay: 'none',
-        locked: false,
-        lockType: 'none',
-      });
+      this.clearLock();
       return false; // uncolor
     }
 
-
-
-    console.log(lock)
     this.setState({
       currentDisplay: county,
       locked: lock && county !== 'none', // we never want to lock onto None
       lockType: 'county',
-    }, () => {
-      console.log(this.state.currentDisplay)
-      console.log(this.state.locked)
     });
     return true;
   };
@@ -278,9 +257,15 @@ class HomePage extends Component {
   updateZoom = (z, callback) => {
     if (this.state.zoom < 6 && z >= 6) {
       // Should show county
+      if (this.state.lockType === 'state') {
+        this.clearLock();
+      }
       this.setState({ zoom: z, displayType: 'county' }, callback('county'));
     } else if (this.state.zoom >= 6 && z < 6) {
       // Should show state
+      if (this.state.lockType === 'county') {
+        this.clearLock();
+      }
       this.setState({ zoom: z, displayType: 'state' }, callback('state'));
     } else {
       this.setState({ zoom: z });
@@ -313,8 +298,10 @@ class HomePage extends Component {
     } = this.state;
     const { classes } = this.props;
 
+    document.body.style = 'background: rgb(0,0,0)';
+
     if (isFetching) {
-      return <CircularProgress style={{ 'color': 'black' }} className={classes.progress} />;
+      return <CircularProgress style={{ 'color': 'white' }} className={classes.progress} />;
     }
 
     // timeslider filter. TODO: make a generic state data filter/callback that handles pointer and closures
@@ -330,7 +317,7 @@ class HomePage extends Component {
       );
     }
     const dataStateMax = counts_maxState(data);
-    const dataCountyMax = 30; // replace with county-max calculator
+    const dataCountyMax = counts_maxCounties(data); // replace with county-max calculator, make it only called once
     const dataMaxTopLevel = counts_maxPrimary(data); // TODO: rename these...
     let currTotal = 0;
 
@@ -358,11 +345,10 @@ class HomePage extends Component {
           data={data}
           max={dataStateMax}
           maxCounty={dataCountyMax}
-          lockType={this.state.lockType}
-          lockItem={this.state.currentDisplay}
           zoom={this.getZoom}
           displayType={displayType}
           timeSliderUpdate={this.filterTime}
+          spotlightOn={this.state.spotlightMode}
           controls={(map) => ( //eslint-disable-line
             <>
               <Legend colors={defaultColors} maxState={dataStateMax} maxCounty={dataCountyMax} displayType={displayType} />
@@ -457,10 +443,10 @@ class HomePage extends Component {
           styles={{
             options: {
               arrowColor: 'rgb(236, 242, 255)',
-              backgroundColor: 'rgb(236, 242, 255)',
-              overlayColor: 'rgba(5, 5, 10, 0.7)',
+              backgroundColor: '#262626',
+              overlayColor: 'rgba(255, 255, 255, 0.3)',
               primaryColor: 'rgb(0, 100, 255)',
-              textColor: 'black',
+              textColor: 'white',
               width: 800,
               zIndex: 9000,
             },

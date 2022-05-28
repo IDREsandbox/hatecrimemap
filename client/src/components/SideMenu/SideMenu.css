@@ -1,10 +1,10 @@
 .sideMenuOld {
   display: grid;
   grid-template-areas:
-    "smheader"
-    "smform"
-    "smcharts"
-    "filters";
+    'smheader'
+    'smform'
+    'smcharts'
+    'filters';
   grid-template-columns: 1fr;
   grid-template-rows: 1fr;
   padding: 10px 20px;
@@ -16,20 +16,20 @@
 .sideMenu {
   display: flex;
   flex-direction: column;
-  background-color:  #262626;
+  background-color: #262626;
   border-left: 2px solid #090909;
   height: 100%;
-  padding: 10px 20px;
+  padding: 0 20px;
   overflow-y: auto;
 }
 
 .sideMenu-covid {
   background-color: whitesmoke;
-  border-left: none
+  border-left: none;
 }
 
 .sideMenu__header {
-	margin: 10px 0;
+  margin: 10px 0;
   text-align: center;
   color: white;
 }
@@ -38,7 +38,6 @@
   color: black;
 }
 
-
 .__floater__open {
-  z-index: 5000
+  z-index: 5000;
 }

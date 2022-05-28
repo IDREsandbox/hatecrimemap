@@ -417,7 +417,7 @@ class VerifyIncidentsPage extends Component {
               incidentsChecked={this.state.incidentsChecked}
               actions={this.handleAction}
             />
-        )}
+          )}
         <SimpleTable
           columnHeaders={COLUMN_HEADERS}
           tableData={incidentReports}

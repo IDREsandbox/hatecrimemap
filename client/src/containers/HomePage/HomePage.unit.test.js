@@ -1,6 +1,6 @@
 import React from 'react';
 
-import HomePage from './HomePage';
+import HomePage from './map';
 
 describe('HomePage', () => {
   it('renders without crashing', () => {

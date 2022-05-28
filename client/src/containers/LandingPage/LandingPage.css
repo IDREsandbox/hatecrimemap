@@ -1,0 +1,106 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+
+.MainPage {
+  background-color: black;
+  height: 100vw;
+  width: 100vh;
+  margin: 0;
+}
+
+.LandingPageSection {
+  cursor: pointer;
+  height: 100%;
+  width: 100%;
+  background-color: #000000;
+  /*font-family: 'Bebas Neue', cursive;*/
+}
+
+.LandingPageSection:hover {
+  transition-duration: 0.2s;
+  background-color: rgba(0, 0, 0, 0.9);
+}
+
+.Landing-Link {
+  font-family: 'Bebas Neue', cursive;
+  font-weight:bold;
+  text-decoration:none;
+  color: white;
+  font-size: 1.5em;
+}
+
+.Landing-Description {
+  margin: 0 1.2em;
+  text-align: center;
+}
+
+.outer {
+  /*background-color: rgba(0, 173, 239);*/
+  background-color: #262626;
+
+}
+.outer:hover {
+  /* background-color: rgba(0, 173, 239, 0.9); */
+  background-color: rgba(38, 38, 38, 0.9);
+}
+
+.IntroPageContainer {
+  height: 100%;
+}
+
+.IntroPage {
+  height: 100%;
+  width: 100vw;
+  background-color: #262626;
+  font-size: 4em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.My-Icon {
+  justify-self: center;
+  font-size: 3em;
+  transform: rotate3d(0,1,0, 0deg);
+  transition-duration: 0.75s;
+}
+
+.LandingPageSection:hover .My-Icon {
+  transform: rotate3d(0,1,0, 180deg);
+  transition-duration: 0.75s;
+}
+
+@media screen and (max-width: 960px) {
+  .LandingPageSection {
+    height: calc(100% / 3);
+  }
+  
+  .My-Icon {
+    font-size: 1em;
+  /*  color: #E05215;  possibly keep to change icon color */
+  }
+  
+  .Landing-Description {
+    font-size: 0.75em;
+  }
+}

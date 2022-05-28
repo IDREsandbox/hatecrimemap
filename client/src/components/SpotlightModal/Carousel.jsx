@@ -124,35 +124,54 @@ const Carousel = (props) => {
     return d.toLocaleDateString();
   };
 
+  const noEventReturn = (
+    <div className={classes.noEventContainer}>
+      <h2 className={classes.noEventTitle}>
+        No data for this location.
+      </h2>
+    </div>
+  )
+
   /* eslint-disable */
   const renderChildren = (input) => {
-    const toReturn = [];
-    Object.keys(data).forEach((each, index) => {
-      toReturn.push(
-        <Slide tag="a" key={index} className='slide-style'>
-          <div className={classes.incidentContainer}>
-            <p className={`${classes.incidentRightAlign} ${classes.location}`}>
-              {/* location here */}
-              From {data[each].location} on {' '}
-              {getDateFromISOString(data[each].date)}
-              {' '}
-            </p>
-            <p>
-            </p>
-            <p className={classes.incidentDescription}>
-              {data[each].description}
-            </p>
-          </div>
-        </Slide>,
-      );
-    });
-    return toReturn;
+    if (!data) {
+      return noEventReturn;
+    }
+    else {
+      const toReturn = [];
+      Object.keys(data).forEach((each, index) => {
+        toReturn.push(
+          <Slide tag="a" key={index} className='slide-style'>
+            <div className={classes.incidentContainer}>
+              <p className={`${classes.incidentRightAlign} ${classes.location}`}>
+                {/* location here */}
+                From {data[each].location} on {' '}
+                {getDateFromISOString(data[each].date)}
+                {' '}
+              </p>
+              <p>
+              </p>
+              <p className={classes.incidentDescription}>
+                {data[each].description}
+              </p>
+            </div>
+          </Slide>,
+        );
+      });
+      return toReturn;
+    }
   };
   /* eslint-enable */
   const [currentSlide, setCurrentSlide] = useState(0);
 
   function renderDots(ev) {
-    setCurrentSlide(ev.currentSlide);
+    if (data[ev.currentSlide].latitude && data[ev.currentSlide].longitude) {
+      const latitude = data[ev.currentSlide].latitude;
+      const longitude = data[ev.currentSlide].longitude;
+      setCurrentSlide(ev.currentSlide);
+    } else {
+      return;
+    }
   }
 
   useEffect(() => {
@@ -164,7 +183,7 @@ const Carousel = (props) => {
     if (data && currentSlide) {
       openPopup(data[currentSlide].latitude, data[currentSlide].longitude)
     }
-  }, [currentSlide, lockItem]) // change here - utilizing lockIte passed down to trigger the popup rerender
+  }, [currentSlide, lockItem])
 
   function getLabel() {
     if (lockItem === 'none') {
@@ -174,19 +193,13 @@ const Carousel = (props) => {
       const id = lockItem.substr(lockItem.length - 2, lockItem.length - 1);
       return `${countyName} County, ${stateIdToStateName(id)}`;
     }
-    return lockItem; // for some reason, this if is yielding 'none'
+    return lockItem;
   }
 
   const numItems = Object.keys(data).length;
 
-  if (Object.keys(data).length === 0) {
-    return (
-      <div className={classes.noEventContainer}>
-        <h2 className={classes.noEventTitle}>
-          No data for this location.
-        </h2>
-      </div>
-    );
+  if (numItems === 0) {
+    return noEventReturn;
   } else {
     return (
       <CarouselProvider
@@ -197,9 +210,9 @@ const Carousel = (props) => {
         naturalSlideHeight={1}
         isIntrinsicHeight={false}
       >
-        <h1 className={classes.headline}>Featured Stories</h1>
+        <h1 className={classes.headline}>Highlighted Incidents</h1>
         <p className={classes.label}>
-          Some Featured Stories from
+          Hate Incidents from
           {' '}
           {getLabel()}
         </p>
@@ -210,21 +223,26 @@ const Carousel = (props) => {
         >
           {renderChildren()}
         </Slider>
-        <div className={classes.buttonContainer}>
-          <ButtonBack className={classes.buttonWrapper}>
-            <ColoredButton
-              backButton
-            >
-              Back
-            </ColoredButton>
-          </ButtonBack>
-          <ButtonNext className={classes.buttonWrapper}>
-            <ColoredButton>
-              Next
-            </ColoredButton>
-          </ButtonNext>
-        </div>
-        <DotGroup renderDots={renderDots} />
+        {numItems > 1
+          &&
+          <div className={classes.buttonContainer}>
+            <ButtonBack className={classes.buttonWrapper}>
+              <ColoredButton
+                backButton
+              >
+                Back
+              </ColoredButton>
+            </ButtonBack>
+            <ButtonNext className={classes.buttonWrapper}>
+              <ColoredButton>
+                Next
+              </ColoredButton>
+            </ButtonNext>
+          </div>
+        }
+        {numItems > 1 &&
+          <DotGroup renderDots={renderDots} />
+        }
         <div className={classes.flexCenter}>
           <SliderExport length={numItems} current={currentSlide} />
         </div>

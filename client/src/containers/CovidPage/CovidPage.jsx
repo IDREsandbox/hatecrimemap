@@ -81,7 +81,7 @@ class CovidPage extends Component {
     });
   }
 
-  resetMapData = () => {};
+  resetMapData = () => { };
 
   filterIncidents = (flt) => {
     // 'all' or 'published'
@@ -161,6 +161,8 @@ class CovidPage extends Component {
     const { isFetching } = this.state;
     const { classes } = this.props;
 
+    document.body.style = 'background: rgba(255,255,255)';
+
     if (isFetching) {
       return <CircularProgress className={classes.progress} />;
     }
@@ -223,15 +225,14 @@ class CovidPage extends Component {
               {`COVID Hate Incidents in ${this.state.currentDisplay == 'none'
                 ? 'US'
                 : this.state.currentDisplay
-              }`}
+                }`}
             </h2>
             {this.state.currentDisplay != 'none' ? (
               <div className={`sideMenu__info ${classes.dateRange}`}>
                 <p>
                   {this.state.data[this.state.currentDisplay].children.length > 0
                     && `${this.state.data[this.state.currentDisplay].children[0].date
-                    } - ${
-                      this.state.data[this.state.currentDisplay].children.length > 1
+                    } - ${this.state.data[this.state.currentDisplay].children.length > 1
                     && this.state.data[this.state.currentDisplay].children[
                       this.state.data[this.state.currentDisplay].children
                         .length - 1

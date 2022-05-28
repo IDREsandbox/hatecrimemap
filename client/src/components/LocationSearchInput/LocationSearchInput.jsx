@@ -25,7 +25,6 @@ const LocationSearchInput = ({
       <div>
         <TextField
           {...getInputProps({
-            className: classes.textField,
             name,
             placeholder: 'Enter location',
             error: errorText !== '',

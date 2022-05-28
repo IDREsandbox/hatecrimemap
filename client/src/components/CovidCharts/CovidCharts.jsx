@@ -187,19 +187,19 @@ class CovidCharts extends React.Component {
             (prev, next) => prev.concat(
               next.children.filter(
                 (el) => el[this.state.dialogShow]
-                        && el[this.state.dialogShow].includes(
-                          this.state.dialogFilter,
-                        ),
+                  && el[this.state.dialogShow].includes(
+                    this.state.dialogFilter,
+                  ),
               ),
             ),
             [],
           )
         : this.props.data[this.props.currState]
-            && this.props.data[this.props.currState].children
-            && this.props.data[this.props.currState].children.filter(
-              (el) => el[this.state.dialogShow]
-                && el[this.state.dialogShow].includes(this.state.dialogFilter),
-            );
+        && this.props.data[this.props.currState].children
+        && this.props.data[this.props.currState].children.filter(
+          (el) => el[this.state.dialogShow]
+            && el[this.state.dialogShow].includes(this.state.dialogFilter),
+        );
 
       return (
         <div className="CovidCharts">

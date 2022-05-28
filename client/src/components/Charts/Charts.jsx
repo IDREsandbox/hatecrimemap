@@ -12,13 +12,16 @@ import axios from 'axios';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import ColoredButton from 'components/Reusables/ColoredButton';
 import { CHARTS, CHART_STRINGS, getChartData } from '../../utils/chart-utils';
+import { Typography } from '@material-ui/core';
 
 const styles = (theme) => ({ // eslint-disable-line no-unused-vars
   // leaving above theme for future syntax reference
+  chartLabel: {
+    color: 'white',
+    fontStyle: 'italic',
+    marginTop: '0.5em'
+  }
 });
-
-
-
 
 class Charts extends React.Component {
   chartReference = createRef();
@@ -164,6 +167,8 @@ class Charts extends React.Component {
   }
 
   render() {
+    const { classes } = this.props;
+
     if (this.props.data && this.state.options) {
       if (this.state.currentDisplay != CHARTS.TOP) {
         // const rows = this.props.currState == 'none' ?
@@ -220,6 +225,9 @@ class Charts extends React.Component {
               data={getChartData(this.state.currentDisplay, this.props.data, this.props.filters)}
               onElementsClick={this.pieClick}
             />
+            <Typography variant="body1" className={classes.chartLabel}>
+              * Click on any section of the pie chart to view a table of individual incidents
+            </Typography>
             {/* <ChartsText data={this.props.data[this.state.drilldown].children} /> */}
             <ChartsTable
               toggleOpen={this.toggleOpen}
@@ -245,6 +253,9 @@ class Charts extends React.Component {
             ref={this.chartReference}
           />
           {/* <ChartsText data={this.props.data} /> */}
+          <Typography variant="body1" className={classes.chartLabel}>
+            * Click on any bar to view a detailed breakdown of incident targets
+          </Typography>
         </div>
       );
     }

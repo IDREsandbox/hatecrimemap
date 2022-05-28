@@ -51,6 +51,9 @@ const useStyles = makeStyles({
     },
     barColorPrimary: {
         backgroundColor: 'white',
+    },
+    dialogContent: {
+        backgroundColor: '#262626'
     }
 });
 
@@ -68,10 +71,11 @@ export default function ChartsTable(props) {
         >
             <DialogTitle className={classes.title} id="responsive-dialog-title">Hate Crimes</DialogTitle>
             <DialogContent
+                className={classes.dialogContent}
             >
                 {!popup_data ?
 
-                    <LinearProgress {...classes} classes={{colorPrimary: classes.colorPrimary, barColorPrimary: classes.barColorPrimary}} />
+                    <LinearProgress {...classes} classes={{ colorPrimary: classes.colorPrimary, barColorPrimary: classes.barColorPrimary }} />
                     : (
                         <Table stickyHeader aria-label="simple table" width="100%">
                             <TableHead className={classes.root}>

@@ -6,19 +6,20 @@
   flex-shrink: 1,
   flex-basis: auto
   */
-  grid-template-areas: 
-    "map side"
-    "map side";
+  grid-template-areas:
+    'map side'
+    'map side';
   grid-template-columns: 1.6fr 1fr;
   height: 100%;
   overflow: auto;
+  background-color: black;
 }
 
 @media (max-width: 800px) {
   .homePage {
     grid-template-areas:
-      "map"
-      "side";
+      'map'
+      'side';
     grid-template-columns: none;
     grid-template-rows: 1.25fr 1fr;
   }
@@ -31,13 +32,13 @@
 }
 
 .black {
-  background: rgba(0, 0, 0, 0.8); 
-  width:      100%;
-  height:     100%; 
-  z-index:    1001;
-  top:        0; 
-  left:       0; 
-  position:   fixed; 
+  background: rgba(0, 0, 0, 0.8);
+  width: 100%;
+  height: 100%;
+  z-index: 1001;
+  top: 0;
+  left: 0;
+  position: fixed;
 }
 
 .welcome {
@@ -73,7 +74,6 @@
 }
 
 /*  popup css - leaving here for now will clean up code later*/
-
 
 .leaflet-popup-content-wrapper {
   background-color: gray;
