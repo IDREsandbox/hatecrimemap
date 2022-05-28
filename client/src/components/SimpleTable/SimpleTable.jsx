@@ -27,7 +27,7 @@ const styles = (theme) => ({
   },
   row: {
     '&:nth-of-type(odd)': {
-      backgroundColor: theme.palette.background.default,
+      backgroundColor: 'rgb(0,0,0)'
     },
   },
   cell: {

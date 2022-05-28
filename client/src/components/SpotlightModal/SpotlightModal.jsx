@@ -51,17 +51,10 @@ const styles = {
     width: '100%',
   },
   SpotlightContainer: {
+    margin: '1em 0',
     height: '50%',
   }
 };
-
-const ColorButton = withStyles((theme) => ({
-  root: {
-    color: 'white',
-    borderColor: 'white',
-  }
-}))(Button)
-
 
 function SpotlightModal(props) {
   const { classes, openPopup, closePopup, locked } = props;
@@ -175,14 +168,6 @@ function SpotlightModal(props) {
     </div>
   );
 }
-
-/*
-Have  to reimplement floater to lock on to exact 
-
-ok so idea -> on open click, have the button set the floater to open
-if the map is locked onto anything, have the floater lock onto that location
-
-*/
 
 SpotlightModal.propTypes = {
   classes: PropTypes.object.isRequired,

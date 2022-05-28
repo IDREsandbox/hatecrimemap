@@ -4,8 +4,6 @@ import {
 } from 'react-leaflet';
 import L from 'leaflet'; //eslint-disable-line
 
-import Floater from 'react-floater';
-
 import './MapWrapper.css';
 import { useLocation } from 'react-router-dom';
 import Carousel from 'components/SpotlightModal/Carousel';
@@ -22,8 +20,6 @@ import {
 } from '../../utils/data-utils';
 import MyGeoJSON from './GeoJSON/MyGeoJSON';
 
-
-
 const months_short = [ //eslint-disable-line
   'Jan',
   'Feb',
@@ -38,11 +34,6 @@ const months_short = [ //eslint-disable-line
   'Nov',
   'Dec',
 ];
-
-/*
-keeping as legacy - could be used as example for Date library
-const monthVals = months_short.map((month) => Date.parse(`${month} 1, 2020`));
-*/
 
 const usa_background_style = { stroke: 0.3, color: '#777777', backgroundColor: '#aaaaaa' };
 
@@ -99,6 +90,7 @@ const MapWrapper = (props) => {
         center={ML.usaCenter}
         zoom={props.zoom()}
         closePopupOnClick
+        preferCanvas={props.spotlightOn}
       >
         <TileLayer
           key="base"
@@ -111,7 +103,6 @@ const MapWrapper = (props) => {
           bounds={ML.worldBounds}
           stroke={false}
           fillOpacity="0"
-          onClick={() => props.updateState('none', true)} // Doesn't work anymore, seems like rectangle onClick was outdated in react-leaflet
         />
         <Pane
           name="states"
@@ -120,18 +111,19 @@ const MapWrapper = (props) => {
           {
           }
           <MyGeoJSON
-            key={`states-${props.publishedChange}`}
-            style={(feature) => ({
-              stroke: 0.5, weight: 0.5, color: 'black', fillColor: feature.properties.COLOR, fillOpacity: 1,
+            key="states"
+            style={(feature) => (
+              {
+              stroke: 0.5, weight: 0.5, color: props.covid ? 'white' : 'black' , fillColor: feature.properties.COLOR, fillOpacity: 1,
             })}
             geojson={states_usa}
             datalen={datalen}
             published={props.publishedChange}
             eventHandlers={{
-              mouseover: ({ layer }) => props.updateState && props.updateState(layer.feature.properties.NAME) && layer.setStyle({ fillColor: 'rgb(200, 200, 200)' }),
-              mouseout: ({ layer }) => props.updateState && props.updateState('none', false) && layer.setStyle({ fillColor: layer.feature.properties.COLOR }),
+              mouseover: ({ layer }) => layer.feature.properties.COLOR !== 'rgba(0, 0, 0, 0)' && props.updateState && props.updateState(layer.feature.properties.NAME) && layer.setStyle({ fillColor: 'rgb(200, 200, 200)' }),
+              mouseout: ({ layer }) => layer.feature.properties.COLOR !== 'rgba(0, 0, 0, 0)' && props.updateState && props.updateState('none', false) && layer.setStyle({ fillColor: layer.feature.properties.COLOR }),
               click: ({ layer }) => {
-                if (!props.updateState) return;
+                if (!props.updateState || layer.feature.properties.COLOR === 'rgba(0, 0, 0, 0)') return;
                 props.updateState(layer.feature.properties.NAME, true); // this update state is not resetting to state!!
                 if (lockedLayer) {
                   lockedLayer.setStyle({ fillColor: lockedLayer.feature.properties.COLOR });
@@ -158,16 +150,14 @@ const MapWrapper = (props) => {
                   stroke: 1, weight: 1, color: 'black', fillColor: feature.properties.COLOR, fillOpacity: 1,
                 })}
                 geojson={counties}
-                datalen={props.data.length}
-                published={props.publishedChange  }
+                datalen={datalen}
+                published={props.publishedChange}
                 eventHandlers={{
                   mouseover: ({ layer }) => layer.feature.properties.COLOR !== 'rgba(0, 0, 0, 0)' && props.updateCounty && props.updateCounty(layer.feature.properties.County_state) && layer.setStyle({ fillColor: 'rgb(200, 200, 200)' }),
                   mouseout: ({ layer }) => layer.feature.properties.COLOR !== 'rgba(0, 0, 0, 0)' && props.updateCounty && props.updateCounty('none') && layer.setStyle({ fillColor: layer.feature.properties.COLOR }),
                   click: ({ layer }) => {
-                    console.log('i got clicked')
-                    if (!props.updateCounty && layer.feature.properties.COLOR !== 'rgba(0, 0, 0, 0)') return; // huge bug from that line -- why would you only want that if the layer color does not equal white? I think i was accessing color wrong anyway
-                    console.log('i got clicked')
-                    props.updateCounty(layer.feature.properties.County_state,true, true);
+                    if (!props.updateCounty || layer.feature.properties.COLOR === 'rgba(0, 0, 0, 0)') return;
+                    props.updateCounty(layer.feature.properties.County_state, true, true);
                     if (lockedLayer) {
                       lockedLayer.setStyle({ fillColor: lockedLayer.feature.properties.COLOR });
                       if (lockedLayer === layer) {

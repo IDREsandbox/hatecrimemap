@@ -1,11 +1,12 @@
 * {
   box-sizing: border-box;
-  font-family: 'Roboto', sans-serif;
   padding: 0;
   margin: 0;
 }
 
-*, *:before, *:after {
+*,
+*:before,
+*:after {
   box-sizing: inherit;
 }
 
@@ -15,12 +16,10 @@
   height: 100vh;
 }
 
-
 #covidButton {
-  margin: 0em 5em
+  margin: 0em 5em;
 }
 
-
-.noUi-value  {
-  margin-top: 5px
+.noUi-value {
+  margin-top: 5px;
 }
