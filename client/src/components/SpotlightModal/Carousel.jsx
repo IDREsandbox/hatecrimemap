@@ -175,12 +175,12 @@ const Carousel = (props) => {
   }
 
   useEffect(() => {
-    if (data && currentSlide) {
+    if (data && data[currentSlide] && !isNaN(currentSlide)) { // not triggering??
       openPopup(data[currentSlide].latitude, data[currentSlide].longitude)
-    }
+    } 
   }, [])
   useEffect(() => {
-    if (data && currentSlide) {
+    if (data && data[currentSlide] && !isNaN(currentSlide)) {
       openPopup(data[currentSlide].latitude, data[currentSlide].longitude)
     }
   }, [currentSlide, lockItem])

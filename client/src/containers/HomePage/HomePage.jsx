@@ -123,7 +123,7 @@ class HomePage extends Component {
     } else {
       this.myMarker.setLatLng([latitude, longitude])
     }
-    this.mapRef.current.flyTo([latitude, longitude], this.state.lockType === 'county' ? 2.5 : 6);
+    this.mapRef.current.flyTo([latitude, longitude], this.state.lockType === 'county' ? 8.5 : 5);
   }
 
   closeMarker = () => {

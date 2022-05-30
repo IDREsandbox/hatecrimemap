@@ -128,12 +128,13 @@ export function counts_maxPrimary(data) {
 }
 
 export function counts_maxCounties(data) {
-    return Math.max(Object.values(data.reduce((accumulate, row) => {
+    let totals = Object.values(data.reduce((accumulate, row) => {
         let county = row['county'];
         if (accumulate[county]) accumulate[county] += row.count;
         else accumulate[county] = row.count;
         return accumulate;
-    }, {})));
+    }, {}));  
+    return Math.max(...totals)
 }
 
 export function counts_maxState(data) {

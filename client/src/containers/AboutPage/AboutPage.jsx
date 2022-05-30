@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { motion } from 'framer-motion';
 import Typography from '@material-ui/core/Typography'
-import Grid from '@material-ui/core/Girid'
+import Grid from '@material-ui/core/Grid'
 import { withStyles } from '@material-ui/styles';
 import { ABOUT_DIALOGS } from 'res/values/string';
 
