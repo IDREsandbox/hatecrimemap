@@ -8,7 +8,7 @@ import { BrowserRouter } from "react-router-dom"
 
 // Advanced
 // import injectTapEventPlugin from 'react-tap-event-plugin';
-import registerServiceWorker from './registerServiceWorker';
+import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 // import reportWebVitals from './reportWebVitals';
 
 render(
@@ -20,7 +20,7 @@ render(
 );
 
 // reportWebVitals();
-registerServiceWorker();
+serviceWorkerRegistration.register();
 // Needed for onTouchTap
 // http://stackoverflow.com/a/34015469/988941
 // injectTapEventPlugin();
