@@ -101,7 +101,7 @@ const CommonHeader = (props) => {
                     </Typography>
                     <Box className={classes.flex} flexGrow={1} sx={{ flex: 1 }} />
                     {(location.pathname === '/map' || location.pathname === '/covid') &&
-                        <Link to="/covid" className={classes.link}>
+                        <Link to="/report" className={classes.link}>
                             <ColoredButton noIcon lightMode={!props.light ? false : true}>
                                 Report an Incident 
                                 <AddIcon m={3} />
