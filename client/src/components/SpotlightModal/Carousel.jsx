@@ -107,6 +107,7 @@ const useStyles = makeStyles({
     alignItems: 'center',
   },
   noEventTitle: {
+    margin: '2em',
     color: 'white'
   }
 });
@@ -127,7 +128,7 @@ const Carousel = (props) => {
   const noEventReturn = (
     <div className={classes.noEventContainer}>
       <h2 className={classes.noEventTitle}>
-        No data for this location.
+        No incidents for this location.
       </h2>
     </div>
   )

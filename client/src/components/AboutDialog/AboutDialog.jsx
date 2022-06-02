@@ -9,10 +9,12 @@ import {
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import Typography from '@material-ui/core/Typography'
+import Grid from '@material-ui/core/Grid'
 
 import { ABOUT_DIALOGS } from '../../res/values/string';
+import ColoredButton from 'components/Reusables/ColoredButton';
 
 const styles = {
   aboutButton: {
@@ -32,6 +34,22 @@ const styles = {
       height: 'auto',
     },
   },
+  dialogContent: {
+    backgroundColor: '#262626',
+    color: 'white'
+  },
+  title: {
+    backgroundColor: "#262626",
+    color: "#ffffff",
+    textAlign: 'center',
+  },
+  closebuttons: {
+    backgroundColor: "#262626",
+    color: "white",
+  },
+  mylink: {
+    color: 'white'
+  }
 };
 
 class AboutDialog extends Component {
@@ -58,53 +76,61 @@ class AboutDialog extends Component {
 
     return (
       <div>
-        <Button className={classes.aboutButton} onClick={this.handleClickOpen}>
-          About
-        </Button>
+        <ColoredButton noIcon onClick={this.handleClickOpen}>
+          About the Project
+        </ColoredButton>
         <Dialog
           open={this.state.open}
           onClose={this.handleClose}
           maxWidth="md"
           aria-labelledby="responsive-dialog-title"
         >
-          <DialogTitle id="responsive-dialog-title">Hate Crime Map</DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              <p>{ABOUT_DIALOGS.HCM.PARAGRAPH1}</p>
-              <br />
-              <p>{ABOUT_DIALOGS.HCM.PARAGRAPH2}</p>
-              <br />
-              <p>
-                Any questions? Email us at
-                {' '} <a href={`mailto:${ABOUT_DIALOGS.HCM.EMAIL}?Subject=Hate%20Crime%20Map%20Inquiry`}> {ABOUT_DIALOGS.HCM.EMAIL}</a>
-              </p>
-              <br />
+          <DialogTitle className={classes.title} id="responsive-dialog-title">Mapping Hate Crimes in the US</DialogTitle>
+          <DialogContent
+            className={classes.dialogContent}
+          >
+            <Grid
+              container
+              direction="row"
+              justifyContent="center"
+              alignItems="baseline">
+              <Grid item  >
+                <Typography variant="h6" gutterBottom>
+                  About the Project
+                </Typography>
+                <Typography paragraph>
+                  {ABOUT_DIALOGS.HCM.PARAGRAPH1}
+                </Typography>
+                <Typography paragraph>
+                  {ABOUT_DIALOGS.HCM.PARAGRAPH2}
+                </Typography>
+              </Grid>
               <hr />
-              <br />
-              <h3>Acknowledgments</h3>
-              <p>{ABOUT_DIALOGS.HCM.ACKNOWLEDGEMENTS}</p>
-              <div className={classes.images}>
-                <div className={classes.inline}>
-                  <img src={require('res/img/AISC_logo.png')} alt="UCLA American Indian Studies Center Logo" />
-                </div>
-                <div className={classes.inline}>
-                  <img src={require('res/img/idre-logo.png')} alt="UCLA Institute for Digital Research and Education Logo" />
-                </div>
-                <div className={classes.inline}>
-                  <img src={require('res/img/InstAmerCultures_A.png')} alt="UCLA Insitute of American Cultures Logo" />
-                </div>
-                <div className={classes.inline}>
-                  <img src={require('res/img/social-sciences-logo.png')} alt="UCLA Social Sciences Logo" />
-                </div>
-              </div>
-            </DialogContentText>
+              <Grid item>
+                <Typography variant="h6" gutterBottom>
+                  Acknowledgments
+                </Typography>
+                <Typography paragraph>
+                  {ABOUT_DIALOGS.HCM.ACKNOWLEDGEMENTS1}
+                </Typography>
+                <Typography paragraph>
+                  {ABOUT_DIALOGS.HCM.ACKNOWLEDGEMENTS2}
+                </Typography>
+                <Typography paragraph>
+                  {ABOUT_DIALOGS.HCM.ACKNOWLEDGEMENTS3}
+                </Typography>
+              </Grid>
+              <Typography className={classes.paragraph} paragraph>
+                Any questions? Email us at
+                {' '} <a className={classes.mylink} href={`mailto:${ABOUT_DIALOGS.HCM.EMAIL}?Subject=Hate%20Crime%20Map%20Inquiry`}> {ABOUT_DIALOGS.HCM.EMAIL}</a>
+              </Typography>
+            </Grid>
           </DialogContent>
-          <DialogActions>
-            <Button onClick={this.handleClose} color="primary">
+          <DialogActions className={classes.closebuttons}>
+            <ColoredButton noIcon onClick={this.handleClose}>
               Close
-            </Button>
+            </ColoredButton>
           </DialogActions>
-
         </Dialog>
       </div>
     );

@@ -39,24 +39,6 @@ const styles = (theme) => ({
         marginTop: '50px',
         width: '300px',
     },
-    page: {
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: '100vw',
-        height: '100vh',
-        flexGrow: 1,
-    },
-    page1: {
-        backgroundColor: 'rgba(33, 120, 191)',
-    },
-    page2: {
-        backgroundColor: 'rgba(33, 120, 191)',
-    },
-    page3: {
-        backgroundColor: 'rgba(33, 120, 191)'
-    },
     copy: {
         color: 'white',
         fontFamily: 'Helvetica Neue, sans-serif',
@@ -67,7 +49,6 @@ const styles = (theme) => ({
         color: 'white',
         display: 'block',
         marginTop: 10,
-        
         fontSize: 15
     },
     container: {
@@ -130,8 +111,6 @@ const styles = (theme) => ({
     }
 });
 
-
-
 function AboutPage(props) {
     const { classes } = props;
 
@@ -161,7 +140,7 @@ function AboutPage(props) {
                 direction="row"
                 justifyContent="center"
                 alignItems="baseline">
-                <Grid item xs={10} m={4}>
+                <Grid item xs={10} s={4} m={4}>
                     <Typography className={classes.secondTitle} variant="h4" gutterBottom>
                         About the Project
                     </Typography>
@@ -172,14 +151,8 @@ function AboutPage(props) {
                         {ABOUT_DIALOGS.HCM.PARAGRAPH2}
                     </Typography>
                     <Typography className={classes.paragraph} paragraph gutterBottom>
-                        {ABOUT_DIALOGS.HCM.PARAGRAPH3}
-                    </Typography>
-                    <Typography className={classes.paragraph} paragraph gutterBottom>
-                        {ABOUT_DIALOGS.HCM.PARAGRAPH4}
-                    </Typography>
-                    <Typography className={classes.paragraph} paragraph gutterBottom>
                         Any questions? Email us at
-                        {' '} <a  className={classes.mylink}href={`mailto:${ABOUT_DIALOGS.HCM.EMAIL}?Subject=Hate%20Crime%20Map%20Inquiry`}> {ABOUT_DIALOGS.HCM.EMAIL}</a>
+                        {' '} <a  className={classes.mylink} href={`mailto:${ABOUT_DIALOGS.HCM.EMAIL}?Subject=Hate%20Crime%20Map%20Inquiry`}> {ABOUT_DIALOGS.HCM.EMAIL}</a>
                     </Typography>
                 </Grid>
                 <Grid item xs={10} s={4} m={4}>
@@ -191,6 +164,9 @@ function AboutPage(props) {
                     </Typography>
                     <Typography className={classes.paragraph} paragraph>
                         {ABOUT_DIALOGS.HCM.ACKNOWLEDGEMENTS2}
+                    </Typography>
+                    <Typography className={classes.paragraph} paragraph>
+                        {ABOUT_DIALOGS.HCM.ACKNOWLEDGEMENTS3}
                     </Typography>
                 </Grid>
             </Grid>

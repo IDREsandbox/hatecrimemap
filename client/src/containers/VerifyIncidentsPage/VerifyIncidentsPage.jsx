@@ -177,7 +177,6 @@ class VerifyIncidentsPage extends Component {
   };
 
   openActions = (id, v, s, p) => () => {
-    console.log(`Opening ${id}`);
     this.setState(
       {
         activeReport: id,

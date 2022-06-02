@@ -37,7 +37,6 @@ export function createDataToSubmit(formData) { // NEEDED
 export const reviewIncidentReport = (id, verified, callback = () => {}) => {
     axios.post('/api/verify/reviewedincident', { id, verified })
         .then(res => {
-            console.log(res.data)
             callback();
             window.location.reload();
         })
@@ -47,7 +46,6 @@ export const reviewIncidentReport = (id, verified, callback = () => {}) => {
 export const validateIncidentReport = (id, urlvalid, callback = () => {}) => {
     axios.post('/api/verify/validateincident', { id, urlvalid })
         .then(res => {
-            console.log(res.data)
             callback();
             window.location.reload();
         })
@@ -57,7 +55,6 @@ export const validateIncidentReport = (id, urlvalid, callback = () => {}) => {
 export const publishedIncidentReport = (id, published, callback = () => {}) => {
     axios.post('/api/verify/publishedincident', { id, published })
         .then(res => {
-            console.log(res.data)
             callback();
             window.location.reload();
         })

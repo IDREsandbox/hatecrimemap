@@ -17,7 +17,6 @@ router.post('/incident', (req, res) => {
     [lat, lon, location, new Date(incidentdate), sourceurl, primaryGroup, groups,
     other_race, other_religion, other_gender, other_misc, description, tag])
   .then(id => {
-    console.log('incident inputted');
     if (id.insert_incident){
       res.status(200).send('Incident inputted');
     }
