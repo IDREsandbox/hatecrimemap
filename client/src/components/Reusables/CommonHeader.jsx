@@ -10,6 +10,20 @@ import {
     Box,
 } from '@material-ui/core';
 import ColoredButton from 'components/Reusables/ColoredButton';
+import { AboutDialog } from 'components';
+import { motion } from 'framer-motion';
+
+const aboutpageVariants = {
+    initial: {
+        opacity: 0
+    },
+    in: {
+        opacity: 1
+    },
+    out: {
+        opacity: 0
+    },
+}
 
 const styles = (theme) => ({
     root: {},
@@ -75,64 +89,83 @@ const CommonHeader = (props) => {
 
     let headerStyle = {}
 
-    if (props.backgroundColor) {
+
+    if (location.pathname === '/') {
+        headerStyle = { ...headerStyle, backgroundColor: '#262626' }
+    }
+    else if (props.backgroundColor) {
         headerStyle = { ...headerStyle, backgroundColor: props.backgroundColor, }
     }
     else if (props.transparent) {
         headerStyle = { ...headerStyle, background: 'transparent', }
     } else if (props.blurBackground) {
-        headerStyle = { ...headerStyle,  background: 'transparent', backdropFilter: "blur(20px)", }
+        headerStyle = { ...headerStyle, background: 'transparent', backdropFilter: "blur(20px)", }
+    } else {
+        headerStyle = { ...headerStyle, backgroundColor: '#000000' }
     }
-
-    headerStyle = {...headerStyle, backgroundColor: '#000000'}
 
     return (
         <Box >
-            <AppBar elevation={props.noShadow ? 0 : 7} position={props.absolute ? "absolute" : "static"} style={headerStyle} >
-                <Toolbar>
-                    <Typography
-                        variant="h6"
-                        noWrap
-                        component="div"
-                        sx={{ mr: 2, display: { xs: 'none', md: 'flex' } }}
-                        className={!props.light ? classes.mainTitle : `${classes.mainTitle} ${classes.lightMode}`}
-                    >
-                        Mapping Hate in the United States
-                    </Typography>
-                    <Box className={classes.flex} flexGrow={1} sx={{ flex: 1 }} />
-                    {(location.pathname === '/map' || location.pathname === '/covid') &&
-                        <Link to="/report" className={classes.link}>
-                            <ColoredButton noIcon lightMode={!props.light ? false : true}>
-                                Report an Incident 
-                                <AddIcon m={3} />
-                            </ColoredButton>
-                        </Link>
-                    }
-                    {location.pathname === '/map' &&
-                        <Link to="/covid" className={classes.link}>
-                            <ColoredButton noIcon lightMode={!props.light ? false : true}>
-                                See Covid Incidents
-                            </ColoredButton>
-                        </Link>
-                    }
-                    {location.pathname === '/covid' &&
-                        <Link to="/map" className={classes.link}>
-                            <ColoredButton noIcon lightMode={!props.light ? false : true}>
-                                See All Other Incidents
-                            </ColoredButton>
-                        </Link>
-                    }
-                    {location.pathname !== '/home' && location.pathname !== '/' &&
-                        <Link to='/home' className={classes.link}>
-                            <ColoredButton backButton lightMode={!props.light ? false : true}>
-                                Return Home
-                            </ColoredButton>
-                        </Link>
-                    }
-                </Toolbar>
-            </AppBar>
+            <motion.div
+                initial="initial"
+                animate="in"
+                exit="out"
+                variants={aboutpageVariants}
+                transition={{ duration: 0.5 }}
+                style={{ overflowY: 'hidden' }}
+            >
+                <AppBar elevation={props.noShadow ? 0 : 7} position={props.absolute ? "absolute" : "static"} style={headerStyle} >
+                    <Toolbar>
+                        <Typography
+                            variant="h6"
+                            noWrap
+                            component="div"
+                            sx={{ mr: 2, display: location.pathname === '/' ? { xs: 'none' } : { xs: 'none', md: 'flex' } }}
+                            className={!props.light ? classes.mainTitle : `${classes.mainTitle} ${classes.lightMode}`}
+                        >
+                            {location.pathname === '/' ? '' : 'Mapping Hate in the United States' }
+                        </Typography>
+                        <Box className={classes.flex} flexGrow={1} sx={{ flex: 1 }} />
+                        {(location.pathname === '/map' || location.pathname === '/covid') &&
+                            <Link to="/report" className={classes.link}>
+                                <ColoredButton noIcon lightMode={!props.light ? false : true}>
+                                    Report an Incident
+                                    <AddIcon m={3} />
+                                </ColoredButton>
+                            </Link>
+                        }
+                        {location.pathname === '/map' &&
+                            <Link to="/covid" className={classes.link}>
+                                <ColoredButton noIcon lightMode={!props.light ? false : true}>
+                                    See Covid Incidents
+                                </ColoredButton>
+                            </Link>
+                        }
+                        {location.pathname === '/covid' &&
+                            <Link to="/map" className={classes.link}>
+                                <ColoredButton noIcon lightMode={!props.light ? false : true}>
+                                    See All Other Incidents
+                                </ColoredButton>
+                            </Link>
+                        }
+                        {(location.pathname === '/map' || location.pathname === '/covid') &&
+                            <Link className={classes.link}>
+                                <AboutDialog />
+                            </Link>
+                        }
+                        {location.pathname !== '/home' && location.pathname !== '/' &&
+                            <Link to='/home' className={classes.link}>
+                                <ColoredButton backButton lightMode={!props.light ? false : true}>
+                                    Return Home
+                                </ColoredButton>
+                            </Link>
+                        }
+                    </Toolbar>
+                </AppBar>
+            </motion.div>
         </Box>
     );
+
 }
 
 export default withStyles(styles)(CommonHeader)
