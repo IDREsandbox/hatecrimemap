@@ -68,14 +68,14 @@ const styles = (theme) => ({
         [theme.breakpoints.down(780)]: {
             paddingTop: "3em",
         },
-        fontSize: 18,
+        fontSize: 24,
         color: '#ffffff'
     },
     secondTitle: {
         fontWeight: 'bold',
         color: 'white',
         marginTop: '1em',
-        textAlign: 'left'
+        textAlign: 'center'
     },
     image: {
         maxWidth: '100%',
@@ -107,7 +107,11 @@ const styles = (theme) => ({
         textAlign: 'center'
     },
     mylink: {
+        textAlign: 'center',
         color: 'white'
+    },
+    textCenter: {
+        textAlign: 'center',
     }
 });
 
@@ -140,7 +144,7 @@ function AboutPage(props) {
                 direction="row"
                 justifyContent="center"
                 alignItems="baseline">
-                <Grid item xs={10} s={4} m={4}>
+                <Grid item xs={7} s={4} m={4}>
                     <Typography className={classes.secondTitle} variant="h4" gutterBottom>
                         About the Project
                     </Typography>
@@ -150,23 +154,9 @@ function AboutPage(props) {
                     <Typography className={classes.paragraph} paragraph gutterBottom>
                         {ABOUT_DIALOGS.HCM.PARAGRAPH2}
                     </Typography>
-                    <Typography className={classes.paragraph} paragraph gutterBottom>
+                    <Typography className={`${classes.paragraph} ${classes.textCenter}`} paragraph gutterBottom>
                         Any questions? Email us at
-                        {' '} <a  className={classes.mylink} href={`mailto:${ABOUT_DIALOGS.HCM.EMAIL}?Subject=Hate%20Crime%20Map%20Inquiry`}> {ABOUT_DIALOGS.HCM.EMAIL}</a>
-                    </Typography>
-                </Grid>
-                <Grid item xs={10} s={4} m={4}>
-                    <Typography className={classes.secondTitle} variant="h4" gutterBottom>
-                        Acknowledgments
-                    </Typography>
-                    <Typography className={classes.paragraph} paragraph>
-                        {ABOUT_DIALOGS.HCM.ACKNOWLEDGEMENTS1}
-                    </Typography>
-                    <Typography className={classes.paragraph} paragraph>
-                        {ABOUT_DIALOGS.HCM.ACKNOWLEDGEMENTS2}
-                    </Typography>
-                    <Typography className={classes.paragraph} paragraph>
-                        {ABOUT_DIALOGS.HCM.ACKNOWLEDGEMENTS3}
+                        {' '} <a className={classes.mylink} href={`mailto:${ABOUT_DIALOGS.HCM.EMAIL}?Subject=Hate%20Crime%20Map%20Inquiry`}> {ABOUT_DIALOGS.HCM.EMAIL}</a>
                     </Typography>
                 </Grid>
             </Grid>

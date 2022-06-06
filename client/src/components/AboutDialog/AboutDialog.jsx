@@ -77,7 +77,7 @@ class AboutDialog extends Component {
     return (
       <div>
         <ColoredButton noIcon onClick={this.handleClickOpen}>
-          About the Project
+          Acknowledgements
         </ColoredButton>
         <Dialog
           open={this.state.open}
@@ -94,18 +94,6 @@ class AboutDialog extends Component {
               direction="row"
               justifyContent="center"
               alignItems="baseline">
-              <Grid item  >
-                <Typography variant="h6" gutterBottom>
-                  About the Project
-                </Typography>
-                <Typography paragraph>
-                  {ABOUT_DIALOGS.HCM.PARAGRAPH1}
-                </Typography>
-                <Typography paragraph>
-                  {ABOUT_DIALOGS.HCM.PARAGRAPH2}
-                </Typography>
-              </Grid>
-              <hr />
               <Grid item>
                 <Typography variant="h6" gutterBottom>
                   Acknowledgments
