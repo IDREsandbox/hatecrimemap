@@ -72,6 +72,14 @@ const MapWrapper = (props) => {
 
   let lockedLayer;
 
+  let emptyColor;
+``
+  if (props.covid) {
+    emptyColor = '#cccccc'
+  } else {
+    emptyColor = 'rgba(0, 0, 0, 0)'
+  }
+
   return (
     <div id="MapWrapper">
       {!props.covid &&
@@ -120,10 +128,11 @@ const MapWrapper = (props) => {
             datalen={datalen}
             published={props.publishedChange}
             eventHandlers={{
-              mouseover: ({ layer }) => layer.feature.properties.COLOR !== 'rgba(0, 0, 0, 0)' && props.updateState && props.updateState(layer.feature.properties.NAME) && layer.setStyle({ fillColor: 'rgb(200, 200, 200)' }),
-              mouseout: ({ layer }) => layer.feature.properties.COLOR !== 'rgba(0, 0, 0, 0)' && props.updateState && props.updateState('none', false) && layer.setStyle({ fillColor: layer.feature.properties.COLOR }),
+              mouseover: ({ layer }) => layer.feature.properties.COLOR !== emptyColor && props.updateState && props.updateState(layer.feature.properties.NAME) && layer.setStyle({ fillColor: 'rgb(200, 200, 200)' }),
+              mouseout: ({ layer }) => layer.feature.properties.COLOR !== emptyColor && props.updateState && props.updateState('none', false) && layer.setStyle({ fillColor: layer.feature.properties.COLOR }),
               click: ({ layer }) => {
-                if (!props.updateState || layer.feature.properties.COLOR === 'rgba(0, 0, 0, 0)') return;
+                console.log(layer);
+                if (!props.updateState || layer.feature.properties.COLOR === emptyColor) return;
                 props.updateState(layer.feature.properties.NAME, true); // this update state is not resetting to state!!
                 if (lockedLayer) {
                   lockedLayer.setStyle({ fillColor: lockedLayer.feature.properties.COLOR });

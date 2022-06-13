@@ -1,7 +1,7 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 
-import { Button } from '@material-ui/core';
+import Button from '@material-ui/core/Button';
 import { ArrowBack, ArrowForward } from '@material-ui/icons';
 
 /* Props

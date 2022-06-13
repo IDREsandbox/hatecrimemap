@@ -4,6 +4,7 @@ import { withStyles } from '@material-ui/core/styles';
 import './Charts.css';
 import { Bar, Pie } from 'react-chartjs-2';
 import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
 
 import ChartsTable from './ChartsTable';
 
@@ -12,7 +13,6 @@ import axios from 'axios';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import ColoredButton from 'components/Reusables/ColoredButton';
 import { CHARTS, CHART_STRINGS, getChartData } from '../../utils/chart-utils';
-import { Typography } from '@material-ui/core';
 
 const styles = (theme) => ({ // eslint-disable-line no-unused-vars
   // leaving above theme for future syntax reference
@@ -77,6 +77,7 @@ class Charts extends React.Component {
         },
       },
       drilldown: {},
+      group: null,
       popup_filter_num: 0,
       popup_data: '',
       tableRows: {}, // cache indexed by state: { group: [{ID, date, state, group, link, description}]}}
@@ -89,7 +90,7 @@ class Charts extends React.Component {
 
   pieClick = (elems) => {
     if (!elems[0] || !elems[0]._chart) return;
-    this.setState({ dialogOpen: true, popup_data: null });
+    this.setState({ dialogOpen: true, popup_data: null, group: elems[0]._chart.config.data.labels[elems[0]._index] });
     const params = {
       parent_group: this.state.drilldown, // see: note in totals.js regarding ignoring this property
       group: elems[0]._chart.config.data.labels[elems[0]._index],
@@ -99,7 +100,6 @@ class Charts extends React.Component {
       // published: false // filled in by filters, used to filter data once retrieved from backend
     };
     this.props.filters.forEach((f) => params[f[0]] = f[1]);
-
     /*
     if both state and county are null, don't trigger any change on backend
     */
@@ -203,7 +203,7 @@ class Charts extends React.Component {
         // Pie charts!
         return (
           <div key={this.props.currState} className="charts">
-            <Grid container justify="space-between">
+            <Grid container justifyContent="space-between">
               <Grid item xs={3}>
                 <ColoredButton
                   id="chartbackButton"
@@ -232,6 +232,7 @@ class Charts extends React.Component {
             <ChartsTable
               toggleOpen={this.toggleOpen}
               dialogOpen={this.state.dialogOpen}
+              group={this.state.group}
               popup_data={this.state.popup_data}
               lockType={this.props.lockType}
             />

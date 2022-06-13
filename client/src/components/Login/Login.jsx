@@ -1,18 +1,18 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import {
-  Paper,
-  Typography,
-  Divider,
-  TextField,
-  InputAdornment,
-  IconButton,
-  FormControl,
-  Input,
-  InputLabel,
-  Button,
-} from '@material-ui/core';
+
+import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
+import Divider from '@material-ui/core/Divider';
+import TextField from '@material-ui/core/TextField';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import IconButton from '@material-ui/core/IconButton';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
+import Input from '@material-ui/core/Input';
+import Button from '@material-ui/core/Button';
+
 import { Visibility, VisibilityOff } from '@material-ui/icons';
 
 const styles = (theme) => ({

@@ -1,27 +1,17 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import './CovidCharts.css';
-import { Button } from '@material-ui/core';
 import { Pie } from 'react-chartjs-2';
 import Grid from '@material-ui/core/Grid';
 
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
 import { getCovidChartData, takeTop } from '../../utils/chart-utils';
 
 import WordCloud from '../Charts/elements/WordCloud/WordCloud';
 
 import 'tippy.js/dist/tippy.css';
 import 'tippy.js/animations/scale.css';
+
+import ChartsTable from 'components/Charts/ChartsTable';
 
 // Note: when cleaned up, left all outdated wordcloud props in case they're ever needed for reference
 
@@ -203,7 +193,7 @@ class CovidCharts extends React.Component {
 
       return (
         <div className="CovidCharts">
-          <Grid container justify="space-between">
+          <Grid container justifyContent="space-between">
             <WordCloud
               words={
                 this.props.currState != 'none'
@@ -211,7 +201,7 @@ class CovidCharts extends React.Component {
                   : takeTop(Object.values(this.props.wordCloudData).flat())
               }
             />
-            <Grid container item justify="center" xs={6}>
+            <Grid container item justifyContent="center" xs={6}>
               <h4>Ethnicity</h4>
 
               <Pie
@@ -220,7 +210,7 @@ class CovidCharts extends React.Component {
                 options={{ legend: { display: false } }}
               />
             </Grid>
-            <Grid container item justify="center" xs={6}>
+            <Grid container item justifyContent="center" xs={6}>
               <h4>Gender</h4>
               <Pie
                 onElementsClick={this.pieGenderClick}
@@ -231,7 +221,7 @@ class CovidCharts extends React.Component {
             <br />
             <br />
 
-            <Grid container item justify="center" xs={6}>
+            <Grid container item justifyContent="center" xs={6}>
               <h4>Type</h4>
               <Pie
                 onElementsClick={this.pieTypeClick}
@@ -241,58 +231,14 @@ class CovidCharts extends React.Component {
             </Grid>
           </Grid>
 
-          <Dialog
-            open={this.state.dialogOpen}
-            onClose={() => this.toggleOpen(false)}
-            maxWidth="xl"
-            aria-labelledby="responsive-dialog-title"
-          >
-            <DialogTitle id="responsive-dialog-title">
-              {this.state.dialogShow.charAt(0).toUpperCase()
-                + this.state.dialogShow.slice(1)}
-            </DialogTitle>
-            <DialogContent>
-              <TableContainer>
-                <Table
-                  stickyHeader
-                  className={this.props.classes.table}
-                  aria-label="simple table"
-                >
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>Date (M/D/YY)</TableCell>
-                      <TableCell>City, State</TableCell>
-                      <TableCell>Ethnicity</TableCell>
-                      <TableCell>Gender</TableCell>
-                      <TableCell>Type</TableCell>
-                      <TableCell>Description</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {rows.map((row) => (
-                      <TableRow key={row.ID}>
-                        <TableCell>{row.date}</TableCell>
-                        <TableCell>{`${row.city}, ${row.state}`}</TableCell>
-                        <TableCell>{row.ethnicity}</TableCell>
-                        <TableCell>{row.gender}</TableCell>
-                        <TableCell>{row.type}</TableCell>
-                        <TableCell>{row.description}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </DialogContent>
-            <DialogActions>
-              <Button
-                id="closeDataTable"
-                onClick={() => this.toggleOpen(false)}
-                color="primary"
-              >
-                Close
-              </Button>
-            </DialogActions>
-          </Dialog>
+          <ChartsTable
+            toggleOpen={this.toggleOpen}
+            dialogOpen={this.state.dialogOpen}
+            group={this.state.dialogFilter}
+            popup_data={rows}
+            lockType={'state'}
+            covid
+          />
         </div>
       );
     }
@@ -302,7 +248,3 @@ class CovidCharts extends React.Component {
 }
 
 export default withStyles(styles)(CovidCharts);
-/*
-Replace with DataGrid later?
-                  <DataGrid rows={rows} columns={columns} />
-*/

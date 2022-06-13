@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import './FilterBar.css';
-import {
-  createTheme, withStyles, makeStyles, ThemeProvider,
-} from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 

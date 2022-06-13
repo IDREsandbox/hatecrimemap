@@ -29,13 +29,11 @@ const useStyles = makeStyles({
             backgroundColor: "#262626"
         },
     },
-    title: {
-        backgroundColor: "#262626",
-        color: "#ffffff"
-    },
-    closebuttons: {
-        backgroundColor: "#262626",
-        color: "white",
+    lightRoot: {
+        "& .MuiTableCell-head": {
+            color: "black",
+            backgroundColor: "#white"
+        },
     },
     tableItem: {
         color: '#ffffff',
@@ -43,22 +41,24 @@ const useStyles = makeStyles({
     linkDecor: {
         textDecoration: 'none'
     },
-    progressBar: {
-        color: "green"
-    },
     colorPrimary: {
         backgroundColor: 'black',
     },
     barColorPrimary: {
         backgroundColor: 'white',
     },
-    dialogContent: {
-        backgroundColor: '#262626'
-    }
+    darkMode: {
+        backgroundColor: "#262626",
+        color: "white",
+    },
+    lightMode: {
+        color: "black",
+        backgroundColor: "white"
+    },
 });
 
 export default function ChartsTable(props) {
-    const { toggleOpen, dialogOpen, popup_data, lockType } = props;
+    const { toggleOpen, dialogOpen, popup_data, lockType, group, covid } = props;
 
     const classes = useStyles();
 
@@ -69,41 +69,69 @@ export default function ChartsTable(props) {
             maxWidth="xl"
             aria-labelledby="responsive-dialog-title"
         >
-            <DialogTitle className={classes.title} id="responsive-dialog-title">Hate Crimes</DialogTitle>
+            <DialogTitle className={covid ? classes.lightMode : classes.darkMode} id="responsive-dialog-title">{group} Hate Incidents</DialogTitle>
             <DialogContent
-                className={classes.dialogContent}
+                className={covid ? classes.lightMode : classes.darkMode}
             >
                 {!popup_data ?
 
                     <LinearProgress {...classes} classes={{ colorPrimary: classes.colorPrimary, barColorPrimary: classes.barColorPrimary }} />
                     : (
                         <Table stickyHeader aria-label="simple table" width="100%">
-                            <TableHead className={classes.root}>
-                                <TableRow className={classes.tableRow}>
+                            <TableHead className={covid ? classes.lightRoot : classes.root}>
+                                <TableRow>
                                     <TableCell width="10%">Date (M/D/Y)</TableCell>
-                                    <TableCell width="10%">{lockType === LOCK_TYPE.COUNTY ? 'County' : 'State'}</TableCell>
-                                    <TableCell width="15%">Primary Reason</TableCell>
-                                    <TableCell width="20%">Source</TableCell>
-                                    <TableCell width="45%">Description</TableCell>
+                                    {!covid &&
+                                        <React.Fragment>
+                                            <TableCell width="10%">{lockType === LOCK_TYPE.COUNTY ? 'County' : 'State'}</TableCell>
+                                            <TableCell width="15%">Primary Reason</TableCell>
+                                            <TableCell width="20%">Source</TableCell>
+                                        </React.Fragment>
+                                    }
+                                    {covid &&
+                                        <React.Fragment>
+                                            <TableCell width="12%">City, State</TableCell>
+                                            <TableCell width="12%">Ethnicity</TableCell>
+                                            <TableCell width="12%">Gender</TableCell>
+                                            <TableCell width="12%">Type</TableCell>
+                                        </React.Fragment>
+                                    }
+                                    <TableCell width="42%">Description</TableCell>
                                 </TableRow>
                             </TableHead>
-                            <TableBody>
-                                {popup_data.map((row) => (
-                                    <TableRow key={row.id}>
-                                        <TableCell className={classes.tableItem} width="10%">{row.date}</TableCell>
-                                        {/* Change the following below to include {___} County, {state}? would need some complex shit  */}
-                                        <TableCell className={classes.tableItem} width="10%">{lockType === LOCK_TYPE.COUNTY ? countyDisplayName(row.county, row.state) : row.state}</TableCell>
-                                        <TableCell className={classes.tableItem} width="15%">{row.group}</TableCell>
-                                        <TableCell className={`${classes.tableItem} ${classes.linkDecor}`} width="20%">{row.link ? <a href={row.link} className={classes.tableItem} target="_blank" rel="noreferrer noopener">{row.link}</a> : 'N/A'}</TableCell>
-                                        <TableCell className={classes.tableItem} width="45%">{row.description || '--'}</TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
+                            {!covid &&
+                                <TableBody>
+                                    {popup_data.map((row) => (
+                                        <TableRow key={row.id}>
+                                            <TableCell className={classes.tableItem} width="10%">{row.date}</TableCell>
+                                            {/* Change the following below to include {___} County, {state}? would need some complex stuff */}
+                                            <TableCell className={classes.tableItem} width="10%">{lockType === LOCK_TYPE.COUNTY ? countyDisplayName(row.county, row.state) : row.state}</TableCell>
+                                            <TableCell className={classes.tableItem} width="15%">{row.group}</TableCell>
+                                            <TableCell className={`${classes.tableItem} ${classes.linkDecor}`} width="20%">{row.link ? <a href={row.link} className={classes.tableItem} target="_blank" rel="noreferrer noopener">{row.link}</a> : 'N/A'}</TableCell>
+                                            <TableCell className={classes.tableItem} width="45%">{row.description || '--'}</TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            }
+                            {covid &&
+                                <TableBody>
+                                    {popup_data.map((row) => (
+                                        <TableRow key={row.ID}>
+                                            <TableCell>{row.date}</TableCell>
+                                            <TableCell>{`${row.city}, ${row.state}`}</TableCell>
+                                            <TableCell>{row.ethnicity}</TableCell>
+                                            <TableCell>{row.gender}</TableCell>
+                                            <TableCell>{row.type}</TableCell>
+                                            <TableCell>{row.description}</TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            }
                         </Table>
                     )}
             </DialogContent>
-            <DialogActions className={classes.closebuttons} id="closeDataTable">
-                <ColoredButton noIcon onClick={() => toggleOpen(false)}>
+            <DialogActions className={covid ? classes.lightMode : classes.darkMode} id="closeDataTable">
+                <ColoredButton lightMode={covid} noIcon onClick={() => toggleOpen(false)}>
                     Close
                 </ColoredButton>
             </DialogActions>

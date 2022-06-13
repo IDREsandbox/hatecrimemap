@@ -31,7 +31,7 @@ const WordCloud = (props) => {
   const { words } = props;
 
   return (
-    <Grid container item justify="center" xs={6}>
+    <Grid container item justifyContent="center" xs={6}>
       <h4>Word Cloud</h4>
       <Resizable
         defaultSize={{

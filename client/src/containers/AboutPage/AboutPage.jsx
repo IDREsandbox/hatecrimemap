@@ -4,18 +4,7 @@ import Typography from '@material-ui/core/Typography'
 import Grid from '@material-ui/core/Grid'
 import { withStyles } from '@material-ui/styles';
 import { ABOUT_DIALOGS } from 'res/values/string';
-
-const aboutpageVariants = {
-    initial: {
-        opacity: 0
-    },
-    in: {
-        opacity: 1
-    },
-    out: {
-        opacity: 0
-    },
-}
+import { PageVariants } from 'res/values/variants';
 
 const styles = (theme) => ({
     root: {
@@ -75,6 +64,7 @@ const styles = (theme) => ({
         fontWeight: 'bold',
         color: 'white',
         marginTop: '1em',
+        marginBottom: '1.5em',
         textAlign: 'center'
     },
     image: {
@@ -103,7 +93,7 @@ const styles = (theme) => ({
         fontSize: 40,
         fontWeight: 'bold',
         color: 'white',
-        marginTop: '0.5em',
+        marginTop: '1em',
         textAlign: 'center'
     },
     mylink: {
@@ -111,6 +101,7 @@ const styles = (theme) => ({
         color: 'white'
     },
     textCenter: {
+        marginTop: 'auto',
         textAlign: 'center',
     }
 });
@@ -123,7 +114,7 @@ function AboutPage(props) {
             initial="initial"
             animate="in"
             exit="out"
-            variants={aboutpageVariants}
+            variants={PageVariants}
             transition={{ duration: 0.5 }}
             style={{ overflowX: 'hidden' }}
         >
@@ -135,7 +126,7 @@ function AboutPage(props) {
             >
                 <Grid item xs={10} s={4} m={12}>
                     <Typography className={classes.mainTitle} variant="h4" >
-                        This project aims to publicize the occurrence of stastically underreported hate-based attacks to speak out for those who are suffering.
+                        About the Project
                     </Typography>
                 </Grid>
             </Grid>
@@ -144,9 +135,9 @@ function AboutPage(props) {
                 direction="row"
                 justifyContent="center"
                 alignItems="baseline">
-                <Grid item xs={7} s={4} m={4}>
+                <Grid item xs={10} s={4} m={4}>
                     <Typography className={classes.secondTitle} variant="h4" gutterBottom>
-                        About the Project
+                        This project aims to publicize the occurrence of stastically underreported hate-based attacks to speak out for those who are suffering.
                     </Typography>
                     <Typography className={classes.paragraph} paragraph>
                         {ABOUT_DIALOGS.HCM.PARAGRAPH1}
@@ -154,11 +145,17 @@ function AboutPage(props) {
                     <Typography className={classes.paragraph} paragraph gutterBottom>
                         {ABOUT_DIALOGS.HCM.PARAGRAPH2}
                     </Typography>
-                    <Typography className={`${classes.paragraph} ${classes.textCenter}`} paragraph gutterBottom>
-                        Any questions? Email us at
-                        {' '} <a className={classes.mylink} href={`mailto:${ABOUT_DIALOGS.HCM.EMAIL}?Subject=Hate%20Crime%20Map%20Inquiry`}> {ABOUT_DIALOGS.HCM.EMAIL}</a>
-                    </Typography>
                 </Grid>
+            </Grid>
+            <Grid
+                container
+                direction="row"
+                justifyContent="center"
+                alignItems="flex-end">
+                <Typography className={`${classes.paragraph} ${classes.textCenter}`} paragraph gutterBottom>
+                    Any questions? Email us at
+                    {' '} <a className={classes.mylink} href={`mailto:${ABOUT_DIALOGS.HCM.EMAIL}?Subject=Hate%20Crime%20Map%20Inquiry`}> {ABOUT_DIALOGS.HCM.EMAIL}</a>
+                </Typography>
             </Grid>
         </motion.div>
     );

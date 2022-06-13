@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import { CircularProgress } from '@material-ui/core';
+import  CircularProgress  from '@material-ui/core/CircularProgress';
 
 import Joyride, { ACTIONS, EVENTS } from 'react-joyride';
 import { MainContext } from '../context/joyrideContext';
@@ -157,6 +157,36 @@ class CovidPage extends Component {
     }
   };
 
+  generateDateRange = () => {
+    if (this.state.currentDisplay === 'none') {
+      // Dates exist for some states. Only need to find the min of each first date and max of each last date
+      let min = '12/31/2099' // extreme late date
+      let max = '01/01/00' // need to uses comparisons within this century unless Date library used
+      Object.keys(this.state.data).forEach(each => {
+        if (this.state.data[each].children && this.state.data[each].children.length > 0) {
+          let first = this.state.data[each].children[0].date
+          if (first < min) { min = first }
+          if (this.state.data[each].children.length > 1) {
+            let second = this.state.data[each].children[this.state.data[each].children.length - 1].date;
+            if (second > max) { max = second }
+          }
+        }
+      })
+      return `${min} - ${max}`
+    } else {
+      if (this.state.data[this.state.currentDisplay].children.length > 1) { // impossible to lock/hover on a state with no events now
+        return `${this.state.data[this.state.currentDisplay].children[0].date
+          } - ${this.state.data[this.state.currentDisplay].children.length > 1
+          && this.state.data[this.state.currentDisplay].children[
+            this.state.data[this.state.currentDisplay].children
+              .length - 1
+          ].date}`
+      } else {
+        return `${this.state.data[this.state.currentDisplay].children[0].date}`
+      }
+    }
+  }
+
   render() {
     const { isFetching } = this.state;
     const { classes } = this.props;
@@ -227,21 +257,11 @@ class CovidPage extends Component {
                 : this.state.currentDisplay
                 }`}
             </h2>
-            {this.state.currentDisplay != 'none' ? (
-              <div className={`sideMenu__info ${classes.dateRange}`}>
-                <p>
-                  {this.state.data[this.state.currentDisplay].children.length > 0
-                    && `${this.state.data[this.state.currentDisplay].children[0].date
-                    } - ${this.state.data[this.state.currentDisplay].children.length > 1
-                    && this.state.data[this.state.currentDisplay].children[
-                      this.state.data[this.state.currentDisplay].children
-                        .length - 1
-                    ].date}`}
-                </p>
-              </div>
-            ) : (
-              <div className="sideMenu__info" />
-            )}
+            <div className={`sideMenu__info ${classes.dateRange}`}>
+              <p>
+                {this.generateDateRange()}
+              </p>
+            </div>
             <div className="sideMenu__chart">
               <CovidCharts
                 data={this.state.data}

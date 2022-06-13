@@ -2,9 +2,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import {
-  Button,
-} from '@material-ui/core';
 
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -34,21 +31,19 @@ const styles = {
       height: 'auto',
     },
   },
-  dialogContent: {
+  darkMode: {
     backgroundColor: '#262626',
     color: 'white'
   },
-  title: {
-    backgroundColor: "#262626",
-    color: "#ffffff",
-    textAlign: 'center',
+  lightMode: {
+    backgroundColor: 'white',
+    color: 'black'
   },
-  closebuttons: {
-    backgroundColor: "#262626",
-    color: "white",
-  },
-  mylink: {
+  lightText: {
     color: 'white'
+  },
+  centerText: {
+    textAlign: 'center'
   }
 };
 
@@ -72,6 +67,7 @@ class AboutDialog extends Component {
   render() {
     const {
       classes,
+      lightMode
     } = this.props;
 
     return (
@@ -85,9 +81,9 @@ class AboutDialog extends Component {
           maxWidth="md"
           aria-labelledby="responsive-dialog-title"
         >
-          <DialogTitle className={classes.title} id="responsive-dialog-title">Mapping Hate Crimes in the US</DialogTitle>
+          <DialogTitle className={`${lightMode ? classes.lightMode : classes.darkMode} ${classes.centerText}`} id="responsive-dialog-title">Mapping Hate Crimes in the US</DialogTitle>
           <DialogContent
-            className={classes.dialogContent}
+            className={lightMode ? classes.lightMode : classes.darkMode}
           >
             <Grid
               container
@@ -110,12 +106,12 @@ class AboutDialog extends Component {
               </Grid>
               <Typography className={classes.paragraph} paragraph>
                 Any questions? Email us at
-                {' '} <a className={classes.mylink} href={`mailto:${ABOUT_DIALOGS.HCM.EMAIL}?Subject=Hate%20Crime%20Map%20Inquiry`}> {ABOUT_DIALOGS.HCM.EMAIL}</a>
+                {' '} <a className={lightMode ? '' : classes.lightText} href={`mailto:${ABOUT_DIALOGS.HCM.EMAIL}?Subject=Hate%20Crime%20Map%20Inquiry`}> {ABOUT_DIALOGS.HCM.EMAIL}</a>
               </Typography>
             </Grid>
           </DialogContent>
-          <DialogActions className={classes.closebuttons}>
-            <ColoredButton noIcon onClick={this.handleClose}>
+          <DialogActions className={lightMode ? classes.lightMode : classes.darkMode }>
+            <ColoredButton noIcon lightMode={lightMode} onClick={this.handleClose}>
               Close
             </ColoredButton>
           </DialogActions>

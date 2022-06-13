@@ -4,7 +4,6 @@ export { default as CovidCharts } from './CovidCharts/CovidCharts.jsx';
 export { default as MapBar } from './MapBar/MapBar.jsx';
 export { default as FilterBar } from './FilterBar/FilterBar.jsx';
 export { default as FirstTimeOverlay } from './FirstTimeOverlay/FirstTimeOverlay.jsx';
-export { default as Header } from './Header/Header.jsx';
 // export { default as LocationSearchInput } from './LocationSearchInput/LocationSearchInput.jsx';
 export { default as Login } from './Login/Login.jsx';
 export { default as MapWrapper } from './MapWrapper/MapWrapper.jsx';

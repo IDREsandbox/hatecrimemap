@@ -72,6 +72,9 @@ self.addEventListener('message', (event) => {
 // Any other custom service worker logic can go here.
  */
 
+
+
+// NOTE: deployed a no-op service worker to refresh old broken ones
 self.addEventListener('install', () => {
   // Skip over the "waiting" lifecycle state, to ensure that our
   // new service worker is activated immediately, even if there's

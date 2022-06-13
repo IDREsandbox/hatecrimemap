@@ -2,28 +2,17 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { withStyles } from '@material-ui/core/styles';
 import AddIcon from '@material-ui/icons/Add';
-import {
-    AppBar,
-    Toolbar,
-    Typography,
-    Button,
-    Box,
-} from '@material-ui/core';
+
+import AppBar  from '@material-ui/core/AppBar';
+import Toolbar  from '@material-ui/core/Toolbar';
+import Typography  from '@material-ui/core/Typography';
+import Box from '@material-ui/core/Box';
+
 import ColoredButton from 'components/Reusables/ColoredButton';
 import { AboutDialog } from 'components';
 import { motion } from 'framer-motion';
 
-const aboutpageVariants = {
-    initial: {
-        opacity: 0
-    },
-    in: {
-        opacity: 1
-    },
-    out: {
-        opacity: 0
-    },
-}
+import { PageVariants } from '../../res/values/variants'
 
 const styles = (theme) => ({
     root: {},
@@ -110,7 +99,7 @@ const CommonHeader = (props) => {
                 initial="initial"
                 animate="in"
                 exit="out"
-                variants={aboutpageVariants}
+                variants={PageVariants}
                 transition={{ duration: 0.5 }}
                 style={{ overflowY: 'hidden' }}
             >
@@ -148,9 +137,14 @@ const CommonHeader = (props) => {
                                 </ColoredButton>
                             </Link>
                         }
-                        {(location.pathname === '/map' || location.pathname === '/covid') &&
+                        {(location.pathname === '/map') &&
                             <Link className={classes.link}>
                                 <AboutDialog />
+                            </Link>
+                        }
+                        {(location.pathname === '/covid') &&
+                            <Link className={classes.link}>
+                                <AboutDialog lightMode />
                             </Link>
                         }
                         {location.pathname !== '/home' && location.pathname !== '/' &&

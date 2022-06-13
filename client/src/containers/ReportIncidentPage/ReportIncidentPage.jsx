@@ -36,6 +36,8 @@ import LocationSearchInput from '../../components/LocationSearchInput/LocationSe
 import { motion } from 'framer-motion'
 import ColoredButton from 'components/Reusables/ColoredButton';
 
+import { PageVariants } from 'res/values/variants';
+
 const styles = ({ spacing }) => ({
   root: {
     flex: 1,
@@ -133,19 +135,6 @@ const getInitialState = () => ({
   description: '',
   activeStep: 0,
 });
-
-const aboutpageVariants = {
-  initial: {
-    opacity: 0
-  },
-  in: {
-    opacity: 1
-  },
-  out: {
-    opacity: 0
-  },
-}
-
 
 class ReportIncidentPage extends Component {
   constructor(props) {
@@ -507,7 +496,7 @@ class ReportIncidentPage extends Component {
         initial="initial"
         animate="in"
         exit="out"
-        variants={aboutpageVariants}
+        variants={PageVariants}
         transition={{ duration: 0.5 }}
       >
         <Typography className={classes.mainTitle} variant="h4" >

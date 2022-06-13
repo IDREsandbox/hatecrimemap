@@ -1,20 +1,12 @@
 /*  eslint import/no-unresolved: 0, global-require: 0  */
-
 /* eslint-disable */
-
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { withStyles, makeStyles } from '@material-ui/core/styles';
-import {
-  Button,
-  CircularProgress,
-  Paper,
-} from '@material-ui/core';
+import { withStyles } from '@material-ui/core/styles';
+import  CircularProgress  from '@material-ui/core/CircularProgress';
 
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
 import Carousel from './Carousel';
+
 import axios from 'axios';
 
 import ColoredButton from 'components/Reusables/ColoredButton';
