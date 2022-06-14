@@ -73,7 +73,7 @@ const MapWrapper = (props) => {
   let lockedLayer;
 
   let emptyColor;
-``
+  
   if (props.covid) {
     emptyColor = '#cccccc'
   } else {
