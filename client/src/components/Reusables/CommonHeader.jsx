@@ -3,9 +3,9 @@ import { Link, useLocation } from 'react-router-dom';
 import { withStyles } from '@material-ui/core/styles';
 import AddIcon from '@material-ui/icons/Add';
 
-import AppBar  from '@material-ui/core/AppBar';
-import Toolbar  from '@material-ui/core/Toolbar';
-import Typography  from '@material-ui/core/Typography';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 
 import ColoredButton from 'components/Reusables/ColoredButton';
@@ -54,7 +54,7 @@ const styles = (theme) => ({
         textAlign: "center",
         fontFamily: 'Bebas Neue',
         fontWeight: 'bold',
-        fontSize: 50,
+        fontSize: 40,
         color: 'white',
         [theme.breakpoints.down("xs")]: {
             fontSize: 30,
@@ -62,6 +62,9 @@ const styles = (theme) => ({
     },
     lightMode: {
         color: 'black'
+    },
+    AAPILabel: {
+        margin: '0 1em'
     }
 });
 
@@ -112,8 +115,25 @@ const CommonHeader = (props) => {
                             sx={{ mr: 2, display: location.pathname === '/' ? { xs: 'none' } : { xs: 'none', md: 'flex' } }}
                             className={!props.light ? classes.mainTitle : `${classes.mainTitle} ${classes.lightMode}`}
                         >
-                            {location.pathname === '/' ? '' : 'Mapping Hate in the United States' }
+                            {location.pathname === '/' ? '' : 'Mapping Hate in the United States'}
                         </Typography>
+                        {location.pathname === '/covid' &&
+                            <Typography
+                                variant="h6"
+                                noWrap
+                                className={classes.AAPILabel}
+                            >
+                                (Data from <a
+                                    target="_blank"
+                                    href="https://stopaapihate.org/reportincident/"
+                                    className={classes.titleLink}
+                                    rel="noreferrer"
+                                >
+                                    Stop AAPI Hate
+                                </a>
+                                )
+                            </Typography>
+                        }
                         <Box className={classes.flex} flexGrow={1} sx={{ flex: 1 }} />
                         {(location.pathname === '/map' || location.pathname === '/covid') &&
                             <Link to="/report" className={classes.link}>
