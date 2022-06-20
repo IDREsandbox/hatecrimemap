@@ -1,51 +1,47 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
 import './FilterBar.css';
-
+import { withStyles } from '@material-ui/core/styles';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 
-const styles = (theme) => ({
+const styles = (theme) => ({ // eslint-disable-line no-unused-vars
 
 });
+
+const ColorFormControlLabel = withStyles((theme) => ({
+  root: {
+    color: 'white',
+  },
+}))(FormControlLabel);
+
+const ColorCheckbox = withStyles((theme) => ({
+  root: {
+    color: 'white',
+  },
+}))(Checkbox);
 
 const FilterBar = (props) => {
   const [published, filterPublished] = useState(false);
 
   return (
     <div className="filterBar">
-      <FormControlLabel
+      <ColorFormControlLabel
         control={(
-          <Checkbox
+          <ColorCheckbox
             checked={published}
             onChange={(e, v) => { filterPublished(v); props.filterfn(v); }}
             name="published"
-            color="primary"
           />
         )}
         label="View only incidents that have been published"
       />
-      {/* <ToggleButtonGroup
-        value={published}
-        size="small"
-        exclusive
-        onChange={(e, v) => {filterPublished(v); props.filterfn(v)}}
-        aria-label="filter published sources"
-      >
-        <ToggleButton value={'published'} aria-label="published">
-          Published Sources
-        </ToggleButton>
-        <ToggleButton value={'all'} aria-label="all">
-          All Sources
-        </ToggleButton>
-      </ToggleButtonGroup> */}
     </div>
   );
 };
 
 FilterBar.propTypes = {
-  classes: PropTypes.object.isRequired,
+  classes: PropTypes.object.isRequired, // eslint-disable-line react/no-unused-prop-types
 };
 
 export default withStyles(styles)(FilterBar);

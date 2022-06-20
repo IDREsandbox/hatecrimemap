@@ -1,26 +1,26 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
- Map, TileLayer, Rectangle, GeoJSON, Pane,
+  MapContainer, TileLayer, Rectangle, Pane, MapConsumer, Popup, Marker,
 } from 'react-leaflet';
+import L from 'leaflet'; //eslint-disable-line
 
 import './MapWrapper.css';
-import { MAP_LOCATIONS as ML } from 'res/values/map';
-import { usa } from 'res/geography/usa.js';
-import { counties } from 'res/geography/counties/statecounties.js';
-import { states_usa } from 'res/geography/states.js';
-import { states_alaska } from 'res/geography/alaska.js';
-import { states_hawaii } from 'res/geography/hawaii.js';
-import {
-  eachState,
-  eachStatesCounties,
-  defaultColors,
-  covidColors,
-  eachCovidState,
-} from 'utils/data-utils';
 import { useLocation } from 'react-router-dom';
-import Legend from './Legend/Legend';
+import Carousel from 'components/SpotlightModal/Carousel';
+import TimeSlider from './TimeSlider/TimeSlider';
+import axios from 'axios';
+import { MAP_LOCATIONS as ML } from '../../res/values/map';
+import { usa } from '../../res/geography/usa';
+import { counties } from '../../res/geography/counties/statecounties';
+import { states_usa } from '../../res/geography/states';
+import {
+  counts_aggregateBy,
+  hashColor,
+  hashCovidColor,
+} from '../../utils/data-utils';
+import MyGeoJSON from './GeoJSON/MyGeoJSON';
 
-const months_short = [
+const months_short = [ //eslint-disable-line
   'Jan',
   'Feb',
   'Mar',
@@ -34,156 +34,163 @@ const months_short = [
   'Nov',
   'Dec',
 ];
-const monthVals = months_short.map((month) => Date.parse(`${month} 1, 2020`));
 
-// move to map res utils
-const usaCentre = [38.0, -96.0];
-const usaBounds = [[18.0, -135.0], [52.0, -60.0]];
-const alaskaCentre = [64.0, -150.0];
-const alaskaBounds = [[34.0, -110.0], [94.0, -190.0]];
-const hawaiiCentre = [20.0, -155.0];
-const hawaiiBounds = [[0.0, -170.0], [40.0, -135.0]];
-const worldBounds = [[-90.0, -180.0], [90.0, 180.0]];
+const usa_background_style = { stroke: 0.3, color: '#777777', backgroundColor: '#aaaaaa' };
 
 const MapWrapper = (props) => {
-  const location = useLocation();
-  let theColors;
-  let covidFlag;
-  if (location.pathname == '/covid') {
-    theColors = covidColors;
-    covidFlag = 1;
+  const location = useLocation(); //eslint-disable-line
+
+  const [datalen, setdatalen] = useState(props.data.length)
+
+  const calculateStateColor = (state, data, max) => {
+    const stateCount = counts_aggregateBy(data, 'state', state);
+    if (stateCount <= 0) {
+      return 'rgba(0, 0, 0, 0)';
+    }
+    return hashColor(stateCount, max);
+  };
+
+  const calculateCountyColor = (county, data, max) => {
+    const countyCount = counts_aggregateBy(data, 'county', county);
+    if (countyCount <= 0) {
+      return 'rgba(0, 0, 0, 0)';
+    }
+    return hashColor(countyCount, max);
+  };
+
+  useEffect(() => {
+    if (!props.covid) {
+      states_usa.features.forEach((eachStateArg) => eachStateArg.properties.COLOR = calculateStateColor(eachStateArg.properties.NAME, props.data, props.max));
+      counties.forEach((countiesInState) => countiesInState.features.forEach((eachCounty) => eachCounty.properties.COLOR = calculateCountyColor(eachCounty.properties.County_state, props.data, props.maxCounty)));
+    } else {
+      states_usa.features.forEach((eachStateArg) => eachStateArg.properties.COLOR = props.data[eachStateArg.properties.NAME] ? hashCovidColor(props.data[eachStateArg.properties.NAME].count, props.max) : 'rgb(0,0,0)');
+    }
+
+    setdatalen(props.data.length)
+    return () => { };
+  }, [props.data.length]); // pretty good indicator of when we should recalculate colors? Could be an edge case where # elements are the same - huge edge case with changing the published
+
+  let lockedLayer;
+
+  let emptyColor;
+  
+  if (props.covid) {
+    emptyColor = '#cccccc'
   } else {
-    theColors = defaultColors;
-    covidFlag = 0;
+    emptyColor = 'rgba(0, 0, 0, 0)'
   }
 
   return (
     <div id="MapWrapper">
-      {props.timeSlider && props.timeSlider}
-      <Map
+      {!props.covid &&
+        <TimeSlider
+          filterTime={props.timeSliderUpdate}
+        />
+      }
+      <MapContainer
         id="USA"
-        ref={props.mapRef}
+        whenCreated={(map) => {
+          props.mapRef.current = map;
+        }}
         maxBounds={ML.worldBounds}
         minZoom={2}
         zoomSnap={0.25}
         center={ML.usaCenter}
-        zoom={4.5}
-        onZoomend={props.updateZoom}
+        zoom={props.zoom()}
+        closePopupOnClick
+        preferCanvas={props.spotlightOn}
       >
         <TileLayer
+          key="base"
           bounds={ML.worldBounds}
-          attribution="&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
-          url="https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png"
+          attribution={props.covid ? "&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors" : "&copy; <a href=&quot;https://www.openstreetmap.org/copyright&quot;>OpenStreetMap</a> contributors &copy; <a href=&quot;https://carto.com/attributions&quot;>CARTO</a>"}
+          url={props.covid ? "https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png" : "https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png"}
+          subdomains="abcd"
         />
         <Rectangle
           bounds={ML.worldBounds}
           stroke={false}
           fillOpacity="0"
-          onClick={() => props.updateState('none', true)}
         />
-        {!props.covid && (
-          <Pane
-            name="counties"
-            style={{
-              zIndex: 500,
-              display: props.zoom() >= 6 ? 'block' : 'none',
-            }}
-          >
-            {counties.map((state, index) => (
-              <GeoJSON
-                key={index}
-                data={state}
-                onEachFeature={(feature, layer) => eachStatesCounties(
-                    feature,
-                    layer,
-                    props.data,
-                    69,
-                    props.updateCounty,
-                    theColors,
-                  )}
-              />
-            ))}
-          </Pane>
-        )}
         <Pane
           name="states"
-          style={{ zIndex: 500, display: props.zoom() >= 6 ? 'none' : 'block' }}
+          className={props.displayType === 'state' ? '' : 'paneHide'}
         >
-          <GeoJSON
-            ref={props.statesRef}
-            data={states_usa}
-            onAdd={() => props.updateView(0, 1)}
-            onEachFeature={(feature, layer) => (props.covid
-                ? eachCovidState(
-                    feature,
-                    layer,
-                    props.data,
-                    props.updateState,
-                    theColors,
-                  )
-                : eachState(
-                    feature,
-                    layer,
-                    props.data,
-                    props.max,
-                    props.updateState,
-                    theColors,
-                  ))}
-          />
-          <GeoJSON
-            ref={props.alaskaRef}
-            data={states_alaska}
-            onEachFeature={(feature, layer) => (props.covid
-                ? eachCovidState(
-                    feature,
-                    layer,
-                    props.data,
-                    props.updateState,
-                    theColors,
-                  )
-                : eachState(
-                    feature,
-                    layer,
-                    props.data,
-                    props.max,
-                    props.updateState,
-                    theColors,
-                  ))}
-          />
-          <GeoJSON
-            ref={props.hawaiiRef}
-            data={states_hawaii}
-            onEachFeature={(feature, layer) => (props.covid
-                ? eachCovidState(
-                    feature,
-                    layer,
-                    props.data,
-                    props.updateState,
-                    theColors,
-                  )
-                : eachState(
-                    feature,
-                    layer,
-                    props.data,
-                    props.max,
-                    props.updateState,
-                    theColors,
-                  ))}
+          {
+          }
+          <MyGeoJSON
+            key="states"
+            style={(feature) => (
+              {
+              stroke: 0.5, weight: 0.5, color: props.covid ? 'white' : 'black' , fillColor: feature.properties.COLOR, fillOpacity: 1,
+            })}
+            geojson={states_usa}
+            datalen={datalen}
+            published={props.publishedChange}
+            eventHandlers={{
+              mouseover: ({ layer }) => layer.feature.properties.COLOR !== emptyColor && props.updateState && props.updateState(layer.feature.properties.NAME) && layer.setStyle({ fillColor: 'rgb(200, 200, 200)' }),
+              mouseout: ({ layer }) => layer.feature.properties.COLOR !== emptyColor && props.updateState && props.updateState('none', false) && layer.setStyle({ fillColor: layer.feature.properties.COLOR }),
+              click: ({ layer }) => {
+                console.log(layer);
+                if (!props.updateState || layer.feature.properties.COLOR === emptyColor) return;
+                props.updateState(layer.feature.properties.NAME, true); // this update state is not resetting to state!!
+                if (lockedLayer) {
+                  lockedLayer.setStyle({ fillColor: lockedLayer.feature.properties.COLOR });
+                  if (lockedLayer === layer) {
+                    lockedLayer = null;
+                    return;
+                  }
+                }
+                layer.setStyle({ fillColor: 'rgb(100, 100, 100)' });
+                lockedLayer = layer;
+              },
+            }}
           />
         </Pane>
-        <GeoJSON
-          data={usa}
-          onEachFeature={(feature, layer) => {
-            layer.setStyle({
-              stroke: 0.3,
-              color: '#777777',
-              backgroundColor: '#aaaaaa',
-            });
-          }}
+        {!props.covid // if covid map, don't draw county
+          && (
+            <Pane
+              name="counties"
+              className={props.displayType === 'county' ? '' : 'paneHide'}
+            >
+              <MyGeoJSON
+                key="counties"
+                style={(feature) => ({
+                  stroke: 1, weight: 1, color: 'black', fillColor: feature.properties.COLOR, fillOpacity: 1,
+                })}
+                geojson={counties}
+                datalen={datalen}
+                published={props.publishedChange}
+                eventHandlers={{
+                  mouseover: ({ layer }) => layer.feature.properties.COLOR !== 'rgba(0, 0, 0, 0)' && props.updateCounty && props.updateCounty(layer.feature.properties.County_state) && layer.setStyle({ fillColor: 'rgb(200, 200, 200)' }),
+                  mouseout: ({ layer }) => layer.feature.properties.COLOR !== 'rgba(0, 0, 0, 0)' && props.updateCounty && props.updateCounty('none') && layer.setStyle({ fillColor: layer.feature.properties.COLOR }),
+                  click: ({ layer }) => {
+                    if (!props.updateCounty || layer.feature.properties.COLOR === 'rgba(0, 0, 0, 0)') return;
+                    props.updateCounty(layer.feature.properties.County_state, true, true);
+                    if (lockedLayer) {
+                      lockedLayer.setStyle({ fillColor: lockedLayer.feature.properties.COLOR });
+                      if (lockedLayer === layer) {
+                        lockedLayer = null;
+                        return;
+                      }
+                    }
+                    layer.setStyle({ fillColor: 'rgb(100, 100, 100)' });
+                    lockedLayer = layer;
+                  },
+                }}
+              />
+            </Pane>
+          )}
+        <MyGeoJSON
+          key="usa"
+          geojson={usa}
+          style={usa_background_style}
         />
-        <Legend colors={theColors} covid={covidFlag} />
+        <MapConsumer>
+          {props.controls}
+        </MapConsumer>
         {props.children}
-      </Map>
+      </MapContainer>
     </div>
   );
 };
@@ -193,4 +200,6 @@ MapWrapper.propTypes = {
   // zoom: PropTypes.function.isRequired,
 };
 // https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png
-export default MapWrapper;
+
+const rerenderWhen = (prevProps, props) => prevProps.displayType === props.displayType && prevProps.data.length === props.data.length;
+export default React.memo(MapWrapper, rerenderWhen);

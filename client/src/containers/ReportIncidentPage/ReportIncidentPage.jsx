@@ -8,21 +8,24 @@ import { withStyles } from '@material-ui/core/styles';
 import {
   TextField,
   FormControlLabel,
-  Checkbox,
   Stepper,
   Step,
   StepLabel,
-  Button,
+  StepConnector,
   Paper,
   StepContent,
   Tooltip,
   Select,
   MenuItem,
+  Typography,
+  Grid
 } from '@material-ui/core';
-import { CheckBox, CheckBoxOutlineBlank } from '@material-ui/icons';
+import { CheckBox, CheckBoxOutlineBlank, Check, MoreHoriz, RadioButtonUncheckedSharp } from '@material-ui/icons';
 
 import 'react-checkbox-tree/lib/react-checkbox-tree.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronRight, faChevronDown, faPlusSquare, faMinusSquare } from '@fortawesome/free-solid-svg-icons';
+
 import CheckboxTree from 'react-checkbox-tree';
 
 import Snackbar from '@material-ui/core/Snackbar';
@@ -30,15 +33,23 @@ import Alert from '@material-ui/lab/Alert';
 import { createDataToSubmit } from '../../utils/utilities';
 import LocationSearchInput from '../../components/LocationSearchInput/LocationSearchInput';
 
+import { motion } from 'framer-motion'
+import ColoredButton from 'components/Reusables/ColoredButton';
+
+import { PageVariants } from 'res/values/variants';
+
 const styles = ({ spacing }) => ({
   root: {
     flex: 1,
-    margin: '0 auto',
     marginTop: spacing.unit * 2,
-    width: '45%',
+    width: '90%',
+    margin: '0 1em',
+    backgroundColor: '#ffffff'
   },
   stepper: {
-    minWidth: '500px',
+    minWidth: '80%',
+    backgroundColor: 'white',
+    color: 'white',
   },
   button: {
     marginTop: spacing.unit,
@@ -51,8 +62,51 @@ const styles = ({ spacing }) => ({
     padding: spacing.unit * 3,
   },
   checkboxWrapper: {
+    color: 'black',
     marginLeft: spacing.unit,
   },
+  mainTitle: {
+    textAlign: "center",
+    fontFamily: 'Bebas Neue',
+    fontWeight: 'bold',
+    fontSize: 50,
+    color: 'black',
+    marginTop: '1em'
+  },
+  container: {
+    color: 'white',
+  },
+  stepLabel: {
+    label: {
+      fontSize: 50,
+    },
+    root: {
+      fontSize: 50,
+      color: 'white'
+    },
+    iconContainer: {
+      alignItems: 'center',
+      justifyContent: 'center',
+      height: 10000,
+    }
+  },
+  hcmBanner: {
+    width: '100%',
+    selfAlign: 'center'
+  },
+  bannerContainer: {
+    width: '90%',
+    display: 'flex',
+    justifyContent: 'center',
+  },
+  stepIcon: {
+    display: 'block',
+    margin: 'auto',
+    height: '100%',
+  },
+  mainGrid: {
+    marginBottom: '1em',
+  }
 });
 
 const getSteps = () => [
@@ -89,30 +143,6 @@ class ReportIncidentPage extends Component {
     this.setState({ groups: {}, snackOpen: false });
   }
 
-  onHandleClose = () => {
-    this.setState({ snackOpen: false });
-  };
-
-  groupToNodes = (groups) => groups.map((eachGroup) => {
-      eachGroup.value = eachGroup.key;
-      delete eachGroup.key;
-      eachGroup.label = eachGroup.name;
-      delete eachGroup.name;
-      if (eachGroup.children) {
-        eachGroup.children = this.groupToNodes(eachGroup.children);
-      }
-
-      if (eachGroup.level == 0) {
-        // disable toplevel categories, they're just for grouping
-        eachGroup.showCheckbox = false;
-        // this.setState((prevState) => prevState.groupsExpanded.push(eachGroup['value']));
-      }
-
-      // Do other node customizations, e.g. custom icons or class
-
-      return eachGroup;
-    });
-
   async componentDidMount() {
     axios
       .get('/api/totals/groups')
@@ -122,6 +152,30 @@ class ReportIncidentPage extends Component {
         return {};
       });
   }
+
+  onHandleClose = () => {
+    this.setState({ snackOpen: false });
+  };
+
+  groupToNodes = (groups) => groups.map((eachGroup) => {
+    eachGroup.value = eachGroup.key;
+    delete eachGroup.key;
+    eachGroup.label = eachGroup.name;
+    delete eachGroup.name;
+    if (eachGroup.children) {
+      eachGroup.children = this.groupToNodes(eachGroup.children);
+    }
+
+    if (eachGroup.level == 0) {
+      // disable toplevel categories, they're just for grouping
+      eachGroup.showCheckbox = false;
+      // this.setState((prevState) => prevState.groupsExpanded.push(eachGroup['value']));
+    }
+
+    // Do other node customizations, e.g. custom icons or class
+
+    return eachGroup;
+  });
 
   getStepContent = (index) => {
     const {
@@ -147,11 +201,19 @@ class ReportIncidentPage extends Component {
       case 1:
         return (
           <KeyboardDatePicker
+            DialogProps={{
+              color: 'white',
+              PaperProps: {
+                color: 'white',
+                className: classes.picker,
+              }
+            }}
             margin="normal"
             id="date-picker-dialog"
             label="Date of Incident"
             format="MM/dd/yyyy"
             value={date}
+            disableFuture
             onChange={this.handleDateChange}
             showTodayButton
             maxDate={new Date()}
@@ -180,8 +242,7 @@ class ReportIncidentPage extends Component {
                 >
                   {groups[category].label}
                 </MenuItem>
-              )) // Top level
-            }
+              )) /* Top level */}
           </Select>
         );
       case 3:
@@ -194,46 +255,43 @@ class ReportIncidentPage extends Component {
               onCheck={(groupsChecked) => this.setState({ groupsChecked })}
               onExpand={(groupsExpanded) => this.setState({ groupsExpanded })}
               icons={{
-                check: <CheckBox style={{ color: '#f50057' }} />,
+                check: <CheckBox color='action' />,
                 uncheck: (
                   <CheckBoxOutlineBlank
-                    style={{ color: 'rgba(0, 0, 0, 0.54)' }}
+                    color='action'
                   />
                 ),
                 halfCheck: (
                   <FontAwesomeIcon
+                    color='#262626'
                     className="rct-icon rct-icon-half-check"
                     icon="check-square"
                   />
                 ),
                 expandClose: (
-                  <div style={{ fontSize: '14px' }}>
+                  <div style={{ fontSize: '14px', color: 'black' }}>
                     <FontAwesomeIcon
-                      className="rct-icon rct-icon-expand-close"
-                      icon="chevron-right"
+                      icon={faChevronRight}
                     />
                   </div>
                 ),
                 expandOpen: (
-                  <div style={{ fontSize: '14px' }}>
+                  <div style={{ fontSize: '14px'.at, color: 'black' }}>
                     <FontAwesomeIcon
-                      className="rct-icon rct-icon-expand-close"
-                      icon="chevron-down"
+                      icon={faChevronDown}
                     />
                   </div>
                 ),
                 expandAll: (
-                  <div style={{ fontSize: '14px' }}>
+                  <div style={{ fontSize: '14px', color: 'black' }}>
                     <FontAwesomeIcon
-                      className="rct-icon rct-icon-expand-close"
-                      icon="plus-square"
+                      icon={faPlusSquare}
                     />
                   </div>
                 ),
                 collapseAll: (
                   <FontAwesomeIcon
-                    className="rct-icon rct-icon-expand-close"
-                    icon="minus-square"
+                    icon={faMinusSquare}
                   />
                 ),
                 parentClose: null,
@@ -297,7 +355,7 @@ class ReportIncidentPage extends Component {
             </Tooltip>
             <FormControlLabel
               control={(
-                <Checkbox
+                <CheckBox
                   checked={!associatedLink}
                   onChange={this.updateAssociatedLink}
                   value="associatedLink"
@@ -392,7 +450,7 @@ class ReportIncidentPage extends Component {
     const dataToSubmit = createDataToSubmit(this.state);
     axios
       .post('/api/report/incident', dataToSubmit)
-      .then((res) => {
+      .then(() => {
         this.setState({ snackOpen: true });
         this.resetState();
       })
@@ -404,62 +462,123 @@ class ReportIncidentPage extends Component {
 
   resetState = () => this.setState(getInitialState());
 
+  stepIcon = (stepInfo) => {
+    const { active, completed } = stepInfo;
+
+    const { classes } = this.props;
+
+    if (active) {
+      return (
+        <MoreHoriz color='action' className={classes.stepIcon} />
+      )
+    }
+
+    return (
+      <div>
+        {completed ?
+          <Check color='primary' className={classes.stepIcon} />
+          :
+          <RadioButtonUncheckedSharp color='disabled' className={classes.stepIcon} />
+        }
+      </div>
+    )
+  }
+
   render() {
+    document.body.style = 'background: rgb(255,255,255)';
     const { activeStep } = this.state;
     const { classes } = this.props;
     const steps = getSteps();
     const buttonOnclick = activeStep === steps.length - 1 ? this.handleReset : this.handleNext;
 
     return (
-      <Paper className={classes.root}>
-        <p style={{ padding: '24px 24px 0 24px' }}>
-          <em>
-            If this is a COVID-related incident, consider navigating to the
-            COVID page through the menu and reporting there.
-          </em>
-        </p>
-        <Stepper
-          className={classes.stepper}
-          activeStep={activeStep}
-          orientation="vertical"
+      <motion.div
+        initial="initial"
+        animate="in"
+        exit="out"
+        variants={PageVariants}
+        transition={{ duration: 0.5 }}
+      >
+        <Typography className={classes.mainTitle} variant="h4" >
+          Report an Incident
+        </Typography>
+        <Grid
+          container
+          direction="row-reverse"
+          justifyContent="center"
+          alignItems="center"
+          className={classes.mainGrid}
         >
-          {steps.map((label, i) => (
-            <Step key={label}>
-              <StepLabel>{label}</StepLabel>
-              <StepContent>
-                <div>{this.getStepContent(i)}</div>
-                <div className={classes.actionsContainer}>
-                  <div>
-                    <Button
-                      disabled={activeStep === 0}
-                      onClick={this.handleBack}
-                      className={classes.button}
-                    >
-                      Back
-                    </Button>
-                    <Button
-                      disabled={!this.isFormFilledOut()}
-                      variant="contained"
-                      color="primary"
-                      onClick={buttonOnclick}
-                      className={classes.button}
-                    >
-                      {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-                    </Button>
-                  </div>
-                </div>
-              </StepContent>
-            </Step>
-          ))}
-        </Stepper>
-        <Snackbar
-          open={this.state.snackOpen}
-          autoHideDuration={5000}
-          onClose={this.onHandleClose}
-        >
-          <Alert severity="success">Incident Reported!</Alert>
-        </Snackbar>
-      </Paper>
+          <Grid item md={8} xs={12}>
+            <Paper className={classes.root}>
+              <p style={{ padding: '24px 24px 0 24px' }}>
+                To have an incident reported on the Hate Crime Map, it can be recorded here.
+              </p>
+              <p style={{ padding: '24px 24px 0 24px' }}>
+                After being verified, it will be displayed on the map.
+              </p>
+              <p style={{ padding: '24px 24px 0 24px' }}>
+                <em>
+                  If this is a COVID-related incident, consider navigating to the
+                  COVID page through the menu and reporting there.
+                </em>
+              </p>
+              <Stepper
+                className={classes.stepper}
+                activeStep={activeStep}
+                orientation="vertical"
+                connector={<StepConnector classes={{
+                  line: classes.connector,
+                  completed: classes.connector,
+                }} />}
+              >
+                {steps.map((label, i) => (
+                  <Step key={label}>
+                    <StepLabel className={classes.stepLabel} sx={{ color: 'white' }} StepIconComponent={this.stepIcon}>{label}</StepLabel>
+                    <StepContent>
+                      <div>{this.getStepContent(i)}</div>
+                      <div className={classes.actionsContainer}>
+                        <div>
+                          <ColoredButton
+                            lightMode
+                            noIcon
+                            disabled={activeStep === 0}
+                            onClick={this.handleBack}
+                            className={classes.button}
+                          >
+                            Back
+                          </ColoredButton>
+                          <ColoredButton
+                            lightMode
+                            noIcon
+                            disabled={!this.isFormFilledOut()}
+                            onClick={buttonOnclick}
+                            className={classes.button}
+                          >
+                            {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+                          </ColoredButton>
+                        </div>
+                      </div>
+                    </StepContent>
+                  </Step>
+                ))}
+              </Stepper>
+              <Snackbar
+                open={this.state.snackOpen}
+                autoHideDuration={5000}
+                onClose={this.onHandleClose}
+              >
+                <Alert severity="success">Incident Reported!</Alert>
+              </Snackbar>
+            </Paper>
+          </Grid>
+          <Grid item md={4} xs={12}>
+            <div className={classes.bannerContainer}>
+              <img src={require('res/img/hcm_banner.png')} className={classes.hcmBanner} alt="Speak Out Logo" />
+            </div>
+          </Grid>
+        </Grid>
+      </motion.div >
     );
   }
 }

@@ -153,7 +153,22 @@ const getInitialState = () => ({
 });
 
 class VerifyIncidentsPage extends Component {
-  state = getInitialState();
+  constructor(props) {
+    super(props);
+
+    this.state = getInitialState();
+  }
+
+  UNSAFE_componentWillMount() {
+    axios
+      .get(`/api/verify/unreviewedcount/${this.state.verified}`)
+      .then((res) => {
+        if (res.data.counts) {
+          this.setState({ counts: parseInt(res.data.counts, 10) });
+        }
+      })
+      .catch((err) => alert(err));
+  }
 
   componentWillMount() {
     if (this.state.loggedIn) {
@@ -351,6 +366,7 @@ class VerifyIncidentsPage extends Component {
     this.setState({ incidentsChecked: checked });
   };
 
+  // fix the below having repeated function like 5 times
   handleAction = (id, action) => {
     if (action == ACTIONS.VERIFY) reviewIncidentReport(id, true, () => { this.fetchData(this.state.perPage, this.state.page) });
     else if (action == ACTIONS.UNVERIFY) reviewIncidentReport(id, false, () => { this.fetchData(this.state.perPage, this.state.page) });

@@ -1,46 +1,39 @@
-.leaflet-popup-pane { /* Allow the mouse to stay over the popup without causing a mouseOut event */
-	pointer-events: none;
+.leaflet-popup-pane {
+  /* Allow the mouse to stay over the popup without causing a mouseOut event */
+  pointer-events: none;
 }
 
 #leaflet-interactive {
-	/*opacity: 0.5;*/
-}
-
-.show-staRte {
-	/*stroke: rgb(227, 255, 255);*/
-	/*z-index: 1;*/
-	/*opacity: 1;*/
+  /*opacity: 0.5;*/
 }
 
 #MapWrapper {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: 1fr 1fr 1fr;
-    height: 100%;
-    overflow: auto;
-    position: relative;
-    pointer-events: none;
+  grid-area: map;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: 1fr 1fr 1fr;
+  height: 100%;
+  overflow: auto;
+  position: relative;
+  pointer-events: none;
 }
 
 #USA {
-	height: 100%;
-    grid-column: 1 / 5;
-    grid-row: 1 / 4;
+  height: 100%;
+  grid-column: 1 / 5;
+  grid-row: 1 / 4;
 }
 
 #Alaska {
-	position: relative;
-    grid-area: 3 / 1 / auto / auto;
+  position: relative;
+  grid-area: 3 / 1 / auto / auto;
 }
 
-#timeslider {
-    grid-column: 2 / 4;
-    grid-row: 1;
-    margin-top: 32px;
-    z-index: 401;
-  }
-  
-.noUi-base {
-    pointer-events: all;
-  }
-   
+.paneHide {
+  display: none;
+}
+
+.my-popup {
+  background-color: white;
+  border: 1px solid black;
+}

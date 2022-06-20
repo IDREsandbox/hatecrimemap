@@ -1,15 +1,17 @@
+/*  eslint import/no-unresolved: 0, global-require: 0  */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import {
-  Button,
-} from '@material-ui/core';
 
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import Typography from '@material-ui/core/Typography'
+import Grid from '@material-ui/core/Grid'
+
+import { ABOUT_DIALOGS } from '../../res/values/string';
+import ColoredButton from 'components/Reusables/ColoredButton';
 
 import { ABOUT_DIALOGS } from 'res/values/string';
 
@@ -31,6 +33,20 @@ const styles = {
       height: 'auto',
     },
   },
+  darkMode: {
+    backgroundColor: '#262626',
+    color: 'white'
+  },
+  lightMode: {
+    backgroundColor: 'white',
+    color: 'black'
+  },
+  lightText: {
+    color: 'white'
+  },
+  centerText: {
+    textAlign: 'center'
+  }
 };
 
 class AboutDialog extends Component {
@@ -53,58 +69,56 @@ class AboutDialog extends Component {
   render() {
     const {
       classes,
+      lightMode
     } = this.props;
 
     return (
       <div>
-        <Button className={classes.aboutButton} onClick={this.handleClickOpen}>
-          About
-        </Button>
+        <ColoredButton noIcon onClick={this.handleClickOpen}>
+          Acknowledgements
+        </ColoredButton>
         <Dialog
           open={this.state.open}
           onClose={this.handleClose}
           maxWidth="md"
           aria-labelledby="responsive-dialog-title"
         >
-          <DialogTitle id="responsive-dialog-title">Hate Crime Map</DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              <p>{ABOUT_DIALOGS.HCM.PARAGRAPH1}</p>
-              <br />
-              <p>{ABOUT_DIALOGS.HCM.PARAGRAPH2}</p>
-              <br />
-              <p>
-                Any questions? Email us at
-                <a href={`mailto:${ABOUT_DIALOGS.HCM.EMAIL}?Subject=Hate%20Crime%20Map%20Inquiry`}>{ABOUT_DIALOGS.HCM.EMAIL}</a>
-              </p>
-              <br />
-              <hr />
-              <br />
-              <h3>Acknowledgments</h3>
-              <p>{ABOUT_DIALOGS.HCM.ACKNOWLEDGEMENTS}</p>
-              <div className={classes.images}>
-                <div className={classes.inline}>
-                  <img src={require('res/img/AISC_logo.png')} />
-                </div>
-                <div className={classes.inline}>
-                  <img src={require('res/img/idre-logo.png')} />
-                </div>
-                <div className={classes.inline}>
-                  <img src={require('res/img/InstAmerCultures_A.png')} />
-                </div>
-                <div className={classes.inline}>
-                  <img src={require('res/img/social-sciences-logo.png')} />
-                </div>
-              </div>
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={this.handleClose} color="primary">
-              Close
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </div>
+          <DialogTitle className={`${lightMode ? classes.lightMode : classes.darkMode} ${classes.centerText}`} id="responsive-dialog-title">Mapping Hate Crimes in the US</DialogTitle>
+        <DialogContent
+          className={lightMode ? classes.lightMode : classes.darkMode}
+        >
+          <Grid
+            container
+            direction="row"
+            justifyContent="center"
+            alignItems="baseline">
+            <Grid item>
+              <Typography variant="h6" gutterBottom>
+                Acknowledgments
+              </Typography>
+              <Typography paragraph>
+                {ABOUT_DIALOGS.HCM.ACKNOWLEDGEMENTS1}
+              </Typography>
+              <Typography paragraph>
+                {ABOUT_DIALOGS.HCM.ACKNOWLEDGEMENTS2}
+              </Typography>
+              <Typography paragraph>
+                {ABOUT_DIALOGS.HCM.ACKNOWLEDGEMENTS3}
+              </Typography>
+            </Grid>
+            <Typography className={classes.paragraph} paragraph>
+              Any questions? Email us at
+              {' '} <a className={lightMode ? '' : classes.lightText} href={`mailto:${ABOUT_DIALOGS.HCM.EMAIL}?Subject=Hate%20Crime%20Map%20Inquiry`}> {ABOUT_DIALOGS.HCM.EMAIL}</a>
+            </Typography>
+          </Grid>
+        </DialogContent>
+        <DialogActions className={lightMode ? classes.lightMode : classes.darkMode}>
+          <ColoredButton noIcon lightMode={lightMode} onClick={this.handleClose}>
+            Close
+          </ColoredButton>
+        </DialogActions>
+      </Dialog>
+      </div >
     );
   }
 }
