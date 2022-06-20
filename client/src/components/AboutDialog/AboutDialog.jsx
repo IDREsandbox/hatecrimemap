@@ -10,7 +10,6 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Typography from '@material-ui/core/Typography'
 import Grid from '@material-ui/core/Grid'
 
-import { ABOUT_DIALOGS } from '../../res/values/string';
 import ColoredButton from 'components/Reusables/ColoredButton';
 
 import { ABOUT_DIALOGS } from 'res/values/string';
